@@ -1,0 +1,91 @@
+what to simulate.txt
+
+A dataset for PRC's
+	vulnerable phase (create)
+	advances and delays 
+	different semantics
+	test cases
+
+A dataset for synchrony
+	high noise desyncs
+	high gaps desync
+
+A dataset for spike counts -> Pascal
+	4pA 5pA 6pA
+	noise neighborhoods
+	gap neighborhoods
+	Calcium neighborhoods
+
+A dataset for interaction between stimuli
+
+A dataset for distant interactions
+
+A dataset for connectivity pointing inwards?
+
+Analysis:
+	cross correlograms as a function of difference
+	clusterings (correlations between cells)
+	frequencies
+	phase mapping
+
+
+
+
+
+
+
+ % uniform gaps
+ % heterogeneous gaps (still neighbors)
+
+mix stim with offset 
+mix stim without offset 
+= control parameter: offset
+= control parameter: amplitude
+= control parameter: delay between arrivals
+= control parameter: phase of stimulus
+- number of spikes
+- phase delay
+- synchrony loss
+- advance x delay of next oscillatory phase
+
+- phase spread as a function of gap conductance
+
+
+-> to tune input magnitude, find probability of response to puff to a population in the exact same spot in the cerebellum
+
+
+
+
+with preferential connectivity
+without preferential connectivity
+== control parameter: conduction asymmetry?
+== control parameter: conduction amplitude across boundary
+
+== symmetry breaking - always same side?
+- measure cells in the boundary 
+- and elsewhere
+
+
+
+== Perturb subset, readout from group
+
+
+== Must deliver exactly the same current to 2D and 3D
+== Must deliver to the same number of neurons
+== Must deliver the same amount of current per neuron
+== Must use same size network
+
+30x30 
+5x9x20
+
+(45neuronsx2layers=90)
+
+
+
+
+
+
+
+
+
+

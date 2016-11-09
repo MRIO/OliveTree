@@ -1,0 +1,18 @@
+how to script an experiment.txt
+
+
+1. create default neurons
+def_neurons = createDefaultNeurons(numberofneurons)
+
+2. design or create connectivity matrix
+W = createW(parameters)
+
+3. decide on perturbation type (ampa, gaba soma, gaba dend, ampa noise, ohrstein uhlenbeck noise)
+- check how to do it in one of the script
+simulate_excitation_inhibiton
+
+4. design or create mask with create_input_mask
+
+5. run until steady state
+
+6. save last state and add it as an initial state for the follow up experiments

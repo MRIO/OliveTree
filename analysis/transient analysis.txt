@@ -1,0 +1,80 @@
+% analyze_transients.m
+
+% noise 2 4 6 8
+% gap scaling 0.001 to 0.005 X uniform
+% net size impact on probability of firing?
+
+
+% 1. gap neighborhood, firing rate
+
+gn = sum(W);
+hist(gn)
+
+
+% 2. Ca neighborhood, firing rate
+
+
+
+
+% 3. Ca, firing rate
+
+
+
+
+% 4. delivered noise, firing rate
+
+
+
+
+% 5. phase consistency, firing rate
+
+
+
+
+% 6. variability of interpeak amplitude
+
+
+
+
+% 7. variability of interpak amplitude 
+
+
+
+
+% 8. sync speed as a function of gap dist
+
+
+
+
+% 9. sync speed as a function of gap distributions
+
+
+
+
+% 10. sync as a function of random noise
+
+
+
+
+% 11. V_soma of a neighborhood
+
+
+
+
+% 12. probability of beating as a function of gaps
+	% - find a high gap neighborhoood
+	% - compare with low gap neighborhood
+
+
+% 13. after stimulus, how long until the state is undistinguished?
+
+
+
+% 14. Augment conductance in the stimulated boundary exclusively. 
+
+
+
+
+
+
+% 15. number of spiking neurons (of the ones stimulated) as a function of phase (and duration) of stimulus

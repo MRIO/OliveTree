@@ -1,0 +1,4 @@
+connectivity_tests.m
+
+
+out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize)
