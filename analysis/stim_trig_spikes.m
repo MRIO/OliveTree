@@ -14,7 +14,7 @@
 % F3 = 'periodic_ampa_2_iso_0.04_gallop_50000_2_12-Jun-2016.mat';
 % F = 'periodic_ampa_2_iso_0.04_1Hz_50000_2_20-Jun-2016.mat';
 % F = 'periodic_ampa_2_iso_0.04_gallop_50000_2_20-Jun-2016.mat';
-% F = 'periodic_ampa_moreoscillations_nocorr_2_iso_0.04_1Hz_+w(2)00_2_28-Jun-2016.mat'
+% F = 'periodic_ampa_moreoscillations_nocorr_2_iso_0.04_1Hz_50000_2_28-Jun-2016.mat'
 % F = 'periodic_ampa_moreoscillations_nocorr_2_iso_0.04_gallop_50000_2_29-Jun-2016.mat'
 
 % F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_gallop_50000_4_25-Sep-2016.mat';
@@ -26,24 +26,32 @@ addpath('/Users/M/Synced/Titan/Bench2/periodic_ampa/')
 addpath('/Users/M/Synced/Titan/Bench2/')
 addpath('/Users/M/Synced/Titan/Bench/')
 
+% [=================================================================]
+%  analysis to run
+% [=================================================================]
 
-trigger = 1;
+
 spontaneous = 0;
 % npulses = 3;
 plotstruct = 0;
 plotstuff = 1;
-plot_selected_neurons = 1;
+plot_selected_neurons = 0;
 computerasters = 1;
-computepartialcorrelations = 0;
+computepartialcorrelations = 1;
 calculate_xcorrs = 0;
 stimtrigwaves = 1;
 
 
+trigger = 1; % perturbation (according to 'pert')
 cellselection = [105];
 % cellselection = [105 115] ;  %[7 35 55 115]
 % cellselection = [1:200];
 
+% [=================================================================]
+%  defaults
+% [=================================================================]
 
+[az el] = view(-30,30);
 
 %=============================gather data==============================%
 
@@ -187,7 +195,7 @@ if computerasters
 				subplot(1,2,2)
 				cla
 				scatter3 (coords(:,1), coords(:,2), coords(:,3), 100,spks.spikespercell'+eps,'filled'); view([az el]); axis equal
-				scatter3 (coords(:,1), coords(:,2), coords(:,3), 100,spks.spikespercell'+eps,'filled'); view([az el]); axis equal
+				
 				l2 = line(coords(i,1), coords(i,2), coords(i,3), 'marker', '.','color', 'r', 'markersize',70);
 		
 
@@ -210,33 +218,53 @@ if computerasters
 	end
 end
 
+% [=================================================================]
+%  compute partial correlations of spiking responses
+% [=================================================================]
 if computepartialcorrelations
 	 	resp = sum(collectedHistogram(:,2001:2050),2)./50*1e3 ;		
 		CAL = sim.cellParameters.g_CaL;
 		IH  = sim.cellParameters.g_h;
 		IINT  = sim.cellParameters.g_int;
+		GN 	 = gapneighborhood';
 		MASK = sim.perturbation.mask{1};
 
-		T = [CAL IH IINT MASK spkfreq' resp];		
+		T = [CAL IH IINT MASK GN spkfreq' resp];		
 
 		[CORR PVAL] = partialcorr(T);
 
 		figure
 		subplot(121)
 		imagesc(CORR), colorbar
-		set(gca,'xticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'spkfreq' 'resp'})
-		set(gca,'yticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'spkfreq' 'resp'})
+		set(gca,'xticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'GapN' 'spkfreq' 'resp'})
+		set(gca,'yticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'GapN' 'spkfreq' 'resp'})
 
 		subplot(122)
 		imagesc(PVAL), colorbar
-		set(gca,'xticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'spkfreq' 'resp'})
-		set(gca,'yticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'spkfreq' 'resp'})
+		set(gca,'xticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'GapN' 'spkfreq' 'resp'})
+		set(gca,'yticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'GapN' 'spkfreq' 'resp'})
 
 
 		figure
 		scatter(CAL, sum(collectedHistogram(:,2001:2050),2)./50*1e3 , 50, MASK,'filled')
 		xlabel('CaT conductance (ms/cm^2)')
 		ylabel('spike frequency (Hz)')
+
+		figure
+		scatter3( sim.cellParameters.g_CaL, gapneighborhood, spkfreq , resp*100, spks.spikespercell+eps,'filled'); view([az el])
+		title('response probability')
+		xlabel('CaT conductance (mS/cm^2)')
+		ylabel('gap neighborhood (mS/cm^2)')
+		zlabel('spike frequency (Hz)')
+				
+		figure
+		scatter3( sim.cellParameters.g_CaL, gapneighborhood, spkfreq , resp*100 ,'filled'); view([az el])
+		title('response probability')
+		xlabel('CaT conductance (mS/cm^2)')
+		ylabel('gap neighborhood (mS/cm^2)')
+		zlabel('spike frequency (Hz)')
+				
+
 	end
 
 

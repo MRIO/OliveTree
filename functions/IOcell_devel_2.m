@@ -1,17 +1,23 @@
-function  [ ...
+function [ ...
             I_CaL, I_ds, I_as, I_Na_s, I_ls, I_Kdr_s, I_K_s, ...
-            I_CaH, I_sd, I_ld, I_K_Ca, I_cx36, I_h, ...
+            I_CaH, I_sd, I_ld, I_K_Ca, I_cx36, I_h, I_h_s,... %#change g_h_s
             I_K_a, I_sa, I_la, I_Na_a, ...
-            V_soma, h, n, x_s, k, l, V_dend, r, s, q, Ca2Plus,  V_axon, m_a, h_a, x_a ] = IOcell_dendriticT(...
+            V_soma, h, n, x_s, k, l, V_dend, r, s, q, q_s, Ca2Plus, V_axon, m_a, h_a, x_a ] =... % #change add q_s
+                 IOcell_devel(...
                      V_soma, Sodium_h, Potassium_n, Potassium_x_s,...
                      Calcium_k, Calcium_l, V_dend, Calcium_r, Potassium_s,...
-                     Hcurrent_q, Ca2Plus, I_CaH, ...
+                     Hcurrent_q, Hcurrent_q_s, Ca2Plus, I_CaH, ... % #change Hcurrent_q_s
                      V_axon, Sodium_h_a, Potassium_x_a, ...
                      I_cx36, I_app, V_app, g_CaL, g_int, g_K_Ca, g_Ld,...
-                     C_m, g_Na_s ,g_Kdr_s, g_K_s, g_ls,g_CaH,g_h,g_Na_a, g_K_a, g_la, ...
+                     C_m, g_Na_s ,g_Kdr_s, g_K_s, g_ls,g_CaH,g_h,g_h_s, g_Na_a, g_K_a, g_la, ... % #change g_h_s
                      p1 , p2, V_Na, V_K, V_Ca, V_h, V_l, V_gaba_dend, V_gaba_soma, V_ampa, ...
-                     gbar_gaba_soma, g_gaba_soma, g_ampa, gbar_ampa, ...
+                     gbar_gaba_soma, g_gaba_soma, g_ampa, g_ampa_dend, gbar_ampa, gbar_ampa_dend,...
                      gbar_gaba_dend, g_gaba_dend, delta, arbitrary)
+
+
+
+I_h_s = 0; % (matlab requires that we initialize every variable.)
+q_s = 0;   % no h current in the soma 
 
 %% Cell properties
 
@@ -24,14 +30,14 @@ function  [ ...
 % g_K_s    =    5;      % Potassium
 % g_ls     =    0.016;  % Leaks
     
-% Dendritic conductances (mS/cm2)
+% Dendritic conductances (mS/cm2) - SK
 % g_K_Ca   =  35;       % Potassium -- now a parameter
 % g_CaH    =   4.5;     % High-threshold calcium
 % g_ld     =   0.016;   % Leak
 % g_h      =   0.12;    % H current
 
 
-% Axon hillock conductances (mS/cm2)
+% Axon hillock conductances (mS/cm2)    
 % g_Na_a   =  240;      % Sodium
 % g_K_a    =   20;      % Potassium
 % g_la     =    0.016;  % Leak
@@ -56,17 +62,20 @@ function  [ ...
 
 %% New state...
 
-    %% update somatic components
+    %%================================================]
+    %          update somatic components
+    %=================================================]
     
 
+    % somatic Sodium
     m_inf = 1 / (1 + (exp((-30 - V_soma)/ 5.5)));
     h_inf = 1 / (1 + (exp((-70 - V_soma)/-5.8)));
     tau_h =       3 * exp((-40 - V_soma)/33);
 
     dh_dt = (h_inf - Sodium_h)/tau_h;
-     
-    m     = m_inf;
-    h     = Sodium_h + delta * dh_dt;
+    
+        m     = m_inf;
+        h     = Sodium_h + delta * dh_dt;
 
      n_inf = 1 / (1 + exp( ( -3 - V_soma) /  10));
      tau_n =   5 + (  47 * exp( -(-50 - V_soma) /  900));
@@ -85,14 +94,17 @@ function  [ ...
      x_s       = delta * dx_dt_s + Potassium_x_s;
           
    
-    %% update dendritic components
+    % [================================================]
+              %% update dendritic components
+    % [================================================]
 
-
-  k_inf = (1 / (1 + exp(-1 * (V_dend + 61)   / 4.2)));
-  l_inf = (1 / (1 + exp((     V_dend + 85.5) / 8.5)));
+     %% update CaT components
+    
+    k_inf = (1 / (1 + exp(-1 * (V_dend + 61)   / 4.2)));
+    l_inf = (1 / (1 + exp((     V_dend + 85.5) / 8.5)));
 
     tau_k = 1;
-    tau_l = ((20 * exp((V_soma + 160) / 30) / (1 + exp((V_soma + 84) / 7.3))) +35);
+    tau_l = ((20 * exp((V_dend + 160) / 30) / (1 + exp((V_dend + 84) / 7.3))) +35);
         
     dk_dt = (k_inf - Calcium_k) / tau_k;
     dl_dt = (l_inf - Calcium_l) / tau_l;
@@ -133,11 +145,9 @@ function  [ ...
         
             s = delta * ds_dt + Potassium_s;
         
-       % update Calcium concentration
-         dCa_dt = -3 * I_CaH - 0.075 * Ca2Plus;
-        Ca2Plus = delta * dCa_dt + Ca2Plus;
-
        
+        
+
        %% update axon hillock components
        
        % Update axonal Na components
@@ -172,7 +182,6 @@ function  [ ...
         
     % Dendrite-soma interaction current
     I_ds  = (g_int / p1) * (V_soma - V_dend); 
-    
     % Inward Na current
     I_Na_s  = g_Na_s * m * m * m * h * (V_soma - V_Na);
     % Leak current
@@ -190,7 +199,8 @@ function  [ ...
 
     
     % DENDRITIC CURRENTS
-    % Inward low-threshold Ca current (according to recent cell reports paper)
+    
+    % Inward low-threshold Ca current #new
     I_CaL = g_CaL * k * k * k * l * (V_dend - V_Ca);
     
     % Soma-dendrite interaction current I_sd
@@ -205,7 +215,14 @@ function  [ ...
     I_h    =  g_h * q * (V_dend - V_h);
     %***** GABA A current *****
     I_gab_dend   = gbar_gaba_dend * g_gaba_dend * (V_dend - V_gaba_dend);
+
+    I_amp_dend   = gbar_ampa_dend * g_ampa_dend * (V_dend - V_ampa);
     
+
+    % update Calcium concentration
+        dCa_dt = arbitrary *-3 * I_CaH - 0.075 * Ca2Plus - 0.01 * I_CaL; % #new #checkliterature
+        Ca2Plus = delta * dCa_dt + Ca2Plus;
+
 
     
     % AXONAL CURRENTS
@@ -220,9 +237,11 @@ function  [ ...
     I_K_a   = g_K_a * (x_a ^ 4) * (V_axon - V_K);
     
     %% update voltages
+    
 
-    dVs_dt = (-(I_ds  + I_as + I_Na_s + I_ls   + I_Kdr_s + I_K_s  + I_amp + I_gab_soma) ) / C_m;
-    dVd_dt = (-(I_CaL1 + I_CaL2 + I_CaH   + I_sd  + I_ld + I_K_Ca + I_cx36 + I_h     + I_gab_dend) + I_app ) / C_m;
+
+    dVs_dt = (-(I_CaL   + I_ds  + I_as + I_Na_s + I_ls   + I_Kdr_s + I_K_s  + I_amp + I_gab_soma) ) / C_m;
+    dVd_dt = (-(I_CaH   + I_sd  + I_ld + I_K_Ca + I_cx36 + I_h     + I_gab_dend + I_amp_dend) + I_app  ) / C_m;
     dVa_dt = (-(I_K_a   + I_sa  + I_la + I_Na_a)                                   ) / C_m;
         
 
@@ -231,3 +250,21 @@ function  [ ...
     V_dend = delta * dVd_dt + V_dend;
     V_axon = delta * dVa_dt + V_axon;
 
+
+    
+
+% a = whos;
+% for i = 1:length(a)
+%     if isnan(a(i).name) | isinf(a(i).name)
+%         keyboard
+%     end
+% end
+
+
+
+
+
+
+
+
+    

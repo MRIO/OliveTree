@@ -203,6 +203,6 @@ end
 
 
 
- % kuramotoSheet([10 10],10,'clusterize', [1 10 1 0],'time', 1,'seed', 10,'dt', .001, 'plotme',1, 'radius', 3);
+ kuramotoSheet([10 10],10,'clusterize', [1 10 1 0],'time', 1,'seed', 10,'dt', .001, 'plotme',1, 'radius', 3);
 
 

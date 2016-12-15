@@ -1,10 +1,25 @@
 function out = kuramotoSheet(varargin)
+% function out = kuramotoSheet([N,M], K, 'Param', 'Value')]
+% 
+% Calculates the sheet of kuramoto oscillators with different connectivity schemes.
+% User can select the oscillator frequencies, initial conditions, and 
+% time base (dt for the forward euler solver)
+% The script also outputs the synchronization (kuramoto parameter), i.e., the 
+% centroid of the phase of the group of oscillators.
+% 
 % inputs:
 % 	networksize, [N M]
 % 	scaling for coupling - K
+% outputs:
+% 	out.state = sin ( theta_t) ;
+% 	out.phase = phase;
+% 	out.parameters = parameters
+% 	out.oscillators = intrinsic frequency of oscillators;
+% 	out.orderparameter = synchrony measure (kuramoto parameter)
+% 	out.meanphase = mean phase of oscillators at t
+% 	out.seed = random seed
 % 
-% parameter value pairs
-% 
+% parameter value pairs:
 % 
 % ('radius', 4)
 % ('dt', 1e-3) 	
@@ -23,7 +38,8 @@ function out = kuramotoSheet(varargin)
  % author: m@negrello.org
  % all rights to kuramoto and mathworks, all wrongs are mine ;D
 
-plasticity = 1;
+plasticity = 0;
+gpu = 0;
 
 
 % [=================================================================]
@@ -34,14 +50,18 @@ plasticity = 1;
 	p.addRequired('networksize')  
 	p.addRequired('scaling')  
 
-	p.addParamValue('radius', 3)
-	p.addParamValue('dt', 1e-3) 	
-	p.addParamValue('simtime',1) % in seconds
-	p.addParamValue('omega_mean', 10) % in Hz 
-	p.addParamValue('omega_std', 2) % in Hz 
-	p.addParamValue('plotme', 1) 
-	p.addParamValue('noise', 0) 
-	p.addParamValue('connectivity', 'euclidean')  % adjacency matrix
+	p.addParameter('radius', 3)
+	p.addParameter('dt', 1e-3) 	
+	p.addParameter('time',1) % in seconds
+	p.addParameter('omega_mean', 7) % in Hz 
+	p.addParameter('init_cond', []) % in Hz 
+	p.addParameter('omega_std', 2) % in Hz 
+	p.addParameter('oscillators', []) 
+	p.addParameter('plotme', 1) 
+	p.addParameter('noise', 0) 
+	p.addParameter('connectivity', 'euclidean')  % adjacency matrix
+	p.addParameter('clusterize', [0 0 0 0],@isvector)
+	p.addParameter('seed', 0)
 
 	p.parse(varargin{:});
 
@@ -50,20 +70,35 @@ plasticity = 1;
 	radius  = p.Results.radius;
 	connectivity = p.Results.connectivity;
 	dt = p.Results.dt;
-	simtime = p.Results.simtime;
+	simtime = p.Results.time;
 	omega_mean = p.Results.omega_mean;
 	omega_std = p.Results.omega_std;
 	plotme = p.Results.plotme;
 	noise = p.Results.noise;
-	
+	clusterize = p.Results.clusterize;
+	seed = p.Results.seed;
+	init_cond = p.Results.init_cond;
+	oscillators = p.Results.oscillators;
+
 	N = netsize(1);
 	M = netsize(2);
+	NO = prod(netsize);
+	idx = ones(1,NO);
 
 % [=================================================================]
 %  randomize oscillator intrinsic frequencies
 % [=================================================================]
 
-omega_i = (randn(N*M,1)*omega_std+omega_mean)*2*pi;
+rng(seed,'twister')
+
+if oscillators
+	omega_i = oscillators;
+else
+	omega_i = (randn(N*M,1)*omega_std+omega_mean)*2*pi;
+end
+
+scale_to_intrinsic_freq = 0;
+
 
 
 
@@ -107,6 +142,8 @@ switch connectivity
 
 	case 'random'
 		% W = (ones(N*M)-eye(N*M) ) .* rand(N*M);
+
+
 	
 	otherwise 
 		% we use the matrix passed as a parameter
@@ -114,12 +151,58 @@ switch connectivity
 
 end
 
+
+% [=================================================================]
+%  this
+% [=================================================================]
+
+
+if clusterize(1)
+	W = connectivity;
+
+    groupsize = clusterize(2);
+
+    k = round(NO/groupsize);
+    [idx] = kmeans([X Y], k);
+
+    ProbCluster = clusterize(3);
+    ProbOriginal = clusterize(4);
+
+    cW = zeros(NO);
+    for ii = 1:NO
+        for jj = 1:NO
+            if idx(ii)==idx(jj)
+                cW(ii,jj) = 1;
+            end
+        end
+    end
+
+    W = cW.* ( (rand(NO)+(eye(NO))) <= ProbCluster) + W.* ( rand(NO) <= ProbOriginal) ;
+    
+
+	    out.stats.clusters = idx;
+
+
+connectivity = W;
+end
+
+
 % ensure that there are no self connections
 connectivity(find(eye(M*N))) = 0;
 
-NO = prod(netsize);
-connectivity = (scaling)*(connectivity);
 
+% [=================================================================]
+%  Scale coupling parameter?
+% [=================================================================]
+
+% Hu, X., Boccaletti, S., Huang, W., Zhang, X., Liu, Z., Guan, S., & Lai, C.-H. (2014). Exact solution for first-order synchronization transition in a generalized Kuramoto model. Scientific Reports, 4, 7262–6. http://doi.org/10.1038/srep07262
+
+
+if scale_to_intrinsic_freq
+	connectivity = bsxfun(@times, omega_i, connectivity) * scaling / NO;
+else
+	connectivity = scaling*connectivity;
+end
 
 
 % [=================================================================]
@@ -146,9 +229,22 @@ end
 %  randomize initial condition
 % [=================================================================]
 %initial condition (initial phase)
-theta_t(:,1) = rand(N*M,1)*2*pi;
-k = zeros(simtime*(1/dt)); 
+if isempty(init_cond)
+	theta_t(:,1) = rand(N*M,1)*2*pi;
+else
+	% disp('using initial condition (assuming between 0 and 2pi)')
+	theta_t(:,1) = init_cond;
+end
+
+k = zeros(1,simtime*(1/dt)); 
 MP = zeros(simtime*(1/dt));
+
+if gpu
+	theta_t = gpuArray(theta_t);
+	connectivity = gpuArray(connectivity);
+	ou_noise = gpuArray(ou_noise);
+	k = gpuArray(k);
+end
 
 % [=================================================================]
 %  simulate
@@ -165,6 +261,8 @@ for t = 2:simtime/dt
 
 	theta_t(:,t) = theta_t(:,t-1) + dt*( omega_i + summed_sin_diffs  ) + ou_noise(:,t);
 
+	PP(:,t) = sin(mod(theta_t(:,t),2*pi));
+
 	if plasticity
 		% potentiation of connections by phase coincidence of pairs
 
@@ -175,28 +273,18 @@ for t = 2:simtime/dt
 	% [=================================================================]
 	%  order parameter
 	% [=================================================================]
+	if ~clusterize(1)
 		GP = theta_t(:,t);
 		MP = circ_mean(GP)+pi;
-
+		
 		k(t) = mean( exp(i*(bsxfun(@minus, GP, MP))));
-	
-	
-	if 0
-
-
-		axes(a(1))
-			% imagesc(reshape(theta_t(:,t),N,M))
-			mesh(reshape(sin(mod(theta_t(:,t),2*pi)),N,M))
-			caxis([0 2*pi])
-			zlim([-pi pi])
-		axes(a(2))
-			line([t-1 t] , [abs(k(t-1)) abs(k(t))])
+	else
+		for ui = unique(idx)'
+			GP = theta_t(find(idx==ui),t);
+			MP = circ_mean(GP)+pi;
 			
-
-			drawnow
-
-
-			
+			k(ui,t) = mean( exp(i*(bsxfun(@minus, GP, MP))));
+		end
 	end
 
 end
@@ -207,16 +295,10 @@ end
 % [=================================================================]
 
 
-out.phase = theta_t;
-out.parameters = p.Results;
-out.oscillators = omega_i/(2*pi);
-out.orderparameter = abs(k);
-out.meanphase = MP;
-
 
 if plotme
 	
-	figure
+	ffff = figure
 
 	subplot(2,2,1)
 	plot(linspace(0,simtime, simtime*dt^-1), mod(theta_t,2*pi)')
@@ -235,27 +317,62 @@ if plotme
 	
 	figure(f)
 	axes(a(2))
-		line([1:t] , [abs(k)])
-	repeat = 1;
-	while 1
+		line(repmat(linspace(0,simtime, simtime*dt^-1), length(unique(idx)), 1)', [abs(k)]')
+
+
+		title('kuramoto parameter')
+		xlabel('time (ms)')
+		ylim([0 1])
+	
+	[XX YY] = meshgrid([1:M],[1:N]);
+	XX = XX(:); YY = YY(:);
+	
+
+	anim = 1; makemovie = 1;
+	while anim
 		
 		for t = 2:simtime/dt
-			axes(a(1))
+			
+			SS = reshape(PP(:,t),N,M);
+			axes(a(1)); 			cla
 			% imagesc(reshape(theta_t(:,t),N,M))
-			mesh(reshape(sin(mod(theta_t(:,t),2*pi)),N,M))
+			mesh(SS); hold on
+			scatter3(XX, YY ,PP(:,t),60,idx,'filled')
+			title('phase')
 			caxis([0 2*pi])
-			zlim([-pi pi])
-			
-			
+			zlim([-3 3])
 
 			drawnow
-
+			if makemovie
+				MOV(t) = getframe(ffff);
+			end
 
 		end
-		repeat = input(['repeat? ; 0 - no, 1 - yes \n'  ])
+		
+		anim = input(['repeat? ; 0 - no, 1 - yes \n'  ])
 	end
-
 
 end
 
 
+% [================================================]
+%  Write out
+% [================================================]
+
+
+if gpu
+	theta_t = gather(theta_t);
+	connectivity = gather(connectivity);
+	ou_noise = gather(ou_noise);
+	k = gather(k);
+end
+
+out.state = PP;
+out.phase = theta_t;
+out.parameters = p.Results;
+out.oscillators = omega_i/(2*pi);
+out.orderparameter = abs(k);
+out.meanphase = MP;
+out.seed = seed;
+out.movie = MOV;
+% out.all =  sin(mod(theta_t,2*pi));

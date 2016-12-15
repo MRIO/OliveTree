@@ -25,9 +25,9 @@ debugging = 1;
 % [=================================================================]
 %  simulation parameters
 % [=================================================================]
-delta = .02;
+delta = .025;
 
-cell_function = 'devel';
+cell_function = 'vanilla';
 % cell_function = 'vanilla'; % 'devel'
 nconn = 3;
 
@@ -42,10 +42,11 @@ simtime  = 2000;
 
 activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
 currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};
+currents_soma = {'V_soma', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_K_Ca', 'I_h', 'I_h_s'};
 vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36' 'curr_noise_pert'};
 vs = {'V_soma' ,'V_dend','V_axon' };
-to_report = currents;
+to_report = currents_soma;
 
 
 % [=================================================================]
@@ -56,15 +57,15 @@ gaps = [0 0.04];
 
 
 % 9 Dimensional GRID: parameter ranges
-p1 = [2 8]; 		% CalciumL - conductance range
+p1 = [1 1.5 2.5]; 		% CalciumL - conductance range
 p2 = [0];      	    % g_h_s
-p3 = [.1 2]; 	% g_int
-p4 = [.6];      	% g_h
-p5 = [.05 .2]; % ratio soma dendrite
-p6 = [45];	% Ca act Potassium: not voltage dependent 
+p3 = [0.013]; 	% g_int
+p4 = [.12 .6 1.2];      	% g_h
+p5 = [.1 ]; % ratio soma dendrite
+p6 = [40 45];	% Ca act Potassium: not voltage dependent 
 p7 = [5.5]; % Ca High threshold
-p8 = [.01];    % leak
-p9 = [1]; % arbitrary
+p8 = [9 20];    % K_s
+p9 = [5 15]; % K_dr_s
 
 
 % % 8 Dimensional GRID: parameter ranges
@@ -134,17 +135,14 @@ def_neurons = createDefaultNeurons(noneurons);
 twins = createDefaultNeurons(noneurons);
 def_neurons.g_CaL    = p{1}(:);
 def_neurons.g_h_s    = p{2}(:);
-def_neurons.g_int 	 = p{3}(:);
+def_neurons.g_l 	 = p{3}(:);
 def_neurons.g_h 	 = p{4}(:);
 def_neurons.p1  	 = p{5}(:);
 def_neurons.g_K_Ca   = p{6}(:);       
 def_neurons.g_CaH    = p{7}(:);     % High-threshold calcium
-% def_neurons.arbitrary= p{8}(:);
-def_neurons.g_ld = p{8}(:);
-def_neurons.g_ls = p{8}(:);
-def_neurons.g_la = p{8}(:);
-def_neurons.arbitrary = p{9}(:);
-
+def_neurons.g_K_s = p{8}(:);
+def_neurons.g_Kdr_s = p{9}(:);
+def_neurons.g_int = 0;
 
 
 W = createW('all to all', [1 noneurons 1], [], 1, 0, 0, 0, nconn, []);

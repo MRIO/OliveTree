@@ -201,7 +201,7 @@ for g = gaps
 				displaytext = [simtype '_' conntype '_' num2str(n) '_' num2str(sametoall)];
 
 				noise_level(4) = seed;
-				simresults{s} = IOnet_new('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g/meannoconn ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
+				simresults{s} = IOnet_new('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
 
 				simresults{s}.spikes  = spikedetect(simresults{s});	
 				simresults{s}.W = W;
@@ -216,6 +216,12 @@ for g = gaps
 			
 end
 
-eval(['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' num2str(gaps) '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' date ' -v7.3'])
+% [=================================================================]
+%  save with timestamp
+% [=================================================================]
+
+eval(['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' num2str(gaps) '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3'])
 
 	
+
+
