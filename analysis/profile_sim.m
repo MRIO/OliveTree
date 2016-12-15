@@ -4,35 +4,54 @@ function R = profile_sim(sim)
 
 	plotme = 1;
 
+
+
    	T = sim;
+   	noneurons = prod(sim.networksize);
    	tslice = [1:min(1000,sim.duration)];
 	V = T.networkHistory.V_soma(:,tslice);
+
+	if length(tslice) < 400
+		disp('profile_sim requires at least 400ms of network activity')
+		return
+	end
 
 	minV = min(V,[],2);
 	maxV = max(V,[],2);
 
 	spikes  = spikedetect(sim);
 
-	ampl = max(V, [], 2) - min(V, [], 2);
+	% ampl = max(V, [], 2) - min(V, [], 2);
+
+	for ii = 1:noneurons
+		ampl(1,ii) = mean(findpeaks(V(ii,200:end),'minpeakdist',50)) - -(mean(findpeaks(-V(ii,200:end),'minpeakdist',50)));
+	end
+	ampl = ampl';
+
 	meanVm = mean(V, 2);
 	spks = spikes.spikespercell'/length(tslice)*1e3;
 
-	midH = bsxfun(@minus, V, mean(V,2));
-	pos = sum(sign(midH)>0, 2);
-	neg = sum(sign(midH)<0, 2);
+	midH = bsxfun(@minus, V, [ (max(V')-min(V'))/2+ min(V') ]');
+	pos = sum(midH>1, 2);
+	neg = sum(midH<-1, 2);
 	supth = pos/length(tslice);
+
 
 	K = measureGlobalSync(sim,'plotme', 0,'duration',tslice); %, 'duration', tslice
 	freq_each = K.frequency'*1e3;
 
 	freq = median(freq_each);
-	
 
 	noparams = length(fields(T.cellParameters));
 
 	str = [];
+	bla = 0;
 	for ff = fields(T.cellParameters)'
+		if strcmp(ff{1}, 'Plist');
+			continue
+		end
 		eval([ff{1} '= T.cellParameters.' ff{1} ';'])
+			
 				str = [str ff{1} ','];
 
 	end
@@ -44,7 +63,6 @@ function R = profile_sim(sim)
 
 	R.partialcorr = rho;
 	R.pval		  = pval;
-
 
 
 if plotme

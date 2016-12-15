@@ -1,5 +1,5 @@
 % exciatation walking over inhibition
-% 
+% According to Tycho and Sebastian
 % single pulse, EPS following IPS by 50ms
 
 % Questions:
@@ -169,15 +169,15 @@ if ~exist('simresults')
 
 	for c = 1:noneurons
 		snip = @(t) V(c,t-w:t+w);
-		trigVonI{c} = cell2mat(arrayfun(snip, pert.triggers{2}(1:end-1), 'uniformoutput',0)');
+		trigVonI{c} = cell2mat(arrayfun(snip, pert.triggers{1}(1:end-1), 'uniformoutput',0)');
 		figure
 		subplot(211)
 		imagesc(trigVonI{c})
 		subplot(212)
 		plot(trigVonI{c}')
 		title(num2str(c))
-		export_fig([num2str(c) '.png'])
-		close 
+		% export_fig([num2str(c) '.png'])
+		% close 
 
 	end
 end
