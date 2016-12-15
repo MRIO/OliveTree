@@ -58,6 +58,8 @@ function R = profile_sim(sim)
 
 	eval(['R.allneurons = table(' str '  freq_each, ampl, meanVm, spks, supth, minV, maxV );'])
 
+nonzerocolumns = 
+
 
 	[rho pval] = partialcorr(table2array(R.allneurons));
 

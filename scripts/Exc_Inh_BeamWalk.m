@@ -12,6 +12,7 @@
 % gap = 0.02;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
 gap = 0.0;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
 spot = 1;
+interstimT = 1000;
 
 dt = 0.02;
 gpu = 0;
@@ -86,7 +87,7 @@ end
 
 rng(0,'twister')
 cellset = 'cellset_vanilla'
-neurons = createDefaultNeurons(noneurons, 'celltypes' , cellset);
+neurons = createDefaultNeurons(noneurons, 'celltypes' , cellset , 'addrand', 1);
 
 neurons.gbar_ampa_dend = .1*ones(noneurons,1);
 neurons.gbar_ampa_soma = .2*ones(noneurons,1);
@@ -112,7 +113,7 @@ if not(spont)
 	% inhibitory - 20ms (gaba)
 	% excitatory - 
 
-	pulsesI	 = [1000:1000:50000];
+	pulsesI	 = [1000:interstimT:50000];
 	% pulsesI	 = [500:700:2000];
 	pulsesI = pulsesI + round(rand(size(pulsesI))*50);
 	pulsesE	 = pulsesI + round(linspace(-100, 100  , length(pulsesI)));
@@ -165,26 +166,53 @@ if ~exist('simresults')
 		'saveappliednoise',saveappliednoise, 'displaytext',displaytext,'to_report', to_report);
 
 
+
+end
+
+% [=================================================================]
+%   plot
+% [=================================================================]
 	V = simresults.networkHistory.V_soma;
 
 	for c = 1:noneurons
 		snip = @(t) V(c,t-w:t+w);
+<<<<<<< HEAD
 		trigVonI{c} = cell2mat(arrayfun(snip, pert.triggers{1}(1:end-1), 'uniformoutput',0)');
+=======
+		
+		trigVonE{c} = cell2mat(arrayfun(snip, pert.triggers{1}(1:end-1), 'uniformoutput',0)');
+		trigVonI{c} = cell2mat(arrayfun(snip, pert.triggers{2}(1:end-1), 'uniformoutput',0)');
+
+		EbefI = find(pert.triggers{1}(1:end-1)-pert.triggers{2}(1:end-1)<0);
+		IbefE = find(pert.triggers{1}(1:end-1)-pert.triggers{2}(1:end-1)>0);
+
+>>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
 		figure
-		subplot(211)
-		imagesc(trigVonI{c})
-		subplot(212)
-		plot(trigVonI{c}')
+		subplot(311)
+		imagesc(trigVonE{c})
+		colormap(cmap)
+		subplot(312)
+		plot(trigVonI{c}(IbefE,:)','b')
 		title(num2str(c))
+		subplot(313)
+		plot(trigVonE{c}(EbefI,:)','r')
+		title(num2str(c))
+<<<<<<< HEAD
 		% export_fig([num2str(c) '.png'])
 		% close 
+=======
+
+		export_fig([num2str(c) '.png'],'-m2')
+		close 
+>>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
 
 	end
-end
 
 
 
+resultstable = profile_sim(simresults);
 R = resultstable;
+sel_cel_idx = 1;
 sel_fields = {'g_CaL', 'g_K_Ca', 'g_int', 'p1', 'p2', 'ampl', 'freq_each', 'maxV', 'meanVm'}
 sel_table = R.allneurons(sel_cel_idx,sel_fields);
 NDscatter(sel_table, 1)

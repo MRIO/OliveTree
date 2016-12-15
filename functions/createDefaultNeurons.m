@@ -160,7 +160,6 @@ case 'randomized2'
 			eval(str)
 		end
 
-	
 
 case 'cellset_vanilla'
 		 if exist('cellset_vanilla_3.mat')
@@ -171,24 +170,21 @@ case 'cellset_vanilla'
 		 	return
 		 end
 
-
-
 		if noneurons > length(sel_cel_idx)
-			disp('insufficient number of neurons with criterion. Padding randomly.')
+			disp('Insufficient number of neurons with criterion. Padding with random picks.')
 			disp('max num of cells')
 			length(sel_cel_idx)
+
+			sel_cel_idx = sel_cel_idx(randi(length(sel_cel_idx)	,1,noneurons));
+
 		else
 			sel_cel_idx = sel_cel_idx(randperm(noneurons));
 		end
-
-
 
 		for ff = fields(simresults{1}.cellParameters)'
 			str = ['cell_parameters.' ff{1} ' = simresults{1}.cellParameters.' ff{1} '(sel_cel_idx);'];
 			eval(str)
 		end
-
-		
 
 	otherwise
 
@@ -199,8 +195,6 @@ if addrand
 	cell_parameters = jitter_cell_parameters(cell_parameters,.05);
 end
 		
-
-
 
 if gapcompensation
 		% compensation for gap junctions
