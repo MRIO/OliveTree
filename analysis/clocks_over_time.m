@@ -144,7 +144,7 @@ VA = circ_var(GA);
 % find intervals with significant differences
 
 
-figure(100)
+f100 = figure(100)
 	subplot(2,1,1)
 	plot(abs(order_parameter_G1),'r'),hold on
 	plot(abs(order_parameter_G2),'b')
@@ -160,7 +160,7 @@ figure(100)
 	
 
 
-figure(101)
+f101= figure(101)
 
 a(2) = subplot(1,2,1);
 
@@ -202,18 +202,31 @@ spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 
 
 	numsubplots = length(frames);
-	figure
+	fclock = figure
+	aclock = axes;
 	
 	sbp = 0;
 	for t = frames
 		% sbp = sbp +1;
 		% axx = subplot(1,numsubplots,sbp);
 		
+		axes(aclock)
 		cla
 		circ_plot(G2(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','b','markersize',15,'marker','+');
 		hold on
 		circ_plot(G1(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','r','markersize',10,'marker','o');
 		axis off
+
+		% circ_plot(G2(:,t)+pi,'pretty','',true,'linewidth',1,'color','b','markersize',15,'marker','+');
+		% hold on
+		% circ_plot(G1(:,t)+pi,'pretty','',true,'linewidth',1,'color','r','markersize',10,'marker','o');
+		% axis off
+
+		% circ_plot(G2(:,t)+pi,'hist', true,'linewidth',1,'color','b','markersize',15,'marker','+');
+		% hold on
+		% circ_plot(G1(:,t)+pi,'hist', true,'linewidth',1,'color','r','markersize',10,'marker','o');
+		% axis off
+
 		drawnow
 		alpha(.3)
 		

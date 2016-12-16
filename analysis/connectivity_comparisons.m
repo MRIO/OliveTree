@@ -7,15 +7,16 @@
 % [=================================================================]
 % models = {'reconstruction' '3dbrick'  '3drandom' 'random' '2d_euclidean' 'reconstruction_clusterized'};
 % models = {'reconstruction' '3dbrick' '3drandom' '2d_chebychev' '2d_euclidean' 'random'};
-models = {'reconstruction'  '2d_euclidean' '2d_chebychev' '3dbrick' '3dcube' 'random'};
+% models = {'reconstruction'  '2d_euclidean' '2d_chebychev' '3dbrick' '3dcube' 'random'};
+models = {'reconstruction' };
 
 
 
 % [=================================================================]
 %  parameters
 % [=================================================================]
-n_connections = [5 10 15 20 25 30];
-radiuses = [1:6];
+n_connections = [20];
+radiuses = [5];
 
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions)
 
@@ -31,6 +32,10 @@ radiuses = [1:6];
 % createW('3d_euclidean', [10 10 10], rd, 1, 1, 1,1,ni); set(gcf, 'color', [1 1 1])
 % createW('3d_reconstruction', [], rd*40, 1, 1, 1, [], ni, somatapositions); set(gcf, 'color', [1 1 1])
 
+load('JM394_horizontal_coordinates-MAO.mat')
+somatapositions = JM394_horizontal_coordinates;
+somatapositions(1,:) = [];
+out = createW('3d_reconstruction', [], 5*40, 1, .01, blaplot, [1 20 1 0], 20, somatapositions,1,[1 20 1 0]);
 
  plotfig = 0;
 
@@ -44,8 +49,8 @@ addpath('/Users/M/Projects/Experiments/Olive/Experiments/Anatomy/Somata/')
 % addpath('/Users/M/Synced/Projects/Experiments/Olive/Experiments/Anatomy/Somata/')
 
 % MAO slice
-% reconstruction_data = 'MAO';
-reconstruction_data = 'all';
+reconstruction_data = 'MAO';
+% reconstruction_data = 'all';
 
 switch reconstruction_data
 	case 'MAO'

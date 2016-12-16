@@ -1,5 +1,8 @@
 function replayResults_clusters(varargin)
 
+% #TODO: PROFILE_SIM AND HISTOGRAMS
+>> C = simR{2}.W.stats.clusters;
+>> hist(table2array(R.allneurons(C==1,'freq_each')),30)
 
 % p.addRequired('sim')  % a matrix with two columns or a cell array with two cells;
 % p.addRequired('time_slice')
