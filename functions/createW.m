@@ -300,7 +300,7 @@ if clusterize(1)
     end
 
     % W = cW;
-    W = cW.* ( (rand(noNeurons)+(eye(noNeurons))) <= ProbCluster) + W.* ( rand(noNeurons) <= ProbOriginal) ;
+    W = cW.* ( (rand(noNeurons)+(eye(noNeurons))) <= ProbCluster) + (W.*~cW).* ( rand(noNeurons) <= ProbOriginal) ;
 
     out.stats.clusters = idx;
 
@@ -380,6 +380,8 @@ W(isnan(W)) = 0;
 %  outputs
 % [=================================================================]
 
+% stats = connectivity_statistics(W);
+
 out.stats.stdW = std(W(W~=0));
 out.stats.connections = sum(W>0);
 out.stats.meanweight  = mean(W(find(W>0)));
@@ -419,7 +421,9 @@ end
 
 if plotthis==1
     warning('off') % colorbrewer throws an annoyance
-           plotconnectionmatrix(W,X,Y,Z,idx,out)
+           % plotconnectionmatrix(W,X,Y,Z,idx,out)
+ 
+           plotnetstruct(W,X,Y,Z,idx,out)
     warning('on')
 elseif plotthis==2
     figure
@@ -430,145 +434,162 @@ end
 
 
 
-function plotconnectionmatrix(W,X,Y,Z,idx,out)
+% function plotconnectionmatrix(W,X,Y,Z,idx,out)
 
 
-    noNeurons = size(W,1);
-    plotconnections = 1;
-    plotneurons = 1;
-    onlynetstruct = 1;
+%     noNeurons = size(W,1);
+%     plotconnections = 1;
+%     plotneurons = 1;
+%     onlynetstruct = 1;
 
-    ncols = length(unique(idx));
+%     ncols = length(unique(idx));
 
-    if strcmp(out.params.connections, 'one_cluster') | out.params.clusterize(1)==1
-        cmaptype = 'qual';
-    else
-        cmaptype = 'div';
-    end
+%     if strcmp(out.params.connections, 'one_cluster') | out.params.clusterize(1)==1
+%         cmaptype = 'qual';
+%     else
+%         cmaptype = 'div';
+%     end
 
 
-    try 
-        switch cmaptype
-            case 'qual'
-            cmap = cbrewer('qual', 'Set1', max(ncols,3));
-            case 'div'
-            cmap = cbrewer('div', 'RdBu', ncols);
-        end
-    catch
-        switch cmaptype
-            case 'qual'
-            cmap = jet(ncols);
-            case 'div'
-            cmap = colorcube(ncols);
-        end
-    end
+%     try 
+%         switch cmaptype
+%             case 'qual'
+%             cmap = cbrewer('qual', 'Set1', max(ncols,3));
+%             case 'div'
+%             cmap = cbrewer('div', 'RdBu', ncols);
+%         end
+%     catch
+%         switch cmaptype
+%             case 'qual'
+%             cmap = jet(ncols);
+%             case 'div'
+%             cmap = colorcube(ncols);
+%         end
+%     end
     
-    set(0,'defaultaxescolororder', cmap)
-    set(0,'defaultfigurecolormap', cmap)
+%     set(0,'defaultaxescolororder', cmap)
+%     set(0,'defaultfigurecolormap', cmap)
 
 
-    [ii jj vv] = find(triu(double(W)));
-    asym = abs(triu(W)-tril(W)');
-    normw = vv/max(vv);
-    [vvv iii] = sort(vv);
-    try
-        stdW = quantile(W(:),.15);
-    catch
-        stdW = 0;
-    end
+%     [ii jj vv] = find(triu(double(W)));
+%     asym = abs(triu(W)-tril(W)');
+%     normw = vv/max(vv);
+%     [vvv iii] = sort(vv);
+%     try
+%         stdW = quantile(W(:),.15);
+%     catch
+%         stdW = 0;
+%     end
 
 
-    if ~onlynetstruct
-        figure
+%     if ~onlynetstruct
+%         figure
 
-         subplot(2,2,[1 3])            
+%          subplot(2,2,[1 3])            
 
 
-        if plotconnections
-            for li = 1:length(ii)
+%         if plotconnections
+%             for li = 1:length(ii)
 
-                if vv(li) > stdW
 
-                    line([X(ii(li))  X(jj(li))]', ...
-                         [Y(ii(li))  Y(jj(li))]',...
-                         [Z(ii(li))  Z(jj(li))]',...
-                         'linewidth',normw(li) ,'color', [ 1 .2 .2] * normw(li) )  ;
+
+%                 clusterized = 1;
+%                 if clusterized
+%                     if idx(ii) == idx(jj)
+%                     line([X(ii(li))  X(jj(li))]', ...
+%                          [Y(ii(li))  Y(jj(li))]',...
+%                          [Z(ii(li))  Z(jj(li))]',...
+%                          'linewidth',normw(li) ,'color', [ 1 .2 .2] * normw(li) )  ;
+%                     else
+%                     line([X(ii(li))  X(jj(li))]', ...
+%                          [Y(ii(li))  Y(jj(li))]',...
+%                          [Z(ii(li))  Z(jj(li))]',...
+%                          'linewidth',normw(li) ,'color', [ .2 .2 .2] )  ;
+%                     end
+%                 else
+%                     if vv(li) > stdW
+
+%                     line([X(ii(li))  X(jj(li))]', ...
+%                          [Y(ii(li))  Y(jj(li))]',...
+%                          [Z(ii(li))  Z(jj(li))]',...
+%                          'linewidth',normw(li) ,'color', [ 1 .2 .2] * normw(li) )  ;
                 
-                end
+%                     end
+%                 end
             
-            end
-        end
+%             end
+%         end
 
 
-        if plotneurons
-            hold on
+%         if plotneurons
+%             hold on
             
-            if ~isempty(idx)
-                scatter3(X,Y,Z,sum(W>0)*5+eps,idx,'filled') 
-            else
-                scatter3(X,Y,Z,sum(W>0)*5+eps,sum(W),'filled') 
-            end
-            colorbar
-            title('connections and gap neighborhood')
+%             if ~isempty(idx)
+%                 scatter3(X,Y,Z,sum(W>0)*5+eps,idx,'filled') 
+%             else
+%                 scatter3(X,Y,Z,sum(W>0)*5+eps,sum(W),'filled') 
+%             end
+%             colorbar
+%             title('connections and gap neighborhood')
              
-            axis equal
-            axis tight
-        end
+%             axis equal
+%             axis tight
+%         end
                 
-        view(-20,10)
+%         view(-20,10)
 
-            subplot(2,2,2)
-            scatter(sum(W~=0) , sum(W))
-            title('connections x gap leak')
-            xlabel('connections')
-            ylabel('total gap leak')
+%             subplot(2,2,2)
+%             scatter(sum(W~=0) , sum(W))
+%             title('connections x gap leak')
+%             xlabel('connections')
+%             ylabel('total gap leak')
 
-            subplot(2,2,4)
-            hist(sum(W))
-            title('gap leak to neighbors')
-            xlabel('leak')
+%             subplot(2,2,4)
+%             hist(sum(W))
+%             title('gap leak to neighbors')
+%             xlabel('leak')
 
-            drawnow
-end
+%             drawnow
+% end
 
 
-if onlynetstruct
-    figure
+% if onlynetstruct
+%     figure
 
-     if plotconnections
-                for li = 1:length(ii)
-                    if vv(li) > stdW
+%      if plotconnections
+%                 for li = 1:length(ii)
+%                     if vv(li) > stdW
 
-                        line([X(ii(li))  X(jj(li))]', ...
-                             [Y(ii(li))  Y(jj(li))]',...
-                             [Z(ii(li))  Z(jj(li))]',...
-                             'linewidth',normw(li)*2 ,'color', [ 1 .2 .2] * normw(li) )  ;
-                    end
+%                         line([X(ii(li))  X(jj(li))]', ...
+%                              [Y(ii(li))  Y(jj(li))]',...
+%                              [Z(ii(li))  Z(jj(li))]',...
+%                              'linewidth',normw(li)*2 ,'color', [ 1 .2 .2] * normw(li) )  ;
+%                     end
                 
-                end
-     end
+%                 end
+%      end
 
 
-    if plotneurons
-        hold on
-        % scatter3(X,Y,Z,sum(logical(W))*5+eps,sum(logical(W)),'filled') 
-        if ~isempty(idx)
-            scatter3(X,Y,Z,sum(W>0)*7+eps,idx,'filled') 
-        else
-            scatter3(X,Y,Z,sum(W>0)*7+eps,sum(W),'filled') 
-        end
-        colorbar
-        title('connections and gap neighborhood')
+%     if plotneurons
+%         hold on
+%         % scatter3(X,Y,Z,sum(logical(W))*5+eps,sum(logical(W)),'filled') 
+%         if ~isempty(idx)
+%             scatter3(X,Y,Z,sum(W>0)*7+eps,idx,'filled') 
+%         else
+%             scatter3(X,Y,Z,sum(W>0)*7+eps,sum(W),'filled') 
+%         end
+%         colorbar
+%         title('connections and gap neighborhood')
          
-        axis equal
-        axis tight
-    end
+%         axis equal
+%         axis tight
+%     end
                     
-        view(-120,20)
-        drawnow
+%         view(-120,20)
+%         drawnow
 
 
-end
+% end
 
 
 

@@ -41,6 +41,7 @@ function out = kuramotoSheet(varargin)
 plasticity = 0;
 gpu = 0;
 
+anim = 1; makemovie = 1;
 
 % [=================================================================]
 %  parse inputs
@@ -278,8 +279,6 @@ for t = 2:simtime/dt
 		MP = circ_mean(GP)+pi;
 		
 		k(t) = mean( exp(i*(bsxfun(@minus, GP, MP))));
-<<<<<<< HEAD
-=======
 	else
 		for ui = unique(idx)'
 			GP = theta_t(find(idx==ui),t);
@@ -288,7 +287,6 @@ for t = 2:simtime/dt
 			k(ui,t) = mean( exp(i*(bsxfun(@minus, GP, MP))));
 		end
 	end
->>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
 
 end
 
@@ -302,6 +300,7 @@ end
 if plotme
 	
 	ffff = figure
+
 
 	subplot(2,2,1)
 	plot(linspace(0,simtime, simtime*dt^-1), mod(theta_t,2*pi)')
@@ -320,13 +319,9 @@ if plotme
 	
 	figure(f)
 	axes(a(2))
-<<<<<<< HEAD
-		line(linspace(0,simtime, simtime*dt^-1) , [abs(k)])
-=======
 		line(repmat(linspace(0,simtime, simtime*dt^-1), length(unique(idx)), 1)', [abs(k)]')
 
 
->>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
 		title('kuramoto parameter')
 		xlabel('time (ms)')
 		ylim([0 1])
@@ -335,11 +330,18 @@ if plotme
 	XX = XX(:); YY = YY(:);
 	
 
-<<<<<<< HEAD
-	anim = 1;
-=======
-	anim = 1; makemovie = 1;
->>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
+	if exist('linspecer')
+		LSpec = linspecer(length(unique(idx)))
+		set(ffff, 'colormap',   LSpec);
+		set(a(1), 'colororder', LSpec);
+		set(a(2), 'colororder', LSpec);
+	else
+		set(ffff, 'colormap',   jet(length(unique(idx))));
+		set(a(1), 'colororder', jet(length(unique(idx))));
+		set(a(2), 'colororder', jet(length(unique(idx))));
+	end
+
+	
 	while anim
 		
 		for t = 2:simtime/dt
@@ -348,7 +350,7 @@ if plotme
 			axes(a(1)); 			cla
 			% imagesc(reshape(theta_t(:,t),N,M))
 			mesh(SS); hold on
-			scatter3(XX, YY ,PP(:,t),60,idx,'filled')
+			scatter3(XX, YY ,PP(:,t),60,LSpec(idx,:),'filled')
 			title('phase')
 			caxis([0 2*pi])
 			zlim([-3 3])
@@ -359,10 +361,6 @@ if plotme
 			end
 
 		end
-<<<<<<< HEAD
-=======
-		
->>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
 		anim = input(['repeat? ; 0 - no, 1 - yes \n'  ])
 	end
 
@@ -388,8 +386,5 @@ out.oscillators = omega_i/(2*pi);
 out.orderparameter = abs(k);
 out.meanphase = MP;
 out.seed = seed;
-<<<<<<< HEAD
-=======
-out.movie = MOV;
->>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
+ if makemovie && plotme ; out.movie = MOV; end
 % out.all =  sin(mod(theta_t,2*pi));

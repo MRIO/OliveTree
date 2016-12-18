@@ -23,6 +23,7 @@ comparetwooscillators = 1; %slow vs fast frequencies
 	slowfreq = [.5 ; 9.5];
 	fastfreq = [10.5 ; 19.5];
 
+checkexpsync = 0;
 
 % [=================================================================]
 %  parameter space for different number of oscillator and 
@@ -201,8 +202,28 @@ end
 
 
 
+KKK = kuramotoSheet([10 10],100,'clusterize', [1 10 1 0],'time', 1,'seed', 10,'dt', .001, 'plotme',1, 'radius', 3);
+
+%=============================exponential sync for 2 oscillators==============================%
+
+if checkexpsync
+it = 0;
+	phases = linspace(0, pi, 10);
+	for ph = 
+		it = it+1;
+		KKK = kuramotoSheet([1 2],20,'clusterize', [0 10 1 0],'time', 1,'seed', 10,'dt', .001, 'plotme',0, 'init_cond', [-pi ; ph] , 'oscillators', [10 ; 10]*2*pi);
 
 
- kuramotoSheet([10 10],10,'clusterize', [1 10 1 0],'time', 1,'seed', 10,'dt', .001, 'plotme',1, 'radius', 3);
+		KK(it,:) = KKK.orderparameter;
+	end
 
+	plot(KK')
+
+	xlabel('ms')
+	title('time to sync')
+	ylabel('order parameter')
+
+	legend(num2str(phases'))
+
+end		
 

@@ -12,15 +12,31 @@ function plotnetstruct(W,X,Y,Z,idx, varargin)
         plotconnweights = 0;
 
     else
-        plotconnections = varargin{1}(1);
-        plotneurons = varargin{1}(2);
-        onlynetstruct = varargin{1}(3);
-        plotsingleneuronconnections = 1;
-        plotsingleneuronconnections = 1;
-        plotsecondorderneighbors = 0;
-        plotconnweights = 0;
+        if isstruct(varargin{1})
+        out = varargin{1};    
+            if strcmp(out.params.connections, 'one_cluster') | out.params.clusterize(1)==1
+                cmaptype = 'qual';
+            else
+                cmaptype = 'div';
+            end
+            plotconnections = 1;
+            plotneurons = 1;
+            onlynetstruct = 0;
+            plotsingleneuronconnections = 1;
+            plotsingleneuronconnections = 1;
+            plotsecondorderneighbors = 0;
+            plotconnweights = 0;
+        else
+            plotconnections = varargin{1}(1);
+            plotneurons = varargin{1}(2);
+            onlynetstruct = varargin{1}(3);
+            plotsingleneuronconnections = 1;
+            plotsingleneuronconnections = 1;
+            plotsecondorderneighbors = 0;
+            plotconnweights = 0;
+        end
     end
-
+ 
     noNeurons = size(W,1);
     ncols = length(unique(idx));
     conncolor = [ .6 .6 .6];
@@ -70,13 +86,22 @@ cni = find(cni)
 
         if plotconnections
             for li = 1:length(ii)
+            % lw = (normw(li)+1)/4;
 
-                if vv(li) > stdW & cni~=li
+                if vv(li) > 0 %stdW & cni~=li
+                    if idx(ii(li)) == idx(jj(li))
+                        conncolor = [1 0 0];
+                        lw = .1;
+                    else
+                        conncolor = [0 1 0];
+                        lw = 1;
+                    end
 
                     line([X(ii(li))  X(jj(li))]', ...
                          [Y(ii(li))  Y(jj(li))]',...
                          [Z(ii(li))  Z(jj(li))]',...
-                         'linewidth',(normw(li)+1)/4 ,'color', conncolor * normw(li) )  ;
+                         'linewidth',lw ,'color', conncolor )  ;
+                         % 'linewidth',(normw(li)+1)/4 ,'color', conncolor * normw(li) )  ;
                 
                 end
             
@@ -125,21 +150,31 @@ if onlynetstruct
 
 
 
-     if plotconnections
-                for li = 1:length(ii)
-                    if vv(li) > stdW
-                        if  jj(li) ~= cni & ii(li) ~= cni
-                        
+     
+        if plotconnections
+            for li = 1:length(ii)
+            % lw = (normw(li)+1)/4;
 
-                        line([X(ii(li))  X(jj(li))]', ...
-                             [Y(ii(li))  Y(jj(li))]',...
-                             [Z(ii(li))  Z(jj(li))]',...
-                             'linewidth',(normw(li)+1)/4 ,'color', conncolor * normw(li) )  ;
-                        end
+                if vv(li) > 0 %stdW & cni~=li
+                    if idx(ii(li)) == idx(jj(li))
+                        conncolor = [1 0 0];
+                        lw = .1;
+                    else
+                        conncolor = [0 1 0];
+                        lw = .1;
                     end
+
+                    line([X(ii(li))  X(jj(li))]', ...
+                         [Y(ii(li))  Y(jj(li))]',...
+                         [Z(ii(li))  Z(jj(li))]',...
+                         'linewidth',lw ,'color', conncolor )  ;
+                         % 'linewidth',(normw(li)+1)/4 ,'color', conncolor * normw(li) )  ;
                 
                 end
-     end
+            
+            end
+        end
+
 
 
     if plotneurons
@@ -166,8 +201,6 @@ if onlynetstruct
         if plotsingleneuronconnections
             [ii jj vv] = find(triu(double(W)));
 
-            
-            
 
             neighF = @(i) find(W(i,:));
 

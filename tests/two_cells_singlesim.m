@@ -1,9 +1,3 @@
-% t 30Hz pulses and 4 inhib pulses centered relative to excitatory pulses but also @30Hz. 
-% The excitatory stim began 40ms prior to onset of inh.
-% 
-% single pulse, EPS following IPS by 50ms
-
-
 gap = 0.1;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.2; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
 
 dt = 0.02;

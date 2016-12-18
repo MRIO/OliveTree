@@ -73,31 +73,34 @@ switch format
     zt = exp(1i*t); zt = [zt];
     nr = r/max(r); nr = [nr];
 
-    XXinner = [real(zt ).*(1-nr/2) ]';
-    YYinner = [imag(zt).*(1-nr/2)  ]';
+      XXinner = [real(zt ).*(1-nr/2) ]';
+      YYinner = [imag(zt).*(1-nr/2)  ]';
 
-    XXouter = [ real(zzz)]';
-    YYouter = [ imag(zzz )]';
-      
-
-
-  XXinner = XXinner(1:end-1);
-  YYinner = YYinner(1:end-1);
-  XXouter = XXouter(1:end-1);
-  YYouter = YYouter(1:end-1);
+      XXouter = [ real(zzz)]';
+      YYouter = [ imag(zzz )]';
+        
 
 
-  
+      XXinner = XXinner(1:end-1);
+      YYinner = YYinner(1:end-1);
+      XXouter = XXouter(1:end-1);
+      YYouter = YYouter(1:end-1);
+
+
+ if exist('poly2cw')
+
       [XXouter YYouter] = poly2cw(XXouter, YYouter);
       [XXinner YYinner] = poly2cw(XXinner, YYinner);
+
 
 
   [XX YY] = polybool('subtraction',  XXouter, YYouter  ,XXinner, YYinner);
   [ff vv] = poly2fv(XX,YY);
 
-  patch('faces', ff, 'vertices',vv,'facecolor', varargin{5},'edgecolor', 'none');
+ end
 
-
+  patch('faces', ff, 'vertices', vv,'facecolor', varargin{5}, 'edgecolor', 'none');
+  % patch('faces', ff, 'vertices',vv,'facecolor', varargin{5},'edgecolor', 'none');
 
     line(real(zz), imag(zz))
     line( [-2 2], [0 0])
@@ -187,15 +190,12 @@ switch format
       formats = '-';
     end
     
-    if nargin > 3 && ~isempty(varargin{1})
-      x = varargin{1};
-    else
-      x = 20;
-    end
     
-    [t,r] = rose(alpha,x);
+    % keyboard
+    [t,r] = rose(alpha,20);
     if nargin> 3 && varargin{2}
-      polar(t,2*r/sum(r),formats)
+      % polar(t,2*r/sum(r),formats)
+      polar(t,2*r/sum(r))
       mr = max(2*r/sum(r));
     else
       polar(t,r,formats)
