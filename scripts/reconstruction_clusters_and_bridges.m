@@ -112,7 +112,7 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  curlies.stats.clusters==5 & curlies.stats.clusters==10;
+pert.mask     {1} =  curlies.stats.clusters==5 & curlies.stats.clusters==10;curlies.stats.clusters==5 & curlies.stats.clusters==20;
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 5;
@@ -153,6 +153,7 @@ pert.type	  {1} = 'gaba_soma';
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 sim{1}.note = 'curlies and bridges'
+	 sim{1}.W = bridg_curlies;
 
 
 	sim{2} = IOnet_new( 'cell_parameters', def_neurons, ...
@@ -161,6 +162,7 @@ pert.type	  {1} = 'gaba_soma';
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 sim{2}.note = 'only curlies'
+	 sim{2}.W = curlies;
 
 
 
