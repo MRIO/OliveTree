@@ -69,7 +69,6 @@ if not(exist('curlies'))
 end
 
 
-return
 
 % Wcluster150 = createW('3d_chebychev', netsize, 3, 1, 1, 1, [], 8, [], plotconn, [1 150 .9 .01],1);
 
