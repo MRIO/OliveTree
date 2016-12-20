@@ -9,7 +9,7 @@ switch cellfunction
     
     case 'original'
 
-        IOcellfun = @IOcell_vanilla;
+        IOcellfun = @IOcell;
 
 	case 'default'
 
@@ -36,8 +36,6 @@ switch cellfunction
 
 
 end
-
-
 
 
          [out.I_CaL, out.I_ds, out.I_as, out.I_Na_s, out.I_ls, out.I_Kdr_s, out.I_K_s, ...
