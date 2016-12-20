@@ -32,8 +32,8 @@ if ~exist('gaps')	    	; gaps = 0.04 	      ; end
 if ~exist('gapcomp')    	; gapcomp = 0 		  ; end
 if ~exist('moreoscillation'); moreoscillation = 0 ; end
 if ~exist('nameprefix')  	; nameprefix = 'test' ; end
-if ~exist('randampa')  		;  randampa = 0	      ; end
-if ~exist('seed')  			;  seed = 0		      ; end
+if ~exist('randampa')  		; randampa = 0	      ; end
+if ~exist('seed')  			; seed = 0		      ; end
 	
  
 
