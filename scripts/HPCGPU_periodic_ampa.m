@@ -160,8 +160,8 @@ if ~exist('transients')
 	
 	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);
 	
-	[transients] = IOnet_new( 'networksize', netsize ,'time',ttime1,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1)/meannoconn,'ou_noise', noise_level_transients, 'sametoall',sametoall);
-	[continuation] = IOnet_new( 'networksize', netsize ,'time',ttime2,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1)/meannoconn,'ou_noise', noise_level_transients, 'sametoall',sametoall, 'tempState',transients.lastState);
+	[transients] = IOnet( 'networksize', netsize ,'time',ttime1,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1)/meannoconn,'ou_noise', noise_level_transients, 'sametoall',sametoall);
+	[continuation] = IOnet( 'networksize', netsize ,'time',ttime2,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1)/meannoconn,'ou_noise', noise_level_transients, 'sametoall',sametoall, 'tempState',transients.lastState);
 
 
 end
@@ -201,7 +201,7 @@ for g = gaps
 				displaytext = [simtype '_' conntype '_' num2str(n) '_' num2str(sametoall)];
 
 				noise_level(4) = seed;
-				simresults{s} = IOnet_new('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
+				simresults{s} = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
 
 				simresults{s}.spikes  = spikedetect(simresults{s});	
 				simresults{s}.W = W;

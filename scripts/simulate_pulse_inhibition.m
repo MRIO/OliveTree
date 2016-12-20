@@ -123,7 +123,7 @@ end
 if compute_transients
 	transienttime = 50;
 	
-    [transients] = IOnet_new( 'networksize',[depth breadth height],'time',transienttime,'delta',0.05,'cell_parameters', def_neurons ,'W',W_3d_trans.W,'ou_noise', [noise_level 0 1 0]);
+    [transients] = IOnet( 'networksize',[depth breadth height],'time',transienttime,'delta',0.05,'cell_parameters', def_neurons ,'W',W_3d_trans.W,'ou_noise', [noise_level 0 1 0]);
 end
 
 
@@ -148,7 +148,7 @@ if stimulate_layer
 
 		simtime = pert.triggers{1}(end) + 300;
 
-		sim3D =  IOnet_new('networksize', networksize,'time',simtime,'delta',dt,'cell_parameters',def_neurons, 'tempState',transients.lastState,'W',W_3d_trans.W ,'ou_noise',noise_level , 'perturbation', pert, 'sametoall', sametoall);
+		sim3D =  IOnet('networksize', networksize,'time',simtime,'delta',dt,'cell_parameters',def_neurons, 'tempState',transients.lastState,'W',W_3d_trans.W ,'ou_noise',noise_level , 'perturbation', pert, 'sametoall', sametoall);
 		
 
         condition{ccc}.I_app = 'notwritinginput';

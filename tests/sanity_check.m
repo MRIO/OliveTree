@@ -200,11 +200,11 @@ switch experiment
 		% create initial condition
 		rndState = initNetState(prod(netsize),gpu, 0);
 		rndState.V_soma = [-100 -80]';
-		st_st = IOnet_new('delta', dt, 'networksize', netsize, 'time',simtime ,'W', W*0 ,'to_report',{'V_soma'},'gpu', gpu, 'tempState', rndState,'cell_parameters', cell_parameters);
+		st_st = IOnet('delta', dt, 'networksize', netsize, 'time',simtime ,'W', W*0 ,'to_report',{'V_soma'},'gpu', gpu, 'tempState', rndState,'cell_parameters', cell_parameters);
 
 	% to continue the network and see if it stitches well
 	    simtime = 200;
-	    cont  = IOnet_new('tempState', st_st.lastState ,'cell_parameters', cell_parameters, 'networksize', netsize,'time',simtime ,'W', W*0  ,'to_report',to_report,'gpu', gpu);
+	    cont  = IOnet('tempState', st_st.lastState ,'cell_parameters', cell_parameters, 'networksize', netsize,'time',simtime ,'W', W*0  ,'to_report',to_report,'gpu', gpu);
 	    plot([st_st.networkHistory.V_soma cont.networkHistory.V_soma]')
 
 	    break
@@ -241,7 +241,7 @@ end
 
 
 % [transients] = IOnet('networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime,'g_CaL', g_CaL ,'W', W ,'ou_noise', gnoise ,'to_report', to_report,'gpu', gpu);
-[transients] = IOnet_new('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
+[transients] = IOnet('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
 	'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
 
 

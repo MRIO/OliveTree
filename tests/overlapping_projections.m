@@ -69,7 +69,7 @@ if simulate
 	if ~exist('transients')
 		noise_level_transients = [3 10 0 0];
 		dt = 0.025;
-		[transients] = IOnet_new( 'networksize', netsz ,'time',transienttime,'delta',dt,'cell_parameters', def_neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);
+		[transients] = IOnet( 'networksize', netsz ,'time',transienttime,'delta',dt,'cell_parameters', def_neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);
 	end
 
 	s = 0;
@@ -82,7 +82,7 @@ if simulate
 				pert.triggers{2}  = on1 + [1:3];
 				pert.triggers{3}  = on1 + on2 + [1:3];
 
-				sim3D{s} = IOnet_new('networksize', netsz,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall);
+				sim3D{s} = IOnet('networksize', netsz,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall);
 			end
 		end
 	end

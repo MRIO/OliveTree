@@ -97,11 +97,11 @@ to_report = {'V_soma'};
 
 % calc steady state
 if ~exist('steady_state')
-	[steady_state] = IOnet_new( 'networksize', netsize ,'time',transienttime,'delta',0.05,'cell_parameters', def_neurons ,'W',W_3d.W,'ou_noise', noise_parameters, 'sametoall',sametoall);
+	[steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',0.05,'cell_parameters', def_neurons ,'W',W_3d.W,'ou_noise', noise_parameters, 'sametoall',sametoall);
 end
 
 if ~exist('unperturbed_state')
-	[unperturbed_state] = IOnet_new( 'networksize', netsize ,'time',simtime, ...
+	[unperturbed_state] = IOnet( 'networksize', netsize ,'time',simtime, ...
 								'delta',dt,'cell_parameters', def_neurons ,'W',W_3d.W,'ou_noise', noise_parameters, ...
 	 							'sametoall',sametoall, 'tempState', steady_state.lastState);
 end
@@ -124,7 +124,7 @@ for pertphase = pertphases
 
 	pert.triggers {1} = pertphase;
 
-	simPert{k} = IOnet_new( 'networksize', netsize , 'time',simtime,'delta',dt, ...
+	simPert{k} = IOnet( 'networksize', netsize , 'time',simtime,'delta',dt, ...
 		'cell_parameters', def_neurons ,'W',W_3d.W,'ou_noise', noise_parameters,...
 		'sametoall',sametoall, 'perturbation', pert, 'tempState', steady_state.lastState);
 

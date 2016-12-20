@@ -26,7 +26,7 @@ def_neurons.g_h   = linspace(.12, 1.2,6)';
 % def_neurons.arbitrary = [1e3 1e3 1e3 1e0 1e0 1e0 ];
 
 % calc steady state
-st_st = IOnet_new('W', W, 'cell_function', cell_function, 'networksize', netsize, 'cell_parameters', def_neurons, 'time', 1000 ,'gpu', gpu,'to_report', {'V_soma'},'delta',0.05);
+st_st = IOnet('W', W, 'cell_function', cell_function, 'networksize', netsize, 'cell_parameters', def_neurons, 'time', 1000 ,'gpu', gpu,'to_report', {'V_soma'},'delta',0.05);
 
 hyperpolsteps = 5;%; linspace(1,20, 5);
 
@@ -44,7 +44,7 @@ for hstep = hyperpolsteps
 
 
 
-	[transients] = IOnet_new('tempState', st_st.lastState ,'cell_function', cell_function, 'cell_parameters', def_neurons, 'networksize', netsize,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', subset1,'gpu', gpu ,'cell_parameters', def_neurons, 'delta',dt);
+	[transients] = IOnet('tempState', st_st.lastState ,'cell_function', cell_function, 'cell_parameters', def_neurons, 'networksize', netsize,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', subset1,'gpu', gpu ,'cell_parameters', def_neurons, 'delta',dt);
 	
 		V_soma_cell_1(simcount,:) = transients.networkHistory.V_soma(1,:);
 		V_soma_cell_2(simcount,:) = transients.networkHistory.V_soma(2,:);

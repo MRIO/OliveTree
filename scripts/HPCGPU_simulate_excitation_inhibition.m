@@ -310,7 +310,7 @@ if stimulate_layer
 
 		noise_level(4) = condition{ccc}.noiseseed;
 
-		sim3D = IOnet_new('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'W',connections.W*gap ,'ou_noise', noise_level , 'perturbation', pert, 'sametoall', sametoall);
+		sim3D = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'W',connections.W*gap ,'ou_noise', noise_level , 'perturbation', pert, 'sametoall', sametoall);
 
 		sim3D.condition = condition{ccc};
 		sim3D.connections = connections;

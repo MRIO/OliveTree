@@ -50,8 +50,8 @@ pert.duration{2}  = 5;
 transienttime = 2000;
 if ~exist('transients')
 	noise_level_transients = [3 5 0 0];
-	[transients] = IOnet_new( 'networksize', netsz ,'time',transienttime,'delta',dt,'cell_parameters', def_neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);
-	[continuation] = IOnet_new( 'networksize', netsz ,'time',500,'delta',dt,'cell_parameters', def_neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall', 'tempState',transients.lastState);
+	[transients] = IOnet( 'networksize', netsz ,'time',transienttime,'delta',dt,'cell_parameters', def_neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);
+	[continuation] = IOnet( 'networksize', netsz ,'time',500,'delta',dt,'cell_parameters', def_neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall', 'tempState',transients.lastState);
 
 	[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',80);
 	pko = pks(2);
@@ -71,7 +71,7 @@ for g = gaps
 			pert.triggers{1}  = pko + on1 + [1:5];
 			pert.triggers{2}  = pko + on1 + on2;
 
-			sim3D = IOnet_new('networksize', netsz,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall);
+			sim3D = IOnet('networksize', netsz,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall);
 			
 			eval(['save sim_overlap_proj' num2str(s) ' sim3D'])
 		end

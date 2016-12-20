@@ -127,7 +127,7 @@ pert.type	  {1} = 'gaba_soma';
 %=================================================]
 % if ~exist('st_st','var')
 % 	disp('calculating transients')
-% 	st_st = IOnet_new('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
+% 	st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
 % 	% st_st.Plist = Plist;
 % end
 
@@ -137,7 +137,7 @@ pert.type	  {1} = 'gaba_soma';
 % [=================================================================]
 
 % 'tempState', st_st.lastState,
-	 sim{1} = IOnet_new( 'cell_parameters', def_neurons, ...
+	 sim{1} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu , ...

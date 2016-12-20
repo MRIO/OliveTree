@@ -108,7 +108,7 @@ last_stim_time = 100; % make it a function of the total stimlus time ?
 %=================================================]
 if ~exist('st_st','var')
 	disp('calculating transients')
-	st_st = IOnet_new('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
+	st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
 	st_st.Plist = Plist;
 end
 
@@ -148,7 +148,7 @@ end
 
 
 
-	   [simresults{ns}] = IOnet_new('tempState', st_st.lastState ,'cell_parameters', neurons, ...
+	   [simresults{ns}] = IOnet('tempState', st_st.lastState ,'cell_parameters', neurons, ...
 	   	'networksize', netsize,'time',thissimtime ,'W', W.W*g ,'ou_noise', gnoise , ...
 	   	'to_report', to_report ,'gpu', gpu , 'perturbation', pert, ...
 	   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);

@@ -50,7 +50,7 @@ end
 
 
 % [transients] = IOnet('networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime,'g_CaL', g_CaL ,'W', W ,'ou_noise', gnoise ,'to_report', to_report,'gpu', gpu);
-[transients] = IOnet_new('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
+[transients] = IOnet('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
 	'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu',0 , 'delta', dt);
 
 

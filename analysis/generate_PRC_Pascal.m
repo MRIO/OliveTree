@@ -145,14 +145,14 @@ inpurrad = 3;
 % [=================================================================]
 
 if ~exist('steady_state')
-	[steady_state] = IOnet_new( 'networksize', netsize ,'time',transienttime,'delta',0.02,'cell_parameters', def_neurons , 'cell_function', cell_function, 'W',W.W,'ou_noise', noise_parameters, 'sametoall',sametoall);
+	[steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',0.02,'cell_parameters', def_neurons , 'cell_function', cell_function, 'W',W.W,'ou_noise', noise_parameters, 'sametoall',sametoall);
 	% replayResults_3(steady_state)
 	% drawnow
 end
 
 if ~exist('unperturbed_state')
 	
-	[unperturbed_state] = IOnet_new( 'networksize', netsize ,'time',simtime, 'perturbation', pert, 'cell_function', cell_function, ...
+	[unperturbed_state] = IOnet( 'networksize', netsize ,'time',simtime, 'perturbation', pert, 'cell_function', cell_function, ...
 								'delta',dt,'cell_parameters', def_neurons ,'W',W.W,'ou_noise', noise_parameters, ...
 	 							'sametoall',sametoall, 'tempState', steady_state.lastState);
 	% replayResults_3(unperturbed_state)
@@ -187,7 +187,7 @@ for pertphase = pertphases
 
 	pert.triggers {1} = [ reset_pulse pertphase];
 
-	simPert{k} = IOnet_new( 'networksize', netsize , 'time',simtime,'delta',dt, ...
+	simPert{k} = IOnet( 'networksize', netsize , 'time',simtime,'delta',dt, ...
 		'cell_parameters', def_neurons , 'cell_function', cell_function, 'W',W.W,'ou_noise', noise_parameters,...
 		'sametoall',sametoall, 'perturbation', pert, 'tempState', steady_state.lastState);
 

@@ -152,7 +152,7 @@ W = createW('all to all', [1 noneurons 1], [], 1, 0, 0, 0, nconn, []);
 %=================================================]
 if ~exist('st_st','var')
 	disp('calculating transients')
-	st_st = IOnet_new('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta,'ou_noise', [0 0 0 0],'debug',debugging);
+	st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta,'ou_noise', [0 0 0 0],'debug',debugging);
 	st_st.Plist = Plist;
 
 	% replayResults_3(st_st, 'plotallfields',1)
@@ -167,7 +167,7 @@ end
 s = 0;
 for gap = gaps
 	s = s+1;
-   [simresults{s}] = IOnet_new('tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
+   [simresults{s}] = IOnet('tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
    	'networksize', netsize,'time',simtime ,'W', W.W*gap ,'ou_noise', ounoise , ...
    	'to_report', to_report ,'gpu', gpu , 'appCurrent', I_app, ...
    	'cell_function', cell_function ,'delta',delta,'sametoall', 0 , 'displaytext', ['sim: ' num2str(s)]);

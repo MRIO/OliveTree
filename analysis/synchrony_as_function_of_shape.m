@@ -39,7 +39,7 @@ if 0
 		defneu.g_CaL = .7  + rand(noneu,1)*.35;
 		defneu.g_int = .12 + rand(noneu,1)*.1;
 
-		[steady_state{o}] = IOnet_new( 'networksize', netsize ,'time',transienttime,'delta',dt,'cell_parameters', defneu ,'W', W,'ou_noise', noise_parameters, 'sametoall',sametoall);
+		[steady_state{o}] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',dt,'cell_parameters', defneu ,'W', W,'ou_noise', noise_parameters, 'sametoall',sametoall);
 
 		save sync_func_shape
 	end
@@ -62,7 +62,7 @@ if 1
 		defneu.g_CaL = .7  + rand(noneu,1)*.35;
 		defneu.g_int = .12 + rand(noneu,1)*.1;
 
-		[steady_state{o}] = IOnet_new('tempState', steady_state{o}.lastState, 'networksize', netsize ,'time',transienttime,'delta',dt,'cell_parameters', defneu ,'W', W,'ou_noise', noise_parameters, 'sametoall',sametoall);
+		[steady_state{o}] = IOnet('tempState', steady_state{o}.lastState, 'networksize', netsize ,'time',transienttime,'delta',dt,'cell_parameters', defneu ,'W', W,'ou_noise', noise_parameters, 'sametoall',sametoall);
 
 		save sync_func_shape_noise
 	end

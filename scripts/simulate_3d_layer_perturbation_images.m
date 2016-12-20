@@ -202,7 +202,7 @@ conds = [1:conds-1];
 
 transientnoise = 0;
 	
-    [transients] = IOnet_new( 'networksize', netsize ,'appCurrent',0,'time',steadystatetime,'delta',dt,'cell_parameters', def_neurons ,'W',W,'ou_noise', noise_level, 'sametoall',sametoall);
+    [transients] = IOnet( 'networksize', netsize ,'appCurrent',0,'time',steadystatetime,'delta',dt,'cell_parameters', def_neurons ,'W',W,'ou_noise', noise_level, 'sametoall',sametoall);
 
 
 
@@ -220,7 +220,7 @@ if stimulate_layer
 			pert.type	   = condition{ccc}.perturbation_type;
 			
 
-			sim3D = IOnet_new('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'tempState',transients.lastState,'W',W ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall);
+			sim3D = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'tempState',transients.lastState,'W',W ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall);
 			
 			sim3D.perturbation = pert;
 			sim3D.condition = condition{ccc};

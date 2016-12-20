@@ -93,7 +93,7 @@ if compsim
 	%=================================================]
 	if ~exist('st_st','var')
 		disp('calculating transients')
-		st_st = IOnet_new('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
+		st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
 		st_st.Plist = def_neurons.Plist;
 	end
 
@@ -155,7 +155,7 @@ if compsim
 
 
 
-		   transients{simcount} = IOnet_new('tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
+		   transients{simcount} = IOnet('tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
 		   	'networksize', netsize,'appCurrent',I_app,'time',simtime ,'W', W.W*gs ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu ,  ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', ncorr);

@@ -39,7 +39,7 @@ desync_time = 2000;
 
 
 if ~exist('noiselesstransient')
-	[noiselesstransient] = IOnet_new('networksize', netsize,'time',1000,'delta',0.05,'cell_parameters',def_neurons ,'W',W*1);
+	[noiselesstransient] = IOnet('networksize', netsize,'time',1000,'delta',0.05,'cell_parameters',def_neurons ,'W',W*1);
 end
 	
 for sta  = sametoall;
@@ -47,7 +47,7 @@ for sta  = sametoall;
 
 	for g = gaps
 
-		[desync_transients] = IOnet_new('networksize', netsize, 'time',desync_time,'delta',dt,...
+		[desync_transients] = IOnet('networksize', netsize, 'time',desync_time,'delta',dt,...
 			'cell_parameters', def_neurons, 'W',W*g, 'tempState',noiselesstransient.lastState, 'ou_noise', ou_noise);
 
 

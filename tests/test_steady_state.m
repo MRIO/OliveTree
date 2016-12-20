@@ -17,9 +17,9 @@ toreport =  {'V_soma', 'Sodium_h', 'Potassium_n', 'Potassium_x_s', 'Calcium_k', 
 simtime = 200;
 rndState = initNetState(prod(netsize),1, 0);
 rndState.V_soma = [-100 -80]';
-st_st = IOnet_new('delta', dt, 'networksize', netsize, 'time',simtime ,'W', W*0 ,'to_report',toreport,'gpu', gpu, 'tempState', rndState,'cell_parameters', cell_parameters);
+st_st = IOnet('delta', dt, 'networksize', netsize, 'time',simtime ,'W', W*0 ,'to_report',toreport,'gpu', gpu, 'tempState', rndState,'cell_parameters', cell_parameters);
 
 % to continue the network and see if it stitches well
     simtime = 200;
-    cont  = IOnet_new('tempState', st_st.lastState ,'cell_parameters', cell_parameters, 'networksize', netsize,'time',simtime ,'W', W*0  ,'to_report',toreport,'gpu', gpu);
+    cont  = IOnet('tempState', st_st.lastState ,'cell_parameters', cell_parameters, 'networksize', netsize,'time',simtime ,'W', W*0  ,'to_report',toreport,'gpu', gpu);
     plot([st_st.networkHistory.V_soma cont.networkHistory.V_soma]')

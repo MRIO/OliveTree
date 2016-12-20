@@ -101,7 +101,7 @@ for bet = betp
 
                 end
                 rng(randomseed, 'twister')
-                [st_st] = IOnet_new('cell_function', cell_function,'networksize', netsize,'time',steadystatetime,'delta',0.05,'cell_parameters',def_neurons,'W',W_3d_trans.W,'to_report', fieldstosave);
+                [st_st] = IOnet('cell_function', cell_function,'networksize', netsize,'time',steadystatetime,'delta',0.05,'cell_parameters',def_neurons,'W',W_3d_trans.W,'to_report', fieldstosave);
 
                 for theta = ou_theta
 				% connectivity
@@ -112,7 +112,7 @@ for bet = betp
 						sim = sim+1;
 
                         rng(randomseed, 'twister')
-					    [transients] = IOnet_new('cell_function', cell_function, 'networksize', netsize,'time',transienttime,'delta',dt,'cell_parameters',def_neurons ,'W',W_3d_trans.W,'ou_noise', [theta sigma ou_mu 0],'to_report', fieldstosave,'tempState', st_st.lastState,'sametoall',sta);%,'Potassium_n', 'Potassium_x_s', 'Ca2_soma', 'Ca2Plus', 'V_dend','curr_noise'});
+					    [transients] = IOnet('cell_function', cell_function, 'networksize', netsize,'time',transienttime,'delta',dt,'cell_parameters',def_neurons ,'W',W_3d_trans.W,'ou_noise', [theta sigma ou_mu 0],'to_report', fieldstosave,'tempState', st_st.lastState,'sametoall',sta);%,'Potassium_n', 'Potassium_x_s', 'Ca2_soma', 'Ca2Plus', 'V_dend','curr_noise'});
 
 
 					    results{sim} = replayResults(transients, [transienttime-1:transienttime], 0,0,fff);

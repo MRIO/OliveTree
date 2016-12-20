@@ -79,7 +79,7 @@
 % TODO: (done): pass text
 
 
-function [results] = IOnet_new(varargin)
+function [results] = IOnet(varargin)
 
 p = inputParser;
 

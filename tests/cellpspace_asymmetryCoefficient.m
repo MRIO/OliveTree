@@ -224,7 +224,7 @@ switch experiment
 end	
 
 
-st_st = IOnet_new('delta', 0.05, 'networksize', netsize, 'time',2000 ,'W', W*0 ,'to_report',{'V_soma'},'gpu', gpu,'cell_parameters', cell_parameters , 'ou_noise', stnoise);
+st_st = IOnet('delta', 0.05, 'networksize', netsize, 'time',2000 ,'W', W*0 ,'to_report',{'V_soma'},'gpu', gpu,'cell_parameters', cell_parameters , 'ou_noise', stnoise);
 
 	% to continue the network and see if it stitches well
 
@@ -240,7 +240,7 @@ for ca1 = Ca_set
 		if f >= g
 
 			[transients] = ...
-				  IOnet_new('tempState', st_st.lastState ,'delta', dt, 'cell_parameters', cell_parameters,  'cell_function', cell_function, 'networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', ounoise,'to_report', to_report,'gpu', gpu);
+				  IOnet('tempState', st_st.lastState ,'delta', dt, 'cell_parameters', cell_parameters,  'cell_function', cell_function, 'networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', ounoise,'to_report', to_report,'gpu', gpu);
 
 
 			% replayResults(transients, [],0, 1)

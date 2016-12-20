@@ -109,7 +109,7 @@ switch experiment
 end
 
 
-[transients] = IOnet_new('networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime,'cell_parameters', cell_parameters ,'W', W ,'ou_noise', [0 0 0 0],'to_report', to_report,'gpu', gpu);
+[transients] = IOnet('networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime,'cell_parameters', cell_parameters ,'W', W ,'ou_noise', [0 0 0 0],'to_report', to_report,'gpu', gpu);
 
 replayResults(transients, [],0, 1)
 
