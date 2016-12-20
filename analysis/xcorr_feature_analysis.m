@@ -274,6 +274,9 @@ clear collectAsym
 
 
 
+% [=================================================================]
+%  compute correlations from all pairs
+% [=================================================================]
 if computeselectedxcorr
 
 	
@@ -286,6 +289,16 @@ if computeselectedxcorr
 		
 		
 		X{c} = xcorr_summa(simresults{simidx},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', selectedneurons );
+		% X{c}.winsize = winsize;
+		% X{c}.asymmetry = asym;
+		% X{c}.xcorr_pairs = XCs;
+		% X{c}.spikespercell = sum(VSB');
+		% X{c}.pairs = pairs;
+		% X{c}.delay = delay;
+		% X{c}.amplitude = ampl;
+		% X{c}.XcorrNoAc = XnoAC;
+		% X{c}.XC = XCs;
+		% X{c}.selectedneurons = selectedneurons;
 
 
 		% find significant pairs (currently we use 1:numneurons as baseline. okay as an estimator.)

@@ -51,23 +51,19 @@
 
 
 if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench')
-	X_README = 'replay_06_12_16 for pascal_'
-	nameprefix = 'replay_06_12_16_'
+	X_README = 'replay_06_12_16 for pascal_with_spont'
+	nameprefix = 'replay_06_12_16_with_spont'
 
+	seed = 0; tau = 20; noisesig = 0;  noisemu = 0;	  sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
 
-	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
-	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 4: 
-	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
+	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 4: 
+	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
 
-	seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.2; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
-	seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.2; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa		;% 4Pascal 4: 
-	seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.2; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa		;% 4Pascal 2: 
+	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa		;% 4Pascal 4: 
+	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa		;% 4Pascal 2: 
 
-	seed = 1; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
-	seed = 1; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 4: 
-	seed = 1; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
-
-	
 
 end
 

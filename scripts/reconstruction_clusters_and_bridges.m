@@ -21,16 +21,6 @@ gapcur= {'V_soma' 'I_cx36'};
 % variables to store
 to_report = gapcur;
 
-% [=================================================================]
-%  create cells
-% [=================================================================]
-
-cell_function = 'vanilla'; % 'devel'
-% netsize = [3 15 15];
-
-% def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
-def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
-% neurons.g_CaL = linspace(.5, 1, noneurons);
 
 
 % [================================================]
@@ -53,8 +43,8 @@ somatapositions(1,:) = [];
 noneurons = length(somatapositions);
 
 if not(exist('curlies'))
-	curlies = createW('3d_reconstruction', [], 5*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
-	bridges = createW('3d_reconstruction', [], 10*40, 1, 0, 1, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
+	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
+	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, 1, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
 
 	% 10% of cells are bridges
 	bc = randperm(noneurons); 
@@ -69,17 +59,32 @@ if not(exist('curlies'))
 	bridges.W = (bridges.W+bridges.W')*gap_bridges;
 
 	bridg_curlies.coords = curlies.coords;
+	
+	
+	bridg_curlies.W = curlies.W + bridges.W;
 	bridg_curlies.stats = connectivity_statistics(bridg_curlies);
 	bridg_curlies.stats.clusters = curlies.stats.clusters;
-	bridg_curlies.W = curlies.W + bridges.W;
 
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
 end
 
 
-
+return
 
 % Wcluster150 = createW('3d_chebychev', netsize, 3, 1, 1, 1, [], 8, [], plotconn, [1 150 .9 .01],1);
+
+
+% [=================================================================]
+%  create cells
+% [=================================================================]
+
+cell_function = 'vanilla'; % 'devel'
+% netsize = [3 15 15];
+
+% def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+% neurons.g_CaL = linspace(.5, 1, noneurons);
+
 
 
 % [================================================]
@@ -127,7 +132,13 @@ pert.type	  {1} = 'gaba_soma';
 %=================================================]
 % if ~exist('st_st','var')
 % 	disp('calculating transients')
-% 	st_st = IOnet_new('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
+	 st_st = IOnet_new( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	 st_st.note = 'curlies and bridges'
+
 % 	% st_st.Plist = Plist;
 % end
 
