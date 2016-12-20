@@ -5,11 +5,11 @@ out = state;
 switch cellfunction
     case 'vanilla'  
         % when using the original cell, we disregard some parameters from the default cell!
-        IOcellfun = @IOcell;
+        IOcellfun = @IOcell_vanilla;
     
     case 'original'
 
-        IOcellfun = @IOcell_vanilla;
+        IOcellfun = @IOcell;
 
 	case 'default'
 
