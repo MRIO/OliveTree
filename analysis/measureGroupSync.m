@@ -1,4 +1,6 @@
-function results = measureGlobalSync(varargin)
+% measureGroupSync.m
+
+function results = measureGroupSync(varargin)
 % measureGlobalSync.m
 % presumes sample rate 1000Hz
 %
@@ -76,26 +78,10 @@ end
 % [================================================]
 % 		 compute hilbert transform (DAMOCO)
 % [================================================]
-try
 	warning off
- 	H = hilbert_of_membranepotential(VS); 
+ 	H = hilbert_of_membranepotential(VS(group,:)  ); 
  	warning on
 
-catch E
-
-  warning('could not compute hilbert')
-
-  results.stats.firstordersync = 0;
-	results.stats.secondordersync = 0;
-	results.stats.overallsync =     0;
-	results.stats.order_parameter_g_fo = 0;
-	results.stats.order_parameter_g_so = 0;
-	results.hilbert = 0;
-
-
-  return 
-
-end
 
  
 U = H.hilbert;
@@ -122,74 +108,21 @@ InstFreq = diff(unwrap(U)') /(2*pi) * 1e3; % #check
 %  partition
 % [=================================================================]
 
-
-allneu = 1:noneurons;
-
-
-GA = U(allneu,:);
+GA = U;
 MA = circ_mean(GA)+pi;
 VA = circ_var(GA);
-
-GR = U(group,:);
-MR = circ_mean(GR)+pi;
-VR = circ_var(GR);
-
 
 
 % KURAMOTO ORDER PARAMETER
 % mean of exp( e^(i*(theta_k,p(t) - theta_syn(t)) ; p is group, k is neuron
 
 order_parameter_GA = mean( exp(i*(bsxfun(@minus, GA, MA))));
-order_parameter_GR = mean( exp(i*(bsxfun(@minus, GR, MR))));
 
-order_parameter_g_fo = zeros(noneurons, length(tt));
-order_parameter_g_so = zeros(noneurons, length(tt));
-for neuron = 1:noneurons
-	Ind = zeros(noneurons,1);
-	Ind(neuron) = 1;
-
-	fo_neighbors = W * Ind;
-	so_neighbors = W * fo_neighbors;
-	% to_neighbors = W * so_neighbors;
-
-
-	fo_neighbors_ind = [neuron ; find(W * Ind)];
-	so_neighbors_ind = unique([neuron ; fo_neighbors_ind ; find(so_neighbors)]);
-	% to_neighbors_ind = unique([neuron ; fo_neighbors_ind ; so_neighbors_ind ; find(to_neighbors)] );
-
-
-	mean_fo = circ_mean(U(fo_neighbors_ind,:));
-	mean_so = circ_mean(U(so_neighbors_ind,:));
-	% mean_to = circ_mean(U(to_neighbors_ind,:));
-	
-try
-
- 
-	order_parameter_g_fo(neuron,:) = mean( exp(i*(bsxfun(@minus, U(fo_neighbors_ind,:), mean_fo))));
-	order_parameter_g_so(neuron,:) = mean( exp(i*(bsxfun(@minus, U(so_neighbors_ind,:), mean_so))));
-	 
-
-catch E
-
-  keyboard
-
-end
-
-	% order_parameter_g_fo(neuron,:) = mean( exp(i*(bsxfun(@minus, U(fo_neighbors_ind,:), mean_fo)+ pi)));
-	% order_parameter_g_fo(neuron,:) = mean( exp(i*(bsxfun(@minus, U(fo_neighbors_ind,:), mean_fo)+ pi)));
-	% order_parameter_g_so(neuron,:) = mean( exp(i*(bsxfun(@minus, U(so_neighbors_ind,:), mean_so)+ pi)));
-	% order_parameter_g_to(neuron,:) = mean( exp(i*(bsxfun(@minus, U(to_neighbors_ind,:), mean_to))));
-
-end
 
 % keyboard
 
-results.stats.firstordersync =  [mean(mean(abs(order_parameter_g_fo))) ; var(mean(abs(order_parameter_g_fo))) ];
-results.stats.secondordersync = [mean(mean(abs(order_parameter_g_so))) ; var(mean(abs(order_parameter_g_so))) ];
-results.stats.overallsync =     [mean(mean(abs(order_parameter_GA)))   ; var(mean(abs(order_parameter_GA)))   ];
-results.stats.order_parameter_all = abs(order_parameter_GA)';
-results.stats.order_parameter_g_fo = abs(order_parameter_g_fo)';
-results.stats.order_parameter_g_so = abs(order_parameter_g_so)';
+results.sync =     [mean(mean(abs(order_parameter_GA)))   ; var(mean(abs(order_parameter_GA)))   ];
+results.order_parameter = abs(order_parameter_GA)';
 results.hilbert = H;
 results.instantaneousFrequency = InstFreq;
 results.frequency = Freq;
@@ -201,12 +134,6 @@ if plotme
 	figure
 	subplot(2,1,1)
 	plot(abs(order_parameter_GA),'y', 'linewidth',2)
-	hold on
-	plot(abs(order_parameter_GR),'r','linestyle','--')
-	hold on
-	plot(mean(abs(order_parameter_g_fo)),'r')
-	hold on
-	plot(mean(abs(order_parameter_g_so)),'g')
 	hold on
 
 	% plot(mean(abs(order_parameter_g_to)),'b')
@@ -231,7 +158,12 @@ if plotme
 	ylabel('Hz')
 	xlabel('ms')
 
+	figure
+	plot([1:t], VS(group,:))
+
+
 end
 % keyboard
+
 
 

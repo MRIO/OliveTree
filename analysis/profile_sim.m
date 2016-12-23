@@ -61,7 +61,7 @@ function R = profile_sim(sim)
 % nonzerocolumns = 
 
 
-	[rho pval] = partialcorr(table2array(R.allneurons));
+	[rho pval] = partialcorr(table2array(R.allneurons),'rows', 'complete');
 
 	R.partialcorr = rho;
 	R.pval		  = pval;

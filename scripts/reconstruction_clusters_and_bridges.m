@@ -112,7 +112,7 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  curlies.stats.clusters==5 & curlies.stats.clusters==10;curlies.stats.clusters==5 & curlies.stats.clusters==20;
+pert.mask     {1} =  [curlies.stats.clusters==5] & [curlies.stats.clusters==20];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 5;
@@ -163,6 +163,14 @@ pert.type	  {1} = 'gaba_soma';
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 sim{2}.note = 'only curlies'
 	 sim{2}.W = curlies;
+
+sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+sim{1}.networkHistory.backgroundnoise = [];
+
+sim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);
+sim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.V_soma);
+sim{2}.networkHistory.backgroundnoise = [];
 
 
 

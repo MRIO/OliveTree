@@ -98,7 +98,7 @@ p.addParamValue('cell_parameters', [])
 p.addParamValue('cell_function', 'original') % devel, ode, betta
 p.addParamValue('to_report',{'V_soma'}) 
 p.addParamValue('sametoall',0) % value between 0 and 1 representing how much of the noise is shared between neurons
-p.addParamValue('saveappliednoise',1) 
+p.addParamValue('saveappliednoise',0)
 p.addParamValue('displaytext',[]) 
 p.addParamValue('debug',[]) 
 

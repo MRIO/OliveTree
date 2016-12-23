@@ -14,6 +14,12 @@ function replayResults_clusters(varargin)
 %TODO: accept any dt
 
 static = 0;
+plotmeanclusteractivity = 0;
+plotpopactivity = 0;
+calculatesynchrony = 1;
+
+trigger = 1;
+
 
 % [=================================================================]
 %  Parser
@@ -51,6 +57,8 @@ V_soma_unwrapped 	= sim.networkHistory.V_soma;
 pert 				= sim.perturbation;
 loggedstatevars = fieldnames(sim.networkHistory)';
 
+coords = sim.W.coords;
+
 % if isfield(sim, 'stats.clusters')
 
 
@@ -71,9 +79,10 @@ loggedstatevars = fieldnames(sim.networkHistory)';
 % [=================================================================]
 
 if isfield(sim.W.stats, 'clusters')
-	[V O] = sort(sim.W.stats.clusters);
+	clusters = sim.W.stats.clusters;
+	[clusters O] = sort(clusters);
 	V_soma_unwrapped = V_soma_unwrapped(O,:);
-	no_clusters = length(unique(V));
+	no_clusters = length(unique(clusters));
 else
 	disp('did not find clusters in input struct.')
 	return
@@ -93,6 +102,28 @@ popfreq = spks.popfrequency;
 f = sprintf('%.2f', popfreq);
 edges = [-1 0.01:.5:max(spks.medfreq)];
 histfreq = histc(spks.medfreq, edges);
+
+
+% [=================================================================]
+%  Cluster Activity Stats
+% [=================================================================]
+if calculatesynchrony
+	% fig3 = figure;;
+	for c = 1:no_clusters
+		c
+		clustered{c}.sync = measureGroupSync(sim,'group', clusters==c,'plotme',0);
+		clustered{c}.no_neurons = length(find(clusters==c));
+
+
+
+		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
+		% plot([1:simtime], mean(V_soma_unwrapped(find(V==c),:))+c*5,'color', lc(c,:))
+		% hold on
+	end
+		% xlabel('time (ms)')
+		% ylabel('mV')
+end
+
 
 
 
@@ -132,95 +163,89 @@ end
 %  prepare figure
 % [=================================================================]
 
-fig1 = gcf;
-set(fig1, 'position', [1 1 1024 768],'color', [1 1 1]);	
-colormap(hot);
+if plotpopactivity
+	fig1 = gcf;
+	set(fig1, 'position', [1 1 1024 768],'color', [1 1 1]);	
+	colormap(hot);
 
 
-static = 0;
-trigger = 2;
+	% if isfield(sim, 'clusters')
+
+	 
+	 if ~isempty(time_slice)
+	 	simtime = length(time_slice);
+	 else
+	 	time_slice = [1:simtime];
+	 end
+	 
+	fig1 = figure('position', [  1           1        1440         900]);
+
+	colormap(hot);
+
+	%    _   __    __    _      __                                       
+	%   (_)_/_/   / /_  (_)____/ /_____  ____ __________ _____ ___  _____
+	%    _/_/    / __ \/ / ___/ __/ __ \/ __ `/ ___/ __ `/ __ `__ \/ ___/
+	%  _/_/_    / / / / (__  ) /_/ /_/ / /_/ / /  / /_/ / / / / / (__  ) 
+	% /_/ (_)  /_/ /_/_/____/\__/\____/\__, /_/   \__,_/_/ /_/ /_/____/  
+	%                                 /____/                             
+
+	% 1. correlation between firing and Calcium neighborhood
+	% 2. correlation between gap neighborhood and phase distribution 
 
 
+	% raster / vsomma
+	   
+	a(1) = axes('position', [0.07    0.07    0.85    0.6]);
 
-% if isfield(sim, 'clusters')
+		imagesc(V_soma_unwrapped,[-68 -30]); %imagesc(V_soma_unwrapped',[-68 -30]);
+		% set(gca,'xtick',[1 noneurons]);
+		hold on;
+	    xlabel('ms');
+	    ylabel('neurons');  
 
- 
- if ~isempty(time_slice)
- 	simtime = length(time_slice);
- else
- 	time_slice = [1:simtime];
- end
- 
-fig1 = figure('position', [  1           1        1440         900]);
-
-colormap(hot);
-
-%    _   __    __    _      __                                       
-%   (_)_/_/   / /_  (_)____/ /_____  ____ __________ _____ ___  _____
-%    _/_/    / __ \/ / ___/ __/ __ \/ __ `/ ___/ __ `/ __ `__ \/ ___/
-%  _/_/_    / / / / (__  ) /_/ /_/ / /_/ / /  / /_/ / / / / / (__  ) 
-% /_/ (_)  /_/ /_/_/____/\__/\____/\__, /_/   \__,_/_/ /_/ /_/____/  
-%                                 /____/                             
-
-% 1. correlation between firing and Calcium neighborhood
-% 2. correlation between gap neighborhood and phase distribution 
-
-
-% raster / vsomma
-   
-a(1) = axes('position', [0.07    0.07    0.85    0.6]);
-
-	imagesc(V_soma_unwrapped,[-68 -30]); %imagesc(V_soma_unwrapped',[-68 -30]);
-	% set(gca,'xtick',[1 noneurons]);
-	hold on;
-    xlabel('ms');
-    ylabel('neurons');  
-
-	plotspikes1 = @(c)plot(spks.spikes{c},c,'markersize', 3,'marker', 'o','linestyle', 'none','color', 'w','markersize',6);
-	plotspikes2 = @(c)plot(spks.spikes{c},c,'markersize', 10,'marker', '.','linestyle', 'none','color', 'g','markersize',10);
-	for c = 1:prod(netsize)
-		if not(isempty(spks.spikes{c}))
-			plotspikes1(c);
-			plotspikes2(c);
+		plotspikes1 = @(c)plot(spks.spikes{c},c,'markersize', 3,'marker', 'o','linestyle', 'none','color', 'w','markersize',6);
+		plotspikes2 = @(c)plot(spks.spikes{c},c,'markersize', 10,'marker', '.','linestyle', 'none','color', 'g','markersize',10);
+		for c = 1:prod(netsize)
+			if not(isempty(spks.spikes{c}))
+				plotspikes1(c);
+				plotspikes2(c);
+			end
 		end
+
+		colorbar('eastoutside');
+		title('Vm')
+		set(gca,'xtick',[])
+
+		if isfield(sim.perturbation,'mask')
+			M = sim.perturbation.mask{1}(O)*20-100;
+			b(1) = axes('position', [0.07 0.07 0.05 0.6])
+			imagesc(M)
+		end
+
+	% spike histogram
+
+	if sum(cell2mat(spks.spikes))
+		a(2) = axes('position', [0.07    0.67    0.85    0.3]);
+		[hh x] = hist(cell2mat(spks.spikes),simtime);
+		K = conv(hh, gausswin(50), 'same')/sum(gausswin(50));
+		bar(x,K,'facecolor','k')
+
+		set(a(2),'xtick',[])
 	end
 
-	colorbar('eastoutside');
-	title('Vm')
 
-	if isfield(sim.perturbation,'mask')
-		M = sim.perturbation.mask{1}(O)*20-100;
-		b(1) = axes('position', [0.07 0.07 0.05 0.6])
-		imagesc(M)
+	if isfield(sim.perturbation,'all_pulses')
+		% stimulus
+		hold on
+		a(3) = axes('position', [0.07    0.67    0.85    0.3]);
+		[hh x] = hist(sim.perturbation.all_pulses(:),simtime);
+		bar(x,hh,'facecolor','g')
 
+		set(a(3),'xtick',[],'ytick',[],'color','none')
+		axis off
 	end
-
-
-
-% spike histogram
-
-if sum(cell2mat(spks.spikes))
-	a(2) = axes('position', [0.07    0.67    0.85    0.3]);
-	[hh x] = hist(cell2mat(spks.spikes),simtime);
-	K = conv(hh, gausswin(50), 'same')/sum(gausswin(50));
-	bar(x,K,'facecolor','k')
-
-	set(a(2),'xtick',[])
+	linkaxes(a, 'x')
 end
-
-
-if isfield(sim.perturbation,'all_pulses')
-	% stimulus
-	hold on
-	a(3) = axes('position', [0.07    0.67    0.85    0.3]);
-	[hh x] = hist(sim.perturbation.all_pulses(:),simtime);
-	bar(x,hh,'facecolor','g')
-
-	set(a(3),'xtick',[],'ytick',[],'color','none')
-	axis off
-end
-linkaxes(a, 'x')
-
 
 % figure
 % for c = 1:no_clusters
@@ -237,50 +262,60 @@ linkaxes(a, 'x')
 if ~exist('cbrewer')
 		lc = jet(no_clusters);
 	else
-		lc = cbrewer('qual', 'Set1', no_clusters)
+		lc = cbrewer('qual', 'Set1', no_clusters);
 end
 
-figure
-for c = 1:no_clusters
-c	
-	% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-	plot([1:simtime], mean(V_soma_unwrapped(find(V==c),:))+c*5,'color', lc(c,:))
-	hold on
-end
-	xlabel('time (ms)')
-	ylabel('mV')
 
 
 
-
+reconstruction = 1;
 threeD = 1;
 if threeD
-		
-	plotvolume = 1;
-	if plotvolume
-	fig2 = figure;
-	[xx yy zz]  = meshgrid(1:netsize(1),1:netsize(2),1:netsize(3));
-	for tt = snap_time
+	fig2 = figure('colormap',lc);
+	scaledV = (V_soma_unwrapped + -min(min(V_soma_unwrapped)))/(max(max(V_soma_unwrapped))  - min(min(V_soma_unwrapped)))*100;
+	if reconstruction
 
-		V = reshape(V_soma_unwrapped(:,tt), [netsize(1) netsize(2) netsize(3)]);
+		for tt = 1:10:3000
+			cla
+			scatter3(coords(:,1), coords(:,2), coords(:,3), scaledV(:,tt), V ,'filled')
+			% caxis([-80,-30])
+			title(num2str(tt))
+			axis equal
+			colorbar
+			drawnow
 
-		set(0,'CurrentFigure',fig2);
-	    % set(fig1,'CurrentAxes',a(3));
-
-
-		V(V>-30) = -20;
-		V(1,1,1) = min(min(min(V))); Vq(1,1,2) = -20;
-
-		cla
-		
-		vol3d('cdata',V,'texture','3D');
-		view(3)
-		axis off; axis tight;  daspect([1 1 1])
-		pause(.1)
-		drawnow
-
+		end
 	end
 
+
+
+	if 0
+		plotvolume = 1;
+		if plotvolume
+			
+			[xx yy zz]  = meshgrid(1:netsize(1),1:netsize(2),1:netsize(3));
+			for tt = snap_time
+
+				V = reshape(V_soma_unwrapped(:,tt), [netsize(1) netsize(2) netsize(3)]);
+
+				set(0,'CurrentFigure',fig2);
+			    % set(fig1,'CurrentAxes',a(3));
+
+
+				V(V>-30) = -20;
+				V(1,1,1) = min(min(min(V))); Vq(1,1,2) = -20;
+
+				cla
+				
+				vol3d('cdata',V,'texture','3D');
+				view(3)
+				axis off; axis tight;  daspect([1 1 1])
+				pause(.1)
+				drawnow
+			end
+
+		end
+	end
 end
 
 
