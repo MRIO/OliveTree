@@ -138,6 +138,7 @@ pert.type	  {1} = 'gaba_soma';
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 st_st.note = 'curlies and bridges'
+end
 
 % 	% st_st.Plist = Plist;
 % end
