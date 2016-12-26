@@ -6,23 +6,35 @@ function saveallfigs(varargin)
 
 	p = inputParser;
 	
-	p.addParamValue('prefix', []) 
-	p.addParamValue('path', []) 
-	p.addParamValue('formats', 'pdf') 
+	p.addParameter('prefix', []) 
+	p.addParameter('path', []) 
+	p.addParameter('formats', 'style')
+	p.addParameter('style', '2col')
+
 	
 	p.parse(varargin{:});
 	prefix = p.Results.prefix;
 	path = p.Results.path;
 	formats = p.Results.formats;
 
-mag = '-m4'
+	mag = '-m4'
 
-h = get(0,'children');
+	h = get(0,'children');
 
 for i=1:length(h)
 	h(i).Color = [1 1 1];
    saveas(h(i), [prefix num2str(i)], 'fig');
+
+
    switch formats
+   case 'style'
+   		fname = [prefix num2str(i) '.png'];
+   		snam='2col'
+   		s=hgexport('readstyle',snam);
+	    s.Format = 'png'
+	    hgexport(h(i),fnam,s);
+
+
    	case 'png'
    		export_fig([prefix num2str(i)], '-png',mag,h(i))
    	case 'svg'
@@ -34,4 +46,5 @@ for i=1:length(h)
    	end
    % plot2svg([num2str(i) '.svg'],h(i));
 end
+
 

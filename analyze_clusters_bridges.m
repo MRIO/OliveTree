@@ -1,6 +1,6 @@
 % analyze_clusters_bridges.m
 
-tslice = 1001:3000;
+tslice = 1001:4000;
 
 load('/Users/M/Synced/Titan/clusters_curlies_bridges_20-Dec-2016.mat')
 
@@ -18,40 +18,51 @@ R{1} = profile_sim(sim{1},'tslice',tslice);
 
 % clusters
 clusters = sim{1}.W.stats.clusters;
+no_clusters = length(unique(clusters));
 if ~exist('cbrewer')
 		lc = jet(no_clusters);
 	else
 		lc = cbrewer('qual', 'Set1', no_clusters);
 end
+set(0,'defaultaxescolororder', linspecer(10))
+set(0,'defaultfigurecolormap', linspecer(10))
 
 
 % bridge cells and neighbors:
 bridgecells = bc;
 
-	for c = find(bc)'
-		figure
-		thisbridge = zeros(size(bc));
-		thisbridge(c) = 1;
-		neighbors{c} = find(thisbridge'*(sim{1}.W.W>0));
+for c = find(bc)'
+	figure
+	thisbridge = zeros(size(bc));
+	thisbridge(c) = 1;
+	neighbors{c} = find(thisbridge'*(sim{1}.W.W>0));
 
-		plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.9)
-		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
-		hold on
-		plot(tslice, statevar{1}(c,:),'linewidth', 2)
-		pause
+	plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.9)
+	% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
+	hold on
+	plot(tslice, statevar{1}(c,:),'linewidth', 2)
+	
 
-		quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
+	Q = quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
+	text(tslice(end)*.9 , max(max(statevar{1}))*.9, num2str(Q))
 
-		hist(table2array(R{1}.allneurons(:,'freq_each')))
-		hist(table2array(R{1}.allneurons(:,'ampl')))
+	pause
 
-	end
-
-
-hist(table2array(R{1}.allneurons(logical(~bridgecells),'ampl')))
-hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl')))
+	close 
 
 
+end
+
+hist(table2array(R{1}.allneurons(logical(~bridgecells),'freq_each')))
+hist(table2array(R{1}.allneurons(logical(bridgecells),'freq_each')))
+
+amplitudehistCurlies = hist(table2array(R{1}.allneurons(logical(~bridgecells),'ampl')),[0:2:20])
+amplitudehistBridges = hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl')) ,[0:2:20])
+
+bar([0:2:20], [ amplitudehistCurlies ; amplitudehistBridges]','stacked')
+xlabel('Amplitude (mV) ')
+ylabel('Cells')
+title('STO amplitude')
 
 
 % relationship between cluster amplitude and oscillator amplitude
@@ -76,7 +87,7 @@ hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl')))
 
 
 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+		plot([1:simtime], mean(statevar{1}(find(clusters==c),:))+c*5,'color', lc(c,:))
 		hold on
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
 		pause

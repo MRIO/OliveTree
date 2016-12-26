@@ -30,7 +30,7 @@ to_report = gapcur;
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
 nconns_curlies = 5;
-nconns_bridges = 10;
+nconns_bridges = 5;
 gap_curlies = .05;
 gap_bridges = .05;
 plotconn = 1;
@@ -148,7 +148,7 @@ pert.type	  {1} = 'gaba_soma';
 % [=================================================================]
 
 % 'tempState', st_st.lastState,
-if 0
+if 1
 	 sim{1} = IOnet( 'cell_parameters', def_neurons, ...
 
 	 		'perturbation', pert, ...
@@ -164,7 +164,7 @@ if 0
 
 end
 
-if 0
+if 1
 	sim{2} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
