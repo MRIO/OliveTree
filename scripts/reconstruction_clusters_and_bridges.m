@@ -147,6 +147,7 @@ pert.type	  {1} = 'gaba_soma';
 % [=================================================================]
 
 % 'tempState', st_st.lastState,
+if 0
 	 sim{1} = IOnet_new( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
@@ -155,7 +156,13 @@ pert.type	  {1} = 'gaba_soma';
 	 sim{1}.note = 'curlies and bridges'
 	 sim{1}.W = bridg_curlies;
 
+	sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.backgroundnoise = [];
 
+end
+
+if 0
 	sim{2} = IOnet_new( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
@@ -164,15 +171,28 @@ pert.type	  {1} = 'gaba_soma';
 	 sim{2}.note = 'only curlies'
 	 sim{2}.W = curlies;
 
-sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
-sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
-sim{1}.networkHistory.backgroundnoise = [];
+	sim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);
+	sim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.V_soma);
+	sim{2}.networkHistory.backgroundnoise = [];
 
-sim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);
-sim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.V_soma);
-sim{2}.networkHistory.backgroundnoise = [];
+end
+
+if 1
+	 sim{3} = IOnet_new( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W*0 ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	 sim{3}.note = 'only curlies'
+	 sim{3}.W = curlies;
+	 
+
+	sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
+	sim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.V_soma);
+	sim{3}.networkHistory.backgroundnoise = [];
 
 
+end
 
 % [=================================================================]
 %  spontaneous

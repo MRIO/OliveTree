@@ -75,13 +75,13 @@ coords = sim.W.coords;
 
 
 % [=================================================================]
-%  % order to present the neurons
+%  % retrieve clusters and order ascendingly
 % [=================================================================]
 
 if isfield(sim.W.stats, 'clusters')
 	clusters = sim.W.stats.clusters;
-	[clusters O] = sort(clusters);
-	V_soma_unwrapped = V_soma_unwrapped(O,:);
+	[orderedclusters O] = sort(clusters);
+	V_soma_ordered = V_soma_unwrapped(O,:);
 	no_clusters = length(unique(clusters));
 else
 	disp('did not find clusters in input struct.')
@@ -89,8 +89,18 @@ else
 	O = [1:prod(netsize)];
 end
 
+
+if ~exist('cbrewer')
+		lc = jet(no_clusters);
+	else
+		lc = cbrewer('qual', 'Set1', no_clusters);
+end
+
+
+
 %crop
 V_soma_unwrapped = V_soma_unwrapped(:,time_slice);
+V_soma_ordered   = V_soma_ordered(:,time_slice);
 % [=================================================================]
 %  spike detection
 % [=================================================================]
@@ -103,22 +113,21 @@ f = sprintf('%.2f', popfreq);
 edges = [-1 0.01:.5:max(spks.medfreq)];
 histfreq = histc(spks.medfreq, edges);
 
-
 % [=================================================================]
 %  Cluster Activity Stats
 % [=================================================================]
 if calculatesynchrony
-	% fig3 = figure;;
+	fig3 = figure;;
 	for c = 1:no_clusters
 		c
 		clustered{c}.sync = measureGroupSync(sim,'group', clusters==c,'plotme',0);
 		clustered{c}.no_neurons = length(find(clusters==c));
 
-
-
 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		% plot([1:simtime], mean(V_soma_unwrapped(find(V==c),:))+c*5,'color', lc(c,:))
-		% hold on
+		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+		hold on
+		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+		pause
 	end
 		% xlabel('time (ms)')
 		% ylabel('mV')
@@ -197,14 +206,14 @@ if plotpopactivity
 	   
 	a(1) = axes('position', [0.07    0.07    0.85    0.6]);
 
-		imagesc(V_soma_unwrapped,[-68 -30]); %imagesc(V_soma_unwrapped',[-68 -30]);
+		imagesc(V_soma_ordered,[-68 -30]); %imagesc(V_soma_unwrapped',[-68 -30]);
 		% set(gca,'xtick',[1 noneurons]);
 		hold on;
 	    xlabel('ms');
 	    ylabel('neurons');  
 
-		plotspikes1 = @(c)plot(spks.spikes{c},c,'markersize', 3,'marker', 'o','linestyle', 'none','color', 'w','markersize',6);
-		plotspikes2 = @(c)plot(spks.spikes{c},c,'markersize', 10,'marker', '.','linestyle', 'none','color', 'g','markersize',10);
+		plotspikes1 = @(c)plot(spks.spikes{O(c)},O(c),'markersize', 3,'marker', 'o','linestyle', 'none','color', 'w','markersize',6);
+		plotspikes2 = @(c)plot(spks.spikes{O(c)},O(c),'markersize', 10,'marker', '.','linestyle', 'none','color', 'g','markersize',10);
 		for c = 1:prod(netsize)
 			if not(isempty(spks.spikes{c}))
 				plotspikes1(c);
@@ -257,13 +266,6 @@ end
 % 	xlabel('time (ms)')
 % 	ylabel('mV')
 
-
-
-if ~exist('cbrewer')
-		lc = jet(no_clusters);
-	else
-		lc = cbrewer('qual', 'Set1', no_clusters);
-end
 
 
 
