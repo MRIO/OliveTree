@@ -206,24 +206,24 @@ KKK = kuramotoSheet([10 10],100,'clusterize', [1 10 1 0],'time', 1,'seed', 10,'d
 
 %=============================exponential sync for 2 oscillators==============================%
 
-if checkexpsync
-it = 0;
-	phases = linspace(0, pi, 10);
-	for ph = 
-		it = it+1;
-		KKK = kuramotoSheet([1 2],20,'clusterize', [0 10 1 0],'time', 1,'seed', 10,'dt', .001, 'plotme',0, 'init_cond', [-pi ; ph] , 'oscillators', [10 ; 10]*2*pi);
+% if checkexpsync
+% it = 0;
+% 	phases = linspace(0, pi, 10);
+% 	for ph = 
+% 		it = it+1;
+% 		KKK = kuramotoSheet([1 2],20,'clusterize', [0 10 1 0],'time', 1,'seed', 10,'dt', .001, 'plotme',0, 'init_cond', [-pi ; ph] , 'oscillators', [10 ; 10]*2*pi);
 
 
-		KK(it,:) = KKK.orderparameter;
-	end
+% 		KK(it,:) = KKK.orderparameter;
+% 	end
 
-	plot(KK')
+% 	plot(KK')
 
-	xlabel('ms')
-	title('time to sync')
-	ylabel('order parameter')
+% 	xlabel('ms')
+% 	title('time to sync')
+% 	ylabel('order parameter')
 
-	legend(num2str(phases'))
+% 	legend(num2str(phases'))
 
-end		
+% end		
 

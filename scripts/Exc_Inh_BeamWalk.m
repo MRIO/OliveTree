@@ -175,18 +175,13 @@ end
 	V = simresults.networkHistory.V_soma;
 
 	for c = 1:noneurons
-		snip = @(t) V(c,t-w:t+w);
-<<<<<<< HEAD
-		trigVonI{c} = cell2mat(arrayfun(snip, pert.triggers{1}(1:end-1), 'uniformoutput',0)');
-=======
-		
+		snip = @(t) V(c,t-w:t+w);		
 		trigVonE{c} = cell2mat(arrayfun(snip, pert.triggers{1}(1:end-1), 'uniformoutput',0)');
 		trigVonI{c} = cell2mat(arrayfun(snip, pert.triggers{2}(1:end-1), 'uniformoutput',0)');
 
 		EbefI = find(pert.triggers{1}(1:end-1)-pert.triggers{2}(1:end-1)<0);
 		IbefE = find(pert.triggers{1}(1:end-1)-pert.triggers{2}(1:end-1)>0);
 
->>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
 		figure
 		subplot(311)
 		imagesc(trigVonE{c})
@@ -197,14 +192,9 @@ end
 		subplot(313)
 		plot(trigVonE{c}(EbefI,:)','r')
 		title(num2str(c))
-<<<<<<< HEAD
 		% export_fig([num2str(c) '.png'])
 		% close 
-=======
 
-		export_fig([num2str(c) '.png'],'-m2')
-		close 
->>>>>>> 2724356c70cc44cd1bafad32d9a7c04f615fc29f
 
 	end
 

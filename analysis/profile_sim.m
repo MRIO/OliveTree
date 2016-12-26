@@ -1,14 +1,42 @@
-function R = profile_sim(sim)
+function R = profile_sim(varargin)
 % plot partial correlations between cell parameters and cell behavior
 
 
-	plotme = 1;
+
+
+	p = inputParser;
+	p.addRequired('sim')  
+	% p.addRequired('input')  
+	% p.addRequired('input')  
+	% p.addRequired('input')  
+
+
+	p.addParamValue('tslice', []) 
+	p.addParamValue('plotme', 1) 
+	% p.addParamValue('input', default) 
+	% p.addParamValue('input', default) 
+	% p.addParamValue('input', default) 
+
+	p.parse(varargin{:});
+
+	sim = p.Results.sim;
+	% input = p.Results.input;
+	% input = p.Results.input;
+	% input = p.Results.input;
+	tslice = p.Results.tslice;
+	plotme = p.Results.plotme;
+	% input = p.Results.input;
+	% input = p.Results.input;
+	% input = p.Results.input;
+
 
 
 
    	T = sim;
    	noneurons = prod(sim.networksize);
-   	tslice = [1:min(1000,sim.duration)];
+   	
+   	if isempty(tslice); tslice = [1:min(1000,sim.duration)]; end
+
 	V = T.networkHistory.V_soma(:,tslice);
 
 	if length(tslice) < 400
@@ -61,7 +89,7 @@ function R = profile_sim(sim)
 % nonzerocolumns = 
 
 
-	[rho pval] = partialcorr(table2array(R.allneurons));
+	[rho pval] = partialcorr(table2array(R.allneurons),'rows', 'complete');
 
 	R.partialcorr = rho;
 	R.pval		  = pval;

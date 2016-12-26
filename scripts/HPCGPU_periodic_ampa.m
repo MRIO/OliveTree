@@ -12,15 +12,16 @@ rng(0,'twister')
 
 savehist = true;
 saveappliednoise = true;
-testing = 0;
+testing = 1;
 
 % [=================================================================]
 %  simulation parameters
 % [=================================================================]
 
-dt = 0.02;
-simtime = 50000;
+% if parameters not initialized, use these defaults
 
+dt = 0.02;
+if ~exist('simtime')		; simtime = 5000	  ; end	
 if ~exist('simtype')    	; simtype  = '1Hz'	  ; end
 if ~exist('conntype')   	; conntype = 'iso'	  ; end
 if ~exist('numruns')    	; numruns  = 2    	  ; end

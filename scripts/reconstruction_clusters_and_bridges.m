@@ -7,7 +7,7 @@
 rng(0,'twister') % random seed
 
 steadystate_time = 500; %ms
-simtime  = 3000; %ms
+simtime  = 5000; %ms
 delta = .02;
 gpu = 1;
 
@@ -21,16 +21,6 @@ gapcur= {'V_soma' 'I_cx36'};
 % variables to store
 to_report = gapcur;
 
-% [=================================================================]
-%  create cells
-% [=================================================================]
-
-cell_function = 'vanilla'; % 'devel'
-% netsize = [3 15 15];
-
-% def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
-def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
-% neurons.g_CaL = linspace(.5, 1, noneurons);
 
 
 % [================================================]
@@ -40,7 +30,7 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
 nconns_curlies = 5;
-nconns_bridges = 5;
+nconns_bridges = 10;
 gap_curlies = .05;
 gap_bridges = .05;
 plotconn = 1;
@@ -53,8 +43,8 @@ somatapositions(1,:) = [];
 noneurons = length(somatapositions);
 
 if not(exist('curlies'))
-	curlies = createW('3d_reconstruction', [], 5*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
-	bridges = createW('3d_reconstruction', [], 10*40, 1, 0, 1, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
+	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
+	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, 1, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
 
 	% 10% of cells are bridges
 	bc = randperm(noneurons); 
@@ -69,17 +59,31 @@ if not(exist('curlies'))
 	bridges.W = (bridges.W+bridges.W')*gap_bridges;
 
 	bridg_curlies.coords = curlies.coords;
+	
+	
+	bridg_curlies.W = curlies.W + bridges.W;
 	bridg_curlies.stats = connectivity_statistics(bridg_curlies);
 	bridg_curlies.stats.clusters = curlies.stats.clusters;
-	bridg_curlies.W = curlies.W + bridges.W;
 
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
 end
 
 
 
-
 % Wcluster150 = createW('3d_chebychev', netsize, 3, 1, 1, 1, [], 8, [], plotconn, [1 150 .9 .01],1);
+
+
+% [=================================================================]
+%  create cells
+% [=================================================================]
+
+cell_function = 'vanilla'; % 'devel'
+% netsize = [3 15 15];
+
+% def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+% neurons.g_CaL = linspace(.5, 1, noneurons);
+
 
 
 % [================================================]
@@ -108,7 +112,7 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  curlies.stats.clusters==5;
+pert.mask     {1} =  [curlies.stats.clusters==5] & [curlies.stats.clusters==20];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 5;
@@ -125,9 +129,16 @@ pert.type	  {1} = 'gaba_soma';
 %%================================================]
 % 		 compute transients/steadystate
 %=================================================]
-% if ~exist('st_st','var')
-% 	disp('calculating transients')
-% 	st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta);
+ if ~exist('st_st','var')
+	disp('calculating transients')
+
+	 st_st = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	 st_st.note = 'curlies and bridges'
+
 % 	% st_st.Plist = Plist;
 % end
 
@@ -137,13 +148,53 @@ pert.type	  {1} = 'gaba_soma';
 % [=================================================================]
 
 % 'tempState', st_st.lastState,
+if 0
 	 sim{1} = IOnet( 'cell_parameters', def_neurons, ...
+
 	 		'perturbation', pert, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 sim{1}.note = 'curlies and bridges'
+	 sim{1}.W = bridg_curlies;
 
+	sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.backgroundnoise = [];
+
+end
+
+if 0
+	sim{2} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	 sim{2}.note = 'only curlies'
+	 sim{2}.W = curlies;
+
+	sim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);
+	sim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.V_soma);
+	sim{2}.networkHistory.backgroundnoise = [];
+
+end
+
+if 1
+	 sim{3} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W*0 ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	 sim{3}.note = 'only curlies'
+	 sim{3}.W = curlies;
+	 
+
+	sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
+	sim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.V_soma);
+	sim{3}.networkHistory.backgroundnoise = [];
+
+
+end
 
 % [=================================================================]
 %  spontaneous
@@ -151,7 +202,7 @@ pert.type	  {1} = 'gaba_soma';
 
 
 
-save bridges_curlies_wspace
+eval(['save clusters_curlies_bridges_'  date ' -v7.3'])
 
 generatemovies = 0;
 if generatemovies

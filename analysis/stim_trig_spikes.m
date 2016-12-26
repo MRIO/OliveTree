@@ -258,12 +258,12 @@ if computepartialcorrelations
 		zlabel('spike frequency (Hz)')
 				
 		figure
-		scatter3( sim.cellParameters.g_CaL, gapneighborhood, spkfreq , resp*100 ,'filled'); view([az el])
+		scatter3( sim.cellParameters.g_CaL, gapneighborhood, resp, spkfreq*100, spkfreq+eps ,'filled'); view([az el])
 		title('response probability')
 		xlabel('CaT conductance (mS/cm^2)')
 		ylabel('gap neighborhood (mS/cm^2)')
-		zlabel('spike frequency (Hz)')
-				
+		zlabel('response probability (Hz)')
+		
 
 	end
 
