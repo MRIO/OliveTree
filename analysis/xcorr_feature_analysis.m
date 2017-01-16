@@ -2,10 +2,9 @@
 
 numneurons = 200;
 
-% path_to_sims = ['/Users/M/Synced/Titan/Bench/'];
 path_to_sims = ['/Users/M/Synced/Titan/Bench2/periodic_ampa/'];
-% path_to_sims = ['/Users/M/Syncbox/Titan/Bench2/periodic_ampa/'];
 computeselectedxcorr = 1;
+
 sims2p = [1 2 3];
 nwins = 1;
 plotxcorrs = 1;

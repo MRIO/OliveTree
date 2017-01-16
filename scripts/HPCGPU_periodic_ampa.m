@@ -37,8 +37,6 @@ if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
 	
  
-['save periodic_ampa_' nameprefix num2str(1) '_' conntype '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3']
-
 displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];
 
 % [=================================================================]
@@ -168,7 +166,7 @@ if ~exist('transients')
 end
 
 if ~spont
-		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',80);
+		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',min(ttime2, 80 ));
 		pko = pks(1);
 		pert.triggers{1}  = pko + sort(unique(bsxfun(@plus, pulses,triggers')));
 end
