@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -n "$1"]; then
+if [ -n "$1" ]; then
 	echo $1
 else
 	$1="small changes"
