@@ -149,7 +149,7 @@ end
 % /_/ |_|\____/_/ |_/   /____/___/_/  /_/   
                                           
 if testing
-	ttime1 = 3; ttime2 =3 ; pks = 5;  pko = 5; simtime = 20;
+	ttime1 = 3; ttime2 =100 ; pks = 5;  pko = 5; simtime = 20;
 else	 
 	ttime1 = 100;
 	ttime2 = 300;
@@ -166,7 +166,7 @@ if ~exist('transients')
 end
 
 if ~spont
-		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',min(ttime2-1, 80 ));
+		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',min(ttime2-2, 80 ));
 		pko = pks(1);
 		pert.triggers{1}  = pko + sort(unique(bsxfun(@plus, pulses,triggers')));
 end
