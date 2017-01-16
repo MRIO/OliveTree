@@ -12,7 +12,7 @@ rng(0,'twister')
 
 savehist = true;
 saveappliednoise = true;
-testing = 1;
+testing = 0;
 
 % [=================================================================]
 %  simulation parameters
@@ -166,7 +166,7 @@ if ~exist('transients')
 end
 
 if ~spont
-		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',min(ttime2-2, 80 ));
+		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance', 80);
 		pko = pks(1);
 		pert.triggers{1}  = pko + sort(unique(bsxfun(@plus, pulses,triggers')));
 end
