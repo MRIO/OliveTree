@@ -37,7 +37,7 @@ if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
 	
  
-['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' num2str(gaps') '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3']
+['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_'simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3']
 
 displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];
 
@@ -221,7 +221,11 @@ end
 %  save with timestamp
 % [=================================================================]
 
-eval(['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' num2str(gaps) '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3'])
+evalstring = ['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_'simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3']
+
+eval(evalstring)
+
+
 
 	
 
