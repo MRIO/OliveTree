@@ -141,7 +141,7 @@ if strcmp(cell_function, 'devel'); disp('warning: debugging not compatible with 
 try 
     if gpuDeviceCount == 0; use_gpu = 0; disp('no gpu found in this machine'); end     
 catch E
-    gpuDeviceCount = 0; use_gpu = 0; disp('no gpu found in this machine');  
+    use_gpu = 0; disp('no gpu found in this machine');  
         % keyboard
 end
 
