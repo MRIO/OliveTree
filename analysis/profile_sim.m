@@ -52,9 +52,12 @@ function R = profile_sim(varargin)
 	% ampl = max(V, [], 2) - min(V, [], 2);
 
 	for ii = 1:noneurons
-		ampl(1,ii) = mean(findpeaks(V(ii,200:end),'minpeakdist',50)) - -(mean(findpeaks(-V(ii,200:end),'minpeakdist',50)));
+		ampl(1,ii) = mean(findpeaks(V(ii,:),'minpeakdist',50)) -(-(mean(findpeaks(-V(ii,:),'minpeakdist',50))));
 	end
-	ampl = ampl';
+
+	ampl(1,isnan(ampl))=0;
+
+ampl = ampl';
 
 	meanVm = mean(V, 2);
 	spks = spikes.spikespercell'/length(tslice)*1e3;

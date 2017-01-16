@@ -2,7 +2,9 @@
 
 tslice = 1001:4000;
 
-load('/Users/M/Synced/Titan/clusters_curlies_bridges_20-Dec-2016.mat')
+if not(exist('sim'))
+	load('/Users/M/Synced/Titan/clusters_curlies_bridges_20-Dec-2016.mat')
+end
 
 sim{1}.W = bridg_curlies;
 sim{2}.W = curlies;
@@ -13,7 +15,7 @@ statevar{1} = sim{1}.networkHistory.V_soma(:,tslice);
 % replayResults_clusters(sim{1});
 
 R{1} = profile_sim(sim{1},'tslice',tslice);
-% R{2} = profile_sim(sim{2});
+R{2} = profile_sim(sim{2},'tslice',tslice);
 
 
 % clusters
@@ -46,20 +48,52 @@ for c = find(bc)'
 	Q = quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
 	text(tslice(end)*.9 , max(max(statevar{1}))*.9, num2str(Q))
 
-	pause
+	% pause
 
 	close 
 
-
 end
 
-hist(table2array(R{1}.allneurons(logical(~bridgecells),'freq_each')))
-hist(table2array(R{1}.allneurons(logical(bridgecells),'freq_each')))
 
-amplitudehistCurlies = hist(table2array(R{1}.allneurons(logical(~bridgecells),'ampl')),[0:2:20])
-amplitudehistBridges = hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl')) ,[0:2:20])
+freqbins = [0:1:30];
+freqhistCurlies = hist(table2array(R{1}.allneurons(logical(~bridgecells),'freq_each')), freqbins )
+freqhistBridges =hist(table2array(R{1}.allneurons(logical(bridgecells),'freq_each')) ,  freqbins)
+freqhistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'freq_each')),freqbins )
+freqhistBridges0 =hist(table2array(R{2}.allneurons(logical(bridgecells),'freq_each')) , freqbins)
 
-bar([0:2:20], [ amplitudehistCurlies ; amplitudehistBridges]','stacked')
+
+subplot(211)
+bar(freqbins, [ freqhistCurlies ; freqhistBridges]','stacked')
+xlabel('Amplitude (mV) ')
+ylabel('Cells')
+title('STO freq')
+
+subplot(212)
+bar(freqbins, [ freqhistCurlies0 ; freqhistBridges0]','stacked')
+xlabel('Amplitude (mV) ')
+ylabel('Cells')
+title('STO freq')
+
+
+
+
+
+table2array(R{2}.allneurons(logical(~bridgecells)
+table2array(R{2}.allneurons(logical(bridgecells)
+
+amplitudehistCurlies  = hist(table2array(R{1}.allneurons(logical(~bridgecells),'ampl')),ampbins)
+amplitudehistBridges  = hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl'))  ,ampbins)
+amplitudehistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'ampl')),ampbins)
+amplitudehistBridges0 = hist(table2array(R{2}.allneurons(logical(bridgecells),'ampl')) ,ampbins)
+
+subplot(211)
+bar(ampbins, [ amplitudehistCurlies ; amplitudehistBridges]','stacked')
+xlabel('Amplitude (mV) ')
+ylabel('Cells')
+title('STO amplitude')
+
+subplot(212)
+bar(ampbins, [ amplitudehistCurlies0 ; amplitudehistBridges0]','stacked')
 xlabel('Amplitude (mV) ')
 ylabel('Cells')
 title('STO amplitude')

@@ -27,8 +27,8 @@ debugging = 1;
 % [=================================================================]
 delta = .02;
 
-cell_function = 'devel';
-% cell_function = 'vanilla'; % 'devel'
+% cell_function = 'devel';
+cell_function = 'vanilla'; % 'devel'
 nconn = 3;
 
 steadystate_time = 400;
@@ -52,18 +52,18 @@ to_report = currents;
 %  parameter grid
 % [=================================================================]
 % gaps = [];
-gaps = [0 0.04];
+gaps = [0];
 
 
 % 9 Dimensional GRID: parameter ranges
-p1 = [2 8]; 		% CalciumL - conductance range
+p1 = [2]; 		% CalciumL - conductance range
 p2 = [0];      	    % g_h_s
-p3 = [.1 2]; 	% g_int
+p3 = [.1 .3]; 	% g_int
 p4 = [.6];      	% g_h
 p5 = [.05 .2]; % ratio soma dendrite
 p6 = [45];	% Ca act Potassium: not voltage dependent 
 p7 = [5.5]; % Ca High threshold
-p8 = [.01];    % leak
+p8 = [.007 .013];    % leak
 p9 = [1]; % arbitrary
 
 

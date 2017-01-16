@@ -78,7 +78,7 @@ case 'randomized2'
 		cell_parameters = defneurons(noneurons);
 		
 		cell_parameters.g_CaL    = cell_parameters.g_CaL   +  rand(noneurons,1)*(-.8);
-		cell_parameters.g_int 	 = cell_parameters.g_int   + .02 + rand(noneurons,1)*(-.05);
+		cell_parameters.g_int 	 = cell_parameters.g_int   - .02 + rand(noneurons,1)*(.2);
 		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
 		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
 		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
@@ -199,7 +199,7 @@ end
 if gapcompensation
 		% compensation for gap junctions
 		
-		cell_parameters.g_CaL = cell_parameters.g_CaL + .1*gapcompensation;
+		% cell_parameters.g_CaL = cell_parameters.g_CaL + .1*gapcompensation;
 
 		cell_parameters.g_ld  = cell_parameters.g_ld  - 0.003*gapcompensation;
 		cell_parameters.g_la  = cell_parameters.g_la  - 0.003*gapcompensation;
@@ -207,7 +207,7 @@ if gapcompensation
 end
 
 if nogapcompensation
-		cell_parameters.g_CaL = cell_parameters.g_CaL - .1;
+		% cell_parameters.g_CaL = cell_parameters.g_CaL - .1;
 		% cell_parameters.g_int = cell_parameters.g_int + 0.03;
 		cell_parameters.g_ld  = cell_parameters.g_ld  + 0.003;
 		% cell_parameters.g_K_Ca= cell_parameters.g_K_Ca - 10;
