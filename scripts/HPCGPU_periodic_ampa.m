@@ -149,7 +149,7 @@ end
 % /_/ |_|\____/_/ |_/   /____/___/_/  /_/   
                                           
 if testing
-	ttime1 = 3; ttime2 =3 ; pks = 5;  pko = 5;
+	ttime1 = 3; ttime2 =3 ; pks = 5;  pko = 5; simtime = 20;
 else	 
 	ttime1 = 100;
 	ttime2 = 300;
