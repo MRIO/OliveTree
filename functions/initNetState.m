@@ -20,7 +20,7 @@ try
     % gpuDeviceCount needs parallel toolbox
     if gpuDeviceCount == 0; use_gpu = 0; disp('no gpu found in this machine'); end
 catch
-    gpuDeviceCount = 0; use_gpu = 0; disp('no parallel computing toolbox present');
+    use_gpu = 0; disp('no parallel computing toolbox present');
 end
 
 % else, create neurons from scratch
