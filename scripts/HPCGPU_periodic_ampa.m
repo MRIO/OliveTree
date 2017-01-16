@@ -166,7 +166,7 @@ if ~exist('transients')
 end
 
 if ~spont
-		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',min(ttime2, 80 ));
+		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',min(ttime2-1, 80 ));
 		pko = pks(1);
 		pert.triggers{1}  = pko + sort(unique(bsxfun(@plus, pulses,triggers')));
 end
