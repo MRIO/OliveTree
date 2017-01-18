@@ -30,7 +30,7 @@ to_report = gapcur;
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
 nconns_curlies = 5;
-nconns_bridges = 5;
+nconns_bridges = 4;
 gap_curlies = .05;
 gap_bridges = .05;
 plotconn = 1;
@@ -52,11 +52,15 @@ if not(exist('curlies'))
 	z(bc(1:round(.1*noneurons))) = 1;
 	bc =z;
 
-	curlies.W = bsxfun(@times, curlies.W, ~bc);
-	curlies.W = bsxfun(@times, curlies.W, ~(bc'))*gap_curlies;
+	curlies.W = bsxfun(@times, curlies.W, ~z);
+	curlies.W = bsxfun(@times, curlies.W, ~(z'))*gap_curlies;
+	cstats = connectivity_statistics(bridges);
+	curlies.stats = bstats.stats ;
 
 	bridges.W = bsxfun(@times, bridges.W, z);
 	bridges.W = (bridges.W+bridges.W')*gap_bridges;
+	bstats = connectivity_statistics(bridges);
+	bridges.stats = bstats.stats ;
 
 	bridg_curlies.coords = curlies.coords;
 	
@@ -82,6 +86,8 @@ cell_function = 'vanilla'; % 'devel'
 
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
 def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+
+% randomized2 = 
 % neurons.g_CaL = linspace(.5, 1, noneurons);
 
 
@@ -112,7 +118,7 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  [curlies.stats.clusters==5] & [curlies.stats.clusters==20];
+pert.mask     {1} =  [curlies.stats.clusters==5] | [curlies.stats.clusters==20];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 5;
@@ -148,7 +154,7 @@ end
 %  GABA
 % [=================================================================]
 
-% 'tempState', st_st.lastState,
+% BRIDGES AND CURLIES WITH PERTURBATION
 if 1
 	 sim{1} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
@@ -164,6 +170,7 @@ if 1
 
 end
 
+% ONLY CURLIES
 if 1
 	sim{2} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
@@ -179,6 +186,8 @@ if 1
 
 end
 
+
+% DISCONNECTED NETWORK
 if 1
 	 sim{3} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
@@ -192,7 +201,6 @@ if 1
 	sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
 	sim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.V_soma);
 	sim{3}.networkHistory.backgroundnoise = [];
-
 
 end
 

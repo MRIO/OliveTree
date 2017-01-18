@@ -3,7 +3,7 @@
 tslice = 1001:4000;
 
 if not(exist('sim'))
-	load('clusters_curlies_bridges_20-Dec-2016.mat')
+	load('/Users/M/Synced/Titan/clusters_curlies_bridges_20-Dec-2016.mat')
 end
 
 sim{1}.W = bridg_curlies;
@@ -33,47 +33,33 @@ set(0,'defaultfigurecolormap', linspecer(10))
 % bridge cells and neighbors:
 bridgecells = bc;
 
-% effective number of connections clusters x bridges
-[connhistC bins] =  hist(curlies.stats.connections,[1:20]);
-[connhistB bins] =  hist(bridges.stats.connections,[1:20]);
-bar(bins, [connhistB; connhistC]','stacked')
+for c = find(bc)'
+	figure
+	thisbridge = zeros(size(bc));
+	thisbridge(c) = 1;
+	neighbors{c} = find(thisbridge'*(sim{1}.W.W>0));
 
+	plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.9)
+	% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
+	hold on
+	plot(tslice, statevar{1}(c,:),'linewidth', 2)
+	
 
+	Q = quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
+	text(tslice(end)*.9 , max(max(statevar{1}))*.9, num2str(Q))
 
-waterfall(statevar{1}(find(bridgecells),:))
+	% pause
 
-plotbridgeandneighbors = 1;
-if plotbridgeandneighbors
-	for c = find(bc)'
-		figure
-		thisbridge = zeros(size(bc));
-		thisbridge(c) = 1;
-		neighbors{c} = find(thisbridge'*(sim{1}.W.W>0));
-
-		plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.9)
-		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
-		hold on
-		plot(tslice, statevar{1}(c,:),'linewidth', 2)
-		
-
-		Q = quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
-		text(tslice(end)*.9 , max(max(statevar{1}))*.9, num2str(Q))
-
-		pause
-
-		close 
-
-	end
-
-
+	close 
 
 end
 
+
 freqbins = [0:1:30];
-freqhistCurlies = hist(table2array(R{1}.allneurons(logical(~bridgecells),'freq_each')), freqbins )
-freqhistBridges =hist(table2array(R{1}.allneurons(logical(bridgecells),'freq_each')) ,  freqbins)
-freqhistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'freq_each')),freqbins )
-freqhistBridges0 =hist(table2array(R{2}.allneurons(logical(bridgecells),'freq_each')) , freqbins)
+freqhistCurlies  = hist(table2array(R{1}.allneurons(logical(~bridgecells),'freq_each')), freqbins)
+freqhistBridges  = hist(table2array(R{1}.allneurons(logical(bridgecells),'freq_each')) , freqbins)
+freqhistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'freq_each')), freqbins)
+freqhistBridges0 = hist(table2array(R{2}.allneurons(logical(bridgecells),'freq_each')) , freqbins)
 
 
 subplot(211)
@@ -89,7 +75,12 @@ ylabel('Cells')
 title('STO freq')
 
 
-ampbins = [0:1:30];
+
+
+
+table2array(R{2}.allneurons(logical(~bridgecells)
+table2array(R{2}.allneurons(logical(bridgecells)
+
 amplitudehistCurlies  = hist(table2array(R{1}.allneurons(logical(~bridgecells),'ampl')),ampbins)
 amplitudehistBridges  = hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl'))  ,ampbins)
 amplitudehistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'ampl')),ampbins)

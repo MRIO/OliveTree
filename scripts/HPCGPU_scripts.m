@@ -84,7 +84,16 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
 end
 
 
+% [=================================================================]
+%  clusters curlies and bridges
+% [=================================================================]
 
+if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench')
+
+	reconstruction_clusters_and_bridges;
+	X_README = ['clusters and bridges_' date];
+
+end
 
 % [=================================================================]
 % clustersize
