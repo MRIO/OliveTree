@@ -55,7 +55,7 @@ if not(exist('curlies'))
 	curlies.W = bsxfun(@times, curlies.W, ~z);
 	curlies.W = bsxfun(@times, curlies.W, ~(z'))*gap_curlies;
 	cstats = connectivity_statistics(bridges);
-	curlies.stats = bstats.stats ;
+	curlies.stats = cstats.stats ;
 
 	bridges.W = bsxfun(@times, bridges.W, z);
 	bridges.W = (bridges.W+bridges.W')*gap_bridges;
