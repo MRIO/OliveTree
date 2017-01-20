@@ -1,5 +1,5 @@
 
-function hand = NDscatter(varargin)
+function varargout = NDscatter(varargin)
 
 
 
@@ -31,14 +31,13 @@ end
 	bgcolor = [1 1 1];
 	axiscolor = [.1 .1 .1];
 	markercolor = [0 0 0];
-
-
-	
-	
 	
 	ngroups = max(groups);
+	try
 	groupcolors = linspecer(ngroups);
-
+	catch
+		groupcolors  = [0 0 0];
+	end
 
 
 
@@ -64,13 +63,16 @@ end
 				line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
 				hold off
 			elseif r == c
-				[hhh xxx] = hist(data(c,:),30);
+				xxx = linspace(min(data(:,r)), max(data(:,r)), 30);
+				[hhh xxx] = hist(data(:,r), xxx);
 				bar(xxx, hhh, 'facecolor', markercolor)
 				hold on
-				for g = 1:ngroups
-					[hhh] = hist(data(groups==g,c),xxx);
-					plot(xxx, hhh,'color', groupcolors(g,:) )
-				end
+				% for g = 1:ngroups
+				% 	[hhh] = hist(data(groups==g,r),xxx);
+				% 	plot(xxx, hhh,'color', groupcolors(g,:) )
+
+				% end
+				% axis tight
 
 			end
 
@@ -82,8 +84,8 @@ end
 			end
 
 
-			if r == 1
-				xlabel(VarNames{c})
+			if r == N
+				title(VarNames{c})
 				% ylabel(VarNames{c})
 			end
 			if c == N
@@ -104,11 +106,18 @@ end
 
 	colormap(jet(5))
 
+
 	pl_i = [1:length(l1)];
 	for r = pl_i
 
-		
 		linkaxes(hand(r,pl_i(find(pl_i~=r))),'y')
 		linkaxes(hand(pl_i(find(pl_i~=r)),r),'x')
 
 	end
+
+
+	if nargout>0
+		varargout{1} = hand;
+	end
+
+

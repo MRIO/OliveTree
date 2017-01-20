@@ -73,8 +73,7 @@ end
 
  % index of center neuron
 cni = (X==round(max(X)/2)) .* (Y==round(max(Y)/2)) .* (Z==round(max(Z)/2));
-cni = find(cni)
-
+cni = find(cni);
 
     if ~onlynetstruct
         figure

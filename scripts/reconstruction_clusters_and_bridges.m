@@ -99,7 +99,7 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
 % currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 % gnoise = [.2 .3 0 5];
 gnoise = [0 0 0 0];
-sametoall = 0.05
+sametoall = 0.05;
 
 
 % [================================================]
