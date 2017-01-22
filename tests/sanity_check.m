@@ -104,7 +104,7 @@ switch experiment
 		gnoise = [0 0 0 0];
 
 
-	case 'gaba_soma' % gaba soma in 2D
+	case 'gaba' % gaba soma in 2D
 		to_report = {'V_soma','I_cx36', 'Ca2Plus', 'Ca2_soma' 'V_dend', 'g_GABA_soma'};
 
 		simtime = 1000;
@@ -207,7 +207,7 @@ switch experiment
 	    cont  = IOnet('tempState', st_st.lastState ,'cell_parameters', cell_parameters, 'networksize', netsize,'time',simtime ,'W', W*0  ,'to_report',to_report,'gpu', gpu);
 	    plot([st_st.networkHistory.V_soma cont.networkHistory.V_soma]')
 
-	    break
+	    % break
 
 
 	case 'somatic_ampa' % ampa in soma
@@ -245,7 +245,7 @@ end
 	'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
 
 
-replayResults_2(transients)
+replayResults_3(transients)
 
 
 

@@ -41,7 +41,7 @@ switch celltypes
 		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.gbar_ampa_soma     = .1   +  rand(noneurons,1)*(.15);
+		cell_parameters.gbar_ampa_soma     = 1   -  rand(noneurons,1)*(.15);
 
 
 	case 'randomized2'
@@ -57,9 +57,6 @@ switch celltypes
 		% cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
 		% cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.2);
 		% cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
-		
-
-		% cell_parameters.gbar_ampa_soma     = .1   +  rand(noneurons,1)*(.15);	
 
 
 	case 'permuted'
@@ -108,7 +105,7 @@ switch celltypes
 		cell_parameters.g_ls     			= ones(noneurons,1)* .01;
 		cell_parameters.p1    	 			= ones(noneurons,1)* .1;
 		cell_parameters.arbitrary			= ones(noneurons,1)* .5;
-		cell_parameters.gbar_ampa_soma      = .1   +  rand(noneurons,1)*(.15);
+		
 		
 	case 'cellset_devel'
 		 if exist('dev_cells_pspace.mat')

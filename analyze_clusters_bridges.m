@@ -1,22 +1,28 @@
 % analyze_clusters_bridges.m
 
+plotbridgeandneighbors = 1;
+plotcellscatters  = 1;
+
 tslice = 1001:4000;
 
-if not(exist('sim'))
-	load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
+if not(exist('st_st'))
+	% load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
+	load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_20-Jan-2017.mat')
 end
 
 sim{1}.W = bridg_curlies;
 sim{2}.W = curlies;
 
-statevar{1} = double(sim{1}.networkHistory.V_soma(:,tslice));
-statevar{2} = double(sim{2}.networkHistory.V_soma(:,tslice));
+statevar{1} = double(sim{1}.networkHistory.V_soma(:,tslice)); % with gaps 
+statevar{2} = double(sim{2}.networkHistory.V_soma(:,tslice)); % without gaps
+statevar{3} = double(sim{3}.networkHistory.V_soma(:,tslice)); % without gaps
 
 % replayResults_clusters(sim{1});
 % replayResults_clusters(sim{1});
 
-R{1} = profile_sim(sim{1},'tslice',tslice);
-R{2} = profile_sim(sim{2},'tslice',tslice);
+R{1} = profile_sim(sim{1},'tslice',tslice); % bridges and curlies
+R{2} = profile_sim(sim{2},'tslice',tslice); % only curlies
+R{3} = profile_sim(sim{3},'tslice',tslice); % disconnected net
 
 % RR = vertcat(R{1}.allneurons, R{2}.allneurons);
 % RR(:,39) = table([zeros(1105,1) ; ones(1105,1)]);
@@ -26,6 +32,7 @@ R{2} = profile_sim(sim{2},'tslice',tslice);
 % NDscatter(sel_table, 7);
 
 
+if plotcellscatters 
 	sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm'}
 	sel_table = R{1}.allneurons(:,sel_fields);
 	figure
@@ -35,8 +42,11 @@ R{2} = profile_sim(sim{2},'tslice',tslice);
 	sel_table = R{2}.allneurons(:,sel_fields);
 	figure	
 	NDscatter(sel_table, 1)
+end
 
-
+% [=================================================================]
+%  set defaults
+% [=================================================================]
 % clusters
 clusters = sim{1}.W.stats.clusters;
 no_clusters = length(unique(clusters));
@@ -49,20 +59,41 @@ set(0,'defaultaxescolororder', linspecer(10))
 set(0,'defaultfigurecolormap', linspecer(10))
 
 
+% [=================================================================]
+%  connectivity
+% [=================================================================]
+
 % bridge cells and neighbors:
 bridgecells = bc;
 
 % effective number of connections clusters x bridges
-[connhistC bins] =  hist(curlies.stats.connections,[1:20]);
-[connhistB bins] =  hist(bridges.stats.connections,[1:20]);
+[connhistC bins] =  hist(curlies.stats.connections,[0:20]);
+[connhistB bins] =  hist(bridges.stats.connections(find(bc)),[0:20]);
 figure
 bar(bins, [connhistB; connhistC]','stacked')
+title('out degree')
+legend({'bridges' 'curlies'})
 
+% [=================================================================]
+%  bridge behavior
+% [=================================================================]
+bridgeidx = find(bridgecells);
+bridge_Vm = statevar{1}(bridgeidx,:);
+[val ord] = sort(table2array(R{1}.allneurons(bridgeidx,'ampl')));
 
 figure
-waterfall(statevar{1}(find(bridgecells),:))
+waterfall(bridge_Vm(ord,:));
+title('bridge behavior when connected')
 
-plotbridgeandneighbors = 1;
+figure
+bridge_Vm = statevar{3}(bridgeidx,:);
+waterfall(bridge_Vm(ord,:));
+
+
+% [=================================================================]
+%  groups
+% [=================================================================]
+
 if plotbridgeandneighbors
 	for c = find(bc)'
 		figure
@@ -70,7 +101,7 @@ if plotbridgeandneighbors
 		thisbridge(c) = 1;
 		neighbors{c} = find(thisbridge'*(sim{1}.W.W>0));
 
-		plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.9)
+		plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on
 		plot(tslice, statevar{1}(c,:),'linewidth', 2)
@@ -148,10 +179,8 @@ title('STO amplitude')
 		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
 		% clustered{c}.no_neurons = length(find(clusters==c));
 
-
-
 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot([1:simtime], mean(statevar{1}(find(clusters==c),:))+c*5,'color', lc(c,:))
+		plot(tslice, mean(statevar{1}(find(clusters==c),:))+c*5,'color', lc(c,:))
 		hold on
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
 		pause
@@ -173,16 +202,17 @@ title('STO amplitude')
 % [=================================================================]
 
 
+tslice = 1:1000;
 
 if calculatesynchrony
 	fig3 = figure;;
 	for c = 1:no_clusters
 		c
-		clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
+		clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',1);
 		clustered{c}.no_neurons = length(find(clusters==c));
 
 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+		plot(tslice, mean(statevar{1}(find(clusters==c),tslice))+c*5,'color', lc(c,:))
 		hold on
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
 		pause

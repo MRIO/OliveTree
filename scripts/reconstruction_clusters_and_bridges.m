@@ -70,6 +70,7 @@ if not(exist('curlies'))
 	bridg_curlies.stats.clusters = curlies.stats.clusters;
 
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
+
 end
 
 
@@ -109,7 +110,7 @@ sametoall = 0.05;
 % create overlapping ampa masks
 
 % numberofmasks = 10; 
-onset_of_stim = [505:5:525];
+onset_of_stim = [505:2:525];
 
 % apply some current to check the behavior of the cells
 I_app = [];
