@@ -63,6 +63,9 @@ end
 				line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
 				hold off
 			elseif r == c
+				if min(data(:,r)) == max(data(:,r))
+					continue
+				end
 				xxx = linspace(min(data(:,r)), max(data(:,r)), 30);
 				[hhh xxx] = hist(data(:,r), xxx);
 				bar(xxx, hhh, 'facecolor', markercolor)
@@ -73,6 +76,7 @@ end
 
 				% end
 				% axis tight
+				set(gca,'ytick', [0 max(hhh)])
 
 			end
 

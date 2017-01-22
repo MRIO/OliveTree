@@ -56,6 +56,7 @@ gaps = [0];
 
 % pspace_type = 'pgrid';
 pspace_type = 'randomized';
+pspace_type = '2p_sweep';
 switch pspace_type
 
 
@@ -67,6 +68,14 @@ switch pspace_type
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
 
+	case '2p_sweep'
+	
+	def_neurons = createDefaultNeurons(1,'celltypes','param_sweep','Pnames',{'g_CaL' ; 'g_int'});
+	Plist = def_neurons.Plist;
+	Pnames = def_neurons.Pnames;
+	noneurons = length(Plist);
+	netsize = [noneurons 1 1];
+	
 
 	case 'pgrid'
 

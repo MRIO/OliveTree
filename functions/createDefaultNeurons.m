@@ -48,16 +48,18 @@ switch celltypes
 
 		cell_parameters = defneurons(noneurons);
 		
-		cell_parameters.g_CaL    = cell_parameters.g_CaL   - .6  + rand(noneurons,1)*2.5;
-		cell_parameters.g_int 	 = cell_parameters.g_int   - .03 + rand(noneurons,1)*3;
-		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
-		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
-		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.2);
+		cell_parameters.g_CaL    = cell_parameters.g_CaL   - .3  + rand(noneurons,1)*.6;
+		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
+		% cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
+		% cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
+		% cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
+		% cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
+		% cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
+		% cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.2);
+		% cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
+		
 
-		cell_parameters.gbar_ampa_soma     = .1   +  rand(noneurons,1)*(.15);	
+		% cell_parameters.gbar_ampa_soma     = .1   +  rand(noneurons,1)*(.15);	
 
 
 	case 'permuted'
@@ -151,6 +153,24 @@ case 'cellset_vanilla'
 			eval(str)
 		end
 
+
+	case 'param_sweep'
+		
+
+		p1 = [.5:.1:1.5]; 		% CalciumL - conductance range
+		p2 = [.1:.1:3]; 		% g_int
+		
+		[p{1} p{2}  ] = ndgrid(p1,p2);
+
+		Plist = [p{1}(:) p{2}(:) ]; 
+
+		psweepnoneurons = length(p{1}(:));
+
+		cell_parameters = defneurons(psweepnoneurons);
+		
+		cell_parameters.g_CaL    = p{1}(:);
+		cell_parameters.g_int 	 = p{2}(:);
+
 	otherwise
 
 		disp('Legacy parameter or celltypes case not found.')
@@ -158,34 +178,7 @@ case 'cellset_vanilla'
 		return
 
 
-	% case 'param_sweep'
-		
 
-	% 	p1 = [.5:.1:1.1]; 		% CalciumL - conductance range
-	% 	p2 = [.0];      	    % g_h_s
-	% 	p3 = [.11 .13]; 		% g_int
-	% 	p4 = [.12:.12:.48];      	% g_h
-	% 	p5 = [-38];       	% V_h
-	% 	p6 = [45 55];		% Ca act Potassium: not voltage dependent 
-	% 	p7 = [4.5];
-	% 	p8 = [.013];    % leak
-	% 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8);
-
-	% 	Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:)]; 
-
-	% 	psweepnoneurons = length(p{1}(:));
-
-	% 	cell_parameters = defneurons(psweepnoneurons);
-		
-	% 	cell_parameters.g_CaL    = p{1}(:);
-	% 	cell_parameters.g_h_s    = p{2}(:);
-	% 	cell_parameters.g_int 	 = p{3}(:);
-	% 	cell_parameters.g_h 	 = p{4}(:);
-	% 	cell_parameters.V_h 	 = p{5}(:);
-	% 	cell_parameters.g_K_Ca   = p{6}(:);       
-	% 	cell_parameters.g_CaH    = p{7}(:);     % High-threshold calcium
-	% 	cell_parameters.g_ld     = p{8}(:);
-		
 
 
 end
