@@ -1,4 +1,4 @@
-function replayResults_clusters(varargin)
+function replayResults_2(varargin)
 
 
 % p.addRequired('sim')  % a matrix with two columns or a cell array with two cells;

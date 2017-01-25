@@ -1,45 +1,51 @@
 % analyze_clusters_bridges.m
 
 plotbridgeandneighbors = 1;
-plotcellscatters  = 1;
+plotcellscatters  = 0;
+STOhistograms = 0;
+calculatesynchrony = 0;
+plot_cluster_members = 1;
 
 tslice = 1001:4000;
 
 if not(exist('st_st'))
 	% load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
-	load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_20-Jan-2017.mat')
+	load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
+    sims = sim;
 end
 
-sim{1}.W = bridg_curlies;
-sim{2}.W = curlies;
+if not(exist('sims'))
+	sims{1}.W = bridg_curlies;
+	sims{2}.W = curlies;
 
-statevar{1} = double(sim{1}.networkHistory.V_soma(:,tslice)); % with gaps 
-statevar{2} = double(sim{2}.networkHistory.V_soma(:,tslice)); % without gaps
-statevar{3} = double(sim{3}.networkHistory.V_soma(:,tslice)); % without gaps
+	statevar{1} = double(sims{1}.networkHistory.V_soma(:,tslice)); % with gaps 
+	statevar{2} = double(sims{2}.networkHistory.V_soma(:,tslice)); % without gaps
+	statevar{3} = double(sims{3}.networkHistory.V_soma(:,tslice)); % disconnected
 
-% replayResults_clusters(sim{1});
-% replayResults_clusters(sim{1});
+	% replayResults_clusters(sim{1});
+	% replayResults_clusters(sim{1});
 
-R{1} = profile_sim(sim{1},'tslice',tslice); % bridges and curlies
-R{2} = profile_sim(sim{2},'tslice',tslice); % only curlies
-R{3} = profile_sim(sim{3},'tslice',tslice); % disconnected net
+	R{1} = profile_sim(sims{1},'tslice',tslice); % bridges and curlies
+	R{2} = profile_sim(sims{2},'tslice',tslice); % only curlies
+	R{3} = profile_sim(sims{3},'tslice',tslice); % disconnected net
 
-% RR = vertcat(R{1}.allneurons, R{2}.allneurons);
-% RR(:,39) = table([zeros(1105,1) ; ones(1105,1)]);
+	% RR = vertcat(R{1}.allneurons, R{2}.allneurons);
+	% RR(:,39) = table([zeros(1105,1) ; ones(1105,1)]);
 
-% sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm', 'Var39'};
-% sel_table = RR(:,sel_fields);
-% NDscatter(sel_table, 7);
+	% sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm', 'Var39'};
+	% sel_table = RR(:,sel_fields);
+	% NDscatter(sel_table, 7);
+
+end
 
 
 if plotcellscatters 
-	sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm'}
+	sel_fields = {'g_CaL', 'g_int', 'p1', 'g_h',  'ampl', 'freq_each', 'meanVm'}
 	sel_table = R{1}.allneurons(:,sel_fields);
 	figure
 	NDscatter(sel_table, 1)
 
-	sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm'}
-	sel_table = R{2}.allneurons(:,sel_fields);
+	sel_table = R{3}.allneurons(:,sel_fields);
 	figure	
 	NDscatter(sel_table, 1)
 end
@@ -48,7 +54,7 @@ end
 %  set defaults
 % [=================================================================]
 % clusters
-clusters = sim{1}.W.stats.clusters;
+clusters = sims{1}.W.stats.clusters;
 no_clusters = length(unique(clusters));
 if ~exist('cbrewer')
 		lc = jet(no_clusters);
@@ -99,7 +105,7 @@ if plotbridgeandneighbors
 		figure
 		thisbridge = zeros(size(bc));
 		thisbridge(c) = 1;
-		neighbors{c} = find(thisbridge'*(sim{1}.W.W>0));
+		neighbors{c} = find(thisbridge'*(sims{1}.W.W>0));
 
 		plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
@@ -120,45 +126,47 @@ if plotbridgeandneighbors
 
 end
 
-freqbins = [0:1:30];
-freqhistCurlies = hist(table2array(R{1}.allneurons(logical(~bridgecells),'freq_each')), freqbins )
-freqhistBridges =hist(table2array(R{1}.allneurons(logical(bridgecells),'freq_each')) ,  freqbins)
-freqhistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'freq_each')),freqbins )
-freqhistBridges0 =hist(table2array(R{2}.allneurons(logical(bridgecells),'freq_each')) , freqbins)
 
-figure
-subplot(211)
-bar(freqbins, [ freqhistCurlies ; freqhistBridges]','stacked')
-xlabel('Amplitude (mV) ')
-ylabel('Cells')
-title('STO freq')
+if STOhistograms
+	freqbins = [0:1:30];
+	freqhistCurlies = hist(table2array(R{1}.allneurons(logical(~bridgecells),'freq_each')), freqbins )
+	freqhistBridges =hist(table2array(R{1}.allneurons(logical(bridgecells),'freq_each')) ,  freqbins)
+	freqhistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'freq_each')),freqbins )
+	freqhistBridges0 =hist(table2array(R{2}.allneurons(logical(bridgecells),'freq_each')) , freqbins)
 
-subplot(212)
-bar(freqbins, [ freqhistCurlies0 ; freqhistBridges0]','stacked')
-xlabel('Amplitude (mV) ')
-ylabel('Cells')
-title('STO freq')
+	figure
+	subplot(211)
+	bar(freqbins, [ freqhistCurlies ; freqhistBridges]','stacked')
+	xlabel('Frequency (Hz)')
+	ylabel('Cells')
+	title('STO freq')
+
+	subplot(212)
+	bar(freqbins, [ freqhistCurlies0 ; freqhistBridges0]','stacked')
+	xlabel('Frequency (Hz)')
+	ylabel('Cells')
+	title('STO freq')
 
 
-ampbins = [0:1:30];
-amplitudehistCurlies  = hist(table2array(R{1}.allneurons(logical(~bridgecells),'ampl')),ampbins)
-amplitudehistBridges  = hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl'))  ,ampbins)
-amplitudehistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'ampl')),ampbins)
-amplitudehistBridges0 = hist(table2array(R{2}.allneurons(logical(bridgecells),'ampl')) ,ampbins)
+	ampbins = [0:1:30];
+	amplitudehistCurlies  = hist(table2array(R{1}.allneurons(logical(~bridgecells),'ampl')),ampbins)
+	amplitudehistBridges  = hist(table2array(R{1}.allneurons(logical(bridgecells),'ampl'))  ,ampbins)
+	amplitudehistCurlies0 = hist(table2array(R{2}.allneurons(logical(~bridgecells),'ampl')),ampbins)
+	amplitudehistBridges0 = hist(table2array(R{2}.allneurons(logical(bridgecells),'ampl')) ,ampbins)
 
-figure
-subplot(211)
-bar(ampbins, [ amplitudehistCurlies ; amplitudehistBridges]','stacked')
-xlabel('Amplitude (mV) ')
-ylabel('Cells')
-title('STO amplitude')
+	figure
+	subplot(211)
+	bar(ampbins, [ amplitudehistCurlies ; amplitudehistBridges]','stacked')
+	xlabel('Amplitude (mV) ')
+	ylabel('Cells')
+	title('STO amplitude')
 
-subplot(212)
-bar(ampbins, [ amplitudehistCurlies0 ; amplitudehistBridges0]','stacked')
-xlabel('Amplitude (mV) ')
-ylabel('Cells')
-title('STO amplitude')
-
+	subplot(212)
+	bar(ampbins, [ amplitudehistCurlies0 ; amplitudehistBridges0]','stacked')
+	xlabel('Amplitude (mV) ')
+	ylabel('Cells')
+	title('STO amplitude')
+end
 
 % relationship between cluster amplitude and oscillator amplitude
 
@@ -173,7 +181,7 @@ title('STO amplitude')
 
 % activity of bridge cells and neighbors
 
-
+if plot_cluster_members
 	for c = 1:no_clusters
 		c
 		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
@@ -185,6 +193,7 @@ title('STO amplitude')
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
 		pause
 	end
+end
 
 
 
@@ -205,10 +214,12 @@ title('STO amplitude')
 tslice = 1:1000;
 
 if calculatesynchrony
+    
+    %%
 	fig3 = figure;;
 	for c = 1:no_clusters
 		c
-		clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',1);
+		clustered{c}.sync = measureGroupSync(sims{1},'group', clusters==c,'plotme',1);
 		clustered{c}.no_neurons = length(find(clusters==c));
 
 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
@@ -219,22 +230,24 @@ if calculatesynchrony
 	end
 		% xlabel('time (ms)')
 		% ylabel('mV')
+        
+        %%
 end
 
 
-% sync
-fig3 = figure;;
-	for c = 1:no_clusters
-		c
-		clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
-		clustered{c}.no_neurons = length(find(clusters==c));
+% % sync
+% fig3 = figure;;
+% 	for c = 1:no_clusters
+% 		c
+% 		clustered{c}.sync = measureGroupSync(sims{1},'group', clusters==c,'plotme',0);
+% 		clustered{c}.no_neurons = length(find(clusters==c));
 
-		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-		hold on
-		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-		pause
-	end
+% 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
+% 		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+% 		hold on
+% 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+% 		pause
+% 	end
 
 
 

@@ -68,7 +68,7 @@
 
 if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
 	X_README = 'replay_06_12_16 for pascal_with_spont'
-	nameprefix = 'replay_06_12_16_with_spont_gaptest'
+	nameprefix = 'replay_06_12_16_with_spont_'
 
 	seed = 0; tau = 20; noisesig =  0; noisemu = 0  ; sametoall = 0.1; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 5000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
 	

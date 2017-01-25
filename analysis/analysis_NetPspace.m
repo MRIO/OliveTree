@@ -24,8 +24,8 @@ if ~exist('transients') & 0
 	% fname = '/Users/M/Synced/Titan/Bench/clustersize_netpspace40_cluster_5000_11-Jun-2016.mat'; 
 	% dimnames = {'sametoall', 'clustersize', 'gap' };
 
-	fname = '/Users/M/Synced/Titan/Bench/netpspace/tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
-	dimnames = {'sametoall', 'tau', 'gap' };
+	% fname = '/Users/M/Synced/Titan/Bench/netpspace/tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
+	% dimnames = {'sametoall', 'tau', 'gap' };
 
 	% fname = 'sigXmu_0corr_netpspace98_iso_3000_28-Jun-2016.mat'
 	% dimnames = {'noisesig', 'noiseamp', 'gap' };
@@ -33,8 +33,8 @@ if ~exist('transients') & 0
 	% fname = 'RADIUS_X_NCORR_netpspace25_iso_3000_28-Jun-2016.mat'
 	% dimnames = { 'radius', 'corr',	 'gap' };
 
-	% fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
-	% dimnames = { 'noisesig', 'noiseamp',	'gap' };	
+	fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
+	dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
 
 	

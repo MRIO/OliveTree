@@ -16,15 +16,18 @@
 % F = 'periodic_ampa_2_iso_0.04_gallop_50000_2_20-Jun-2016.mat';
 % F = 'periodic_ampa_moreoscillations_nocorr_2_iso_0.04_1Hz_50000_2_28-Jun-2016.mat'
 % F = 'periodic_ampa_moreoscillations_nocorr_2_iso_0.04_gallop_50000_2_29-Jun-2016.mat'
-
+	
 % F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_gallop_50000_4_25-Sep-2016.mat';
-F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_1Hz_50000_4_25-Sep-2016.mat';
+% F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_1Hz_50000_4_25-Sep-2016.mat'; % seemingly wrong gap junction neighborhood
 % F1 = 'periodic_ampa_replay_06_12_16_4_iso_0_1Hz_50000_4_25-Sep-2016.mat';
+
+F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat'; runs = [5:8];
 
 
 addpath('/Users/M/Synced/Titan/Bench2/periodic_ampa/')
 addpath('/Users/M/Synced/Titan/Bench2/')
 addpath('/Users/M/Synced/Titan/Bench/')
+
 
 % [=================================================================]
 %  analysis to run
@@ -34,12 +37,12 @@ addpath('/Users/M/Synced/Titan/Bench/')
 spontaneous = 0;
 % npulses = 3;
 plotstruct = 0;
-plotstuff = 1;
+plotstuff = 0;
 plot_selected_neurons = 0;
-computerasters = 1;
-computepartialcorrelations = 1;
+computerasters = 0;
+partialcorrelations_and_responsescatters = 1;
 calculate_xcorrs = 0;
-stimtrigwaves = 1;
+stimtrigwaves = 0;
 
 
 trigger = 1; % perturbation (according to 'pert')
@@ -56,8 +59,8 @@ cellselection = [105];
 %=============================gather data==============================%
 
 load (F1)
-numruns = 4;
-Joinedsim{1}  = joinsim(simresults,[1:numruns]); 
+
+Joinedsim{1}  = joinsim(simresults,runs); 
 
 % load (F2)
 % numruns = 4;
@@ -221,8 +224,9 @@ end
 % [=================================================================]
 %  compute partial correlations of spiking responses
 % [=================================================================]
-if computepartialcorrelations
-	 	resp = sum(collectedHistogram(:,2001:2050),2)./50*1e3 ;		
+if partialcorrelations_and_responsescatters
+	 	resp     = sum(collectedHistogram(:,2001:2050),2)./50*1e3 ; % response frequency in post stimulus window
+	 	respProb = sum(collectedHistogram(:,2001:2050),2)./ntrigs ; % response probability
 		CAL = sim.cellParameters.g_CaL;
 		IH  = sim.cellParameters.g_h;
 		IINT  = sim.cellParameters.g_int;
@@ -246,19 +250,24 @@ if computepartialcorrelations
 
 
 		figure
-		scatter(CAL, sum(collectedHistogram(:,2001:2050),2)./50*1e3 , 50, MASK,'filled')
+		scatter(CAL, resp , 50, MASK,'filled')
 		xlabel('CaT conductance (ms/cm^2)')
-		ylabel('spike frequency (Hz)')
+		ylabel('response frequency (Hz)')
 
 		figure
-		scatter3( sim.cellParameters.g_CaL, gapneighborhood, spkfreq , resp*100, spks.spikespercell+eps,'filled'); view([az el])
+		scatter(CAL, respProb , 50, MASK,'filled')
+		xlabel('CaT conductance (ms/cm^2)')
+		ylabel('response probability')
+
+		figure
+		scatter3( sim.cellParameters.g_CaL, gapneighborhood, spkfreq , 30, resp*100,'filled'); view([az el])
 		title('response probability')
 		xlabel('CaT conductance (mS/cm^2)')
 		ylabel('gap neighborhood (mS/cm^2)')
 		zlabel('spike frequency (Hz)')
 				
 		figure
-		scatter3( sim.cellParameters.g_CaL, gapneighborhood, resp, spkfreq*100, spkfreq+eps ,'filled'); view([az el])
+		scatter3( sim.cellParameters.g_CaL, gapneighborhood, spkfreq, respProb*10000 ,'filled'); view([az el])
 		title('response probability')
 		xlabel('CaT conductance (mS/cm^2)')
 		ylabel('gap neighborhood (mS/cm^2)')

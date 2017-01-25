@@ -20,7 +20,7 @@ p.addRequired('sim')  % a matrix with two columns or a cell array with two cells
 p.addOptional('time_slice',[])
 p.addOptional('savemovie',0)
 
-p.addParamValue('plotallfields', 1) % stdandard deviation criterion for offset threshold
+p.addParamValue('plotallfields', 0) % stdandard deviation criterion for offset threshold
 p.addParamValue('fhandle', gcf)
 p.addParamValue('plot_info', 1)
 

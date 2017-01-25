@@ -51,7 +51,7 @@ for s = simstojoin
 
 end
 
-if isfield(sims{1}.perturbation, 'triggers');
+if isfield(sims{simstojoin(1)}.perturbation, 'triggers');
 	% pruning only the first pulse of the triggers
 	for t = 1:p
 		triggers{t} = triggers{t}((diff([1; triggers{t}]))>4);
@@ -59,17 +59,17 @@ if isfield(sims{1}.perturbation, 'triggers');
 end
 
 
-out = sims{1};
+out = sims{simstojoin(1)};
 out.duration = d*length(simstojoin);
 out.spikes.spikespercell = spikespercell;
 out.spikes.spikes  = spikeset;
 out.spikes.binaryspikes = binspikes;
 
-if isfield(sims{1}.perturbation, 'triggers');
+if isfield(sims{simstojoin(1)}.perturbation, 'triggers');
 	out.perturbation.triggers = triggers;
 end
 
-if isfield(sims{1}.networkHistory, 'V_soma');
+if isfield(sims{simstojoin(1)}.networkHistory, 'V_soma');
 	out.networkHistory.V_soma = VSomaHist;
 end
 
