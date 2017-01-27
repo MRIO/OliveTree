@@ -110,7 +110,7 @@ switch experiment
 		simtime = 1000;
 		netsize = [1 3 3];
 		cell_parameters = createDefaultNeurons(prod(netsize));
-		cell_parameters.gbar_gaba_soma = 1*ones(prod(netsize),1);
+		cell_parameters.gbar_gaba_soma = .5*ones(prod(netsize),1);
 		cell_parameters.gbar_gaba_dend = .5*ones(prod(netsize),1);
 		gap = .01;
 		centercell = 5;
@@ -124,8 +124,8 @@ switch experiment
 		
 		pert.mask  	   {1} = [0 0 1 1 1 1 1 0 0 ]';
 		pert.amplitude {1} = 1;
-		pert.triggers  {1} = [100:10:260];
-		pert.duration  {1} = 10;
+		pert.triggers  {1} = [100:10:150];
+		pert.duration  {1} = 5;
 		pert.type	   {1} = 'gaba_soma'; % gaba_soma ; ampa_noise ; ampa_soma
 
 		pert.mask  	   {2} = [0 0 0 0 1 0 0 0 0 ]';

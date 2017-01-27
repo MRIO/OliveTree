@@ -3,22 +3,25 @@
 clear;
 
 oscillatingcells_comp = 1;
-calculatesynchrony = 1;
-sto_and_propfiring_histograms = 1;
+hist_sto_freq_amp_w_wo_gaps = 1;
+plotcellscatters  = 1;
+calculatesynchrony = 0;
+sto_and_propfiring_histograms = 0;
 
-addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa')
+
+tslice = 1001:4000;
+
+if not(exist('sims'))
+	addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
+
+	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest2_iso_spont_5000_1_17-Jan-2017.mat'; runs = [5:8];
+	load(F1)
+	disp('loaded.')
+end
+
 
 if oscillatingcells_comp
-	tslice = 1001:4000;
-
-	if not(exist('sims'))
-		% addpath('/Users/M/Projects/Experiements/Olive/model/simresults')
-		% load('periodic_ampa_2_iso_0.04_spont_50000_2_12-Jun-2016.mat')
-		load('periodic_ampa_replay_06_12_16_with_spont_gaptest2_iso_spont_5000_1_')
-	end
-
-
-
+	
 	statevar{1} = simresults{1}.networkHistory.V_soma(:,tslice);
 	statevar{2} = simresults{2}.networkHistory.V_soma(:,tslice);
 
@@ -31,33 +34,48 @@ if oscillatingcells_comp
 	set(0,'defaultaxescolororder', linspecer(10))
 	set(0,'defaultfigurecolormap', linspecer(10))
 
+	if plotcellscatters 
+		sel_fields = {'g_CaL', 'g_int',  'ampl', 'freq_each', 'meanVm'};
+		sel_fields = {'g_CaL', 'ampl', 'freq_each'}
+		sel_table = R{1}.allneurons(:,sel_fields);
+
+		NDscatter(sel_table, 1)
+
+		sel_table = R{2}.allneurons(:,sel_fields);
+
+		NDscatter(sel_table, 1)
+	end
 
 
-	freqbins = [0:1:30];
-	freqhistwithout  = hist(table2array(R{1}.allneurons(:,'freq_each')), freqbins)
-	freqhistwith  = hist(table2array(R{2}.allneurons(:,'freq_each')), freqbins)
 
-	ampbins = [0:2:25];
-	amplitudehistwithout = hist(table2array(R{1}.allneurons(:,'ampl')),ampbins)
-	amplitudehistwith 	 = hist(table2array(R{2}.allneurons(:,'ampl'))  ,ampbins)
+	if hist_sto_freq_amp_w_wo_gaps
 
+		freqbins = [0:1:10];
+		freqhistwithout  = hist(table2array(R{1}.allneurons(:,'freq_each')), freqbins)
+		freqhistwith  = hist(table2array(R{2}.allneurons(:,'freq_each')), freqbins)
 
-
-figure
-	subplot(1,2,1)
-	bar(freqbins, [ freqhistwithout ; freqhistwith]',1)
-	xlabel('Amplitude (mV) ')
-	ylabel('Cells')
-	title('STO freq')
-	
-	subplot(1,2,2)
-	bar(ampbins, [amplitudehistwithout ; amplitudehistwith]',1)
-	xlabel('Amplitude (mV) ')
-	ylabel('Cells')
-	title('STO amplitude')
+		ampbins = [0:2:25];
+		amplitudehistwithout = hist(table2array(R{1}.allneurons(:,'ampl')),ampbins)
+		amplitudehistwith 	 = hist(table2array(R{2}.allneurons(:,'ampl'))  ,ampbins)
 
 
-	if calculatesynchrony
+		figure
+			subplot(1,2,1)
+			bar(freqbins, [ freqhistwithout ; freqhistwith]',1)
+			xlabel('Freq (Hz) ')
+			ylabel('Cells')
+			title('STO freq')
+			
+			subplot(1,2,2)
+			bar(ampbins, [amplitudehistwithout ; amplitudehistwith]',1)
+			xlabel('Amplitude (mV) ')
+			ylabel('Cells')
+			title('STO amplitude')
+	end
+
+end
+
+if calculatesynchrony
 		fig3 = figure;;
 		
 			sim1_sync = measureGlobalSync(simresults{1},'plotme',1);

@@ -18,7 +18,7 @@ VarNames = intable.Properties.VariableNames;
 data = table2array(intable);
 N = length(VarNames);
 
-
+figure
 
 if ~isempty(groupby)
 	[C_ r_ groups] = unique(data(:,groupby));
@@ -41,10 +41,10 @@ end
 
 
 
-	l1 = linspace(0, .9, N+1); l1 = l1(1:end -1)+.05; 
-	l2 = linspace(0, .9, N+1); l2 = l2(1:end -1)+.05; l2 = fliplr(l2);
-	w  = .9/N;
-	h  = .9/N;
+	l1 = linspace(0, .88, N+1); l1 = l1(1:end -1)+.08; 
+	l2 = linspace(0, .88, N+1); l2 = l2(1:end -1)+.08; l2 = fliplr(l2);
+	w  = .80/N;
+	h  = .80/N;
 
 	r = 0; c = 0;
 	for rr = l1
@@ -98,11 +98,18 @@ end
 			if r ~= 1
 				set(gca, 'xtick' , [])
 			end
-			if c ~= N
+			if c ~= N & c ~= 1
 				set(gca, 'ytick' , [])
 			end
+			if c == r
+				set(gca,'ytick', [0 max(hhh)])
+			end
+			if c == 1
+				set(gca,'yaxislocation', 'right')
+			end
+
 		
-			set(gca,'color',bgcolor,'xcolor', axiscolor, 'ycolor', axiscolor);
+			set(gca,'color',bgcolor,'xcolor', axiscolor, 'ycolor', axiscolor,'tickdir', 'out','box','on');
 		end
 
 		c = 0;
@@ -115,9 +122,19 @@ end
 	for r = pl_i
 
 		linkaxes(hand(r,pl_i(find(pl_i~=r))),'y')
-		linkaxes(hand(pl_i(find(pl_i~=r)),r),'x')
+		% linkaxes(hand(pl_i(find(pl_i~=r)),r),'x')
+		linkaxes(hand(pl_i,r),'x')
 
 	end
+
+	for c = pl_i
+
+		linkaxes(hand(pl_i(find(pl_i~=c)),c),'x')
+		linkaxes(hand(c, pl_i(find(pl_i~=c))),'y')
+
+	end
+
+
 
 
 	if nargout>0

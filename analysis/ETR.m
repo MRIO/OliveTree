@@ -1,5 +1,7 @@
 
 function out = ETR(varargin)
+	% 
+	% @OliveTree
 % p.addRequired('triggers',@isvector) % triggers and spikes must be in ms
 % p.addRequired('spikes',@isvector) % triggers and spikes must be in ms
 %
@@ -220,7 +222,7 @@ end
 
 
 if ~isempty(cell2mat(OETR(:)))
-		[H X] = ksdensity(cell2mat(OETR(:)), [-win:1:win],'kernel', 'epanechnikov', 'width', bin);
+		[H X] = ksdensity(cell2mat(OETR(:)), [-win:1:win],'kernel', 'box', 'width', bin);
 	else
 		disp('Ordered ETR variable is empty')
 		return

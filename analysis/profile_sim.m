@@ -136,7 +136,7 @@ if plotme
 
 			set(gca,'xtick', [1:no_vars], 'xticklabel', ColumnsOfInterst)
 			set(gca,'ytick', [1:no_vars], 'yticklabel', ColumnsOfInterst)
-			title('p values')
+			title('p<0.05?')
 
 	if isfield(sim,'Plist')
 		sim.Plist = round(sim.Plist*100)/100;

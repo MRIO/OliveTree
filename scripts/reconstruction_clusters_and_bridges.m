@@ -122,7 +122,7 @@ I_app = [];
 pert.mask     {1} =  [curlies.stats.clusters==5] | [curlies.stats.clusters==10] | [curlies.stats.clusters==20];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
-pert.duration {1} = 5;
+pert.duration {1} = 10;
 pert.type	  {1} = 'gaba_soma';
 % pert.type	  {1} = 'ampa';
 
