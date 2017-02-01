@@ -21,7 +21,11 @@ N = length(VarNames);
 figure
 
 if ~isempty(groupby)
-	[C_ r_ groups] = unique(data(:,groupby));
+	if length(groupby)>1
+		groups = groupby;
+	else
+		[C_ r_ groups] = unique(data(:,groupby));
+	end
 else
 		groups = ones(size(data,2));
 end
@@ -67,15 +71,20 @@ end
 					continue
 				end
 				xxx = linspace(min(data(:,r)), max(data(:,r)), 30);
-				[hhh xxx] = hist(data(:,r), xxx);
-				bar(xxx, hhh, 'facecolor', markercolor)
-				hold on
-				% for g = 1:ngroups
-				% 	[hhh] = hist(data(groups==g,r),xxx);
-				% 	plot(xxx, hhh,'color', groupcolors(g,:) )
 
-				% end
-				% axis tight
+				if ngroups>1 & ngroups <3
+					for g = 1:ngroups
+						[hhh] = hist(data(groups==g,r),xxx);
+						plot(xxx, hhh,'color', groupcolors(g,:) )
+						hold on
+
+					end
+				else
+					
+					[hhh xxx] = hist(data(:,r), xxx);
+					bar(xxx, hhh, 'facecolor', markercolor)
+				end
+
 				set(gca,'ytick', [0 max(hhh)])
 
 			end
@@ -83,7 +92,7 @@ end
 			if c > r
 				edges = {linspace(min(data(:,c)), max(data(:,c)) , 20); linspace(min(data(:,r)), max(data(:,r)) , 20)};
 				line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
-				% imagesc(edges{1}, edges{2}, hist3([data(:,c) data(:,r) ], 'Edges', edges ))
+				imagesc(edges{1}, edges{2}, hist3([data(:,c) data(:,r) ], 'Edges', edges ))
 				axis xy
 			end
 
@@ -108,11 +117,15 @@ end
 				set(gca,'yaxislocation', 'right')
 			end
 
-		
+
+			xlim([min(data(:,c)) max(data(:,c))])
+
 			set(gca,'color',bgcolor,'xcolor', axiscolor, 'ycolor', axiscolor,'tickdir', 'out','box','on');
+
 		end
 
 		c = 0;
+
 	end
 
 	colormap(jet(5))
