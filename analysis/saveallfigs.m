@@ -9,13 +9,14 @@ function saveallfigs(varargin)
 	p.addParameter('prefix', []) 
 	p.addParameter('path', []) 
 	p.addParameter('formats', 'style')
-	p.addParameter('style', '2col')
+	p.addParameter('style', '9x6')
 
 	
 	p.parse(varargin{:});
 	prefix = p.Results.prefix;
 	path = p.Results.path;
 	formats = p.Results.formats;
+	style = p.Results.style;
 
 	mag = '-m4'
 
@@ -29,10 +30,10 @@ for i=1:length(h)
    switch formats
    case 'style'
    		fname = [prefix num2str(i) '.png'];
-   		snam='2col'
+   		snam=style;
    		s=hgexport('readstyle',snam);
-	    s.Format = 'png'
-	    hgexport(h(i),fnam,s);
+	    s.Format = 'png';
+	    hgexport(h(i),fname,s);
 
 
    	case 'png'
