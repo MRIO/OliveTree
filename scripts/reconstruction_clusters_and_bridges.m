@@ -7,7 +7,7 @@
 rng(0,'twister') % random seed
 
 steadystate_time = 500; %ms
-simtime  = 5000; %ms
+simtime  = 10000; %ms
 delta = .02;
 gpu = 1;
 
@@ -43,21 +43,30 @@ somatapositions(1,:) = [];
 noneurons = length(somatapositions);
 
 if not(exist('curlies'))
+	% curlies:
+	% create a network with distance based connectivity for close by connections
+	% this network is clusterized with about 20cells per cluster, according to a k-means algo.
 	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
+
+	% create a network with distance based connectivity for further apart cells: bridges
+	% these cells are not bound to specific clusters.
 	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, 1, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
 
-	% 10% of cells are bridges
-	bc = randperm(noneurons); 
-	z = zeros(noneurons,1) ; 
-	z(bc(1:round(.1*noneurons))) = 1;
+	% define the indices of 10% of the cells, these will be bridges
+	bc = randperm(noneurons); % randomly permute cell indices
+	z = zeros(noneurons,1) ; % initialize index vector
+	z(bc(1:round(.1*noneurons))) = 1; % make 10% of the cells == bridges
 	bc =z;
 
-	curlies.W = bsxfun(@times, curlies.W, ~z);
-	curlies.W = bsxfun(@times, curlies.W, ~(z'))*gap_curlies;
+	% remove from curlie adjacency matrix all of those that will become bridges
+	curlies.W = bsxfun(@times, curlies.W, ~z); 
+	curlies.W = bsxfun(@times, curlies.W, ~(z'))*gap_curlies; % multiply by the 'unitary' conductance
 	cstats = connectivity_statistics(bridges);
 	curlies.stats = cstats.stats ;
 
+	% remove connections from curlies to bridges from bridge adjacency matrix
 	bridges.W = bsxfun(@times, bridges.W, z);
+	% create bridge cells connectivity 
 	bridges.W = (bridges.W+bridges.W')*gap_bridges;
 	bstats = connectivity_statistics(bridges);
 	bridges.stats = bstats.stats ;
@@ -86,7 +95,8 @@ cell_function = 'vanilla'; % 'devel'
 % netsize = [3 15 15];
 
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
-def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+% def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3');
 
 % randomized2 = 
 % neurons.g_CaL = linspace(.5, 1, noneurons);
@@ -195,7 +205,7 @@ if 1
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W*0 ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
-	 sim{3}.note = 'only curlies'
+	 sim{3}.note = 'gap is zero'
 	 sim{3}.W = curlies;
 	 
 
