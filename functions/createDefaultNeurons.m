@@ -2,16 +2,18 @@
 function cell_parameters = createDefaultNeurons(varargin)
 % createDefaultNeurons(noneurons, celltypes, gapcompensation)
 
+%TODO: Check for correlations in the random draws - if there are, shuffle/redraw
+
 	ip = inputParser;
 	ip.addOptional('noneurons',0)
 	
-	ip.addParamValue('celltypes', 'none') 
+	ip.addParameter('celltypes', 'none') 
 	ip.addParameter('Pnames', {'g_CaL' ;'g_int'; 'g_h'; 'g_K_Ca'; 'g_ld' ;'p1'} )
-	ip.addParamValue('gapcompensation', 0) 
-	ip.addParamValue('nogapcompensation', 0);
-	ip.addParamValue('shuffle', 0) 
-	ip.addParamValue('addrand',0)
-	ip.addParamValue('rng', rng(0))
+	ip.addParameter('gapcompensation', 0) 
+	ip.addParameter('nogapcompensation', 0);
+	ip.addParameter('shuffle', 0) 
+	ip.addParameter('addrand',0)
+	ip.addParameter('rng', rng(0))
 	
 	ip.parse(varargin{:});
 
@@ -57,6 +59,24 @@ switch celltypes
 		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.2);
 		cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
+
+
+
+	case 'randomized3'
+
+		cell_parameters = defneurons(noneurons);
+		
+		cell_parameters.g_CaL    = cell_parameters.g_CaL   - .3  + rand(noneurons,1)*1;
+		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
+		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
+		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
+		% cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
+		% cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
+		% cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
+		cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.1);
+		cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
+
+
 
 
 	case 'permuted'
