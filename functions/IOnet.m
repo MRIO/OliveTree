@@ -370,15 +370,6 @@ for t = 1:simSteps
     if report_all_dt
 
         if length(to_report)>0
-<<<<<<< HEAD
-            try
-                for ftr = 1:length(to_report)
-                    eval(['netHist.' to_report{ftr} '(:,t) = gather(state.' to_report{ftr} ');']);
-                end
-            catch
-                to_report
-                ftr
-=======
             for ftr = 1:length(to_report)
                 try
                     eval(['netHist.' to_report{ftr} '(:,t) = gather(state.' to_report{ftr} ');']);
@@ -386,8 +377,6 @@ for t = 1:simSteps
                     E.stack
                     keyboard
                 end
-
->>>>>>> master
             end
         end
 
