@@ -370,7 +370,7 @@ for t = 1:simSteps
 
         if length(to_report)>0
             for ftr = 1:length(to_report)
-                eval(['netHist.' to_report{ftr} '(:,t) = gather(state.' to_report{ftr} ');']);
+                eval(['netHist.' to_report{ftr} '(:,t) = state.' to_report{ftr} ';']);
             end
         end
 
