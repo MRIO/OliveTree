@@ -443,7 +443,12 @@ allfields = {'V_soma', 'Sodium_h', 'Potassium_n', 'Potassium_x_s', 'Calcium_k', 
                         ' g_gaba_soma', 'g_ampa_dend', ' g_ampa_soma', ' g_gaba_dend', 'Ca2_soma','current', 'backgroundnoise'};
 
 for fts = fields(state)'
-     eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
+    try
+        eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
+    catch E
+        E.stack
+        keyboard
+    end
      % eval( ['tempState.' fts{1} '= state.' fts{1} ';'] );
 end
 
