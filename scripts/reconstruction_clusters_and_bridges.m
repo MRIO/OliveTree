@@ -139,8 +139,8 @@ pert.type	  {1} = 'gaba_soma';
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 st_st.note = 'curlies and bridges'
 
-% 	% st_st.Plist = Plist;
-% end
+	% st_st.Plist = Plist;
+end
 
 
 % [=================================================================]
