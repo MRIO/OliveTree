@@ -386,7 +386,8 @@ for t = 1:simSteps
         if length(to_report)>0
             for ftr = 1:length(to_report)
                 try
-                    eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = gather(state.' to_report{ftr} ');']);
+                    % eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = gather(state.' to_report{ftr} ');']);
+                    eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = state.' to_report{ftr} ';']);
                 catch
                     to_report{ftr} = [];
                 end
@@ -442,6 +443,7 @@ allfields = {'V_soma', 'Sodium_h', 'Potassium_n', 'Potassium_x_s', 'Calcium_k', 
                         ' g_gaba_soma', 'g_ampa_dend', ' g_ampa_soma', ' g_gaba_dend', 'Ca2_soma','current', 'backgroundnoise'};
 
 for fts = fields(state)'
+     eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
      eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
 end
 
