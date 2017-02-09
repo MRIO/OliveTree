@@ -445,9 +445,8 @@ allfields = {'V_soma', 'Sodium_h', 'Potassium_n', 'Potassium_x_s', 'Calcium_k', 
 for fts = fields(state)'
     try
         eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
-    catch E
-        E.stack
-            keyboard
+    catch 
+        eval( ['tempState.' fts{1} '= state.' fts{1} ';'] ); 
     end
      % eval( ['tempState.' fts{1} '= state.' fts{1} ';'] );
 end
