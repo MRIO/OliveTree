@@ -141,7 +141,8 @@ if strcmp(cell_function, 'devel'); disp('warning: debugging not compatible with 
 try 
     if gpuDeviceCount == 0; use_gpu = 0; disp('no gpu found in this machine'); end     
 catch E
-        keyboard
+    use_gpu = 0; disp('no gpu found in this machine');  
+        % keyboard
 end
 
 
@@ -370,7 +371,7 @@ for t = 1:simSteps
 
         if length(to_report)>0
             for ftr = 1:length(to_report)
-                eval(['netHist.' to_report{ftr} '(:,t) = state.' to_report{ftr} ';']);
+                eval(['netHist.' to_report{ftr} '(:,t) = gather(state.' to_report{ftr} ');']);
             end
         end
 
@@ -379,8 +380,7 @@ for t = 1:simSteps
         if length(to_report)>0
             for ftr = 1:length(to_report)
                 try
-                    % eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = gather(state.' to_report{ftr} ');']);
-                    eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = state.' to_report{ftr} ';']);
+                    eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = gather(state.' to_report{ftr} ');']);
                 catch
                     to_report{ftr} = [];
                 end
