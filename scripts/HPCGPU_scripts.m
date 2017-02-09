@@ -246,7 +246,7 @@ end
 % [================================================]
 
 
-if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
+if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench')
 	X_README = 'SIG X MU Corr = 0.1 R2'
 	nameprefix = 'sigXmu_01corr_R2';
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
@@ -261,7 +261,7 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
 	p10 = [15];			% N, size of N x N network
 	p11 = [2];			% depth in Z		
 	p12 = [1];			% whether using gap compensation in cells
-	p13 = [0:.1:.6];	    	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+	p13 = [0:.1:.6];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
 	simtime = 3000;
 	conntype = 'iso';

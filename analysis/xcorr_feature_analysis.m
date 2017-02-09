@@ -2,7 +2,7 @@
 
 numneurons = 200;
 
-path_to_sims = ['/Users/M/Synced/Titan/Bench2/periodic_ampa/'];
+path_to_sims = ['/Users/M/Synced/Projects/Experiment/Olive/model/simresults/periodic_ampa/'];
 computeselectedxcorr = 1;
 
 sims2p = [1 2 3];
@@ -11,13 +11,13 @@ plotxcorrs = 1;
 	plot_selected_neurons  = 1;
 	nselneurons = 20;
 	if not(exist('selected_neurons'))
-		% selected_neurons = 'neighbors';
+		selected_neurons = 'neighbors';
 		% selected_neurons = 'nextneighbors';
 		% selected_neurons = 'stimulated';
 		% selected_neurons = 'acrosscluster';
 		% selected_neurons = 'highgapconn';
 		% selected_neurons = 'leastgapconn';
-		selected_neurons = 'all';
+		% selected_neurons = 'all';
 	end
 
 if ~exist('loaded'); loaded = 0; end

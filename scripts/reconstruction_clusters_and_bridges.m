@@ -19,7 +19,7 @@ vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36'};
 
 % variables to store
-to_report = gapcur;
+to_report = vsoma;
 
 
 

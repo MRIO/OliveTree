@@ -26,6 +26,7 @@ addpath('/Users/M/Synced/Titan/Bench2/')
 addpath('/Users/M/Synced/Titan/Bench/')
 
 addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa')
+addpath('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/periodic_ampa')
 
 F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat'; runs = [5:8];
 
@@ -99,6 +100,7 @@ ntrigs = length(triggers);
 %===========================================================%
 if profilesim
 	profiled{1} = profile_sim(Joinedsim{1},'tslice',[1000:5000]);
+	NDscatter(profiled{1}.allneurons(:,{'g_CaL'; 'spks'}))
 end
 
 
@@ -142,10 +144,11 @@ if computerasters
 			% catch
 				trigrast = ETR(triggers, allspikes{i} ,'bin', 1, 'span', 1000,'plotQ',ismember(i, cellselection) );
 			% end
-			spksininterval = @(tr) length(find(trigrast.eventTriggeredRaster{tr}>0 & trigrast.eventTriggeredRaster{tr}<100 ));
+			spksininterval = @(tr) length(find(trigrast.eventTriggeredRaster{tr}>0 & trigrast.eventTriggeredRaster{tr}<30 ));
 
 
-			resp(i,1) = sum(arrayfun(spksininterval, [1:length(triggers)])>=1 )/ length(triggers);
+			% resp(i,1) = sum(arrayfun(spksininterval, [1:length(triggers)])>=1 )/ length(triggers); % if we're checking the probability of any spike in window
+			resp(i,1) = sum(arrayfun(spksininterval, [1:length(triggers)])>=1 )/ length(triggers); % if we're counting their number
 
 			collectedHistogram(i,:) = trigrast.histogram{2};
 
@@ -234,36 +237,38 @@ if partialcorrelations_and_responsescatters
 	 	% resp     = sum(collectedHistogram(:,1001:1030),2)./30*1e3 ; % response frequency in post stimulus window
 		CAL = sim.cellParameters.g_CaL;
 		IH  = sim.cellParameters.g_h;
-		IINT  = sim.cellParameters.g_int;
+		IINT = sim.cellParameters.g_int;
+		GAMP = sim.cellParameters.gbar_ampa_soma;
 		GN 	 = gapneighborhood';
 		MASK = sim.perturbation.mask{1};
 
-		T = [CAL IH IINT MASK GN spkfreq' resp];		
+		T = [CAL IH IINT MASK GAMP GN spkfreq' resp];		
 
 		[CORR PVAL] = partialcorr(T);
 
 		figure
 		subplot(121)
-		imagesc(CORR), colorbar
-		set(gca,'xticklabel', {'g CaL' 'g h' 'g s-d' 'mask' 'gap leak' 'spk freq' 'resp freq'})
-		set(gca,'yticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'GapN' 'spkfreq' 'resp'})
+		% CORR(find(triu(ones(size(CORR))))) = -.01;
+		imagesc(CORR,[-1 1]), colorbar
+		set(gca,'xticklabel', {'g CaL' 'g h' 'g s-d' 'mask' 'g_ampa' 'gap leak' 'spk freq' 'resp freq'})
+		set(gca,'yticklabel',{'g CaL' 'g h' 'g s-d' 'mask' 'g_ampa' 'gap leak' 'spk freq' 'resp freq'})
 		title('partial correlation')
 
 		subplot(122)
-		imagesc(PVAL<0.05), colorbar
-		set(gca,'xticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'GapN' 'spkfreq' 'resp'})
-		set(gca,'yticklabel', {'CAL' 'IH' 'IINT' 'MASK' 'GapN' 'spkfreq' 'resp'})
+		imagesc(PVAL<0.05,[0 1]), colorbar
+		set(gca,'xticklabel', {'g CaL' 'g h' 'g s-d' 'mask' 'g_ampa' 'gap leak' 'spk freq' 'resp freq'})
+		set(gca,'yticklabel', {'g CaL' 'g h' 'g s-d' 'mask' 'g_ampa' 'gap leak' 'spk freq' 'resp freq'})
 			title('pval<0.05 (0-no, 1-yes)')
 
 		figure
-		scatter(CAL, resp , 50, MASK,'filled')
+		scatter(CAL, resp , 100, MASK,'filled')
 		xlabel('CaT conductance (ms/cm^2)')
 		ylabel('response frequency (Hz)')
 
 		figure
-		scatter(CAL, IINT , resp*100, MASK,'filled')
+		scatter(CAL, GAMP , resp*500, MASK,'filled')
 		xlabel('CaT conductance (ms/cm^2)')
-		ylabel('internal conductance')
+		ylabel('AMPA conductance')
 
 		figure
 		scatter3( sim.cellParameters.g_CaL, gapneighborhood, spkfreq , 30, resp*10000,'filled'); view([az el])
@@ -280,9 +285,15 @@ if partialcorrelations_and_responsescatters
 		zlabel('response frequency (Hz)')
 		
 		figure
+		scatter(CAL, resp, spkfreq*100 , MASK,'filled')
+		xlabel('CaT conductance (ms/cm^2)')
+		ylabel('spike frequency (Hz)')
+
+		figure
 		scatter(CAL, spkfreq , resp*50, MASK,'filled')
 		xlabel('CaT conductance (ms/cm^2)')
 		ylabel('spike frequency (Hz)')
+
 
 
 	end
@@ -491,6 +502,4 @@ if gallop
 
 
 end
-
-
 

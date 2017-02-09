@@ -210,22 +210,17 @@ spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 		% sbp = sbp +1;
 		% axx = subplot(1,numsubplots,sbp);
 		
-		axes(aclock)
-		cla
-		circ_plot(G2(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','b','markersize',15,'marker','+');
+		% axes(aclock)
+		% cla
+		% circ_plot(G2(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','b','markersize',15,'marker','+');
+		% hold on
+		% circ_plot(G1(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','r','markersize',10,'marker','o');
+		% axis off
+
+		circ_plot(G2(:,t)+pi,'pretty','',true,'linewidth',1,'color','b','markersize',15,'marker','+');
 		hold on
-		circ_plot(G1(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','r','markersize',10,'marker','o');
+		circ_plot(G1(:,t)+pi,'pretty','',true,'linewidth',1,'color','r','markersize',10,'marker','o');
 		axis off
-
-		% circ_plot(G2(:,t)+pi,'pretty','',true,'linewidth',1,'color','b','markersize',15,'marker','+');
-		% hold on
-		% circ_plot(G1(:,t)+pi,'pretty','',true,'linewidth',1,'color','r','markersize',10,'marker','o');
-		% axis off
-
-		% circ_plot(G2(:,t)+pi,'hist', true,'linewidth',1,'color','b','markersize',15,'marker','+');
-		% hold on
-		% circ_plot(G1(:,t)+pi,'hist', true,'linewidth',1,'color','r','markersize',10,'marker','o');
-		% axis off
 
 		drawnow
 		alpha(.3)

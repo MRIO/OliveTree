@@ -1,21 +1,21 @@
 % analyze_clusters_bridges.m
 
 plotbridgeandneighbors = 1;
-	plotcellscatters  = 0;
-	joinedcellscatter  = 0;
-STOhistograms = 0;
-calculatesynchrony = 0;
+plotcellscatters  = 1;
+STOhistograms = 1;
+calculatesynchrony = 1;
 plot_cluster_members = 1;
 
 tslice = 1001:4000;
 
 if not(exist('st_st'))
 	% load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
-	load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
+	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_22-Jan-2017.mat');
+	load('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
     sims = sim;
 end
 
-if not(exist('sims'))
+if not(exist('R'))
 	sims{1}.W = bridg_curlies;
 	sims{2}.W = curlies;
 
@@ -39,34 +39,6 @@ if not(exist('sims'))
 
 end
 
-
-if plotcellscatters 
-	sel_fields = {'g_CaL', 'g_int', 'p1', 'g_h',  'ampl', 'freq_each', 'meanVm'}
-	sel_table = R{1}.allneurons(:,sel_fields);
-	figure
-	NDscatter(sel_table, 1)
-
-	sel_table = R{3}.allneurons(:,sel_fields);
-	figure	
-	NDscatter(sel_table, 1)
-end
-
-
-
-if joinedcellscatter
-
-	RR = vertcat(R{1}.allneurons, R{2}.allneurons);
-
-	G = [ones(200,1) ;ones(200,1)*2];
-	
-
-	sel_fields = {'g_CaL', 'ampl', 'freq_each', 'g_int'};
-	NDscatter(RR(:,sel_fields), G)
-
-
-end
-
-
 % [=================================================================]
 %  set defaults
 % [=================================================================]
@@ -82,6 +54,32 @@ set(0,'defaultaxescolororder', linspecer(10))
 set(0,'defaultfigurecolormap', linspecer(10))
 
 
+if plotcellscatters 
+	sel_fields = {'g_CaL', 'g_int', 'p1', 'g_h', 'g_ld',  'freq_each', 'meanVm','minV', 'supth'}
+	sel_fields = {'g_CaL', 'g_int', 'g_h', 'ampl', 'freq_each', 'meanVm','minV'}
+	sel_fields = {'g_CaL', 'g_ld',  'g_K_Ca', 'p1', 'g_h',  'ampl', 'freq_each', 'meanVm','minV','supth'}
+	sel_fields = {'g_CaL', 'g_ld', 'g_K_Ca',  'freq_each', 'meanVm','minV'}
+	
+	sel_table = R{1}.allneurons(:,sel_fields);
+	NDscatter(sel_table, 1)
+	
+	sel_table = R{2}.allneurons(:,sel_fields);
+	NDscatter(sel_table, 1)
+
+	sel_table = R{3}.allneurons(:,sel_fields);
+	NDscatter(sel_table, 1)
+
+end
+
+
+M{1} = measureGlobalSync(sims{1},'duration',tslice,'group',clusters==5);
+M{2} = measureGlobalSync(sims{2},'duration',tslice,'group',clusters==10);
+M{3} = measureGlobalSync(sims{3},'duration',tslice);
+
+
+
+
+
 % [=================================================================]
 %  connectivity
 % [=================================================================]
@@ -94,7 +92,7 @@ bridgecells = bc;
 [connhistB bins] =  hist(bridges.stats.connections(find(bc)),[0:20]);
 figure
 bar(bins, [connhistB; connhistC]','stacked')
-title('out degree')
+title('degree')
 legend({'bridges' 'curlies'})
 
 % [=================================================================]
@@ -111,6 +109,7 @@ title('bridge behavior when connected')
 figure
 bridge_Vm = statevar{3}(bridgeidx,:);
 waterfall(bridge_Vm(ord,:));
+
 
 
 % [=================================================================]
@@ -198,6 +197,11 @@ end
 
 % activity of bridge cells and neighbors
 
+
+% [=================================================================]
+%  Cluster Activity Stats
+% [=================================================================]
+
 if plot_cluster_members
 	for c = 1:no_clusters
 		c
@@ -214,23 +218,14 @@ end
 
 
 
-% show time for group and global to align
-
-
-
 % [=================================================================]
-%  Bridges and Curlies
+%  Synchrony stats for clusters
 % [=================================================================]
 
+tslice = 1:3000;
 
-% [=================================================================]
-%  Cluster Activity Stats
-% [=================================================================]
-
-
-tslice = 1:1000;
-
-if calculatesynchrony
+% calculates phase coherence of clustered cells
+if calculatesynchrony_clusters
     
     %%
 	fig3 = figure;;
@@ -239,16 +234,14 @@ if calculatesynchrony
 		clustered{c}.sync = measureGroupSync(sims{1},'group', clusters==c,'plotme',1);
 		clustered{c}.no_neurons = length(find(clusters==c));
 
-		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
+		
 		plot(tslice, mean(statevar{1}(find(clusters==c),tslice))+c*5,'color', lc(c,:))
 		hold on
-		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+		
+
 		pause
 	end
-		% xlabel('time (ms)')
-		% ylabel('mV')
-        
-        %%
+		% calculate mean sync per cluster -> look at variability
 end
 
 

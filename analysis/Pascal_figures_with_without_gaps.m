@@ -3,40 +3,54 @@
 clear;
 
 oscillatingcells_comp = 1;
+	plotcellscatters  = 1;
+	joinedcellscatter = 0;
+	triggeredphase =1;
 hist_sto_freq_amp_w_wo_gaps = 1;
-plotcellscatters  = 1;
+
 calculatesynchrony = 0;
 sto_and_propfiring_histograms = 0;
 
 
-tslice = 1001:4000;
+tslice = 1:30000;
 
-if not(exist('sims'))
+if not(exist('Joinedsim'))
 	addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
 
-	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest2_iso_spont_5000_1_17-Jan-2017.mat'; runs = [5:8];
+	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest2_iso_spont_5000_1_17-Jan-2017.mat'; 
 	load(F1)
 	disp('loaded.')
+
+	runs_with   = [5:8];
+	runs_wihout = [1:4];
+
+	Joinedsim{1}  = joinsim(simresults,runs_without); 
+	Joinedsim{2}  = joinsim(simresults,runs_with); 
+
+
+	statevar{1} = Joinedsim{1}.networkHistory.V_soma(:,tslice);
+	statevar{2} = Joinedsim{2}.networkHistory.V_soma(:,tslice);
+
+	% replayResults_clusters(sim{1});
+	% replayResults_clusters(sim{1});
+	disp('profiling...1')
+	R{1} = profile_sim(Joinedsim{1},'tslice',tslice);
+	disp('profiling...2')
+	R{2} = profile_sim(Joinedsim{2},'tslice',tslice);
+
+	set(0,'defaultaxescolororder', linspecer(10))
+	set(0,'defaultfigurecolormap', linspecer(10))
+
+
 end
 
 
 if oscillatingcells_comp
 	
-	statevar{1} = simresults{1}.networkHistory.V_soma(:,tslice);
-	statevar{2} = simresults{2}.networkHistory.V_soma(:,tslice);
-
-	% replayResults_clusters(sim{1});
-	% replayResults_clusters(sim{1});
-
-	R{1} = profile_sim(simresults{1},'tslice',tslice);
-	R{2} = profile_sim(simresults{2},'tslice',tslice);
-
-	set(0,'defaultaxescolororder', linspecer(10))
-	set(0,'defaultfigurecolormap', linspecer(10))
-
+	
 	if plotcellscatters 
 		sel_fields = {'g_CaL', 'g_int',  'ampl', 'freq_each', 'meanVm'};
-		sel_fields = {'g_CaL', 'ampl', 'freq_each'}
+		% sel_fields = {'g_CaL', 'ampl', 'freq_each'}
 		sel_table = R{1}.allneurons(:,sel_fields);
 
 		NDscatter(sel_table, 1)
@@ -45,6 +59,68 @@ if oscillatingcells_comp
 
 		NDscatter(sel_table, 1)
 	end
+
+	if onesec_vs_30s
+		Ronesec_withgap = profile_sim(Joinedsim{1},'tslice', [1000:3000]);
+		stacked = vertcat(R{2}.allneurons,Ronesec_withgap.allneurons );
+		G = [ones(200,1)*2 ;ones(200,1)*1];
+		sel_fields = {'ampl', 'freq_each', 'g_int', 'g_CaL'};
+		NDscatter(stacked(:,sel_fields), G)
+	end
+
+
+
+	if joinedcellscatter
+
+		RR = vertcat(R{1}.allneurons, R{2}.allneurons);
+
+		G = [ones(200,1)*2 ;ones(200,1)*1];
+		
+		sel_fields = {'spks' , 'ampl', 'freq_each', 'g_int', 'g_CaL'};
+		NDscatter(RR(:,sel_fields), G)
+
+	end
+
+
+
+
+	if triggeredphase
+
+
+		STPD{1} = stim_trig_phase_dist(Joinedsim{1});
+		STPD{2} = stim_trig_phase_dist(Joinedsim{2});
+
+		figure
+		 plot_mean_and_std(STPD{1}.R1.kp_mask,'color' ,[1 0 0]); hold on
+		 plot_mean_and_std(STPD{2}.R1.kp_mask,'color' ,[0 0 1])
+		 alpha(.5)
+		 legend({'MT' 'MT' 'WT' 'WT'})
+		 title('kuramoto (stimulated mask)')
+		 xlim([800 1500])
+
+		 figure
+		 plot_mean_and_std(STPD{1}.R1.Vm_othr,'color' ,[.5 .5 .5]); hold on
+		 plot_mean_and_std(STPD{1}.R1.Vm_mask,'color' ,[1 0 0])
+		 plot_mean_and_std(STPD{1}.R1.Vm_neig,'color' ,[0 1 0])
+		 title('Stim Trig Average Vm (MT)')
+		 alpha(.5)
+		 xlim([800 1500])
+		 
+		 legend({'Other' 'Other' 'Mask' 'Mask' 'Neighbors' 'Neighbors'  })
+
+		figure
+		 plot_mean_and_std(STPD{2}.R1.Vm_othr,'color' ,[.5 .5 .5]); hold on
+		 plot_mean_and_std(STPD{2}.R1.Vm_mask,'color' ,[1 0 0])
+		 plot_mean_and_std(STPD{2}.R1.Vm_neig,'color' ,[0 1 0])
+		 title('Stim Trig Average Vm (WT)')
+		 alpha(.5)
+		 xlim([800 1500])
+		 
+		legend({'Other' 'Other' 'Neighbors' 'Neighbors' 'Mask' 'Mask' })
+
+
+	end
+
 
 
 
@@ -73,16 +149,44 @@ if oscillatingcells_comp
 			title('STO amplitude')
 	end
 
-end
 
-if calculatesynchrony
-		fig3 = figure;;
+
+	if calculatesynchrony
 		
-			sim1_sync = measureGlobalSync(simresults{1},'plotme',1);
-			sim2_sync = measureGlobalSync(simresults{2},'plotme',1);
+		
+			sim1_sync = measureGlobalSync(Joinedsim{1}, 'duration', 2000:25000, 'plotme',1, 'group', Joinedsim{1}.perturbation.mask{1});
+			sim2_sync = measureGlobalSync(Joinedsim{2}, 'duration', 2000:25000, 'plotme',1, 'group', Joinedsim{2}.perturbation.mask{1});
+
+			xlim([8600 9800])
+			ninetyfive_1 = quantile(sim1_sync.stats.order_parameter_all(1:4900),.95)
+			ninetyfive_2 = quantile(sim2_sync.stats.order_parameter_all(1:4900),.95)
+
+			fig3 = figure;
+
+
+			[HOPA_1 XOPA_1] = hist([sim1_sync.stats.order_parameter_all' ;  sim2_sync.stats.order_parameter_all']')
+			
+
+		
+			[HOPA_2 XOPA_2] = hist([sim1_sync.stats.order_parameter_group' ;  sim2_sync.stats.order_parameter_group']')
+
+			subplot(2,1,1)
+			bar(XOPA_1,HOPA_1/(23000))
+			title('order parameter (all)')
+			legend({'MT'  'WT'})
+
+			subplot(2,1,2)
+			bar(XOPA_2,HOPA_2/(23000))
+			title('order parameter (group)')
+			legend({'MT'  'WT'})
+			
+
+
+
 	end
 
 end
+
 
 if sto_and_propfiring_histograms
 
