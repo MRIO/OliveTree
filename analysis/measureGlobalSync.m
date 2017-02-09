@@ -124,6 +124,10 @@ InstFreq = diff(unwrap(U)') /(2*pi) * 1e3; % #check
 
 
 allneu = 1:noneurons;
+if not(isempty(group))
+	allneu = setdiff(allneu,find(group));
+end
+
 
 
 GA = U(allneu,:);
@@ -188,8 +192,9 @@ results.stats.firstordersync =  [mean(mean(abs(order_parameter_g_fo))) ; var(mea
 results.stats.secondordersync = [mean(mean(abs(order_parameter_g_so))) ; var(mean(abs(order_parameter_g_so))) ];
 results.stats.overallsync =     [mean(mean(abs(order_parameter_GA)))   ; var(mean(abs(order_parameter_GA)))   ];
 results.stats.order_parameter_all = abs(order_parameter_GA)';
-results.stats.order_parameter_g_fo = abs(order_parameter_g_fo)';
-results.stats.order_parameter_g_so = abs(order_parameter_g_so)';
+results.stats.order_parameter_group = abs(order_parameter_GR)';
+results.stats.order_parameter_group_fo = abs(order_parameter_g_fo)';
+results.stats.order_parameter_group_so = abs(order_parameter_g_so)';
 results.hilbert = H;
 results.instantaneousFrequency = InstFreq;
 results.frequency = Freq;
@@ -199,39 +204,51 @@ results.spectrum.percell = {HistInstFreq x};
 if plotme
 
 	figure
-	subplot(2,1,1)
-	plot(abs(order_parameter_GA),'y', 'linewidth',2)
-	hold on
-	plot(abs(order_parameter_GR),'r','linestyle','--')
-	hold on
-	plot(mean(abs(order_parameter_g_fo)),'r')
-	hold on
-	plot(mean(abs(order_parameter_g_so)),'g')
-	hold on
+		aaxx(1) = subplot(2,1,1)
+		plot(abs(order_parameter_GA),'color', [1 1 1]*.5, 'linewidth',2)
+		hold on
+		plot(abs(order_parameter_GR),'r', 'linewidth',2)
+		hold on
+		plot(mean(abs(order_parameter_g_fo)),'r','linestyle','--')
+		hold on
+		% plot(mean(abs(order_parameter_g_so)),'g')
+		% hold on
 
-	% plot(mean(abs(order_parameter_g_to)),'b')
-	hold off
-	xlabel('ms')
-	ylabel('kuramoto parameter')
-	legend({'all' 'group' 'first order neighbors' 'second order'})
-	axis tight
+		% plot(mean(abs(order_parameter_g_to)),'b')
+		hold off
+		xlabel('ms')
+		ylabel('kuramoto parameter')
+		legend({'all' 'group' 'first order neighbors' })
+		axis tight
 
 
-	ylim([0 1])
+		ylim([0 1])
 
-	
-	subplot(2,1,2)
-	imagesc(hist(U,100))
-	xlabel('ms')
-	ylabel('phase')
+		
+		aaxx(2) = subplot(2,1,2)
+		% [HHH XXX] = hist(U,100);
+		imagesc(hist(U,100), [0 noneurons/10])
+		xlabel('ms')
+		ylabel('phase')
+		title('phase concentration')
+		colorbar
+
+		linkaxes(aaxx,'x')
 
 	figure
-	imagesc([1:t], x, HistInstFreq)
-	ylim([-30 30])
-	ylabel('Hz')
-	xlabel('ms')
+		imagesc([1:t], x, HistInstFreq , [0 noneurons]/10)
+		ylim([-30 30])
+		ylabel('Hz')
+		xlabel('ms')
+		colorbar
+		title('instantaneous frequency distribution')
 
 end
 % keyboard
+
+
+
+
+
 
 

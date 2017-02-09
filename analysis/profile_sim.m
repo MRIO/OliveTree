@@ -37,7 +37,7 @@ function R = profile_sim(varargin)
    	
    	if isempty(tslice); tslice = [1:min(1000,sim.duration)]; end
 
-	V = T.networkHistory.V_soma(:,tslice);
+	V = double(T.networkHistory.V_soma(:,tslice));
 
 	if length(tslice) < 400
 		disp('profile_sim requires at least 400ms of network activity')
@@ -52,8 +52,14 @@ function R = profile_sim(varargin)
 	% ampl = max(V, [], 2) - min(V, [], 2);
 
 	for ii = 1:noneurons
-		ampl(1,ii) = mean(findpeaks(V(ii,200:end),'minpeakdist',50)) - -(mean(findpeaks(-V(ii,200:end),'minpeakdist',50)));
+		
+		ampl(1,ii) = mean(findpeaks(V(ii,:),'minpeakdist',50)) -(-(mean(findpeaks(-V(ii,:),'minpeakdist',50))));
+	
+
 	end
+
+	ampl(1,isnan(ampl))=0;
+
 	ampl = ampl';
 
 	meanVm = mean(V, 2);
@@ -75,7 +81,7 @@ function R = profile_sim(varargin)
 	str = [];
 	bla = 0;
 	for ff = fields(T.cellParameters)'
-		if strcmp(ff{1}, 'Plist');
+		if strcmp(ff{1}, 'Plist') | strcmp(ff{1}, 'Pnames'); 
 			continue
 		end
 		eval([ff{1} '= T.cellParameters.' ff{1} ';'])
@@ -84,15 +90,28 @@ function R = profile_sim(varargin)
 
 	end
 
+
 	eval(['R.allneurons = table(' str '  freq_each, ampl, meanVm, spks, supth, minV, maxV );'])
 
-% nonzerocolumns = 
+	% ColumnsOfInterst = T.Pnames; 
+	
+	if isfield(T, 'Pnames')
+		Pnames = T.Pnames';
+		ColumnsOfInterst = [Pnames  'freq_each', 'ampl', 'meanVm', 'spks', 'supth' ];
+		[rho pval] = partialcorr(table2array(R.allneurons(:,ColumnsOfInterst)),'rows', 'complete');
+	else
+		ColumnsOfInterst = R.allneurons.Properties.VariableNames;
+		[rho pval] = partialcorr(table2array(R.allneurons),'rows', 'complete');
+	end
 
+	% 
 
-	[rho pval] = partialcorr(table2array(R.allneurons),'rows', 'complete');
+	% [rho pval] = partialcorr(table2array(R.allneurons,'rows', 'complete');
+
 
 	R.partialcorr = rho;
 	R.pval		  = pval;
+
 
 
 if plotme
@@ -103,23 +122,24 @@ if plotme
 		warning('no color brewer')
 	end
 
-	no_vars=  length(R.allneurons.Properties.VariableNames);
+	no_vars=  length(ColumnsOfInterst);
 
 	figure 
 		subplot(121)
 			imagesc(rho,[-1 1]); colorbar
-			set(gca,'xtick', [1:no_vars], 'xticklabel', R.allneurons.Properties.VariableNames)
-			set(gca,'ytick', [1:no_vars], 'yticklabel', R.allneurons.Properties.VariableNames)
+			set(gca,'xtick', [1:no_vars], 'xticklabel', ColumnsOfInterst)
+			set(gca,'ytick', [1:no_vars], 'yticklabel', ColumnsOfInterst)
 			title('partial correlation')
 
 		subplot(122)
 			imagesc(pval<0.05); colorbar
 
-			set(gca,'xtick', [1:no_vars], 'xticklabel', R.allneurons.Properties.VariableNames)
-			set(gca,'ytick', [1:no_vars], 'yticklabel', R.allneurons.Properties.VariableNames)
-			title('p values')
+			set(gca,'xtick', [1:no_vars], 'xticklabel', ColumnsOfInterst)
+			set(gca,'ytick', [1:no_vars], 'yticklabel', ColumnsOfInterst)
+			title('p<0.05?')
 
 	if isfield(sim,'Plist')
+		sim.Plist = round(sim.Plist*100)/100;
 		figure
 			ca = axis;
 			set(0,'defaultaxescolororder', linspecer(length(sim.Plist)))
@@ -132,7 +152,12 @@ if plotme
 		figure
 			imagesc(sim.networkHistory.V_soma,[-80 -20]), colorbar
 			set(gca,'ytick', [1:length(sim.Plist)],'yticklabel', num2str(sim.Plist),'fontsize',8)
-			legend(num2str(sim.Plist))
+			try
+			tit = sim.Pnames';
+			title(tit)
+		catch
+			disp('bla')
+		end
 
 		try; maximize_fig; catch; end
 

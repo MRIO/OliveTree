@@ -12,7 +12,7 @@ rng(0,'twister')
 
 savehist = true;
 saveappliednoise = true;
-testing = 1;
+testing = 0;
 
 % [=================================================================]
 %  simulation parameters
@@ -32,13 +32,11 @@ if ~exist('noisemu')    	; noisesig = 0.7	  ; end
 if ~exist('gaps')	    	; gaps = 0.04 	      ; end
 if ~exist('gapcomp')    	; gapcomp = 0 		  ; end
 if ~exist('moreoscillation'); moreoscillation = 0 ; end
-if ~exist('nameprefix')  	; nameprefix = 'test' ; end
+if ~exist('nameprefix')  	; nameprefix ='missg' ; end
 if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
 	
  
-
-
 displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];
 
 % [=================================================================]
@@ -151,7 +149,7 @@ end
 % /_/ |_|\____/_/ |_/   /____/___/_/  /_/   
                                           
 if testing
-	ttime1 = 3; ttime2 =3 ; pks = 5;  pko = 5;
+	ttime1 = 3; ttime2 =100 ; pks = 5;  pko = 5; simtime = 20;
 else	 
 	ttime1 = 100;
 	ttime2 = 300;
@@ -161,14 +159,14 @@ if ~exist('transients')
 	
 	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);
 	
-	[transients] = IOnet( 'networksize', netsize ,'time',ttime1,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1)/meannoconn,'ou_noise', noise_level_transients, 'sametoall',sametoall);
-	[continuation] = IOnet( 'networksize', netsize ,'time',ttime2,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1)/meannoconn,'ou_noise', noise_level_transients, 'sametoall',sametoall, 'tempState',transients.lastState);
+	[transients] = IOnet( 'networksize', netsize ,'time',ttime1,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);
+	[continuation] = IOnet( 'networksize', netsize ,'time',ttime2,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall, 'tempState',transients.lastState);
 
 
 end
 
 if ~spont
-		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance',80);
+		[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance', 80);
 		pko = pks(1);
 		pert.triggers{1}  = pko + sort(unique(bsxfun(@plus, pulses,triggers')));
 end
@@ -221,7 +219,11 @@ end
 %  save with timestamp
 % [=================================================================]
 
-eval(['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' num2str(gaps) '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3'])
+evalstring = ['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3']
+
+eval(evalstring)
+
+
 
 	
 

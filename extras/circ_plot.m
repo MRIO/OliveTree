@@ -89,18 +89,16 @@ switch format
 
  if exist('poly2cw')
 
-      [XXouter YYouter] = poly2cw(XXouter, YYouter);
-      [XXinner YYinner] = poly2cw(XXinner, YYinner);
-
-
+  [XXouter YYouter] = poly2cw(XXouter, YYouter);
+  [XXinner YYinner] = poly2cw(XXinner, YYinner);
 
   [XX YY] = polybool('subtraction',  XXouter, YYouter  ,XXinner, YYinner);
   [ff vv] = poly2fv(XX,YY);
 
- end
-
   patch('faces', ff, 'vertices', vv,'facecolor', varargin{5}, 'edgecolor', 'none');
-  % patch('faces', ff, 'vertices',vv,'facecolor', varargin{5},'edgecolor', 'none');
+
+
+end
 
     line(real(zz), imag(zz))
     line( [-2 2], [0 0])

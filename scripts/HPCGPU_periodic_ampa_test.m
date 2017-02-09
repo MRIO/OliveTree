@@ -19,16 +19,16 @@ testing = 0;
 % [=================================================================]
 
 dt = 0.02;
-simtime = 50000;
+simtime = 2000;
 
 if ~exist('simtype')    	; simtype  = 'gallop'	  ; end
 if ~exist('conntype')   	; conntype = 'iso'	  ; end
-if ~exist('numruns')    	; numruns  = 4   	  ; end
+if ~exist('numruns')    	; numruns  = 1   	  ; end
 if ~exist('sametoall')  	; sametoall = 0.1 	  ; end
 if ~exist('tau')	    	; tau = 20  		  ; end
 if ~exist('noisemu')	   	; noisemu = 0		  ; end
 if ~exist('noisesig')    	; noisesig = 0		  ; end
-if ~exist('gaps')	    	; gaps = 0.04 	      ; end
+if ~exist('gaps')	    	; gaps = [0 0.04]     ; end
 if ~exist('gapcomp')    	; gapcomp = 0 		  ; end
 if ~exist('moreoscillation'); moreoscillation = 0 ; end
 if ~exist('nameprefix')  	; nameprefix = 'test' ; end
@@ -44,7 +44,7 @@ displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)]
 %  % create network
 % [=================================================================]
 
-netsize = [2 10 10];
+netsize = [50 1 1];
 % netsize = [3 30 30];
 	noneurons = prod(netsize);
 

@@ -1,11 +1,12 @@
 function [out] = phase_distribution_over_time(varargin)
 	% function [out] = phase_distribution_over_time(sim,duration,savemovie)
 	% 
-	% to plot the distributions we actually need the pretty style
+	% to plot the distributions we need the pretty style
 	% 
 	% for 'pretty' style we need the topology toolbox
 	% 
 	% it's currently commented out
+	% phase_distribution_over_time(sim{1}, 'group', find(sim{1}.W.stats.clusters==5))
 
 
 
@@ -22,7 +23,8 @@ p.addOptional('savemovie',[])
 p.addOptional('print2file',0)
 p.addOptional('trigger',1)
 
-p.addParamValue('fhandle', gcf)
+p.addParameter('fhandle', gcf)
+p.addParameter('group', [])
 
 p.parse(varargin{:});
 
@@ -32,6 +34,9 @@ savemovie = p.Results.savemovie;
 trigger = p.Results.trigger;
 print2file = p.Results.print2file;
 fhandle = p.Results.fhandle;
+group = p.Results.group;
+
+frames2file = 0; % save specified frames to files
 
 
 % [=================================================================]
@@ -66,6 +71,7 @@ VS = sim.networkHistory.V_soma;
  	tt = duration;
  else
  	tt = [1:simtime];
+ 	duration = tt;
  end
  
 
@@ -93,10 +99,14 @@ end
 %  user defined - in code!
 % [=================================================================]
 
-userdefinedgroup = [];
-% userdefinedgroup = [1:20];
-% userdefinedgroup = randi(1000,20,1);
-group = userdefinedgroup;
+if not(isempty(group))
+	% userdefinedgroup = [];
+	% % userdefinedgroup = [1:20];
+	% % userdefinedgroup = randi(1000,20,1);
+	
+else
+	group = [];
+end
 
 VS = sim.networkHistory.V_soma;
 
@@ -140,9 +150,9 @@ VR = circ_var(GR);
 
 % - select groups
 group2=[];
-if ~isempty(userdefinedgroup)
+if ~isempty(group)
 		allneu = [1:noneurons];
-		group1 = userdefinedgroup;
+		group1 = group;
 		group2 = setdiff(allneu, group1);
 else
 		allneu = (pert_mask>=0);
@@ -191,22 +201,41 @@ VA = circ_var(GA);
 fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], color ,'edgecolor','none');
 
 
-figure(100)
-	subplot(2,1,1)
+fig0 = figure
+	subplot(2,2,1:2)
 	plot(abs(order_parameter_G1),'r'),hold on
 	plot(abs(order_parameter_G2),'b')
+	plot(abs(order_parameter_GA),'g')
+	title('abs(Z)')
+	legend({'Group' 'Others' 'All'})
 	
-	subplot(2,1,2)
-	scatter(real(order_parameter_G2(tt)),imag(order_parameter_G2(tt)),'filled','b' )
+	subplot(2,2,3)
+	scatter(real(order_parameter_G1(tt)),imag(order_parameter_G1(tt)), 'filled','r' ); hold on
+	scatter(real(order_parameter_G2(tt)),imag(order_parameter_G2(tt)), 'filled','b' )
+	scatter(real(order_parameter_GA(tt)),imag(order_parameter_GA(tt)), 'filled','g' )
 	hold on
-	scatter(real(order_parameter_G1(tt)),imag(order_parameter_G1(tt)) ,'filled','r')
+	axis equal
+	axis([-1,1,-1,1])
+	title('')
+	legend({'Group' 'Others' 'All'})
 	
 
 
-fig1 = figure(101)
+fig1 = figure
 	% circular phase plot
 	a(1) = subplot(2,2,[1 3]);
-	
+
+		circ_plot(G1(:,1),'pretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
+		circ_plot(G2(:,1),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
+		hold on
+
+		axis off
+
+		alpha(.3)
+		drawnow
+		
+		title({num2str(1);[' ']; [' ']})
+
 	%static phase plot over time
 	a(2) = subplot(2,2,2);
 
@@ -228,22 +257,25 @@ fig1 = figure(101)
 	 % plot(sim.networkHistory.V_soma')
 	 
 	 ttt = repmat(tt, numel(group2), 1);
-		line(tt',sim.networkHistory.V_soma(group2,tt)', ...
-			'color',[.8 .8 1], 'linewidth', .5)
 		line(tt',sim.networkHistory.V_soma(group1,tt)', ...
 			'color',[1 .8 .8], 'linewidth', .5)
+		line(tt',sim.networkHistory.V_soma(group2,tt)', ...
+			'color',[0 .8 1], 'linewidth', .5)
+
 
 	  hold on
-	   line(tt, mean(sim.networkHistory.V_soma(group2,tt)),'color','b','linewidth', 3)
 	   line(tt, mean(sim.networkHistory.V_soma(group1,tt)),'color','r','linewidth', 3)
+	   line(tt, mean(sim.networkHistory.V_soma(group2,tt)),'color','b','linewidth', 3)
+	 
 		 xlabel('time')
 		 ylabel('Vm @ soma')
+
 		 % export_fig('Vm', '-r300')
 		 % export_fig('Vm2', '-r300')
 		 % ylabel('simulation run')
 
 
-figure(105)
+fig2 = figure
 	[phasedist1 tim] = hist(G1, length(tt));
 	[phasedist2 tim] = hist(G2, length(tt));
 
@@ -264,27 +296,29 @@ spks1 = spikedetect(sim.networkHistory.V_soma(group1,:));
 spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 
 
-% if isempty(duration)
-% 	duration = length(M1);
-% else
-% 	% duration = duration;
-% end
-
-	for t = duration
+if 0
+	for t = duration 
 		% R1 = rose(U(group1,t));
 		% R2 = rose(U(group2,t));
 
 		axes(a(1))
-		
 		cla
-		circ_plot(G2(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
-		hold on
-		circ_plot(G1(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
+
+		% circ_plot(G2(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
+		% hold on
+		% circ_plot(G1(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
 
 		% circ_plot(G2(:,t)+pi,'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
 		% hold on
 		% circ_plot(G1(:,t)+pi,'pretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
+		% axis off
+
+		circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
+		hold on
+		circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
+		
 		axis off
+
 		alpha(.3)
 		drawnow
 		
@@ -303,7 +337,12 @@ spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 			drawnow;
 			% keyboard
 		end
+
+		if frames2file
+			plot2svg(['phase_dist@' num2str(t) '.svg'])
+		end
 	end
+end
 
 
 

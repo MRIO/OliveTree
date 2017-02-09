@@ -49,16 +49,32 @@
 % end
 
 
+% if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
+% 	X_README = 'replay_06_12_16 for pascal_with_spont'
+% 	nameprefix = 'replay_06_12_16_with_spont'
+
+% 	seed = 0; simtime = 50000; tau = 20; noisesig = 0 ; noisemu = 0;   sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
+% 	seed = 0; simtime = 50000; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+% 	seed = 0; simtime = 50000; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 4: 
+% 	seed = 0; simtime = 50000; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
+
+% 	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+% 	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa		;% 4Pascal 4: 
+% 	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa		;% 4Pascal 2: 
+
+% end
+
+
 
 if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
 	X_README = 'replay_06_12_16 for pascal_with_spont'
-	nameprefix = 'replay_06_12_16_with_spont'
+	nameprefix = 'replay_06_12_16_with_spont_'
 
-	seed = 0; tau = 20; noisesig = 0;  noisemu = 0;	  sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
-
-	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
-	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 4: 
-	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
+	seed = 0; tau = 20; noisesig =  0; noisemu = 0  ; sametoall = 0.1; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 5000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
+	
+	seed = 0; simtime = 50000; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+	seed = 0; simtime = 50000; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 4: 
+	seed = 0; simtime = 50000; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.1; simtype = 'spont' ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2: 
 
 	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 	% seed = 0; tau = 20; noisesig = .3; noisemu = -.6; sametoall = 0.1; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  gaps = eps; HPCGPU_periodic_ampa		;% 4Pascal 4: 
@@ -68,7 +84,16 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
 end
 
 
+% [=================================================================]
+%  clusters curlies and bridges
+% [=================================================================]
 
+if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench')
+
+	reconstruction_clusters_and_bridges;
+	X_README = ['clusters and bridges_' date];
+
+end
 
 % [=================================================================]
 % clustersize
@@ -221,7 +246,7 @@ end
 % [================================================]
 
 
-if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
+if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench')
 	X_README = 'SIG X MU Corr = 0.1 R2'
 	nameprefix = 'sigXmu_01corr_R2';
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
@@ -236,7 +261,7 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
 	p10 = [15];			% N, size of N x N network
 	p11 = [2];			% depth in Z		
 	p12 = [1];			% whether using gap compensation in cells
-	p13 = [0:.1:.6];	    	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+	p13 = [0:.1:.6];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
 	simtime = 3000;
 	conntype = 'iso';

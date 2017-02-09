@@ -1,4 +1,4 @@
-function replayResults_clusters(varargin)
+function varargout = replayResults_clusters(varargin)
 
 % #TODO: PROFILE_SIM AND HISTOGRAMS
 
@@ -14,9 +14,10 @@ function replayResults_clusters(varargin)
 %TODO: accept any dt
 
 static = 0;
-plotmeanclusteractivity = 0;
-plotpopactivity = 0;
-calculatesynchrony = 1;
+plotmeanclusteractivity = 1;
+plotpopactivity = 1;
+calculatesynchrony = 0;
+plotthreeDscatter = 0;
 
 trigger = 1;
 
@@ -30,9 +31,9 @@ p.addRequired('sim')  % a matrix with two columns or a cell array with two cells
 p.addOptional('time_slice',[])
 p.addOptional('savemovie',0)
 p.addOptional('snap_time',1)
-
-p.addParamValue('plotallfields', 0) % stdandard deviation criterion for offset threshold
-p.addParamValue('fhandle', gcf)
+p.addParameter('plotallfields', 0) % stdandard deviation criterion for offset threshold
+p.addParameter('fhandle', gcf)
+p.addParameter('plotspikes', 0)
 
 p.parse(varargin{:});
 
@@ -40,6 +41,7 @@ sim = p.Results.sim;
 time_slice = p.Results.time_slice;
 savemovie = p.Results.savemovie;
 snap_time = p.Results.snap_time
+plotspikes = p.Results.plotspikes;
 
 plotallfields  = p.Results.plotallfields;
 fhandle = p.Results.fhandle;
@@ -105,34 +107,13 @@ V_soma_ordered   = V_soma_ordered(:,time_slice);
 %  spike detection
 % [=================================================================]
 sim.networkHistory.V_soma = V_soma_unwrapped;
-spks = spikedetect(sim );
+spks = spikedetect(sim)
 
 propspkneurons = spks.propspkneurons;
 popfreq = spks.popfrequency;
 f = sprintf('%.2f', popfreq);
 edges = [-1 0.01:.5:max(spks.medfreq)];
 histfreq = histc(spks.medfreq, edges);
-
-% [=================================================================]
-%  Cluster Activity Stats
-% [=================================================================]
-if calculatesynchrony
-	fig3 = figure;;
-	for c = 1:no_clusters
-		c
-		clustered{c}.sync = measureGroupSync(sim,'group', clusters==c,'plotme',0);
-		clustered{c}.no_neurons = length(find(clusters==c));
-
-		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-		hold on
-		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-		pause
-	end
-		% xlabel('time (ms)')
-		% ylabel('mV')
-end
-
 
 
 
@@ -207,23 +188,27 @@ if plotpopactivity
 	a(1) = axes('position', [0.07    0.07    0.85    0.6]);
 
 		imagesc(V_soma_ordered,[-68 -30]); %imagesc(V_soma_unwrapped',[-68 -30]);
+        
+        
 		% set(gca,'xtick',[1 noneurons]);
 		hold on;
 	    xlabel('ms');
-	    ylabel('neurons');  
-
-		plotspikes1 = @(c)plot(spks.spikes{O(c)},O(c),'markersize', 3,'marker', 'o','linestyle', 'none','color', 'w','markersize',6);
-		plotspikes2 = @(c)plot(spks.spikes{O(c)},O(c),'markersize', 10,'marker', '.','linestyle', 'none','color', 'g','markersize',10);
+	    ylabel('neurons');
+        axis tight
+        
+		plotspikes1 = @(c)plot(spks.spikes{O(c)},O(c),'markersize', 3,'marker', 'o','linestyle', 'none','color', 'w');
+		plotspikes2 = @(c)plot(spks.spikes{O(c)},O(c),'markersize', 10,'marker', '.','linestyle', 'none','color', 'g');
+		
 		for c = 1:prod(netsize)
-			if not(isempty(spks.spikes{c}))
+
+			if not(isempty(spks.spikes{O(c)})) & plotspikes
 				plotspikes1(c);
 				plotspikes2(c);
 			end
 		end
 
-		colorbar('eastoutside');
+% 		colorbar
 		title('Vm')
-		set(gca,'xtick',[])
 
 		if isfield(sim.perturbation,'mask')
 			M = sim.perturbation.mask{1}(O)*20-100;
@@ -235,7 +220,7 @@ if plotpopactivity
 
 	if sum(cell2mat(spks.spikes))
 		a(2) = axes('position', [0.07    0.67    0.85    0.3]);
-		[hh x] = hist(cell2mat(spks.spikes),simtime);
+		[hh x] = hist(cell2mat(spks.spikes),[1:simtime]);
 		K = conv(hh, gausswin(50), 'same')/sum(gausswin(50));
 		bar(x,K,'facecolor','k')
 
@@ -243,17 +228,18 @@ if plotpopactivity
 	end
 
 
-	if isfield(sim.perturbation,'all_pulses')
+	if isfield(sim.perturbation,'triggers')
 		% stimulus
 		hold on
 		a(3) = axes('position', [0.07    0.67    0.85    0.3]);
-		[hh x] = hist(sim.perturbation.all_pulses(:),simtime);
+		[hh x] = hist(sim.perturbation.triggers{1},simtime);
 		bar(x,hh,'facecolor','g')
 
 		set(a(3),'xtick',[],'ytick',[],'color','none')
 		axis off
 	end
 	linkaxes(a, 'x')
+    linkaxes([a(1) a(3)], 'y')
 end
 
 % figure
@@ -271,15 +257,15 @@ end
 
 
 reconstruction = 1;
-threeD = 1;
-if threeD
+
+if plotthreeDscatter
 	fig2 = figure('colormap',lc);
 	scaledV = (V_soma_unwrapped + -min(min(V_soma_unwrapped)))/(max(max(V_soma_unwrapped))  - min(min(V_soma_unwrapped)))*100;
 	if reconstruction
 
 		for tt = 1:10:3000
 			cla
-			scatter3(coords(:,1), coords(:,2), coords(:,3), scaledV(:,tt), V ,'filled')
+			scatter3(coords(:,1), coords(:,2), coords(:,3), scaledV(:,tt),'filled')
 			% caxis([-80,-30])
 			title(num2str(tt))
 			axis equal
@@ -326,6 +312,44 @@ end
 % set(0,'defaultaxescolororder', linspecer(2))
 % plot(V_soma_unwrapped(neuronselection,:)','linewidth',2);
 
+if plotmeanclusteractivity
+	fig03 = figure;;
+	disp('calculating cluster synchrony.')
+	for c = 1:no_clusters
+
+		c
+		% clustered{c}.sync = measureGroupSync(sim,'group', clusters==c,'plotme',0);
+		% clustered{c}.no_neurons = length(find(clusters==c));
+    
+% 		plot_mean_and_std([1:simtime], V_soma_unwrapped(find(clusters==c),:)+c*5,'color', lc(c,:))
+plot(1:simtime, mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+hold on
+		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+    end
+    title('mean cluster activity')
+end
+
+
+
+% [=================================================================]
+%  Cluster Activity Stats
+% [=================================================================]
+if calculatesynchrony
+	fig3 = figure;;
+	disp('calculating cluster synchrony.')
+	for c = 1:no_clusters
+
+		c
+		clustered{c}.sync = measureGroupSync(sim,'group', clusters==c,'plotme',0);
+		clustered{c}.no_neurons = length(find(clusters==c));
+
+		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
+		% plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+		% hold on
+		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+	end
+		% xlabel('time (ms)')
+		% ylabel('mV')
 end
 
 

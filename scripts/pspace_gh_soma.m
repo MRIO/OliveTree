@@ -33,7 +33,7 @@ currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls
 to_report = currents;
 cell_function = 'vanilla';
 % cell_function = 'devel';
-steadystate_time = 1000;
+steadystate_time = 500;
 simtime  = 3000;
 
 
@@ -41,10 +41,10 @@ simtime  = 3000;
 % 		 cell parameters 
 % [================================================]
 % parameter ranges
-p1 = [.5  1.1]; 	% CalciumL - conductance range
+p1 = [.5  1.1 1.5]; 	% CalciumL - conductance range
 p2 = [45 85];      		% g_K_Ca
 p3 = [.13]; 		% g_int
-p4 = [.12 .36];       	% g_h
+p4 = [.12 1.2];       	% g_h
 p5 = [5 20];       	% g_K_s
 [p{1} p{2} p{3} p{4} p{5}] = ndgrid(p1,p2,p3,p4,p5);
 
@@ -56,10 +56,12 @@ netsize = [1 noneurons 1]; noneurons = prod(netsize);
 
 def_neurons = createDefaultNeurons(noneurons);
 def_neurons.g_CaL    = p{1}(:);
-def_neurons.g_K_Ca    = p{2}(:);
+def_neurons.g_K_Ca   = p{2}(:);
 def_neurons.g_int 	 = p{3}(:);
 def_neurons.g_h 	 = p{4}(:);
 def_neurons.g_K_s 	 = p{5}(:);
+def_neurons.Plist = Plist;
+def_neurons.Pnames= {'g_CaL' 'g_K_Ca' 'g_int' 'g_h' 'g_K_s'};
 
 
  W = zeros(noneurons);
@@ -71,12 +73,11 @@ def_neurons.g_K_s 	 = p{5}(:);
 
 currentstep = 10; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
-
 I_app = zeros(noneurons, simtime*(1/delta));
 I_app(:,(110:120)*(1/delta)) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
 % I_app(:,(1500:1600)*(1/delta)) = -currentstep; % nAmpere 20/dt [nA/s.cm^2] 
 
-gnoise = [1 5 0 0];
+gnoise = [0 0 0 0];
 
 
 

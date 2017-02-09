@@ -2,15 +2,18 @@
 function cell_parameters = createDefaultNeurons(varargin)
 % createDefaultNeurons(noneurons, celltypes, gapcompensation)
 
+%TODO: Check for correlations in the random draws - if there are, shuffle/redraw
+
 	ip = inputParser;
 	ip.addOptional('noneurons',0)
 	
-	ip.addParamValue('celltypes', 'none') 
-	ip.addParamValue('gapcompensation', 0) 
-	ip.addParamValue('nogapcompensation', 0);
-	ip.addParamValue('shuffle', 0) 
-	ip.addParamValue('addrand',0)
-	ip.addParamValue('rng', rng(0))
+	ip.addParameter('celltypes', 'none') 
+	ip.addParameter('Pnames', {'g_CaL' ;'g_int'; 'g_h'; 'g_K_Ca'; 'g_ld' ;'p1'} )
+	ip.addParameter('gapcompensation', 0) 
+	ip.addParameter('nogapcompensation', 0);
+	ip.addParameter('shuffle', 0) 
+	ip.addParameter('addrand',0)
+	ip.addParameter('rng', rng(0))
 	
 	ip.parse(varargin{:});
 
@@ -20,42 +23,14 @@ function cell_parameters = createDefaultNeurons(varargin)
 	shuffle = ip.Results.shuffle;
 	nogapcompensation = ip.Results.nogapcompensation;
 	addrand = ip.Results.addrand;
+	Pnames = ip.Results.Pnames;
 
 	rng(ip.Results.rng)
+
 	
 cell_parameters = defneurons(noneurons);
 
-
 switch celltypes
-
-	case 'param_sweep'
-
-		p1 = [.5:.1:1.1]; 		% CalciumL - conductance range
-		p2 = [.0];      	    % g_h_s
-		p3 = [.11 .13]; 		% g_int
-		p4 = [.12:.12:.48];      	% g_h
-		p5 = [-38];       	% V_h
-		p6 = [45 55];		% Ca act Potassium: not voltage dependent 
-		p7 = [4.5];
-		p8 = [.013];    % leak
-		[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8);
-
-		Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:)]; 
-
-		psweepnoneurons = length(p{1}(:));
-
-		cell_parameters = defneurons(psweepnoneurons);
-		
-		cell_parameters.g_CaL    = p{1}(:);
-		cell_parameters.g_h_s    = p{2}(:);
-		cell_parameters.g_int 	 = p{3}(:);
-		cell_parameters.g_h 	 = p{4}(:);
-		cell_parameters.V_h 	 = p{5}(:);
-		cell_parameters.g_K_Ca   = p{6}(:);       
-		cell_parameters.g_CaH    = p{7}(:);     % High-threshold calcium
-		cell_parameters.g_ld     = p{8}(:);
-		
-		cell_parameters.Plist = Plist;
 
 	case 'randomized'
 
@@ -68,34 +43,47 @@ switch celltypes
 		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.gbar_ampa_soma     = .1   +  rand(noneurons,1)*(.15);
+		cell_parameters.gbar_ampa_soma     = 1   -  rand(noneurons,1)*(.15);
 
-		cell_parameters.Plist = [cell_parameters.g_CaL(:) cell_parameters.g_int(:) cell_parameters.g_h(:) cell_parameters.g_K_Ca(:) cell_parameters.g_ld(:)];
-		
 
-case 'randomized2'
+	case 'randomized2'
 
 		cell_parameters = defneurons(noneurons);
 		
-		cell_parameters.g_CaL    = cell_parameters.g_CaL   +  rand(noneurons,1)*(-.8);
-		cell_parameters.g_int 	 = cell_parameters.g_int   + .02 + rand(noneurons,1)*(-.05);
+		cell_parameters.g_CaL    = cell_parameters.g_CaL   - .3  + rand(noneurons,1)*.6;
+		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
 		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
 		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
 		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.p1     = cell_parameters.p1    		+  rand(noneurons,1)*(-0.1);
+		cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.2);
+		cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
 
-		cell_parameters.gbar_ampa_soma     = .1   +  rand(noneurons,1)*(.15);
 
-		cell_parameters.Plist = [cell_parameters.g_CaL(:) cell_parameters.g_int(:) cell_parameters.g_h(:) cell_parameters.g_K_Ca(:) cell_parameters.g_ld(:)];
-	
+
+	case 'randomized3'
+
+		cell_parameters = defneurons(noneurons);
+		
+		cell_parameters.g_CaL    = cell_parameters.g_CaL   - .3  + rand(noneurons,1)*1;
+		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
+		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
+		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
+		% cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
+		% cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
+		% cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
+		cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.1);
+		cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
+
+
+
 
 	case 'permuted'
 
 		p1 = [.5:.1:1.1]; 		% CalciumL - conductance range
 		p2 = [.0];      	    % g_h_s
-		p3 = [.11 .13]; 		% g_int
+		p3 = [.11 3]; 		% g_int
 		p4 = [.12:.12:.48];      	% g_h
 		p5 = [-38];       	% V_h
 		p6 = [45 55];		% Ca act Potassium: not voltage dependent 
@@ -119,8 +107,6 @@ case 'randomized2'
 		cell_parameters.g_ld     = p{8}(randi(noneurons,noneurons,1));
 		
 
-		cell_parameters.Plist = [cell_parameters.g_CaL(:) cell_parameters.g_int(:) cell_parameters.g_h(:) cell_parameters.g_K_Ca(:) cell_parameters.g_ld(:)];;
-
 
 	case 'devel'
 
@@ -139,10 +125,8 @@ case 'randomized2'
 		cell_parameters.g_ls     			= ones(noneurons,1)* .01;
 		cell_parameters.p1    	 			= ones(noneurons,1)* .1;
 		cell_parameters.arbitrary			= ones(noneurons,1)* .5;
-		cell_parameters.gbar_ampa_soma      = .1   +  rand(noneurons,1)*(.15);
-		cell_parameters.Plist = [cell_parameters.g_CaL(:) cell_parameters.g_int(:) cell_parameters.g_h(:) cell_parameters.g_K_Ca(:) cell_parameters.g_ld(:) cell_parameters.p1(:) cell_parameters.arbitrary(:)];
-
-
+		
+		
 	case 'cellset_devel'
 		 if exist('dev_cells_pspace.mat')
 		 	load dev_cells_pspace
@@ -186,10 +170,57 @@ case 'cellset_vanilla'
 			eval(str)
 		end
 
+
+	case 'param_sweep'
+		
+
+		p1 = [.5:.1:1.5]; 		% CalciumL - conductance range
+		p2 = [.1:.1:3]; 		% g_int
+		
+		[p{1} p{2}  ] = ndgrid(p1,p2);
+
+		Plist = [p{1}(:) p{2}(:) ]; 
+
+		psweepnoneurons = length(p{1}(:));
+
+		cell_parameters = defneurons(psweepnoneurons);
+		
+		cell_parameters.g_CaL    = p{1}(:);
+		cell_parameters.g_int 	 = p{2}(:);
+
 	otherwise
+
+		disp('Legacy parameter or celltypes case not found.')
+		dbstack
+		return
+
+
+
 
 
 end
+
+% [=================================================================]
+%  parameter list
+% [=================================================================]
+
+string = [];
+
+for param = Pnames'
+
+	string = [string 'cell_parameters.' param{1} '(:) '];
+
+end
+
+
+cell_parameters.Plist = eval([ '[' string  ']' ] );
+cell_parameters.Pnames = Pnames;
+
+
+
+% [=================================================================]
+%  randomizer
+% [=================================================================]
 
 if addrand
 	cell_parameters = jitter_cell_parameters(cell_parameters,.05);
@@ -199,7 +230,7 @@ end
 if gapcompensation
 		% compensation for gap junctions
 		
-		cell_parameters.g_CaL = cell_parameters.g_CaL + .1*gapcompensation;
+		% cell_parameters.g_CaL = cell_parameters.g_CaL + .1*gapcompensation;
 
 		cell_parameters.g_ld  = cell_parameters.g_ld  - 0.003*gapcompensation;
 		cell_parameters.g_la  = cell_parameters.g_la  - 0.003*gapcompensation;
@@ -207,7 +238,7 @@ if gapcompensation
 end
 
 if nogapcompensation
-		cell_parameters.g_CaL = cell_parameters.g_CaL - .1;
+		% cell_parameters.g_CaL = cell_parameters.g_CaL - .1;
 		% cell_parameters.g_int = cell_parameters.g_int + 0.03;
 		cell_parameters.g_ld  = cell_parameters.g_ld  + 0.003;
 		% cell_parameters.g_K_Ca= cell_parameters.g_K_Ca - 10;

@@ -7,7 +7,7 @@
 rng(0,'twister') % random seed
 
 steadystate_time = 500; %ms
-simtime  = 5000; %ms
+simtime  = 10000; %ms
 delta = .02;
 gpu = 1;
 
@@ -19,7 +19,7 @@ vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36'};
 
 % variables to store
-to_report = gapcur;
+to_report = vsoma;
 
 
 
@@ -30,7 +30,7 @@ to_report = gapcur;
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
 nconns_curlies = 5;
-nconns_bridges = 5;
+nconns_bridges = 4;
 gap_curlies = .05;
 gap_bridges = .05;
 plotconn = 1;
@@ -43,20 +43,33 @@ somatapositions(1,:) = [];
 noneurons = length(somatapositions);
 
 if not(exist('curlies'))
+	% curlies:
+	% create a network with distance based connectivity for close by connections
+	% this network is clusterized with about 20cells per cluster, according to a k-means algo.
 	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
+
+	% create a network with distance based connectivity for further apart cells: bridges
+	% these cells are not bound to specific clusters.
 	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, 1, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
 
-	% 10% of cells are bridges
-	bc = randperm(noneurons); 
-	z = zeros(noneurons,1) ; 
-	z(bc(1:round(.1*noneurons))) = 1;
+	% define the indices of 10% of the cells, these will be bridges
+	bc = randperm(noneurons); % randomly permute cell indices
+	z = zeros(noneurons,1) ; % initialize index vector
+	z(bc(1:round(.1*noneurons))) = 1; % make 10% of the cells == bridges
 	bc =z;
 
-	curlies.W = bsxfun(@times, curlies.W, ~bc);
-	curlies.W = bsxfun(@times, curlies.W, ~(bc'))*gap_curlies;
+	% remove from curlie adjacency matrix all of those that will become bridges
+	curlies.W = bsxfun(@times, curlies.W, ~z); 
+	curlies.W = bsxfun(@times, curlies.W, ~(z'))*gap_curlies; % multiply by the 'unitary' conductance
+	cstats = connectivity_statistics(bridges);
+	curlies.stats = cstats.stats ;
 
+	% remove connections from curlies to bridges from bridge adjacency matrix
 	bridges.W = bsxfun(@times, bridges.W, z);
+	% create bridge cells connectivity 
 	bridges.W = (bridges.W+bridges.W')*gap_bridges;
+	bstats = connectivity_statistics(bridges);
+	bridges.stats = bstats.stats ;
 
 	bridg_curlies.coords = curlies.coords;
 	
@@ -66,6 +79,7 @@ if not(exist('curlies'))
 	bridg_curlies.stats.clusters = curlies.stats.clusters;
 
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
+
 end
 
 
@@ -81,7 +95,10 @@ cell_function = 'vanilla'; % 'devel'
 % netsize = [3 15 15];
 
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
-def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+% def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3');
+
+% randomized2 = 
 % neurons.g_CaL = linspace(.5, 1, noneurons);
 
 
@@ -93,7 +110,7 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
 % currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 % gnoise = [.2 .3 0 5];
 gnoise = [0 0 0 0];
-sametoall = 0.05
+sametoall = 0.05;
 
 
 % [================================================]
@@ -103,7 +120,7 @@ sametoall = 0.05
 % create overlapping ampa masks
 
 % numberofmasks = 10; 
-onset_of_stim = [505:5:525];
+onset_of_stim = [505:2:525];
 
 % apply some current to check the behavior of the cells
 I_app = [];
@@ -112,10 +129,10 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  [curlies.stats.clusters==5] & [curlies.stats.clusters==20];
+pert.mask     {1} =  [curlies.stats.clusters==5] | [curlies.stats.clusters==10] | [curlies.stats.clusters==20];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
-pert.duration {1} = 5;
+pert.duration {1} = 10;
 pert.type	  {1} = 'gaba_soma';
 % pert.type	  {1} = 'ampa';
 
@@ -138,6 +155,7 @@ pert.type	  {1} = 'gaba_soma';
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 st_st.note = 'curlies and bridges'
+end
 
 	% st_st.Plist = Plist;
 end
@@ -147,7 +165,7 @@ end
 %  GABA
 % [=================================================================]
 
-% 'tempState', st_st.lastState,
+% BRIDGES AND CURLIES WITH PERTURBATION
 if 1
 	 sim{1} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
@@ -163,6 +181,7 @@ if 1
 
 end
 
+% ONLY CURLIES
 if 1
 	sim{2} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
@@ -178,20 +197,21 @@ if 1
 
 end
 
+
+% DISCONNECTED NETWORK
 if 1
 	 sim{3} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W*0 ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
-	 sim{3}.note = 'only curlies'
+	 sim{3}.note = 'gap is zero'
 	 sim{3}.W = curlies;
 	 
 
 	sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
 	sim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.V_soma);
 	sim{3}.networkHistory.backgroundnoise = [];
-
 
 end
 

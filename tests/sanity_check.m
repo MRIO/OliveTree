@@ -104,13 +104,13 @@ switch experiment
 		gnoise = [0 0 0 0];
 
 
-	case 'gaba_soma' % gaba soma in 2D
+	case 'gaba' % gaba soma in 2D
 		to_report = {'V_soma','I_cx36', 'Ca2Plus', 'Ca2_soma' 'V_dend', 'g_GABA_soma'};
 
 		simtime = 1000;
 		netsize = [1 3 3];
 		cell_parameters = createDefaultNeurons(prod(netsize));
-		cell_parameters.gbar_gaba_soma = 1*ones(prod(netsize),1);
+		cell_parameters.gbar_gaba_soma = .5*ones(prod(netsize),1);
 		cell_parameters.gbar_gaba_dend = .5*ones(prod(netsize),1);
 		gap = .01;
 		centercell = 5;
@@ -124,8 +124,8 @@ switch experiment
 		
 		pert.mask  	   {1} = [0 0 1 1 1 1 1 0 0 ]';
 		pert.amplitude {1} = 1;
-		pert.triggers  {1} = [100:10:260];
-		pert.duration  {1} = 10;
+		pert.triggers  {1} = [100:10:150];
+		pert.duration  {1} = 5;
 		pert.type	   {1} = 'gaba_soma'; % gaba_soma ; ampa_noise ; ampa_soma
 
 		pert.mask  	   {2} = [0 0 0 0 1 0 0 0 0 ]';
@@ -207,7 +207,7 @@ switch experiment
 	    cont  = IOnet('tempState', st_st.lastState ,'cell_parameters', cell_parameters, 'networksize', netsize,'time',simtime ,'W', W*0  ,'to_report',to_report,'gpu', gpu);
 	    plot([st_st.networkHistory.V_soma cont.networkHistory.V_soma]')
 
-	    break
+	    % break
 
 
 	case 'somatic_ampa' % ampa in soma
@@ -245,7 +245,7 @@ end
 	'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
 
 
-replayResults_2(transients)
+replayResults_3(transients)
 
 
 

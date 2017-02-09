@@ -128,7 +128,7 @@ debugging           = p.Results.debug;
 interrupt_when_fail = 1;
 report_all_dt = false;
 
-if saveappliednoise    
+if saveappliednoise & sum(ou_noise(1:3))
     to_report = [ to_report 'backgroundnoise'];
 end
 
@@ -370,6 +370,7 @@ for t = 1:simSteps
     if report_all_dt
 
         if length(to_report)>0
+<<<<<<< HEAD
             try
                 for ftr = 1:length(to_report)
                     eval(['netHist.' to_report{ftr} '(:,t) = gather(state.' to_report{ftr} ');']);
@@ -377,6 +378,16 @@ for t = 1:simSteps
             catch
                 to_report
                 ftr
+=======
+            for ftr = 1:length(to_report)
+                try
+                    eval(['netHist.' to_report{ftr} '(:,t) = gather(state.' to_report{ftr} ');']);
+                catch E
+                    E.stack
+                    keyboard
+                end
+
+>>>>>>> master
             end
         end
 
@@ -385,7 +396,8 @@ for t = 1:simSteps
         if length(to_report)>0
             for ftr = 1:length(to_report)
                 try
-                    eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = gather(state.' to_report{ftr} ');']);
+                    % eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = gather(state.' to_report{ftr} ');']);
+                    eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = state.' to_report{ftr} ';']);
                 catch
                     to_report{ftr} = [];
                 end
@@ -441,7 +453,12 @@ allfields = {'V_soma', 'Sodium_h', 'Potassium_n', 'Potassium_x_s', 'Calcium_k', 
                         ' g_gaba_soma', 'g_ampa_dend', ' g_ampa_soma', ' g_gaba_dend', 'Ca2_soma','current', 'backgroundnoise'};
 
 for fts = fields(state)'
-     eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
+    try
+        eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
+    catch 
+        eval( ['tempState.' fts{1} '= state.' fts{1} ';'] ); 
+    end
+     % eval( ['tempState.' fts{1} '= state.' fts{1} ';'] );
 end
 
 

@@ -27,12 +27,12 @@ debugging = 1;
 % [=================================================================]
 delta = .02;
 
-cell_function = 'devel';
-% cell_function = 'vanilla'; % 'devel'
+% cell_function = 'devel';
+cell_function = 'vanilla'; % 'devel'
 nconn = 3;
 
-steadystate_time = 400;
-simtime  = 2000;
+steadystate_time = 400	;
+simtime  = 1000;
 
 % currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
@@ -52,40 +52,72 @@ to_report = currents;
 %  parameter grid
 % [=================================================================]
 % gaps = [];
-gaps = [0 0.04];
+gaps = [0];
+
+% pspace_type = 'pgrid';
+pspace_type = 'randomized';
+pspace_type = '2p_sweep';
+switch pspace_type
 
 
-% 9 Dimensional GRID: parameter ranges
-p1 = [2 8]; 		% CalciumL - conductance range
-p2 = [0];      	    % g_h_s
-p3 = [.1 2]; 	% g_int
-p4 = [.6];      	% g_h
-p5 = [.05 .2]; % ratio soma dendrite
-p6 = [45];	% Ca act Potassium: not voltage dependent 
-p7 = [5.5]; % Ca High threshold
-p8 = [.01];    % leak
-p9 = [1]; % arbitrary
+	case 'randomized'
+
+	noneurons = 100;
+	netsize = [noneurons 1 1];
+	def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+	Plist = def_neurons.Plist;
+	Pnames = def_neurons.Pnames;
+
+	case '2p_sweep'
+	
+	def_neurons = createDefaultNeurons(1,'celltypes','param_sweep','Pnames',{'g_CaL' ; 'g_int'});
+	Plist = def_neurons.Plist;
+	Pnames = def_neurons.Pnames;
+	noneurons = length(Plist);
+	netsize = [noneurons 1 1];
+	
+
+	case 'pgrid'
+
+	% 9 Dimensional GRID: parameter ranges
+	p1 = [1 2]; 		% CalciumL - conductance range
+	p2 = [0];      	    % g_h_s
+	p3 = [.3 2]; 	% g_int
+	p4 = [.6 1.2];      	% g_h
+	p5 = [.1 .3]; % ratio soma dendrite
+	p6 = [55];	% Ca act Potassium: not voltage dependent 
+	p7 = [4.5]; % Ca High threshold
+	p8 = [.01 .013];    % leak
+	p9 = [1]; % arbitrary
+
+	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9);
+
+	Pnames = {'g_CaL' 'g_h_s' 'g_int' 'g_h' 'p1' 'g_K_Ca' 'g_CaH' 'g_ld' 'arbitrary'}';
+	Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:) p{9}(:)]; 
+
+	noneurons = length(p{1}(:));
+	netsize = [1 noneurons 1];noneurons = prod(netsize);
+
+	def_neurons = createDefaultNeurons(noneurons);
+	def_neurons.g_CaL    = p{1}(:);
+	def_neurons.g_h_s    = p{2}(:);
+	def_neurons.g_int 	 = p{3}(:);
+	def_neurons.g_h 	 = p{4}(:);
+	def_neurons.p1  	 = p{5}(:);
+	def_neurons.g_K_Ca   = p{6}(:);       
+	def_neurons.g_CaH    = p{7}(:);     % High-threshold calcium
+	% def_neurons.arbitrary= p{8}(:);
+	def_neurons.g_ld = p{8}(:);
+	def_neurons.g_ls = p{8}(:);
+	def_neurons.g_la = p{8}(:);
+	def_neurons.arbitrary = p{9}(:);
 
 
-% % 8 Dimensional GRID: parameter ranges
-% p1 = [.6:.2:1.5]; 		% CalciumL - conductance range
-% p2 = [.0];      	    % g_h_s
-% p3 = [.13 .17]; 		% g_int
-% p4 = [.12 :.24: 1.2];      	% g_h
-% p5 = [.15];       	% ratio soma dendrite
-% p6 = [35 40 45];	% Ca act Potassium: not voltage dependent 
-% p7 = [4.5];
-% p8 = [0.01 .013];    % leak
-% p9 = [0 .5 1 1.5]; % arbitrary
+end
 
 
-[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9);
+	W = createW('all to all', [1 noneurons 1], [], 1, 0, 0, 0, nconn, []);
 
-Pnames = {'CaL' 'ghs' 'gint' 'gh' 's/d' 'CaK' 'CaH' 'gL' 'arb'};
-Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:) p{9}(:)]; 
-
-noneurons = length(p{1}(:));
-netsize = [1 noneurons 1];noneurons = prod(netsize);
 
 % [=================================================================]
 %  perturbation
@@ -130,24 +162,6 @@ I_app = [];
 pert = [];
 
 
-def_neurons = createDefaultNeurons(noneurons);
-twins = createDefaultNeurons(noneurons);
-def_neurons.g_CaL    = p{1}(:);
-def_neurons.g_h_s    = p{2}(:);
-def_neurons.g_int 	 = p{3}(:);
-def_neurons.g_h 	 = p{4}(:);
-def_neurons.p1  	 = p{5}(:);
-def_neurons.g_K_Ca   = p{6}(:);       
-def_neurons.g_CaH    = p{7}(:);     % High-threshold calcium
-% def_neurons.arbitrary= p{8}(:);
-def_neurons.g_ld = p{8}(:);
-def_neurons.g_ls = p{8}(:);
-def_neurons.g_la = p{8}(:);
-def_neurons.arbitrary = p{9}(:);
-
-
-
-W = createW('all to all', [1 noneurons 1], [], 1, 0, 0, 0, nconn, []);
 
 %%================================================]
 % 		 compute transients/steadystate
@@ -156,6 +170,7 @@ if ~exist('st_st','var')
 	disp('calculating transients')
 	st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta,'ou_noise', [0 0 0 0],'debug',debugging);
 	st_st.Plist = Plist;
+	st_st.Pnames = Pnames;
 
 	% replayResults_3(st_st, 'plotallfields',1)
 	resultstable = profile_sim(st_st);
@@ -190,25 +205,36 @@ for gap = gaps
 
 end
 % [===========================================================================================================]
-resultstable = profile_sim(simresults{1});
+R = profile_sim(simresults{1},'tslice', [1:1000]);
 
 
+prunecells = 0;
+if prunecells
+	
 
-% criteria for cell selection
-ampl   = table2array(R.allneurons(:,'ampl'))  <20;
-freq   = table2array(R.allneurons(:,'freq_each'))  >2 | table2array(R.allneurons(:,'freq_each'))<10 ;
-maxV   = table2array(R.allneurons(:,'maxV'))  <-30;
-meanVm = table2array(R.allneurons(:,'meanVm'))<-55;
-
-
-sel_cel_idx = ampl & freq & maxV & meanVm;
-
-waterfall(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
-plot(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
-
-sel_fields = {'g_CaL', 'g_K_Ca', 'g_int', 'p1', 'p2', 'ampl', 'freq_each', 'maxV', 'meanVm'}
-sel_table = R.allneurons(sel_cel_idx,sel_fields);
-NDscatter(sel_table, 1)
+	% criteria for cell selection
+	ampl   = table2array(R.allneurons(:,'ampl'))  <30;
+	freq   = table2array(R.allneurons(:,'freq_each'))  >2 | table2array(R.allneurons(:,'freq_each'))<10 ;
+	maxV   = table2array(R.allneurons(:,'maxV'))  <-30;
+	meanVm = table2array(R.allneurons(:,'meanVm'))<-55;
 
 
-save cellset_devel_3 sel_cel_idx simresults resultstable
+	sel_cel_idx = ampl & freq & maxV & meanVm;
+
+	waterfall(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
+	plot(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
+
+	sel_fields = {'g_CaL', 'g_K_Ca', 'g_int', 'p1',  'ampl', 'freq_each', 'maxV', 'meanVm'}
+	sel_table = R.allneurons(sel_cel_idx,sel_fields);
+	% sel_table = R.allneurons(:,sel_fields);
+	NDscatter(sel_table, 1)
+
+
+	save cellset_devel_3 sel_cel_idx simresults resultstable
+else
+		sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm'}
+		sel_table = R.allneurons(:,sel_fields);
+		% sel_table = R.allneurons(:,sel_fields);
+		NDscatter(sel_table, 1)
+end
+

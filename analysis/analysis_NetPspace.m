@@ -3,9 +3,10 @@
 % [=================================================================]
 %  script parameters
 % [=================================================================]
-pathtofile  = '/Users/M/Synced/Titan/Bench2/'
+% pathtofile  = '/Users/M/Synced/Projects/Experiments/Olive/model/simresults/netpspace/';
+pathtofile  = '/Users/M/Projects/Experiments/Olive/model/simresults/netpspace/';
 
-if ~exist('transients') & 0
+if ~exist('transients') 
 	% conntype = 'iso'; load /Users/M/SyncBox/Titan/Bench/pspace_noise_gap_24_iso_10000_17-May-2016.mat
 	% load /Users/M/SyncBox/Titan/Bench/pspace_noise_gap_24_cluster_10000_18-May-2016
 	% load /Users/M/Synced/Titan/Bench2/netpspace24_iso_5000_27-May-2016.mat
@@ -24,8 +25,8 @@ if ~exist('transients') & 0
 	% fname = '/Users/M/Synced/Titan/Bench/clustersize_netpspace40_cluster_5000_11-Jun-2016.mat'; 
 	% dimnames = {'sametoall', 'clustersize', 'gap' };
 
-	fname = '/Users/M/Synced/Titan/Bench/netpspace/tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
-	dimnames = {'sametoall', 'tau', 'gap' };
+	% fname = '/Users/M/Synced/Titan/Bench/netpspace/tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
+	% dimnames = {'sametoall', 'tau', 'gap' };
 
 	% fname = 'sigXmu_0corr_netpspace98_iso_3000_28-Jun-2016.mat'
 	% dimnames = {'noisesig', 'noiseamp', 'gap' };
@@ -33,8 +34,8 @@ if ~exist('transients') & 0
 	% fname = 'RADIUS_X_NCORR_netpspace25_iso_3000_28-Jun-2016.mat'
 	% dimnames = { 'radius', 'corr',	 'gap' };
 
-	% fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
-	% dimnames = { 'noisesig', 'noiseamp',	'gap' };	
+	fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
+	dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
 
 	
@@ -50,9 +51,9 @@ else
 	preparetables = 0
 end
 
-plottraces = 0;
-	sims2plot = [];
-	% sims2plot = 1:length(transients);
+plottraces = 1;
+	% sims2plot = [];
+	sims2plot = 1:length(transients);
 	tslice = [2000:3000];
 
 
@@ -63,7 +64,7 @@ summarize = 1;
 		% measured = {'pop_r', 'ampl'};
 
 	save2svg = 0;
-	save2png = 0;
+	save2png = 1;
 
 computeselectedxcorr = 0;
 	nwins = 1;
@@ -264,11 +265,13 @@ if plottraces
 					ylabel('mV')
 					xlabel('ms')
 					axis tight
+					ylim([-80 10])
 					
 					ax(2) = subplot(2,3,[4 5])
 					% ax2(pind) = subplot(length(noisecorr), length(gaps), pind);
 					imagesc(tslice, [1:noneurons], vs, [-80 -20])
 					% set(gca,'ytick', [1:56],'yticklabel', num2str(transients{ind}.Plist),'fontsize',8)
+
 
 					
 					linkaxes(ax,'x')
@@ -278,7 +281,6 @@ if plottraces
 					t2.VerticalAlignment = 'top';
 					t2.BackgroundColor = [1 1 1];
 					t2.EdgeColor = [0 0 1];
-
 					axis off
 
 					ax(4) = subplot(2,3,6 )
@@ -295,7 +297,7 @@ if plottraces
 					drawnow
 					if save2png
 					% export_fig(['netpspace_noise' num2str(pind)],'-png',f,'-m2')
-						export_fig(['netpspace_noise' num2str(pind)],'-png','-r150', f)
+						export_fig(['netpspace_noise' num2str(pind)],'-png','-r300', f)
 					end
 
 				close

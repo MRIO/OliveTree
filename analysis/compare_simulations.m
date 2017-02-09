@@ -25,15 +25,14 @@
 % % F = 'periodic_ampa_moreoscillations_nocorr_2_iso_0.04_1Hz_+w(2)00_2_28-Jun-2016.mat'
 % % F = 'periodic_ampa_moreoscillations_nocorr_2_iso_0.04_gallop_50000_2_29-Jun-2016.mat'
 
+addpath('/Users/M/Projects/Experiements/Olive/model/simresults')
 F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_1Hz_50000_4_25-Sep-2016.mat';
 F2 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_gallop_50000_4_25-Sep-2016.mat';
 F3 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_spont_50000_4_25-Sep-2016.mat';
 
 
 
-addpath('/Users/M/Synced/Titan/Bench2/periodic_ampa/')
-addpath('/Users/M/Synced/Titan/Bench2/')
-addpath('/Users/M/Synced/Titan/Bench/')
+
 
 
 % cellselection = [35 105 115 170];
