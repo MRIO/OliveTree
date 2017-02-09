@@ -6,4 +6,4 @@ else
 	$1="small changes"
 fi
 
-git add .; git commit -m $1; git push
+git add .; git commit -m "no commit message"; git push
