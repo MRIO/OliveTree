@@ -13,6 +13,7 @@ p.parse(varargin{:})
 intable = p.Results.intable;
 groupby = p.Results.groupby;
 selectedfields  = p.Results.fields;
+plotdistributions = 0;
 
 VarNames = intable.Properties.VariableNames;
 data = table2array(intable);
@@ -89,11 +90,13 @@ end
 
 			end
 
-			if c > r
+			if c > r % & plotdistributions
 				edges = {linspace(min(data(:,c)), max(data(:,c)) , 20); linspace(min(data(:,r)), max(data(:,r)) , 20)};
 				line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
 				imagesc(edges{1}, edges{2}, hist3([data(:,c) data(:,r) ], 'Edges', edges ))
 				axis xy
+			% elseif c > r & ~plotdistributions
+			% 	delete(hand(r,c))
 			end
 
 
@@ -116,6 +119,7 @@ end
 			if c == 1
 				set(gca,'yaxislocation', 'right')
 			end
+
 
 
 			xlim([min(data(:,c)) max(data(:,c))])

@@ -202,20 +202,20 @@ fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], co
 
 
 fig0 = figure
-	subplot(2,1,1)
+	subplot(2,2,1:2)
 	plot(abs(order_parameter_G1),'r'),hold on
 	plot(abs(order_parameter_G2),'b')
 	plot(abs(order_parameter_GA),'g')
 	title('abs(Z)')
 	legend({'Group' 'Others' 'All'})
 	
-	subplot(2,1,2)
+	subplot(2,2,3)
 	scatter(real(order_parameter_G1(tt)),imag(order_parameter_G1(tt)), 'filled','r' ); hold on
 	scatter(real(order_parameter_G2(tt)),imag(order_parameter_G2(tt)), 'filled','b' )
 	scatter(real(order_parameter_GA(tt)),imag(order_parameter_GA(tt)), 'filled','g' )
 	hold on
 	axis equal
-	axis(-1,1,-1,1)
+	axis([-1,1,-1,1])
 	title('')
 	legend({'Group' 'Others' 'All'})
 	
