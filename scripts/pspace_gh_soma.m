@@ -40,35 +40,18 @@ simtime  = 3000;
 % [================================================]
 % 		 cell parameters 
 % [================================================]
-% parameter ranges
-p1 = [.5  1.1 1.5]; 	% CalciumL - conductance range
-p2 = [45 85];      		% g_K_Ca
-p3 = [.13]; 		% g_int
-p4 = [.12 1.2];       	% g_h
-p5 = [5 20];       	% g_K_s
-[p{1} p{2} p{3} p{4} p{5}] = ndgrid(p1,p2,p3,p4,p5);
-
-Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:)];
-
-noneurons = length(p{1}(:));
-netsize = [1 noneurons 1]; noneurons = prod(netsize);
 
 
-def_neurons = createDefaultNeurons(noneurons);
-def_neurons.g_CaL    = p{1}(:);
-def_neurons.g_K_Ca   = p{2}(:);
-def_neurons.g_int 	 = p{3}(:);
-def_neurons.g_h 	 = p{4}(:);
-def_neurons.g_K_s 	 = p{5}(:);
-def_neurons.Plist = Plist;
-def_neurons.Pnames= {'g_CaL' 'g_K_Ca' 'g_int' 'g_h' 'g_K_s'};
+def_neurons = createDefaultNeurons(0 ,'celltypes', 'psweep_gh_gcal');
+noneurons = length(def_neurons.g_CaL);
+netsize = [noneurons 1 1]
 
-
- W = zeros(noneurons);
+W = zeros(noneurons);
+% W = createW()
 
 
 % [================================================]
-% 		 inputs
+% 		 perturbations
 % [================================================]
 
 currentstep = 10; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
@@ -79,6 +62,12 @@ I_app(:,(110:120)*(1/delta)) = currentstep; % nAmpere 20/dt [nA/s.cm^2]
 
 gnoise = [0 0 0 0];
 
+pert.mask{1}  	  = ones(noneurons,1);
+pert.amplitude{1} = 2;
+pert.type{1}	  = 'ampa';
+pert.duration{1}  = 1;
+pert.triggers{1}  = 100;
+
 
 
 %%================================================]
@@ -87,7 +76,7 @@ gnoise = [0 0 0 0];
 if ~exist('st_st','var')
 	disp('calculating transients')
 	st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta );
-	st_st.Plist = Plist;
+	
 end
 
 simcount= 0;
@@ -95,26 +84,38 @@ simcount= 0;
 simcount = simcount+1;
 
 % [===========================================================================================================]
-   [transients] = IOnet('tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
+   [transients] = IOnet('tempState', st_st.lastState ,'cell_parameters', def_neurons, 'perturbation', pert , ...
    	'networksize', netsize,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise , ...
    	'to_report', to_report ,'gpu', gpu ,  ...
    	'cell_function', cell_function ,'delta',delta);
-   transients.Plist = Plist;
 % [===========================================================================================================]
 	
+simcount = simcount+1;
+
+% [===========================================================================================================]
+   [transients] = IOnet('tempState', st_st.lastState ,'cell_parameters', def_neurons, 'perturbation', pert , ...
+   	'networksize', netsize,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise , ...
+   	'to_report', to_report ,'gpu', gpu ,  ...
+   	'cell_function', cell_function ,'delta',delta);
+% [===========================================================================================================]
+
+
+
+
+R = profile_sim(transients);
 
 figure
 imagesc(transients.networkHistory.V_soma,[-150 20]), colorbar
-set(gca,'ytick', [1:noneurons],'yticklabel', num2str(Plist),'fontsize',8)
+set(gca,'ytick', [1:noneurons],'yticklabel', num2str(def_neurons.Plist),'fontsize',8)
 
 figure
 ca = axis;
 set(0,'defaultaxescolororder', linspecer(20))
 p = plot(transients.networkHistory.V_soma')
-legend(num2str(Plist))
+legend(num2str(def_neurons.Plist))
 
 
 figure
 imagesc(st_st.networkHistory.V_soma,[-150 20]), colorbar
-set(gca,'ytick', [1:noneurons],'yticklabel', num2str(Plist),'fontsize',8)
+set(gca,'ytick', [1:noneurons],'yticklabel', num2str(def_neurons.Plist),'fontsize',8)
 

@@ -120,7 +120,7 @@ sametoall = 0.05;
 % create overlapping ampa masks
 
 % numberofmasks = 10; 
-onset_of_stim = [505:2:525];
+onset_of_stim = [1005:2:1025];
 
 % apply some current to check the behavior of the cells
 I_app = [];

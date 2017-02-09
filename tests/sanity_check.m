@@ -13,7 +13,7 @@ pert = []; I_app = [];
 
 dt = .02;
 
-
+experiment = 'tycho'
 
 switch experiment
 
@@ -34,18 +34,19 @@ switch experiment
 
 
 	case 'tycho' % two cells 
-		dt = 0.01;
-		simtime = 1000;
-		netsize = [1 3 3];
+		dt = 0.025;
+		simtime = 200;
+		netsize = [1 5 5];
 		gap = .1;
+		noneurons = prod(netsize);
 
-		W = rand(9)*gap;
-		W(find(eye(9))) = 0;
-		cell_parameters = createDefaultNeurons(9);
+		W = rand(noneurons)*gap;
+		W(find(eye(noneurons))) = 0;
+		cell_parameters = createDefaultNeurons(prod(netsize));
 
-		cell_parameters.g_CaL = .4 + rand(1,9)*.4;
+		cell_parameters.g_CaL = .4 + rand(1,noneurons)'*.4;
 		
-		I_app = zeros(9, simtime*(1/dt));
+		I_app = zeros(noneurons, simtime*(1/dt));
 		I_app(5,(500*(1/dt):700*(1/dt))) = -5;% uA/cm^2 
 		gnoise = [3 5 0 0]; % 
 
@@ -243,6 +244,10 @@ end
 % [transients] = IOnet('networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime,'g_CaL', g_CaL ,'W', W ,'ou_noise', gnoise ,'to_report', to_report,'gpu', gpu);
 [transients] = IOnet('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
 	'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
+
+
+[transients] = IOnet('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
+	'perturbation', pert ,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
 
 
 replayResults_3(transients)

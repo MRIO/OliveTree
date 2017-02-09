@@ -72,6 +72,7 @@ function R = profile_sim(varargin)
 
 
 	K = measureGlobalSync(sim,'plotme', 0,'duration',tslice); %, 'duration', tslice
+
 	freq_each = K.frequency'*1e3;
 
 	freq = median(freq_each);
@@ -85,9 +86,7 @@ function R = profile_sim(varargin)
 			continue
 		end
 		eval([ff{1} '= T.cellParameters.' ff{1} ';'])
-			
 				str = [str ff{1} ','];
-
 	end
 
 

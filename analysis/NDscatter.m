@@ -93,7 +93,7 @@ end
 			if c > r % & plotdistributions
 				edges = {linspace(min(data(:,c)), max(data(:,c)) , 20); linspace(min(data(:,r)), max(data(:,r)) , 20)};
 				line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
-				imagesc(edges{1}, edges{2}, hist3([data(:,c) data(:,r) ], 'Edges', edges ))
+				% imagesc(edges{1}, edges{2}, hist3([data(:,c) data(:,r) ], 'Edges', edges ))
 				axis xy
 			% elseif c > r & ~plotdistributions
 			% 	delete(hand(r,c))
@@ -121,8 +121,11 @@ end
 			end
 
 
-
+			try
 			xlim([min(data(:,c)) max(data(:,c))])
+			catch
+			end
+
 
 			set(gca,'color',bgcolor,'xcolor', axiscolor, 'ycolor', axiscolor,'tickdir', 'out','box','on');
 
