@@ -128,7 +128,7 @@ debugging           = p.Results.debug;
 interrupt_when_fail = 1;
 report_all_dt = false;
 
-if saveappliednoise    
+if saveappliednoise & sum(ou_noise(1:3))
     to_report = [ to_report 'backgroundnoise'];
 end
 
