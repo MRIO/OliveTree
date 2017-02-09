@@ -447,7 +447,7 @@ for fts = fields(state)'
         eval( ['tempState.' fts{1} '= gather(state.' fts{1} ');'] ); 
     catch E
         E.stack
-        keyboard
+            keyboard
     end
      % eval( ['tempState.' fts{1} '= state.' fts{1} ';'] );
 end
