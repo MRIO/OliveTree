@@ -47,7 +47,7 @@ if ~exist('p13','var')
 	p9  = [8];			% mean number of connections
 	p10 = [6];			% N, size of N x N network
 	p11 = [2];			% depth in Z
-	p12 = [0];		% whether using gap compensation in cells
+	p12 = [0];		    % whether using gap compensation in cells
 	p13 = [.5];			% variability of noise injected
 
 end
