@@ -8,13 +8,14 @@ if isstruct(tempState)
                 eval(['state.' eachfield{1} ' = tempState.' eachfield{1} ';']);
         end
 
-        % compatibility
-        state.ou_noise = zeros(noNeurons,1);
-        state.curr_noise_pert = zeros(noNeurons,1);
-
         return
 
 end
+
+
+% compatibility
+        state.ou_noise = zeros(noNeurons,1);
+        state.curr_noise_pert = zeros(noNeurons,1);
 
 try
     % gpuDeviceCount needs parallel toolbox
