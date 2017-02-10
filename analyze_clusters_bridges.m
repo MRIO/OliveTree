@@ -11,8 +11,9 @@ tslice = 1001:4000;
 if not(exist('st_st'))
 	% load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_22-Jan-2017.mat');
-	load('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
-    sims = sim;
+	% load('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
+	load('clusters_curlies_bridges_10-Feb-2017.mat')
+    sims = sim
 end
 
 if not(exist('R'))
@@ -37,7 +38,24 @@ if not(exist('R'))
 	% sel_table = RR(:,sel_fields);
 	% NDscatter(sel_table, 7);
 
+	sel_fields = {'clusterindex' 'g_CaL', 'g_int', 'g_h', 'ampl', 'freq_each', 'meanVm','minV'}
+	sel_fields = { 'g_CaL', 'g_h', 'ampl', 'freq_each' 'clusterindex'}
+	sel_fields = { 'freq_each' 'g_CaL', 'g_h', 'ampl' }
+
+	clusterindex = sim{1}.W.stats.clusters;
+	clusterindex = table(clusterindex);
+	R{1}.allneurons = horzcat(R{1}.allneurons, clusterindex)
+
+	NDscatter(R{1}.allneurons(:,sel_fields),clusterindex);
+
+
+	NDscatter(R{2}.allneurons(:,sel_fields),1);
+	NDscatter(R{3}.allneurons(:,sel_fields),1);
+
 end
+
+
+
 
 % [=================================================================]
 %  set defaults
