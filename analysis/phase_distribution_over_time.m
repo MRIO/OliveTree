@@ -10,7 +10,7 @@ function [out] = phase_distribution_over_time(varargin)
 
 
 
-static = 0;
+static = 1;
 
 % [=================================================================]
 %  Parser
@@ -207,7 +207,7 @@ VA = circ_var(GA);
 fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], color ,'edgecolor','none');
 
 
-fig0 = figure
+fig0 = figure('color',[1 1 1])
 	subplot(2,2,1:2)
 	plot(abs(order_parameter_G1),'r'),hold on
 	plot(abs(order_parameter_G2),'b')
@@ -227,7 +227,7 @@ fig0 = figure
 	
 
 
-fig1 = figure
+fig1 = figure('color',[1 1 1])
 	% circular phase plot
 	a(1) = subplot(2,2,[1 3]);
 
@@ -281,7 +281,7 @@ fig1 = figure
 		 % ylabel('simulation run')
 
 
-fig2 = figure
+fig2 = figure('color',[1 1 1])
 	[phasedist1 tim] = hist(G1, length(tt));
 	[phasedist2 tim] = hist(G2, length(tt));
 
@@ -302,7 +302,7 @@ spks1 = spikedetect(sim.networkHistory.V_soma(group1,:));
 spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 
 
-if 1
+if ~static
 	for t = duration 
 		% R1 = rose(U(group1,t));
 		% R2 = rose(U(group2,t));

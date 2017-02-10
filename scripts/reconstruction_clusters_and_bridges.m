@@ -96,7 +96,7 @@ cell_function = 'vanilla'; % 'devel'
 
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
-def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3');
+  def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized4');
 
 % randomized2 = 
 % neurons.g_CaL = linspace(.5, 1, noneurons);

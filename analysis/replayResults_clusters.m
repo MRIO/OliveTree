@@ -327,6 +327,7 @@ hold on
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
     end
     title('mean cluster activity')
+    xlabel('ms')
 end
 
 

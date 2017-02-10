@@ -1,12 +1,13 @@
 % analyze_clusters_bridges.m
 
 plotbridgeandneighbors = 1;
+plotscatters = 1;
 plotcellscatters  = 1;
 STOhistograms = 1;
 calculatesynchrony = 1;
 plot_cluster_members = 1;
 
-tslice = 1001:4000;
+tslice = 1:5000;
 
 if not(exist('st_st'))
 	% load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
@@ -42,15 +43,6 @@ if not(exist('R'))
 	sel_fields = { 'g_CaL', 'g_h', 'ampl', 'freq_each' 'clusterindex'}
 	sel_fields = { 'freq_each' 'g_CaL', 'g_h', 'ampl' }
 
-	clusterindex = sim{1}.W.stats.clusters;
-	clusterindex = table(clusterindex);
-	R{1}.allneurons = horzcat(R{1}.allneurons, clusterindex)
-
-	NDscatter(R{1}.allneurons(:,sel_fields),clusterindex);
-
-
-	NDscatter(R{2}.allneurons(:,sel_fields),1);
-	NDscatter(R{3}.allneurons(:,sel_fields),1);
 
 end
 
@@ -72,6 +64,7 @@ set(0,'defaultaxescolororder', linspecer(10))
 set(0,'defaultfigurecolormap', linspecer(10))
 
 
+
 if plotcellscatters 
 	sel_fields = {'g_CaL', 'g_int', 'p1', 'g_h', 'g_ld',  'freq_each', 'meanVm','minV', 'supth'}
 	sel_fields = {'g_CaL', 'g_int', 'g_h', 'ampl', 'freq_each', 'meanVm','minV'}
@@ -79,13 +72,13 @@ if plotcellscatters
 	sel_fields = {'g_CaL', 'g_ld', 'g_K_Ca',  'freq_each', 'meanVm','minV'}
 	
 	sel_table = R{1}.allneurons(:,sel_fields);
-	NDscatter(sel_table, 1)
+	NDscatter(sel_table, clusters)
 	
 	sel_table = R{2}.allneurons(:,sel_fields);
-	NDscatter(sel_table, 1)
+	NDscatter(sel_table, clusters)
 
 	sel_table = R{3}.allneurons(:,sel_fields);
-	NDscatter(sel_table, 1)
+	NDscatter(sel_table, clusters)
 
 end
 
@@ -135,24 +128,32 @@ waterfall(bridge_Vm(ord,:));
 % [=================================================================]
 
 if plotbridgeandneighbors
-	for c = find(bc)'
-		figure
+	tslice = [1:5000];
+	bc_index = find(bc)';
+	for c = bc_index(1:20);
+		figure(c)
 		thisbridge = zeros(size(bc));
 		thisbridge(c) = 1;
 		neighbors{c} = find(thisbridge'*(sims{1}.W.W>0));
-
-		plot(tslice, statevar{1}(neighbors{c},:),'color', [1 1 1]*.8)
+		subplot(2,1,1)
+		plot(tslice, statevar{1}(neighbors{c},tslice),'color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on
-		plot(tslice, statevar{1}(c,:),'linewidth', 2)
-		
+		plot(tslice, statevar{1}(c,tslice),'linewidth', 2)
+
+
+		subplot(2,1,2)
+		plot(tslice, statevar{2}(neighbors{c},tslice),'color', [1 1 1]*.8)
+		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
+		hold on
+		plot(tslice, statevar{2}(c,tslice),'linewidth', 2)
+		title(num2str(c))
 
 		Q = quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
 		text(tslice(end)*.9 , max(max(statevar{1}))*.9, num2str(Q))
 
-		pause
-
-		close 
+		% pause
+		% close 
 
 	end
 
@@ -221,7 +222,7 @@ end
 % [=================================================================]
 
 if plot_cluster_members
-	for c = 1:no_clusters
+	for c = 1:max(clusterindex)
 		c
 		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
 		% clustered{c}.no_neurons = length(find(clusters==c));
@@ -247,7 +248,7 @@ if calculatesynchrony_clusters
     
     %%
 	fig3 = figure;;
-	for c = 1:no_clusters
+	for c = 1:max(clusters)
 		c
 		clustered{c}.sync = measureGroupSync(sims{1},'group', clusters==c,'plotme',1);
 		clustered{c}.no_neurons = length(find(clusters==c));
