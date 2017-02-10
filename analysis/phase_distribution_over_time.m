@@ -25,6 +25,7 @@ p.addOptional('trigger',1)
 
 p.addParameter('fhandle', gcf)
 p.addParameter('group', [])
+p.addParameter('fname', [])
 
 p.parse(varargin{:});
 
@@ -35,6 +36,7 @@ trigger = p.Results.trigger;
 print2file = p.Results.print2file;
 fhandle = p.Results.fhandle;
 group = p.Results.group;
+fname = p.Results.fname;
 
 frames2file = 0; % save specified frames to files
 
@@ -82,7 +84,11 @@ fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], co
 %=============================savevideo==============================%
 
 if savemovie
-	% fname = [num2str(rows) 'x' num2str(columns) '_.avi']
+	if isempty(fname);
+		% fname = ['volume' datestr(now)];
+		fname = 'volume';
+	end
+
 		try
 			vidObj = VideoWriter('volume','MPEG-4');
 		catch
@@ -90,7 +96,7 @@ if savemovie
 			vidObj = VideoWriter('volume');
 		end
 
-		vidObj.FrameRate = 100;
+		vidObj.FrameRate = 24;
 	open(vidObj);
 end
 
@@ -296,7 +302,7 @@ spks1 = spikedetect(sim.networkHistory.V_soma(group1,:));
 spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 
 
-if 0
+if 1
 	for t = duration 
 		% R1 = rose(U(group1,t));
 		% R2 = rose(U(group2,t));
