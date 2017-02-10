@@ -6,8 +6,8 @@
 % clear
 rng(0,'twister') % random seed
 
-steadystate_time = 10; %ms
-simtime  = 100; %ms
+steadystate_time = 1000; %ms
+simtime  = 5000; %ms
 delta = .025;
 gpu = 1;
 
