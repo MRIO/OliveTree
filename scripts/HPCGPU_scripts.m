@@ -167,27 +167,27 @@ end
 
 %============================= gap compensation tests ==============================%
 
- % conntype = 'iso' 
- % X_README = 'THIS IS A SIMULATION FOR GAP COMPENSATION'
- % nameprefix = 'gapcomp';
-	% p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
-	% p2  = [0 .1 .2];	% sametoall (noise correlation) of ornstein uhlenbeck process
-	% p3  = [0];			% noiseamp of ornstein uhlenbeck process
-	% p4  = [0.04 eps]; 	% average gap leak per connection
-	% p5  = [3];			% single cell connection radius 
-	% p6  = [36];			% clustersize (iff conntype='cluster')
-	% p7  = [1];			% intraclusterP (iff conntype='cluster')
-	% p8  = [0];			% extraclusterP (iff conntype='cluster')
-	% p9  = [8];			% mean number of connections
-	% p10 = [6];			% N, size of N x N network
-	% p11 = [2];			% depth in Z		
-	% p12 = [-1:.5:2];			% whether using gap compensation in cells
-	% p13 = [.5];		% variability of noise injected
+ conntype = 'iso' 
+ X_README = 'THIS IS A SIMULATION FOR GAP COMPENSATION'
+ nameprefix = 'gapcomp';
+	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
+	p2  = [.1];	% sametoall (noise correlation) of ornstein uhlenbeck process
+	p3  = [-.6];			% noiseamp of ornstein uhlenbeck process
+	p4  = [0.04 eps]; 	% average gap leak per connection
+	p5  = [3];			% single cell connection radius 
+	p6  = [36];			% clustersize (iff conntype='cluster')
+	p7  = [1];			% intraclusterP (iff conntype='cluster')
+	p8  = [0];			% extraclusterP (iff conntype='cluster')
+	p9  = [8];			% mean number of connections
+	p10 = [6];			% N, size of N x N network
+	p11 = [2];			% depth in Z		
+	p12 = [0:.2:2];			% whether using gap compensation in cells
+	p13 = [.6];		% variability of noise injected
 
-	% simtime = 5000;
-	% conntype = 'iso';
+	simtime = 5000;
+	conntype = 'iso';
 
-	% % NetPspace;
+	% NetPspace;
 
 
 % [=================================================================]
