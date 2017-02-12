@@ -10,7 +10,7 @@ function [out] = phase_distribution_over_time(varargin)
 
 
 
-static = 1;
+
 
 % [=================================================================]
 %  Parser
@@ -20,6 +20,7 @@ p = inputParser;
 p.addRequired('sim')  % a matrix with two columns or a cell array with two cells;
 p.addOptional('duration',[])
 p.addOptional('savemovie',[])
+p.addOptional('animate',0)
 p.addOptional('print2file',0)
 p.addOptional('trigger',1)
 
@@ -37,6 +38,7 @@ print2file = p.Results.print2file;
 fhandle = p.Results.fhandle;
 group = p.Results.group;
 fname = p.Results.fname;
+animate = p.Results.animate;
 
 frames2file = 0; % save specified frames to files
 
@@ -263,18 +265,19 @@ fig1 = figure('color',[1 1 1])
 	 % plot(sim.networkHistory.V_soma')
 	 
 	 ttt = repmat(tt, numel(group2), 1);
-		line(tt',sim.networkHistory.V_soma(group1,tt)', ...
-			'color',[1 .8 .8], 'linewidth', .5)
+		
 		line(tt',sim.networkHistory.V_soma(group2,tt)', ...
 			'color',[0 .8 1], 'linewidth', .5)
-
+		line(tt',sim.networkHistory.V_soma(group1,tt)', ...
+			'color',[1 .2 .6], 'linewidth', .5)
 
 	  hold on
-	   line(tt, mean(sim.networkHistory.V_soma(group1,tt)),'color','r','linewidth', 3)
 	   line(tt, mean(sim.networkHistory.V_soma(group2,tt)),'color','b','linewidth', 3)
+	   line(tt, mean(sim.networkHistory.V_soma(group1,tt)),'color','r','linewidth', 3)
 	 
 		 xlabel('time')
 		 ylabel('Vm @ soma')
+		 axis tight
 
 		 % export_fig('Vm', '-r300')
 		 % export_fig('Vm2', '-r300')
@@ -302,7 +305,7 @@ spks1 = spikedetect(sim.networkHistory.V_soma(group1,:));
 spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 
 
-if ~static
+if animate
 	for t = duration 
 		% R1 = rose(U(group1,t));
 		% R2 = rose(U(group2,t));

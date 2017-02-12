@@ -4,7 +4,7 @@ p = inputParser;
 	p.addOptional('x',[])
 	p.addRequired('data')
 	p.addParamValue('color', [1 0 0])
-	p.addParamValue('quantiles', [.25 .75])
+	p.addParamValue('quantiles', [.1 .9])
 
 p.parse(varargin{:});
 

@@ -141,7 +141,7 @@ if savemovie
 	fname = ['sim' num2str(netsize) '_']
 		
 		vidObj = VideoWriter(fname,'MPEG-4');
-		set(vidObj,'FrameRate', 100)
+		set(vidObj,'FrameRate', 24)
 
 	open(vidObj);
 end
@@ -258,14 +258,79 @@ end
 
 reconstruction = 1;
 
+
+
+
+
+	if 1
+		plotvolume = 1;
+
+		if plotvolume
+			
+			g3d3 = gaussKernel3d(.2,  12, ceil(12/2)); g3d3 = g3d3/sum(g3d3(:)); g3d3(g3d3<.001) = 0; g3d3 = g3d3/sum(g3d3(:));
+			cla
+			vol3d('cdata',g3d3)
+
+
+			fig_volume = figure('color', [1 1 1]);
+
+			colormap(jet(64));
+			for tt = time_slice
+				
+				VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/10+1), V_soma_unwrapped(:,tt));
+				NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/10+1), 1);
+				NNNN(NNNN==0)=1;
+				VVVV = VVVV./NNNN;
+				
+				% CCCC = interp3(VVVV, 3);
+				% CCCC = convn(VVVV, g3d3, 'same');
+				% VVVV = CCCC;
+
+				set(0,'CurrentFigure',fig_volume);
+			    % set(fig1,'CurrentAxes',a(3));
+
+
+			    AAA = VVVV;
+				AAA(AAA<0) = .2;
+				AAA(AAA==0) = 0;
+
+				VVVV(VVVV>-50) = -58;
+				VVVV(VVVV<-65) = -67;
+				VVVV(1,1,1) = -67; 
+				VVVV(1,2,1) = -58;
+
+				cla
+				
+				vol3d('cdata',VVVV, 'Alpha', AAA , 'texture','3D');
+				view(3)
+				axis off; axis tight;  daspect([1 1 1])
+				drawnow
+				if savemovie
+					writeVideo(vidObj, getframe(fig_volume))
+				end
+				title([num2str(tt) 'ms'])
+
+			end
+			if savemovie
+				close(vidObj)
+			end
+
+		end
+	end
+
+
+
+
 if plotthreeDscatter
 	fig2 = figure('colormap',lc);
-	scaledV = (V_soma_unwrapped + -min(min(V_soma_unwrapped)))/(max(max(V_soma_unwrapped))  - min(min(V_soma_unwrapped)))*100;
+
+	scaledV = (V_soma_unwrapped -min(min(V_soma_unwrapped)) +1      )*20;
+
 	if reconstruction
 
 		for tt = 1:10:3000
 			cla
-			scatter3(coords(:,1), coords(:,2), coords(:,3), scaledV(:,tt),'filled')
+			scatter3(coords(:,1), coords(:,2), coords(:,3), scaledV(:,tt),clusters ,'filled')
 			% caxis([-80,-30])
 			title(num2str(tt))
 			axis equal
@@ -276,34 +341,6 @@ if plotthreeDscatter
 	end
 
 
-
-	if 0
-		plotvolume = 1;
-		if plotvolume
-			
-			[xx yy zz]  = meshgrid(1:netsize(1),1:netsize(2),1:netsize(3));
-			for tt = snap_time
-
-				V = reshape(V_soma_unwrapped(:,tt), [netsize(1) netsize(2) netsize(3)]);
-
-				set(0,'CurrentFigure',fig2);
-			    % set(fig1,'CurrentAxes',a(3));
-
-
-				V(V>-30) = -20;
-				V(1,1,1) = min(min(min(V))); Vq(1,1,2) = -20;
-
-				cla
-				
-				vol3d('cdata',V,'texture','3D');
-				view(3)
-				axis off; axis tight;  daspect([1 1 1])
-				pause(.1)
-				drawnow
-			end
-
-		end
-	end
 end
 
 
@@ -316,14 +353,16 @@ if plotmeanclusteractivity
 	fig03 = figure;;
 	disp('calculating cluster synchrony.')
 	for c = 1:no_clusters
+		try
+			plot(1:simtime, mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+			% plot_mean_and_std(V_soma_unwrapped(find(clusters==c),:)+c*5,'color', lc(c,:))
+		catch 
+			continue
+		end
 
-		c
-		% clustered{c}.sync = measureGroupSync(sim,'group', clusters==c,'plotme',0);
-		% clustered{c}.no_neurons = length(find(clusters==c));
-    
-% 		plot_mean_and_std([1:simtime], V_soma_unwrapped(find(clusters==c),:)+c*5,'color', lc(c,:))
-plot(1:simtime, mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-hold on
+		
+		hold on
+
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
     end
     title('mean cluster activity')
@@ -352,6 +391,7 @@ if calculatesynchrony
 		% xlabel('time (ms)')
 		% ylabel('mV')
 end
+
 
 
 

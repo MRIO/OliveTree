@@ -12,7 +12,7 @@ function R = profile_sim(varargin)
 
 
 	p.addParamValue('tslice', []) 
-	p.addParamValue('plotme', 1) 
+	p.addParamValue('plotme', 0)
 	% p.addParamValue('input', default) 
 	% p.addParamValue('input', default) 
 	% p.addParamValue('input', default) 

@@ -20,6 +20,8 @@ if exist('co_hilbproto')
 
 else	% if damoco toolbox not present, use old method
 		% crop complex spikes
+
+		disp('not using DAMOCO method for instantaneous frequency estimation')
 		V(V>-40) = -40;
 		N = -V;
 

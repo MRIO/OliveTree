@@ -19,7 +19,7 @@ VarNames = intable.Properties.VariableNames;
 data = table2array(intable);
 N = length(VarNames);
 
-figure
+figure('color', [1 1 1])
 
 if ~isempty(groupby)
 	if length(groupby)>1
@@ -38,12 +38,18 @@ end
 	markercolor = [0 0 0];
 	
 	ngroups = max(groups);
+
+
+
 	try
-	groupcolors = linspecer(ngroups);
+		groupcolors = linspecer(ngroups);
 	catch
 		groupcolors  = [0 0 0];
 	end
 
+	if ngroups ==2
+		groupcolors = [.9 0 .2 ; .2 .7 .2];
+	end
 
 
 	l1 = linspace(0, .88, N+1); l1 = l1(1:end -1)+.08; 
@@ -101,11 +107,11 @@ end
 
 
 			if r == N
-				title(VarNames{c})
+				title(VarNames{c},'interpreter', 'none')
 				% ylabel(VarNames{c})
 			end
 			if c == N
-				ylabel(VarNames{r})
+				ylabel(VarNames{r},'interpreter', 'none')
 			end
 			if r ~= 1
 				set(gca, 'xtick' , [])

@@ -9,7 +9,7 @@ function saveallfigs(varargin)
 	p.addParameter('prefix', []) 
 	p.addParameter('path', []) 
 	p.addParameter('formats', 'style')
-	p.addParameter('style', '9x6')
+	p.addParameter('style', '12x12')
 
 	
 	p.parse(varargin{:});
@@ -18,18 +18,18 @@ function saveallfigs(varargin)
 	formats = p.Results.formats;
 	style = p.Results.style;
 
-	mag = '-m4'
+	mag = '-m4';
 
 	h = get(0,'children');
 
 for i=1:length(h)
 	h(i).Color = [1 1 1];
-   saveas(h(i), [prefix num2str(i)], 'fig');
+   saveas(h(i), [prefix '_' num2str(i)], 'fig');
 
 
    switch formats
    case 'style'
-   		fname = [prefix num2str(i) '.png'];
+   		fname = [prefix '_' num2str(i) '.png'];
    		snam=style;
    		s=hgexport('readstyle',snam);
 	    s.Format = 'png';
@@ -39,9 +39,9 @@ for i=1:length(h)
    	case 'png'
    		export_fig([prefix num2str(i)], '-png',mag,h(i))
    	case 'svg'
-   		print(h(i), '-dsvg', [prefix num2str(i)] )
+   		print(h(i), '-dsvg', [prefix '_' num2str(i)] )
 	case 'pdf'
-   		print(h(i), '-dpdf', [prefix num2str(i)] )
+   		print(h(i), '-dpdf', [prefix '_' num2str(i)] )
    	otherwise
 
    	end
