@@ -294,10 +294,10 @@ reconstruction = 1;
 				AAA(AAA<0) = .2;
 				AAA(AAA==0) = 0;
 
-				VVVV(VVVV>-50) = -58;
-				VVVV(VVVV<-65) = -67;
+				VVVV(VVVV>-50) = -50;
+				VVVV(VVVV<-67) = -67;
 				VVVV(1,1,1) = -67; 
-				VVVV(1,2,1) = -58;
+				VVVV(1,2,1) = -50;
 
 				cla
 				

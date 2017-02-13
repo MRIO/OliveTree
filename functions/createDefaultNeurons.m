@@ -86,9 +86,9 @@ switch celltypes
 		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
 		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
 		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
-		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.001);
+		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.002);
 		% cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.001);
-		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.001);
+		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.002);
 		cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.1);
 		cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
 
