@@ -29,10 +29,10 @@ to_report = vsoma;
  
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
-nconns_curlies = 5;
+nconns_curlies = 6;
 nconns_bridges = 4;
-gap_curlies = .05;
-gap_bridges = .05;
+gap_curlies = .1;
+gap_bridges = .1;
 plotconn = 1;
 normalize = 1;
 
@@ -216,6 +216,26 @@ if 1
 	sim{3}.networkHistory.backgroundnoise = [];
 
 end
+
+
+
+% DISCONNECTED NETWORK
+if 1
+	 sim{4} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	 sim{4}.note = 'brick connectivity'
+	 sim{4}.W = brick;
+	 
+
+	sim{4}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
+	sim{4}.networkHistory.I_cx36 = single(sim{3}.networkHistory.V_soma);
+	sim{4}.networkHistory.backgroundnoise = [];
+
+end
+
 
 % [=================================================================]
 %  spontaneous
