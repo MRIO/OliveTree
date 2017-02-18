@@ -50,7 +50,7 @@ fhandle = p.Results.fhandle;
 % [=================================================================]
 %  retrieve fields
 % [=================================================================]
-
+frames = [1:5000];
 netsize 			= sim.networksize;
 simtime             = length(sim.networkHistory.V_soma);
 noneurons           = prod(netsize);
@@ -139,8 +139,12 @@ histfreq = histc(spks.medfreq, edges);
 
 if savemovie
 	fname = ['sim' num2str(netsize) '_']
-		
+		try
 		vidObj = VideoWriter(fname,'MPEG-4');
+		
+		catch
+			vidObj = VideoWriter(fname);
+		end
 		set(vidObj,'FrameRate', 24)
 
 	open(vidObj);
@@ -275,7 +279,7 @@ reconstruction = 1;
 			fig_volume = figure('color', [1 1 1]);
 
 			colormap(jet(64));
-			for tt = time_slice
+			for tt = frames
 				
 				VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/10+1), V_soma_unwrapped(:,tt));
 				NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/10+1), 1);

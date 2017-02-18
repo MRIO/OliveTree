@@ -36,6 +36,14 @@ gap_bridges = .1;
 plotconn = 1;
 normalize = 1;
 
+nconns_curlies = 6;
+nconns_bridges = 4;
+gap_curlies = .05;
+gap_bridges = .05;
+plotconn = 1;
+normalize = 1;
+
+
 
 load('JM394_horizontal_coordinates-MAO.mat')
 somatapositions = JM394_horizontal_coordinates;
@@ -81,6 +89,7 @@ if not(exist('curlies'))
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
 
 	brick = createW('3d_reconstruction', [], 4*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
+	brick.W = brick.W*gap_curlies;
 
 end
 

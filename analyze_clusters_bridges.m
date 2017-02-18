@@ -3,9 +3,9 @@
 % analyze_clusters_bridges.m
 
 plotbridgewaterfall = 0;
-plotreconstruction = 1; 
+plotreconstruction = 0; 
 	makevideo = 0
-plotconnectivityhistogram  = 1; % comparison of degree between clusters and bridges
+plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
 
 plotclustermemberaverages = 1;
 
@@ -13,7 +13,7 @@ plotbridgeandneighbors_Vm = 1;
 plotcellscatters  = 1;
 STOhistograms = 0;
 calculatesynchrony_clusters = 0;
-exampleclustersync = 1;
+exampleclustersync = 0;
 
 
 boxplots = 0;
@@ -25,7 +25,8 @@ if not(exist('st_st'))
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_22-Jan-2017.mat');
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_10-Feb-2017.mat')
-	load('clusters_curlies_bridges_13-Feb-2017.mat')
+	% load('clusters_curlies_bridges_13-Feb-2017.mat')
+	load('clusters_curlies_bridges_14-Feb-2017.mat')
     sims = sim;
 end
 
@@ -41,18 +42,21 @@ if not(exist('R'))
 	statevar{1} = double(sims{1}.networkHistory.V_soma(:,tslice)); % with gaps 
 	statevar{2} = double(sims{2}.networkHistory.V_soma(:,tslice)); % without gaps
 	statevar{3} = double(sims{3}.networkHistory.V_soma(:,tslice)); % disconnected
+	statevar{4} = double(sims{4}.networkHistory.V_soma(:,tslice)); % disconnected
 
 	% replayResults_clusters(sim{1});
 	% replayResults_clusters(sim{1});
 
-	R{1} = profile_sim(sims{1},'tslice',tslice); % bridges and curlies
+	R{1} = profile_sim(sims{1},'tslice',tslice); % bridges and curlie
 	R{2} = profile_sim(sims{2},'tslice',tslice); % only curlies
 	R{3} = profile_sim(sims{3},'tslice',tslice); % disconnected net
+	R{4} = profile_sim(sims{4},'tslice',tslice); % disconnected net
 
 	% RR = vertcat(R{1}.allneurons, R{2}.allneurons);
 	% RR(:,39) = table([zeros(1105,1) ; ones(1105,1)]);
 
-	% sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm', 'Var39'};
+	% sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm', 'Var
+			 	 % tabl2earray(R{2}.allneurons(:,'freq_each'))';39'};
 	% sel_table = RR(:,sel_fields);
 	% NDscatter(sel_table, 7);
 
@@ -166,6 +170,9 @@ if plotcellscatters
 	sel_table = R{3}.allneurons(:,sel_fields);
 	NDscatter(sel_table, bridgecells+1)
 
+	sel_table = R{4}.allneurons(:,sel_fields);
+	NDscatter(sel_table, bridgecells+1)
+
 end
 
 
@@ -178,6 +185,13 @@ figure
 bridge_Vm = statevar{2}(bridgeidx,:);
 waterfall(bridge_Vm(ord,:));
 title('bridge behavior when disconnected')
+
+figure
+bridge_Vm = statevar{4}(bridgeidx,:);
+waterfall(bridge_Vm(ord,:));
+title('bridge behavior when disconnected')
+
+
 end
 
 
@@ -198,14 +212,22 @@ if plotbridgeandneighbors_Vm
 				Q = quantile(table2array(R{3}.allneurons(neighbors{c},'freq_each')), [.1, .5, .9])
 
 
-		subplot(2,1,1)
+		subplot(3,1,1)
 		plot(statevar{1}(neighbors{c}',:)','color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on
 		plot( statevar{1}(c,:),'linewidth', 2)
 		title({['bridge number: ' num2str(c) ' degree:' num2str(length(neighbors{c}))] ; ['neighbor freq (lower median upper): ' num2str(Q) 'Hz'] })
 
-		subplot(2,1,2)
+		subplot(3,1,2)
+		plot(statevar{2}(neighbors{c},:)','color', [1 1 1]*.8)
+		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
+		hold on
+		plot(statevar{2}(c,:),'linewidth', 2)
+		title(['neighboring clusters:' num2str(clusters(neighbors{c})') ])
+
+
+		subplot(3,1,3)
 		plot(statevar{2}(neighbors{c},:)','color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on

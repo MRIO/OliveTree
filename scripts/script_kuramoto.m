@@ -9,7 +9,7 @@ pspaceoscillatornumber = 0;
 	time  = 1 ; %s;
 	cc = 10; % coupling coefficient
 
-pspacefreqcoupling = 0; % for two coupled oscillators
+pspacefreqcoupling = 1; % for two coupled oscillators
 	deltaf = 2;
 	no_osc = 2;
 	basefrequencies = [1 9];
@@ -17,7 +17,7 @@ pspacefreqcoupling = 0; % for two coupled oscillators
 	time = 5;
 
 
-comparetwooscillators = 1; %slow vs fast frequencies
+comparetwooscillators = 0; %slow vs fast frequencies
 	time = 3; %s
 	K = [10 10]*5;
 	slowfreq = [.5 ; 9.5];
