@@ -111,7 +111,7 @@ def_neurons.g_ld = p{8}(:);
 def_neurons.g_ls = p{8}(:);
 def_neurons.g_la = p{8}(:);
 
-
+def_neurons = jitter_cell_parameters(def_neurons);
 
  W = zeros(noneurons);
  % W = createW(noneurons);
@@ -161,6 +161,31 @@ end
 spks1 = spikedetect(simresults{1});
 spks2 = spikedetect(simresults{2});
 
+R{1} = profile_sim(simresults{1});
+R{2} = profile_sim(simresults{2});
+
+for c = 1:noneurons
+	[PKS POS]  = findpeaks(simresults{1}.networkHistory.V_soma(c,150:600),'minpeakheight',-70);
+	ADPD(c) = POS(1)-100;
+end
+R{1}.allneurons = horzcat(R{1}.allneurons,table(ADPD'));
+R{1}.allneurons.Properties.VariableNames{39} = 'ADPD';
+
+for c = 1:noneurons
+	[PKS POS]  = findpeaks(simresults{2}.networkHistory.V_soma(c,150:600),'minpeakheight',-70);
+	ADPD(c) = POS(1)-100;
+end
+R{2}.allneurons = horzcat(R{2}.allneurons,table(ADPD'));
+R{2}.allneurons.Properties.VariableNames{39} = 'ADPD';
+
+
+stacked = vertcat(R{2}.allneurons,R{1}.allneurons);
+G = [ones(noneurons,1)*2 ;ones(noneurons,1)*1];
+sel_fields = {'ampl', 'freq_each', 'g_CaL', 'g_h' , 'ADPD'};
+NDscatter(stacked(:,sel_fields), G);
+
+
+
 
 figure
 imagesc(st_st.networkHistory.V_soma,[-80 -20]), colorbar
@@ -194,7 +219,7 @@ legend(num2str(Plist))
 
 figure
 p = plot([1:simtime],   simresults{2}.networkHistory.V_soma');
-R = replayResults(simresults,[],0,1)
+% R = replayResults(simresults{1})
 
 
 % figure, plot(transients.networkHistory.V_soma',transients.networkHistory.Hcurrent_q'),legend(num2str(Plist)), title('V vs q (Hcurrent)')
