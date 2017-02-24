@@ -2,27 +2,28 @@
 
 clear;
 
-oscillatingcells_comp = 1;
-	plotcellscatters  = 1;
-	joinedcellscatter = 0;
-	triggeredphase =1;
-hist_sto_freq_amp_w_wo_gaps = 1;
+onesec_vs_30s = 0;
+plotcellscatters_gap_gapless  = 1; % compare cell scatters in nets
+joinedcellscatter = 0;
+triggeredphase =0;
+hist_sto_freq_amp_w_wo_gaps = 0;
 
 calculatesynchrony = 0;
 sto_and_propfiring_histograms = 0;
 
 
-tslice = 1:30000;
+tslice = 1:50000;
 
 if not(exist('Joinedsim'))
 	addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
+	addpath('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
 
-	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest2_iso_spont_5000_1_17-Jan-2017.mat'; 
+	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017';
 	load(F1)
 	disp('loaded.')
 
 	runs_with   = [5:8];
-	runs_wihout = [1:4];
+	runs_without = [1:4];
 
 	Joinedsim{1}  = joinsim(simresults,runs_without); 
 	Joinedsim{2}  = joinsim(simresults,runs_with); 
@@ -45,147 +46,150 @@ if not(exist('Joinedsim'))
 end
 
 
-if oscillatingcells_comp
-	
-	
-	if plotcellscatters 
-		sel_fields = {'g_CaL', 'g_int',  'ampl', 'freq_each', 'meanVm'};
-		% sel_fields = {'g_CaL', 'ampl', 'freq_each'}
-		sel_table = R{1}.allneurons(:,sel_fields);
-
-		NDscatter(sel_table, 1)
-
-		sel_table = R{2}.allneurons(:,sel_fields);
-
-		NDscatter(sel_table, 1)
-	end
-
-	if onesec_vs_30s
-		Ronesec_withgap = profile_sim(Joinedsim{1},'tslice', [1000:3000]);
+if onesec_vs_30s
+		Ronesec_withgap = profile_sim(Joinedsim{2},'tslice', [4000:5000]);
 		stacked = vertcat(R{2}.allneurons,Ronesec_withgap.allneurons );
 		G = [ones(200,1)*2 ;ones(200,1)*1];
-		sel_fields = {'ampl', 'freq_each', 'g_int', 'g_CaL'};
-		NDscatter(stacked(:,sel_fields), G)
-	end
+		sel_fields = {'ampl', 'freq_each', 'spks', 'g_CaL', 'g_h'};
+		sel_fields = {'ampl', 'freq_each'};
+		NDscatter(stacked(:,sel_fields), G);
+end
 
+	
 
+if plotcellscatters_gap_gapless 
+	% sel_fields = {'g_CaL', 'g_h',  'ampl', 'freq_each', 'meanVm' 'spks'};
+	sel_fields = {'ampl', 'freq_each'};
+	% sel_fields = {'g_CaL', 'ampl', 'freq_each'}
+	sel_table_1 = R{2}.allneurons(:,sel_fields);
+	sel_table_2 = R{1}.allneurons(:,sel_fields);
+	stacked = vertcat(sel_table_1, sel_table_2);
+	G = [ones(200,1)*2 ;ones(200,1)*1];
 
-	if joinedcellscatter
+	NDscatter(stacked, G)
 
-		RR = vertcat(R{1}.allneurons, R{2}.allneurons);
+	sel_table = R{2}.allneurons(:,sel_fields);
 
-		G = [ones(200,1)*2 ;ones(200,1)*1];
-		
-		sel_fields = {'spks' , 'ampl', 'freq_each', 'g_int', 'g_CaL'};
-		NDscatter(RR(:,sel_fields), G)
-
-	end
-
-
-
-
-	if triggeredphase
-
-
-		STPD{1} = stim_trig_phase_dist(Joinedsim{1});
-		STPD{2} = stim_trig_phase_dist(Joinedsim{2});
-
-		figure
-		 plot_mean_and_std(STPD{1}.R1.kp_mask,'color' ,[1 0 0]); hold on
-		 plot_mean_and_std(STPD{2}.R1.kp_mask,'color' ,[0 0 1])
-		 alpha(.5)
-		 legend({'MT' 'MT' 'WT' 'WT'})
-		 title('kuramoto (stimulated mask)')
-		 xlim([800 1500])
-
-		 figure
-		 plot_mean_and_std(STPD{1}.R1.Vm_othr,'color' ,[.5 .5 .5]); hold on
-		 plot_mean_and_std(STPD{1}.R1.Vm_mask,'color' ,[1 0 0])
-		 plot_mean_and_std(STPD{1}.R1.Vm_neig,'color' ,[0 1 0])
-		 title('Stim Trig Average Vm (MT)')
-		 alpha(.5)
-		 xlim([800 1500])
-		 
-		 legend({'Other' 'Other' 'Mask' 'Mask' 'Neighbors' 'Neighbors'  })
-
-		figure
-		 plot_mean_and_std(STPD{2}.R1.Vm_othr,'color' ,[.5 .5 .5]); hold on
-		 plot_mean_and_std(STPD{2}.R1.Vm_mask,'color' ,[1 0 0])
-		 plot_mean_and_std(STPD{2}.R1.Vm_neig,'color' ,[0 1 0])
-		 title('Stim Trig Average Vm (WT)')
-		 alpha(.5)
-		 xlim([800 1500])
-		 
-		legend({'Other' 'Other' 'Neighbors' 'Neighbors' 'Mask' 'Mask' })
-
-
-	end
+	NDscatter(sel_table, 1)
+end
 
 
 
 
-	if hist_sto_freq_amp_w_wo_gaps
 
-		freqbins = [0:1:10];
-		freqhistwithout  = hist(table2array(R{1}.allneurons(:,'freq_each')), freqbins)
-		freqhistwith  = hist(table2array(R{2}.allneurons(:,'freq_each')), freqbins)
+if joinedcellscatter
 
-		ampbins = [0:2:25];
-		amplitudehistwithout = hist(table2array(R{1}.allneurons(:,'ampl')),ampbins)
-		amplitudehistwith 	 = hist(table2array(R{2}.allneurons(:,'ampl'))  ,ampbins)
+	RR = vertcat(R{1}.allneurons, R{2}.allneurons);
 
-
-		figure
-			subplot(1,2,1)
-			bar(freqbins, [ freqhistwithout ; freqhistwith]',1)
-			xlabel('Freq (Hz) ')
-			ylabel('Cells')
-			title('STO freq')
-			
-			subplot(1,2,2)
-			bar(ampbins, [amplitudehistwithout ; amplitudehistwith]',1)
-			xlabel('Amplitude (mV) ')
-			ylabel('Cells')
-			title('STO amplitude')
-	end
-
-
-
-	if calculatesynchrony
-		
-		
-			sim1_sync = measureGlobalSync(Joinedsim{1}, 'duration', 2000:25000, 'plotme',1, 'group', Joinedsim{1}.perturbation.mask{1});
-			sim2_sync = measureGlobalSync(Joinedsim{2}, 'duration', 2000:25000, 'plotme',1, 'group', Joinedsim{2}.perturbation.mask{1});
-
-			xlim([8600 9800])
-			ninetyfive_1 = quantile(sim1_sync.stats.order_parameter_all(1:4900),.95)
-			ninetyfive_2 = quantile(sim2_sync.stats.order_parameter_all(1:4900),.95)
-
-			fig3 = figure;
-
-
-			[HOPA_1 XOPA_1] = hist([sim1_sync.stats.order_parameter_all' ;  sim2_sync.stats.order_parameter_all']')
-			
-
-		
-			[HOPA_2 XOPA_2] = hist([sim1_sync.stats.order_parameter_group' ;  sim2_sync.stats.order_parameter_group']')
-
-			subplot(2,1,1)
-			bar(XOPA_1,HOPA_1/(23000))
-			title('order parameter (all)')
-			legend({'MT'  'WT'})
-
-			subplot(2,1,2)
-			bar(XOPA_2,HOPA_2/(23000))
-			title('order parameter (group)')
-			legend({'MT'  'WT'})
-			
-
-
-
-	end
+	G = [ones(200,1)*2 ;ones(200,1)*1];
+	
+	sel_fields = {'spks' , 'ampl', 'freq_each', 'g_int', 'g_CaL'};
+	NDscatter(RR(:,sel_fields), G)
 
 end
+
+
+
+
+if triggeredphase
+
+
+	STPD{1} = stim_trig_phase_dist(Joinedsim{1});
+	STPD{2} = stim_trig_phase_dist(Joinedsim{2});
+
+	figure
+	 plot_mean_and_std(STPD{1}.R1.kp_mask,'color' ,[1 0 0]); hold on
+	 plot_mean_and_std(STPD{2}.R1.kp_mask,'color' ,[0 0 1])
+	 alpha(.5)
+	 legend({'MT' 'MT' 'WT' 'WT'})
+	 title('kuramoto (stimulated mask)')
+	 xlim([800 1500])
+
+	 figure
+	 plot_mean_and_std(STPD{1}.R1.Vm_othr,'color' ,[.5 .5 .5]); hold on
+	 plot_mean_and_std(STPD{1}.R1.Vm_mask,'color' ,[1 0 0])
+	 plot_mean_and_std(STPD{1}.R1.Vm_neig,'color' ,[0 1 0])
+	 title('Stim Trig Average Vm (MT)')
+	 alpha(.5)
+	 xlim([800 1500])
+	 
+	 legend({'Other' 'Other' 'Mask' 'Mask' 'Neighbors' 'Neighbors'  })
+
+	figure
+	 plot_mean_and_std(STPD{2}.R1.Vm_othr,'color' ,[.5 .5 .5]); hold on
+	 plot_mean_and_std(STPD{2}.R1.Vm_mask,'color' ,[1 0 0])
+	 plot_mean_and_std(STPD{2}.R1.Vm_neig,'color' ,[0 1 0])
+	 title('Stim Trig Average Vm (WT)')
+	 alpha(.5)
+	 xlim([800 1500])
+	 
+	legend({'Other' 'Other' 'Neighbors' 'Neighbors' 'Mask' 'Mask' })
+
+
+end
+
+
+
+
+if hist_sto_freq_amp_w_wo_gaps
+
+	freqbins = [0:1:10];
+	freqhistwithout  = hist(table2array(R{1}.allneurons(:,'freq_each')), freqbins)
+	freqhistwith  = hist(table2array(R{2}.allneurons(:,'freq_each')), freqbins)
+
+	ampbins = [0:2:25];
+	amplitudehistwithout = hist(table2array(R{1}.allneurons(:,'ampl')),ampbins)
+	amplitudehistwith 	 = hist(table2array(R{2}.allneurons(:,'ampl'))  ,ampbins)
+
+
+	figure
+		subplot(1,2,1)
+		bar(freqbins, [ freqhistwithout ; freqhistwith]',1)
+		xlabel('Freq (Hz) ')
+		ylabel('Cells')
+		title('STO freq')
+		
+		subplot(1,2,2)
+		bar(ampbins, [amplitudehistwithout ; amplitudehistwith]',1)
+		xlabel('Amplitude (mV) ')
+		ylabel('Cells')
+		title('STO amplitude')
+end
+
+
+
+if calculatesynchrony
+	
+	
+		sim1_sync = measureGlobalSync(Joinedsim{1}, 'duration', 2000:25000, 'plotme',1, 'group', Joinedsim{1}.perturbation.mask{1});
+		sim2_sync = measureGlobalSync(Joinedsim{2}, 'duration', 2000:25000, 'plotme',1, 'group', Joinedsim{2}.perturbation.mask{1});
+
+		xlim([8600 9800])
+		ninetyfive_1 = quantile(sim1_sync.stats.order_parameter_all(1:4900),.95)
+		ninetyfive_2 = quantile(sim2_sync.stats.order_parameter_all(1:4900),.95)
+
+		fig3 = figure;
+
+
+		[HOPA_1 XOPA_1] = hist([sim1_sync.stats.order_parameter_all' ;  sim2_sync.stats.order_parameter_all']')
+		
+
+	
+		[HOPA_2 XOPA_2] = hist([sim1_sync.stats.order_parameter_group' ;  sim2_sync.stats.order_parameter_group']')
+
+		subplot(2,1,1)
+		bar(XOPA_1,HOPA_1/(23000))
+		title('order parameter (all)')
+		legend({'MT'  'WT'})
+
+		subplot(2,1,2)
+		bar(XOPA_2,HOPA_2/(23000))
+		title('order parameter (group)')
+		legend({'MT'  'WT'})
+		
+
+end
+
 
 
 if sto_and_propfiring_histograms

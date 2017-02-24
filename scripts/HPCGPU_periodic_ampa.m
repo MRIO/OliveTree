@@ -35,6 +35,7 @@ if ~exist('moreoscillation'); moreoscillation = 0 ; end
 if ~exist('nameprefix')  	; nameprefix ='missg' ; end
 if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
+if ~exist('rd')  			; rd = 2		      ; end % radius
 	
  
 displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];

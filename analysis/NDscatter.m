@@ -7,6 +7,7 @@ p = inputParser;
 p.addRequired('intable')
 p.addOptional('groupby',[]) 
 p.addParamValue('fields',[])
+p.addParameter('colors',[])
 
 p.parse(varargin{:}) 
 
@@ -14,6 +15,7 @@ intable = p.Results.intable;
 groupby = p.Results.groupby;
 selectedfields  = p.Results.fields;
 plotdistributions = 0;
+colors = p.Results.colors;
 
 VarNames = intable.Properties.VariableNames;
 data = table2array(intable);
@@ -48,7 +50,10 @@ end
 	end
 
 	if ngroups ==2
-		groupcolors = [.9 0 .2 ; .2 .7 .2];
+
+		% groupcolors = [.9 0 .2 ; .2 .7 .2];
+		% groupcolors = [.9 0 .2 ; .2 .7 .2];
+		groupcolors = [.9 0 .2 ; .2 .2 .7];
 	end
 
 
@@ -71,7 +76,7 @@ end
 					line(data(groups==g,c), data(groups==g,r), ...
 						 'markersize', 5, 'color', groupcolors(g,:), 'marker','.','linestyle','none','markersize',15)
 				end
-				line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
+				% line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
 				hold off
 			elseif r == c
 				if min(data(:,r)) == max(data(:,r))
@@ -97,9 +102,17 @@ end
 			end
 
 			if c > r % & plotdistributions
-				edges = {linspace(min(data(:,c)), max(data(:,c)) , 20); linspace(min(data(:,r)), max(data(:,r)) , 20)};
-				line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
+				
+				for g = 1:ngroups
+					line(data(groups==g,c), data(groups==g,r), ...
+						 'markersize', 5, 'color', groupcolors(g,:), 'marker','.','linestyle','none','markersize',15)
+				end
+
+				% line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
+
+				% edges = {linspace(min(data(:,c)), max(data(:,c)) , 20); linspace(min(data(:,r)), max(data(:,r)) , 20)};
 				% imagesc(edges{1}, edges{2}, hist3([data(:,c) data(:,r) ], 'Edges', edges ))
+				colormap(bone)
 				axis xy
 			% elseif c > r & ~plotdistributions
 			% 	delete(hand(r,c))

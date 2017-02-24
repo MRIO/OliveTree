@@ -54,9 +54,9 @@ to_report = currents;
 % gaps = [];
 gaps = [0];
 
-% pspace_type = 'pgrid';
-pspace_type = 'randomized';
-pspace_type = '2p_sweep';
+pspace_type = 'pgrid';
+% pspace_type = 'randomized';
+% pspace_type = '2p_sweep';
 switch pspace_type
 
 
@@ -80,19 +80,19 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [1 2]; 		% CalciumL - conductance range
+	p1 = [1]; 		% CalciumL - conductance range
 	p2 = [0];      	    % g_h_s
-	p3 = [.3 2]; 	% g_int
-	p4 = [.6 1.2];      	% g_h
-	p5 = [.1 .3]; % ratio soma dendrite
+	p3 = [.15 .5]; 	% g_int
+	p4 = [1.2];      	% g_h
+	p5 = [.1]; % ratio soma dendrite
 	p6 = [55];	% Ca act Potassium: not voltage dependent 
 	p7 = [4.5]; % Ca High threshold
-	p8 = [.01 .013];    % leak
-	p9 = [1]; % arbitrary
+	p8 = [.01:.001:.016];    % leak
+	p9 = [.01:.001:.016];; % arbitrary
 
 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9);
 
-	Pnames = {'g_CaL' 'g_h_s' 'g_int' 'g_h' 'p1' 'g_K_Ca' 'g_CaH' 'g_ld' 'arbitrary'}';
+	Pnames = {'g_CaL' 'g_h_s' 'g_int' 'g_h' 'p1' 'g_K_Ca' 'g_CaH' 'g_ld' 'g_ls'}';
 	Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:) p{9}(:)]; 
 
 	noneurons = length(p{1}(:));
@@ -108,9 +108,8 @@ switch pspace_type
 	def_neurons.g_CaH    = p{7}(:);     % High-threshold calcium
 	% def_neurons.arbitrary= p{8}(:);
 	def_neurons.g_ld = p{8}(:);
-	def_neurons.g_ls = p{8}(:);
-	def_neurons.g_la = p{8}(:);
-	def_neurons.arbitrary = p{9}(:);
+	def_neurons.g_ls = p{9}(:);
+	
 
 
 end
@@ -205,7 +204,9 @@ for gap = gaps
 
 end
 % [===========================================================================================================]
-R = profile_sim(simresults{1},'tslice', [1:1000]);
+R = profile_sim(simresults{1},'tslice', [1:1000], 'plotme',1);
+sel_fields = {'g_CaL', 'g_int', 'g_h', 'g_ld' ,'g_ls', 'ampl', 'freq_each', 'meanVm'};
+NDscatter(R.allneurons(:,sel_fields),1)
 
 
 prunecells = 0;
