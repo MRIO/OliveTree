@@ -1,8 +1,8 @@
 
 
 % analyze_clusters_bridges.m
+plotcellscatters  = 1;	sel_fields = { 'freq_each' 'g_CaL', 'g_h', 'ampl' };
 
-plotbridgewaterfall = 0;
 plotreconstruction = 0; 
 	makevideo = 0
 plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
@@ -10,7 +10,9 @@ plotconnectivityhistogram  = 0; % comparison of degree between clusters and brid
 plotclustermemberaverages = 1;
 
 plotbridgeandneighbors_Vm = 1;
-plotcellscatters  = 1;
+	plotbridgewaterfall = 0;
+
+
 STOhistograms = 0;
 calculatesynchrony_clusters = 0;
 exampleclustersync = 0;
@@ -25,11 +27,12 @@ if not(exist('st_st'))
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_22-Jan-2017.mat');
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_10-Feb-2017.mat')
+	% load('clusters_curlies_bridges_10-Feb-2017.mat')
 	% load('clusters_curlies_bridges_13-Feb-2017.mat')
-	load('clusters_curlies_bridges_14-Feb-2017.mat')
+	load('clusters_curlies_bridges_20-Feb-2017.mat')
     sims = sim;
 end
-
+ 
 % [================================================]
 %  profile simulations
 % [================================================]
@@ -39,24 +42,14 @@ if not(exist('R'))
 	sims{1}.W = bridg_curlies;
 	sims{2}.W = curlies;
 
-	statevar{1} = double(sims{1}.networkHistory.V_soma(:,tslice)); % with gaps 
-	statevar{2} = double(sims{2}.networkHistory.V_soma(:,tslice)); % without gaps
-	statevar{3} = double(sims{3}.networkHistory.V_soma(:,tslice)); % disconnected
-	statevar{4} = double(sims{4}.networkHistory.V_soma(:,tslice)); % disconnected
-
-	% replayResults_clusters(sim{1});
-	% replayResults_clusters(sim{1});
-
-	R{1} = profile_sim(sims{1},'tslice',tslice); % bridges and curlie
-	R{2} = profile_sim(sims{2},'tslice',tslice); % only curlies
-	R{3} = profile_sim(sims{3},'tslice',tslice); % disconnected net
-	R{4} = profile_sim(sims{4},'tslice',tslice); % disconnected net
-
+	for nsim = 1:length(sims);
+		statevar{nsim} = double(sims{nsim}.networkHistory.V_soma(:,tslice)); % with gaps 
+		R{nsim} = profile_sim(sims{nsim},'tslice',tslice); % bridges and curlie
+	end
+	
+	
 	% RR = vertcat(R{1}.allneurons, R{2}.allneurons);
 	% RR(:,39) = table([zeros(1105,1) ; ones(1105,1)]);
-
-	% sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm', 'Var
-			 	 % tabl2earray(R{2}.allneurons(:,'freq_each'))';39'};
 	% sel_table = RR(:,sel_fields);
 	% NDscatter(sel_table, 7);
 
@@ -147,9 +140,6 @@ if plotcellscatters
 	% sel_fields = {'g_CaL', 'g_ld',  'g_K_Ca', 'p1', 'g_h',  'ampl', 'freq_each', 'meanVm','minV','supth'}
 	% sel_fields = {'g_CaL', 'g_ld', 'g_K_Ca',  'freq_each', 'meanVm','minV'}
 
-	sel_fields = { 'freq_each' 'g_CaL', 'g_h', 'ampl' };
-
-	sel_fields = { 'freq_each' 'g_CaL' 'ampl'};
 	
 	% sel_table = R{1}.allneurons(:,sel_fields);
 	% NDscatter(sel_table, clusters)
@@ -160,37 +150,30 @@ if plotcellscatters
 	% sel_table = R{3}.allneurons(:,sel_fields);
 	% NDscatter(sel_table, clusters)
 
-
-	sel_table = R{1}.allneurons(:,sel_fields);
-	NDscatter(sel_table, bridgecells+1)
+	for nsim = 1:length(sims);
+		sel_table = R{nsim}.allneurons(:,sel_fields);
+		NDscatter(sel_table, bridgecells+1);
+	end
 	
-	sel_table = R{2}.allneurons(:,sel_fields);
-	NDscatter(sel_table, bridgecells+1)
 
-	sel_table = R{3}.allneurons(:,sel_fields);
-	NDscatter(sel_table, bridgecells+1)
-
-	sel_table = R{4}.allneurons(:,sel_fields);
-	NDscatter(sel_table, bridgecells+1)
-
+	
 end
 
 
 if plotbridgewaterfall
-figure
-waterfall(bridge_Vm(ord,:));
-title('bridge behavior when connected, ordered by amplitude')
+	figure
+	waterfall(bridge_Vm(ord,:));
+	title('bridge behavior when connected, ordered by amplitude')
 
-figure
-bridge_Vm = statevar{2}(bridgeidx,:);
-waterfall(bridge_Vm(ord,:));
-title('bridge behavior when disconnected')
+	figure
+	bridge_Vm = statevar{2}(bridgeidx,:);
+	waterfall(bridge_Vm(ord,:));
+	title('bridge behavior when disconnected')
 
-figure
-bridge_Vm = statevar{4}(bridgeidx,:);
-waterfall(bridge_Vm(ord,:));
-title('bridge behavior when disconnected')
-
+	figure
+	bridge_Vm = statevar{4}(bridgeidx,:);
+	waterfall(bridge_Vm(ord,:));
+	title('homogeneous connectivity')
 
 end
 
@@ -228,10 +211,10 @@ if plotbridgeandneighbors_Vm
 
 
 		subplot(3,1,3)
-		plot(statevar{2}(neighbors{c},:)','color', [1 1 1]*.8)
+		plot(statevar{3}(neighbors{c},:)','color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on
-		plot(statevar{2}(c,:),'linewidth', 2)
+		plot(statevar{3}(c,:),'linewidth', 2)
 		title(['neighboring clusters:' num2str(clusters(neighbors{c})') ])
 
 		
@@ -347,7 +330,7 @@ end
 
 if plotclustermemberaverages
 	figure
-	subplot(1,2,1)
+	subplot(1,3,1)
 	for c = 1:max(clusters)
 		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
 		% clustered{c}.no_neurons = length(find(clusters==c));
@@ -357,16 +340,28 @@ if plotclustermemberaverages
 		hold on
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
 	end
-	subplot(1,2,2)
+	subplot(1,3,2)
 	for c = 1:max(clusters)
 		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
 		% clustered{c}.no_neurons = length(find(clusters==c));
 
 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot(tslice, mean(statevar{1}(find(clusters==c),:))+c*5,'color', lc(c,:))
+		plot(tslice, mean(statevar{2}(find(clusters==c),:))+c*5,'color', lc(c,:))
 		hold on
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
 	end
+
+	subplot(1,3,3)
+	for c = 1:max(clusters)
+		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
+		% clustered{c}.no_neurons = length(find(clusters==c));
+
+		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
+		plot(tslice, mean(statevar{3}(find(clusters==c),:))+c*5,'color', lc(c,:))
+		hold on
+		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+	end
+
 end
 
 

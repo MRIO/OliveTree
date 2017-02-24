@@ -29,14 +29,15 @@ to_report = vsoma;
  
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
-nconns_curlies = 6;
-nconns_bridges = 4;
+nconns_curlies = 8;
+nconns_bridges = 6;
+
 gap_curlies = .1;
 gap_bridges = .1;
 plotconn = 1;
 normalize = 1;
 
-nconns_curlies = 6;
+nconns_curlies = 5;
 nconns_bridges = 4;
 gap_curlies = .05;
 gap_bridges = .05;
@@ -107,7 +108,8 @@ cell_function = 'vanilla'; % 'devel'
 
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
-  def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized4');
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3');
+  % def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized4');
 
 % randomized2 = 
 % neurons.g_CaL = linspace(.5, 1, noneurons);
