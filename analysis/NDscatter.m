@@ -8,6 +8,7 @@ p.addRequired('intable')
 p.addOptional('groupby',[]) 
 p.addParamValue('fields',[])
 p.addParameter('colors',[])
+p.addParameter('hist2d',0)
 
 p.parse(varargin{:}) 
 
@@ -16,6 +17,7 @@ groupby = p.Results.groupby;
 selectedfields  = p.Results.fields;
 plotdistributions = 0;
 colors = p.Results.colors;
+hist2d = p.Results.hist2d;
 
 VarNames = intable.Properties.VariableNames;
 data = table2array(intable);
@@ -103,17 +105,22 @@ end
 
 			if c > r % & plotdistributions
 				
-				for g = 1:ngroups
-					line(data(groups==g,c), data(groups==g,r), ...
-						 'markersize', 5, 'color', groupcolors(g,:), 'marker','.','linestyle','none','markersize',15)
+				if ~hist2d
+					for g = 1:ngroups
+						line(data(groups==g,c), data(groups==g,r), ...
+							 'markersize', 5, 'color', groupcolors(g,:), 'marker','.','linestyle','none','markersize',15)
+					end
+
+					% line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
+
+				else
+					nedges = 20;
+					edges = {linspace(min(data(:,c)), max(data(:,c)) , nedges); linspace(min(data(:,r)), max(data(:,r)) , nedges)};
+					HH = hist3([data(:,c) data(:,r) ]);
+					imagesc(edges{1}, edges{2}, HH ); colormap(bone)
+					axis xy
+
 				end
-
-				% line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
-
-				% edges = {linspace(min(data(:,c)), max(data(:,c)) , 20); linspace(min(data(:,r)), max(data(:,r)) , 20)};
-				% imagesc(edges{1}, edges{2}, hist3([data(:,c) data(:,r) ], 'Edges', edges ))
-				colormap(bone)
-				axis xy
 			% elseif c > r & ~plotdistributions
 			% 	delete(hand(r,c))
 			end
