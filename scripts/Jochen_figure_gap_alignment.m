@@ -94,8 +94,8 @@ noneurons = length(p{1}(:));
 netsize = [1 noneurons 1];
 noneurons = prod(netsize);
 
-gnoise = [3 5 0 0];
-% gnoise = [0 0 0 0];
+% gnoise = [3 5 0 0];
+gnoise = [0 0 0 0];
 
 def_neurons = createDefaultNeurons(noneurons);
 twins = createDefaultNeurons(noneurons);
@@ -178,12 +178,12 @@ legend(num2str(Plist))
 figure
 imagesc(simresults{1}.networkHistory.V_soma,[-80 -20]), colorbar
 set(gca,'ytick', [1:noneurons],'yticklabel', num2str(Plist),'fontsize',8)
-title([num2str(spks.popfrequency) ' Hz'])
+% title([num2str(spks.popfrequency) ' Hz'])
 
 figure
 imagesc(simresults{2}.networkHistory.V_soma,[-80 -20]), colorbar
 set(gca,'ytick', [1:noneurons],'yticklabel', num2str(Plist),'fontsize',8)
-title([num2str(spks.popfrequency) ' Hz'])
+% title([num2str(spks.popfrequency) ' Hz'])
 
 
 figure
@@ -192,8 +192,8 @@ set(0,'defaultaxescolororder', linspecer(length(Plist)));
 p = plot([1:simtime],   simresults{1}.networkHistory.V_soma');
 legend(num2str(Plist))
 
-
-p = plot([1:simtime],   simresults{1}.networkHistory.V_soma');
+figure
+p = plot([1:simtime],   simresults{2}.networkHistory.V_soma');
 R = replayResults(simresults,[],0,1)
 
 
