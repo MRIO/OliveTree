@@ -19,6 +19,7 @@ if not(exist('Joinedsim'))
 	addpath('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
 
 	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017';
+	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017';
 	load(F1)
 	disp('loaded.')
 
