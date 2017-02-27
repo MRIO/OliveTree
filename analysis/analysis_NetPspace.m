@@ -34,7 +34,9 @@ if ~exist('transients')
 	% fname = 'RADIUS_X_NCORR_netpspace25_iso_3000_28-Jun-2016.mat'
 	% dimnames = { 'radius', 'corr',	 'gap' };
 
-	fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
+	% fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
+	fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
+
 	dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
 
@@ -202,7 +204,7 @@ if preparetables
 	% RTable.Properties.VariableNames = {'failed'; 'rate'; 'propfr'; 'meang'; 'ca'; 'ih'};
 
 	PTable.Properties.UserData = X_README;
-	save(['tables' fnm], 'PTable', 'RTable')
+	save(['tables' fname], 'PTable', 'RTable')
 
 end
 
@@ -224,7 +226,7 @@ if plottraces
 			thiscorr = 		table2array(PTable(sims,'sametoall') );
 			thisgap  = 		table2array(PTable(sims,'gap')       );
 			thisnamp = 		table2array(PTable(sims,'noiseamp')  );
-			thisnsig = 		table2array(PTable(sims,'noisesig')  );
+			thisnsig = 		table2array(PTable(sims,'noisesig')  );	
 			thismeanconn =  table2array(PTable(sims,'meannoconn'));
 			thisCaL =  		table2array(RTable(sims,'caL'));
 			% thisIh  =  		table2array(RTable(sims,'Ih'));
@@ -260,6 +262,7 @@ if plottraces
 				f = figure;
 
 					ax(1) = subplot(2,3,[1 2])
+					set(0, 'defaultaxescolororder', bone(200))
 					% ax1(pind) = subplot(length(noisecorr), length(gaps), pind);
 					plot(tslice, vs');
 					ylabel('mV')
@@ -270,6 +273,8 @@ if plottraces
 					ax(2) = subplot(2,3,[4 5])
 					% ax2(pind) = subplot(length(noisecorr), length(gaps), pind);
 					imagesc(tslice, [1:noneurons], vs, [-80 -20])
+					colormap(bone)
+					set(gca,'clim',[-65 -20])
 					% set(gca,'ytick', [1:56],'yticklabel', num2str(transients{ind}.Plist),'fontsize',8)
 
 
@@ -292,12 +297,20 @@ if plottraces
 
 					
 					% maximize_fig
-					f.Position = [0,0,280,240];
+					f.Position = [0,0,560,480];
 
 					drawnow
 					if save2png
+						prefix = ['netpspace_noise' num2str(pind)];
+				   		fname = [prefix '_' num2str(i) '.png'];
+				   		snam='12x12';
+				   		s=hgexport('readstyle',snam);
+					    s.Format = 'png';
+					    hgexport(f,fname,s);
+
+
 					% export_fig(['netpspace_noise' num2str(pind)],'-png',f,'-m2')
-						export_fig(['netpspace_noise' num2str(pind)],'-png','-r300', f)
+						% export_fig(,'-png','-r300', f)
 					end
 
 				close

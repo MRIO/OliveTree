@@ -111,12 +111,12 @@ def_neurons.g_ld = p{8}(:);
 def_neurons.g_ls = p{8}(:);
 def_neurons.g_la = p{8}(:);
 
-def_neurons = jitter_cell_parameters(def_neurons);
+def_neurons = jitter_cell_parameters(def_neurons,0.01);
 
  W = zeros(noneurons);
  % W = createW(noneurons);
 
-gaps = [ 0 0.05];
+gaps = [0 0.05];
 
 W = createW('all to all', [1 noneurons 1], [], 1, 0, 0, 0, 10, []);
 
@@ -165,14 +165,14 @@ R{1} = profile_sim(simresults{1});
 R{2} = profile_sim(simresults{2});
 
 for c = 1:noneurons
-	[PKS POS]  = findpeaks(simresults{1}.networkHistory.V_soma(c,150:600),'minpeakheight',-70);
+	[iii PKS POS]  = find(simresults{1}.networkHistory.V_soma(c,150:600)>-65,1,'first');
 	ADPD(c) = POS(1)-100;
 end
 R{1}.allneurons = horzcat(R{1}.allneurons,table(ADPD'));
 R{1}.allneurons.Properties.VariableNames{39} = 'ADPD';
 
 for c = 1:noneurons
-	[PKS POS]  = findpeaks(simresults{2}.networkHistory.V_soma(c,150:600),'minpeakheight',-70);
+	[iii PKS POS]  = find(simresults{2}.networkHistory.V_soma(c,150:600)>-65,1,'first');
 	ADPD(c) = POS(1)-100;
 end
 R{2}.allneurons = horzcat(R{2}.allneurons,table(ADPD'));
@@ -187,17 +187,17 @@ NDscatter(stacked(:,sel_fields), G);
 
 
 
-figure
-imagesc(st_st.networkHistory.V_soma,[-80 -20]), colorbar
-set(gca,'ytick', [1:noneurons],'yticklabel', num2str(Plist),'fontsize',8)
-legend(num2str(Plist))
+% figure
+% imagesc(st_st.networkHistory.V_soma,[-80 -20]), colorbar
+% set(gca,'ytick', [1:noneurons],'yticklabel', num2str(Plist),'fontsize',8)
+% legend(num2str(Plist))
 
 
-figure
-ca = axis;
-set(0,'defaultaxescolororder', linspecer(length(Plist)))
-p = plot([1:steadystate_time],   st_st.networkHistory.V_soma');
-legend(num2str(Plist))
+% figure
+% ca = axis;
+% set(0,'defaultaxescolororder', linspecer(length(Plist)))
+% p = plot([1:steadystate_time],   st_st.networkHistory.V_soma');
+% legend(num2str(Plist))
 
 
 figure

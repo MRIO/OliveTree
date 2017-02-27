@@ -227,3 +227,7 @@ KKK = kuramotoSheet([10 10],100,'clusterize', [1 10 1 0],'time', 1,'seed', 10,'d
 
 % end		
 
+
+
+
+kuramotoSheet([10 10],200,'clusterize', [1 10 1 0],'time', 1,'seed', 0,'dt', .001, 'plotme',1,'radius', 3, 'oscillators',[] );

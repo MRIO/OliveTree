@@ -29,7 +29,6 @@ if not(exist('st_st'))
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_10-Feb-2017.mat')
 	% load('clusters_curlies_bridges_10-Feb-2017.mat')
 	% load('clusters_curlies_bridges_13-Feb-2017.mat')
-	load('clusters_curlies_bridges_20-Feb-2017.mat')
     sims = sim;
 end
  
@@ -330,36 +329,22 @@ end
 
 if plotclustermemberaverages
 	figure
-	subplot(1,3,1)
-	for c = 1:max(clusters)
-		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
-		% clustered{c}.no_neurons = length(find(clusters==c));
 
-		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot(tslice, mean(statevar{1}(find(clusters==c),:))+c*5,'color', lc(c,:))
-		hold on
-		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-	end
-	subplot(1,3,2)
-	for c = 1:max(clusters)
-		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
-		% clustered{c}.no_neurons = length(find(clusters==c));
+	for sp = 1:length(statevar)
+		subplot(1,length(statevar),sp)
+		for c = 1:max(clusters)
+			% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
+			% clustered{c}.no_neurons = length(find(clusters==c));
 
-		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot(tslice, mean(statevar{2}(find(clusters==c),:))+c*5,'color', lc(c,:))
-		hold on
-		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-	end
+			% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
+			clusterset = setdiff(find(clusters==c), find(bc));
 
-	subplot(1,3,3)
-	for c = 1:max(clusters)
-		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
-		% clustered{c}.no_neurons = length(find(clusters==c));
-
-		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot(tslice, mean(statevar{3}(find(clusters==c),:))+c*5,'color', lc(c,:))
-		hold on
-		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+			plot(tslice, mean(statevar{sp}(clusterset,:))+c*5,'color', lc(c,:))
+			text(tslice(1),c*5, ['ncells:' num2str(length(clusterset))])
+			hold on
+			axis tight
+			% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
+		end
 	end
 
 end

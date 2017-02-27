@@ -76,7 +76,7 @@ end
 
 
 % for connectivity
-plotconn  = 1;
+plotconn  = 0;
 normleak  = 1;
 randomize = 1; %!check
 scaling   = 1;

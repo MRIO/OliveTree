@@ -82,7 +82,7 @@ switch celltypes
 
 		cell_parameters = defneurons(noneurons);
 		
-		cell_parameters.g_CaL    = cell_parameters.g_CaL  -.1 + rand(noneurons,1)*1.2;
+		cell_parameters.g_CaL    = cell_parameters.g_CaL  -.6 + rand(noneurons,1)*1.5;
 		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
 		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
 		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
