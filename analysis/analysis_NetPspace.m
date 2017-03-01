@@ -53,7 +53,7 @@ else
 	preparetables = 0
 end
 
-plottraces = 1;
+plottraces = 0;
 	% sims2plot = [];
 	sims2plot = 1:length(transients);
 	tslice = [2000:3000];
@@ -362,7 +362,7 @@ if summarize
 			for z =1:Rsz(3)
 				
 
-				ax(z) = subplot(Rsz(3),1,z);
+				axx(z) = subplot(Rsz(3),1,z);
 
 				[c ,h] = contourf(XX,YY,R.results(:,:,z)');
 
@@ -376,7 +376,7 @@ if summarize
 
 			end
 			
-			set(ax(:),'clim', [floor(min(R.results(:))) max(R.results(:))] )
+			set(axx(:),'clim', [floor(min(R.results(:))) max(R.results(:))] )
 
 
 				 if save2svg
@@ -386,7 +386,7 @@ if summarize
 				 if save2png
 				 	% maximize_fig
 				 	set(f,'position', [0 0 425 800])
-				 	export_fig([fnm '_' m{1} '.png'],'-r300')
+				 	export_fig([fname '_' m{1} '.png'],'-r300')
 				 end
 
 		end

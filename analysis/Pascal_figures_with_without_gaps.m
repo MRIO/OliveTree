@@ -2,8 +2,8 @@
 
 clear;
 
-onesec_vs_30s = 0;
-plotcellscatters_gap_gapless  = 1; % compare cell scatters in nets
+onesec_vs_30s = 1;
+plotcellscatters_gap_gapless  = 0; % compare cell scatters in nets
 joinedcellscatter = 0;
 triggeredphase =0;
 hist_sto_freq_amp_w_wo_gaps = 0;
@@ -52,7 +52,7 @@ if onesec_vs_30s
 		stacked = vertcat(R{2}.allneurons,Ronesec_withgap.allneurons );
 		G = [ones(200,1)*2 ;ones(200,1)*1];
 		sel_fields = {'ampl', 'freq_each', 'spks', 'g_CaL', 'g_h'};
-		sel_fields = {'ampl', 'freq_each'};
+		sel_fields = {'ampl', 'freq_each', 'g_CaL', 'g_h'};
 		NDscatter(stacked(:,sel_fields), G);
 end
 

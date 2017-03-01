@@ -23,6 +23,36 @@ plotxcorrs = 1;
 if ~exist('loaded'); loaded = 0; end
 
 
+if 1
+	if ~exist('Joinedsim')
+
+
+		simfiles = {...
+		'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat';
+		% 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_gallop_50000_4_17-Jan-2017.mat';
+		'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017.mat'
+		};
+
+		
+			load( simfiles{1});
+			Joinedsim{1}  = joinsim(simresults,[1:3]); 
+			Joinedsim{2}  = joinsim(simresults,[5:7]); 
+
+			load( simfiles{2});
+			Joinedsim{3}  = joinsim(simresults,[1:3]); 	
+			Joinedsim{4}  = joinsim(simresults,[5:7]); 			
+
+		simlegend = ...
+		{'1Hz iso WT'; '1Hz iso MT'; 'spont iso MT'; 'spont iso WT';}
+
+	end
+
+	loaded = 1;
+	simresults = Joinedsim;
+
+
+end
+
 
 % periodic iso + more oscillation
 if 0
@@ -86,7 +116,7 @@ end
 
 
 % periodic clustered
-if 1
+if 0 
 	if ~exist('Joinedsim')
 		% clustered
 		simfiles = {...
@@ -195,7 +225,7 @@ end
 		centerneuron_b = zeros (numneurons,1); centerneuron_b(centerneuron_index) = 1;
 		neighbors = find(CM*centerneuron_b); 
 		neighbors_b = zeros(numneurons,1);
-		 neighbors_b(neighbors) = 1;
+		neighbors_b(neighbors) = 1;
 		nextneighbors = find(CM*neighbors_b); 
 		
 		S = setdiff(nextneighbors, neighbors);

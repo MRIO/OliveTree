@@ -162,16 +162,15 @@ if compute_simulations
 		%  Neurons
 		% [=================================================================]
 
-		if numel(gapcomp)==1 & gapcomp ==1
-			gapfact = gapcompensation_f(gap);
-		else
-			gapfact = gapcomp;
-		end
 
 		rng(seed,'twister')
-		neurons = createDefaultNeurons(noneurons,'celltype', 'randomized','gapcompensation',gapfact);
+		if gap>eps
+			neurons = createDefaultNeurons(noneurons,'celltype', 'randomized');
+		else
+			neurons = createDefaultNeurons(noneurons,'celltype', 'randomized','nogapcompensation',gapcomp);
+		end
 
-	   	 	gnoise = [1/tau noisesig noiseamp seed];
+	   	gnoise = [1/tau noisesig noiseamp seed];
 
 
    	 	% [================================================]
@@ -180,7 +179,7 @@ if compute_simulations
    	 	
 
 		transients{simcount} = IOnet('cell_parameters', neurons , ...
-		   	'networksize', netsize,'appCurrent',I_app,'time',simtime ,'W', W.W*gap/meannoconn ,'ou_noise', gnoise , ...
+		   	'networksize', netsize,'appCurrent',I_app,'time',simtime ,'W', W.W*gap ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu ,  ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall,'saveappliednoise',saveappliednoise,...
 		   	'displaytext', displaytext);

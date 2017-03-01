@@ -20,7 +20,6 @@ thisprefix = 'iso_sigfiles_';
 		xcorr_feature_analysis;
 		disp('step' )
 
-
 		% keyboard
 		
 		pth = [ thisprefix selected_neurons_sel{fff} '/'] 

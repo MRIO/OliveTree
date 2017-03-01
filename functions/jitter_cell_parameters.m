@@ -1,6 +1,6 @@
 function cells =  jitter_cell_parameters(cells, varargin)
 
-
+fieldstojitter = {'g_CaL'};
 noneurons = length(cells.g_h);
 
 
@@ -12,6 +12,7 @@ end
 
 
 for ff = fields(cells)'
+	if ismember(fieldstojitter, ff)
 			
 			maxP = max(eval(['cells.' ff{1}]));
 			minP = min(eval(['cells.' ff{1}]));
@@ -23,5 +24,6 @@ for ff = fields(cells)'
 				str = ['cells.' ff{1} ' = cells.' ff{1} '+ spread * randn(noneurons,1) .* mean(cells.' ff{1} ');' ];
 				eval(str)
 			end
+	end
 end
 

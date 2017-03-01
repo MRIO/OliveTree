@@ -1,5 +1,5 @@
 % summa_xcorr.m
-function out = summa_xcorr(varargin)
+function out = xcorr_summa(varargin)
 
 	p = inputParser;
 	p.addRequired('sim')
