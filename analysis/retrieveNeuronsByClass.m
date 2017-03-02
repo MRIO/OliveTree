@@ -1,7 +1,9 @@
 % retrieveNeuronsByClass.m
 function selectedneurons = retrieveNeuronsByClass(simresults, connectivityclass)
 
-connectivityclass = 'neighbors';
+selected_neurons = connectivityclass;
+numneurons = prod(simresults.networksize);
+nselneurons = inf;
 
 	centerneuron_index = 85;
 
@@ -25,17 +27,17 @@ connectivityclass = 'neighbors';
 		
 		S = setdiff(nextneighbors, neighbors);
 
-		stimulated = find(simresults{sims2p(1)}.perturbation.mask{1});
+		stimulated = find(simresults.perturbation.mask{1});
 
 		% remove neurons that don't fire enough spikes
-		lowfr = find(sum(simresults{sims2p(1)}.spikes.spikespercell')<20);
+		lowfr = find(simresults.spikes.spikespercell')<50;
 
 		
 		switch selected_neurons
 
 			case 'neighbors' % johny and his neighbors
-				selectedneurons = setdiff(neighbors, stimulated);
-				selectedneurons = setdiff(selectedneurons, lowfr);
+				% selectedneurons = setdiff(neighbors, stimulated);
+				selectedneurons = neighbors;
 				R = randperm(length(selectedneurons));
 				nselneurons  = min(nselneurons, length(selectedneurons))
 				selectedneurons = [centerneuron_index ; selectedneurons(R(1:nselneurons))];
@@ -48,11 +50,11 @@ connectivityclass = 'neighbors';
 				selectedneurons = selectedneurons(R(1:nselneurons))
 
 			case 'stimulated'
-				R = randperm(length(selectedneurons));
-				nselneurons  = min(nselneurons, length(selectedneurons))
-				selectedneurons = setdiff(stimulated, lowfr);
-				selectedneurons = stimulated(R(1:nselneurons));
-				
+				selectedneurons = stimulated;
+			
+			case 'lowfr'
+				selectedneurons = lowfr;
+
 			case 'acrosscluster'
 				sel1 = setdiff(find(simresults{1}.W.stats.clusters==1), stimulated)  ;
 				sel1 = setdiff(sel1, lowfr);
@@ -86,3 +88,6 @@ connectivityclass = 'neighbors';
 
 
 		end
+
+
+
