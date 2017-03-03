@@ -301,7 +301,7 @@ end
 
 if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
 	X_README = 'GAPCOMP  Corr = 0.1 R = 2'
-	nameprefix = 'gapcomp corr_R2_g04';
+	nameprefix = 'gapcomp_corr_R2_g04';
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
 	p2  = [0.1];			% sametoall (noise correlation) of ornstein uhlenbeck process
 	p3  = [-.4];	% noiseamp of ornstein uhlenbeck process

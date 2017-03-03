@@ -6,12 +6,23 @@
 % clear
 rng(0,'twister') % random seed
 
-steadystate_time = 1000; %ms
-simtime  = 5000; %ms
+steadystate_time = 300; %ms
+simtime  = 6000; %ms
 delta = .025;
 gpu = 1;
 
+% [================================================]
+% simulations to perform
+% [================================================]
 
+frombrick_to_clusters = 1;
+bridge_conductance_pspace = 1;
+bridges_and_curlies = 1;
+
+
+% [================================================]
+% variables to report
+% [================================================]
 
 activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
 currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};
@@ -20,7 +31,6 @@ gapcur= {'V_soma' 'I_cx36'};
 
 % variables to store
 to_report = vsoma;
-
 
 
 % [================================================]
@@ -40,10 +50,9 @@ to_report = vsoma;
 nconns_curlies = 5;
 nconns_bridges = 5;
 gap_curlies = .05;
-gap_bridges = .0;5
-plotconn = 1;
+gap_bridges = .05;
+plotconn = 0;
 normalize = 1;
-
 
 
 load('JM394_horizontal_coordinates-MAO.mat')
@@ -55,11 +64,12 @@ if not(exist('curlies'))
 	% curlies:
 	% create a network with distance based connectivity for close by connections
 	% this network is clusterized with about 20cells per cluster, according to a k-means algo.
-	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
+	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
 
 	% create a network with distance based connectivity for further apart cells: bridges
 	% these cells are not bound to specific clusters.
-	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, 1, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
+	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
+
 
 	% define the indices of 10% of the cells, these will be bridges
 	bc = randperm(noneurons); % randomly permute cell indices
@@ -68,28 +78,34 @@ if not(exist('curlies'))
 	bc =z;
 
 	% remove from curlie adjacency matrix all of those that will become bridges
-	curlies.W = bsxfun(@times, curlies.W, ~z); 
-	curlies.W = bsxfun(@times, curlies.W, ~(z'))*gap_curlies; % multiply by the 'unitary' conductance
+	curlies.W = bsxfun(@times, curlies.W, ~z);
+	curlies.W = bsxfun(@times, curlies.W, ~(z')); % multiply by the 'unitary' conductance
+	curlies_bu = curlies; %_bu -> binary undirected
+	curlies.W = curlies.W*gap_curlies;
+	
 	cstats = connectivity_statistics(bridges);
 	curlies.stats = cstats.stats ;
 
 	% remove connections from curlies to bridges from bridge adjacency matrix
 	bridges.W = bsxfun(@times, bridges.W, z);
 	% create bridge cells connectivity 
-	bridges.W = (bridges.W+bridges.W')*gap_bridges;
+	bridges.W = (bridges.W+bridges.W');
+	bridges_bu = bridges; % _bu -> binary undirected
+	bridges.W = bridges.W*gap_bridges;
+
 	bstats = connectivity_statistics(bridges);
 	bridges.stats = bstats.stats ;
 
 	bridg_curlies.coords = curlies.coords;
-	
-	
+
 	bridg_curlies.W = curlies.W + bridges.W;
 	bridg_curlies.stats = connectivity_statistics(bridg_curlies);
 	bridg_curlies.stats.clusters = curlies.stats.clusters;
 
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
 
-	brick = createW('3d_reconstruction', [], 4*40, 1, 0, 1, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
+	brick = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
+	brick_bu = brick;
 	brick.W = brick.W*gap_curlies;
 
 end
@@ -146,8 +162,8 @@ pert.mask     {1} =  [curlies.stats.clusters==5] | [curlies.stats.clusters==10] 
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 10;
-pert.type	  {1} = 'gaba_soma';
-% pert.type	  {1} = 'ampa';
+% pert.type	  {1} = 'gaba_soma';
+pert.type	  {1} = 'ampa';
 
 
 
@@ -164,7 +180,7 @@ pert.type	  {1} = 'gaba_soma';
 
 	 st_st = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, ...
-		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W*0 ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	 st_st.note = 'curlies and bridges'
@@ -174,12 +190,69 @@ end
 % end
 
 
+if bridge_conductance_pspace
+	s = 0;
+	for bridge_conductance = [eps 0.01:0.01:0.1]
+		s = s +1;
+
+		bridg_conduct.W = curlies_bu.W*gap_curlies + bridges_bu.W*bridge_conductance;
+		bridg_conduct.stats = connectivity_statistics(bridg_conduct);
+		bridg_conduct.stats.clusters = curlies.stats.clusters;
+
+		note = 'bridge conductance pspace';
+	 	sims{s} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_conduct.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall, 'displaytext', [note '_' num2str(s)]);
+	 	sims{s}.note = note;
+	 	sims{s}.W = bridg_conduct;
+	 	sims{s}.bridge_conductance = num2str(bridge_conductance);
+	 end
+	 eval(['save bridge_conductance_pspace'  date ' -v7.3'])
+	 clear sims
+
+end
+
+
+
+
+
+
+if frombrick_to_clusters
+	s = 0;
+	for alpha_W = [0:.25:1]
+		s = s +1;
+
+		mixture.W = alpha_W*curlies.W + (1-alpha_W)*brick.W;
+
+		mixture.stats = connectivity_statistics(mixture);
+		mixture.stats.clusters = curlies.stats.clusters;
+		note = 'brick to clusters';
+
+	 	sims{s} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', mixture.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall, 'displaytext' , [note '_' num2str(s)] );
+	 	sims{s}.note = 'from brick to clusters';
+	 	sims{s}.W = mixture;
+	 	sims{s}.bridge_conductance = num2str(bridge_conductance);
+	 end
+	 eval(['save brick_to_clusters_'  date ' -v7.3'])
+	 clear sims
+end
+
+
+
+
+
 % [=================================================================]
 %  GABA
 % [=================================================================]
 
 % BRIDGES AND CURLIES WITH PERTURBATION
-if 1
+if bridges_and_curlies 
 	 sim{1} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', st_st.lastState, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
@@ -192,10 +265,8 @@ if 1
 	sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
 	sim{1}.networkHistory.backgroundnoise = [];
 
-end
 
 % ONLY CURLIES
-if 1
 	sim{2} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', st_st.lastState, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
@@ -208,11 +279,8 @@ if 1
 	sim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.V_soma);
 	sim{2}.networkHistory.backgroundnoise = [];
 
-end
-
 
 % DISCONNECTED NETWORK
-if 1
 	 sim{3} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', st_st.lastState, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W*0 ,'ou_noise', gnoise , ...
@@ -226,12 +294,10 @@ if 1
 	sim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.V_soma);
 	sim{3}.networkHistory.backgroundnoise = [];
 
-end
 
 
 
 % BRICK NETWORK
-if 1
 	 sim{4} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', st_st.lastState, ...
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', gnoise , ...
@@ -245,21 +311,10 @@ if 1
 	sim{4}.networkHistory.I_cx36 = single(sim{4}.networkHistory.V_soma);
 	sim{4}.networkHistory.backgroundnoise = [];
 
+
+	eval(['save curlies_bridges_'  date ' -v7.3'])
+
+
 end
-
-
-% [=================================================================]
-%  spontaneous
-% [=================================================================]
-
-
-
-eval(['save clusters_curlies_bridges_'  date ' -v7.3'])
-
-
-
-
-
-
 
 

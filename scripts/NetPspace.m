@@ -1,4 +1,4 @@
-%     _   __________________  _____ ____  ___   ____________
+ %    _   __________________  _____ ____  ___   ____________
 %    / | / / ____/_  __/ __ \/ ___// __ \/   | / ____/ ____/
 %   /  |/ / __/   / / / /_/ /\__ \/ /_/ / /| |/ /   / __/
 %  / /|  / /___  / / / ____/___/ / ____/ ___ / /___/ /___
@@ -280,6 +280,11 @@ if make_summary_tables
 	end
 
 	RTable = table(gaps, pop_r, prop_f,  ampl, meanVm, caL, freq, nconn, FO_sync, SO_sync, All_sync);
+
+			fname = [nameprefix '_netpspace' num2str(simcount) '_' conntype '_' num2str(simtime) '_' date 'results'];
+
+			eval(['save ' fname ' -v7.3'])
+			
 
 end
 
