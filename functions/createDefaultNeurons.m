@@ -36,14 +36,14 @@ switch celltypes
 
 		cell_parameters = defneurons(noneurons);
 		
-		cell_parameters.g_CaL    = cell_parameters.g_CaL   +  rand(noneurons,1)*(-.6);
-		cell_parameters.g_int 	 = cell_parameters.g_int   +  rand(noneurons,1)*(-.02);
-		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
-		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
-		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.gbar_ampa_soma     = 1   -  rand(noneurons,1)*(.15);
+		cell_parameters.g_CaL    			= cell_parameters.g_CaL   +  rand(noneurons,1)*(-.6);
+		cell_parameters.g_int 	 			= cell_parameters.g_int   +  rand(noneurons,1)*(-.02);
+		cell_parameters.g_h 	 			= cell_parameters.g_h 	  +  rand(noneurons,1)*(1);
+		cell_parameters.g_K_Ca   			= cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
+		cell_parameters.g_ld     			= cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
+		cell_parameters.g_la     			= cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
+		cell_parameters.g_ls     			= cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
+		cell_parameters.gbar_ampa_soma      = 1   -  rand(noneurons,1)*(.15);
 
 
 	case 'randomized2'
@@ -53,7 +53,7 @@ switch celltypes
 		cell_parameters.g_CaL    = cell_parameters.g_CaL   - .3  + rand(noneurons,1)*.6;
 		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
 		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
-		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;       
+		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;     
 		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
@@ -310,7 +310,7 @@ cell_parameters.g_K_s    =  5     .*O;      % Potassium
 cell_parameters.g_ls     =  0.016 .*O;      % Leaks
     
 % Dendritic conductances (mS/cm2)
-cell_parameters.g_K_Ca   =  35      .*O;       % Potassium: not voltage dependent -- now a parameter
+cell_parameters.g_K_Ca   =  35      .*O;       % Potassium: not voltage dependent 
 cell_parameters.g_CaH    =  4.5     .*O;     % High-threshold calcium
 cell_parameters.g_ld     =  0.016  .*O;   % Leak
 cell_parameters.g_h      =  .12    .*O;    % H current .12
@@ -326,7 +326,7 @@ cell_parameters.g_la     =  0.016	.*O;      % Leak
 cell_parameters.p1     = 0.25		.*O;        % Cell surface ratio soma/dendrite
 cell_parameters.p2     = 0.15 		.*O;        % Cell surface ratio axon(hillock)/soma
 
-cell_parameters.g_int  = 0.13		.*O;        % Cell internal conductance  -- now a parameter
+cell_parameters.g_int  = 0.13		.*O;        % Cell internal conductance 
 
 
 % synaptic conductances
