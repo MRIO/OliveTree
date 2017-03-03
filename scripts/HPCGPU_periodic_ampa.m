@@ -116,7 +116,7 @@ end
 
 
 if not(spont)
-	pert.mask{1}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', inputrad,'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',1,'plotme',plotthis);
+	pert.mask{1}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', inputrad,'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',.6,'plotme',plotthis);
 	pert.amplitude{1} = 2;
 	pert.type{1}	  = 'ampa';
 	pert.duration{1}  = 1;

@@ -24,6 +24,7 @@ function out = xcorr_summa(varargin)
 	centerwin = 50;
 	sidewin = [51:200];
 	noneur = 20;
+	nselneu = length(selectedneurons);
 
 
 	try
@@ -37,6 +38,7 @@ function out = xcorr_summa(varargin)
 
 	XnoAC  = [];
 	
+	VSoma = simulation.networkHistory.V_soma;
 	
 	
 	% [================================================]
@@ -239,8 +241,13 @@ if plotthem
 
 
 	figure
-		subplot(2,2,1)
+		highlighted = pairs(1);
+		corder = cbrewer('seq', 'Greys',50);
+		set(0,'defaultaxescolororder', flip(corder))
+		axi(1) = subplot(5,1,1);
 		plot([-lag: lag], XnoAC)
+		hold on
+		plot([-lag: lag], XCs{1}(highlighted,:),'r')
 		xlabel('lag(ms)')
 		
 		% legend(num2str(sims2p'))
@@ -251,7 +258,7 @@ if plotthem
 		xlabel('aggregate correlation (windowed)')	
 
 
-		subplot(2,2,2)
+		axi(2) = subplot(5,1,2);
 		% plot([-lag: lag],XCs{1} )
 		area([-lag: lag], XCs{1}')
 		xlabel('lag(ms)')
@@ -264,19 +271,33 @@ if plotthem
 		xlabel('individual cross-correlations (sample)')	
 
 
-		subplot(2,2,3)
-			imagesc([-lag: lag], [1:length(selectedneurons)] , XCs{1})
+		axi(3) = subplot(5,1,3);
+			imagesc( -lag:lag, 1:length(pairs) , XCs{1})
+			line([-lag -lag+10], [highlighted *ones(1,2)],'color', 'r')
 			xlabel('lag(ms)')
 			ylabel('pairs')
 
 			
-		subplot(2,2,4)
+		axi(4) = subplot(5,1,4);
 			% 
 			if nwins == 2
 				line([zeros(size(delay(1,:))) ; ones(size(delay(1,:)))  ], [delay(1,:); delay(2,:)])
 			else
-				imagesc([-lag: lag], [1:length(selectedneurons)], XCs{1})
+				[v_  sortord] = sort(XCs{1}(:,lag+1));
+				imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
 			end
+
+		axi_ = subplot(5,1,5);
+		
+		
+			plot(0:1000, VSoma(selectedneurons,5500:6500))
+			hold on, 
+			plot(0:1000, VSoma(selectedneurons(highlighted),5500:6500),'r','linewidth',2)
+			colormap(flip(corder))
+
+		linkaxes(axi,'x')
+
+
 
 			if 0
 			figure

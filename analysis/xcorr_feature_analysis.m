@@ -2,10 +2,12 @@
 
 numneurons = 200;
 
-path_to_sims = ['/Users/M/Synced/Projects/Experiment/Olive/model/simresults/periodic_ampa/'];
+% path_to_sims = ['/Users/M/Synced/Projects/Experiment/Olive/model/simresults/periodic_ampa/'];
+path_to_sims = ['/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa/'];
+addpath(path_to_sims )
 computeselectedxcorr = 1;
 
-sims2p = [1 2 3];
+sims2p = [1 2 3 4];
 nwins = 1;
 plotxcorrs = 1;
 	plot_selected_neurons  = 1;
@@ -43,7 +45,7 @@ if 1
 			Joinedsim{4}  = joinsim(simresults,[5:7]); 			
 
 		simlegend = ...
-		{'1Hz iso WT'; '1Hz iso MT'; 'spont iso MT'; 'spont iso WT';}
+		{'1Hz iso MT'; '1Hz iso WT'; 'spont iso MT'; 'spont iso WT';}
 
 	end
 
@@ -79,12 +81,7 @@ if 0
 
 	loaded = 1;
 	simresults = Joinedsim;
-
 end
-
-
-
-
 % periodic clustered
 if 0
 	if ~exist('Joinedsim')
@@ -110,10 +107,7 @@ if 0
 
 	loaded = 1;
 	simresults = Joinedsim;
-
 end
-
-
 
 % periodic clustered
 if 0 
@@ -143,7 +137,6 @@ if 0
 
 	loaded = 1;
 	simresults = Joinedsim;
-
 end
 
 % periodic iso
@@ -175,7 +168,6 @@ if 0
 	end
 
 	loaded = 1;
-
 end
 
 if 0
@@ -202,100 +194,15 @@ if 0
 		simresults = Joinedsim;
 		loaded = 1;
 	end
-
-		
 end
 
 
 neighbors = retrieveNeuronsByClass(simresults{1}, 'neighbors');
+nextneighbors = retrieveNeuronsByClass(simresults{1}, 'nextneighbors');
 stimulated= retrieveNeuronsByClass(simresults{1}, 'stimulated');
 
 selectedneurons = neighbors;
 
-	% centerneuron_index = 85;
-
-	% CM = simresults{sims2p(1)}.networkParameters.connectivityMatrix;
-	% 	CM(find(eye(size(CM))))=0;
-	% 	[i j v] = find(CM);
-	% 	MN = full([i j v]);
-	% 	S = sortrows(MN,3);
-	% 	NPmost = S(end-5:end, [1 2]);
-	% 	NPleast = S(end-3:end, [1 2]);
-	% 	NPall = [NPmost ; NPleast];
-
-			
-	% 	NPl = reshape(NPmost,1,[]);
-
-	% 	centerneuron_b = zeros (numneurons,1); centerneuron_b(centerneuron_index) = 1;
-	% 	neighbors = find(CM*centerneuron_b); 
-	% 	neighbors_b = zeros(numneurons,1);
-	% 	neighbors_b(neighbors) = 1;
-	% 	nextneighbors = find(CM*neighbors_b); 
-		
-	% 	S = setdiff(nextneighbors, neighbors);
-
-	% 	stimulated = find(simresults{sims2p(1)}.perturbation.mask{1});
-
-	% 	% remove neurons that don't fire enough spikes
-	% 	lowfr = find(sum(simresults{sims2p(1)}.spikes.spikespercell')<20);
-
-		
-	% 	switch selected_neurons
-
-	% 		case 'neighbors' % johny and his neighbors
-	% 			selectedneurons = setdiff(neighbors, stimulated);
-	% 			selectedneurons = setdiff(selectedneurons, lowfr);
-	% 			R = randperm(length(selectedneurons));
-	% 			nselneurons  = min(nselneurons, length(selectedneurons))
-	% 			selectedneurons = [centerneuron_index ; selectedneurons(R(1:nselneurons))];
-
-	% 		case 'nextneighbors'
-	% 			selectedneurons = setdiff(nextneighbors, stimulated);
-	% 			selectedneurons = setdiff(selectedneurons, lowfr);
-	% 			R = randperm(length(selectedneurons));
-	% 			nselneurons  = min(nselneurons, length(selectedneurons))
-	% 			selectedneurons = selectedneurons(R(1:nselneurons))
-
-	% 		case 'stimulated'
-	% 			R = randperm(length(selectedneurons));
-	% 			nselneurons  = min(nselneurons, length(selectedneurons))
-	% 			selectedneurons = setdiff(stimulated, lowfr);
-	% 			selectedneurons = stimulated(R(1:nselneurons));
-				
-	% 		case 'acrosscluster'
-	% 			sel1 = setdiff(find(simresults{1}.W.stats.clusters==1), stimulated)  ;
-	% 			sel1 = setdiff(sel1, lowfr);
-	% 			sel2 = setdiff(find(simresults{1}.W.stats.clusters==2), stimulated);
-	% 			R1 = randperm(length(sel1));
-	% 			R2 = randperm(length(sel2));
-	% 			nselneurons  = min(nselneurons, length(R1))
-
-	% 			selectedneurons =  [sel1(R1(1)) ; sel2(R1(1:nselneurons/2))];
-	% 			selectedneurons = setdiff(selectedneurons, lowfr);
-
-	% 		case 'highgapconn'
-	% 			selectedneurons = setdiff(NPmost, stimulated);
-	% 			selectedneurons = setdiff(selectedneurons, lowfr);
-	% 			R = randperm(length(selectedneurons));
-	% 			nselneurons  = min(nselneurons, length(selectedneurons))
-	% 			selectedneurons = selectedneurons(R(1:nselneurons));
-
-	% 		case  'leastgapconn'
-	% 			selectedneurons = setdiff(NPleast, stimulated);
-	% 			selectedneurons = setdiff(selectedneurons, lowfr);
-	% 			R = randperm(length(selectedneurons));
-	% 			nselneurons  = min(nselneurons, length(selectedneurons))
-	% 			selectedneurons = selectedneurons(R(1:nselneurons));
-
-	% 		case 'all'
-	% 			selectedneurons = 1:length(CM);
-	% 			selectedneurons = setdiff(selectedneurons, lowfr);
-	% 			R = randperm(length(selectedneurons));
-	% 			selectedneurons = selectedneurons(R(1:nselneurons));
-
-
-	% 	end
-		
 
 
 %=============================flush==============================%
@@ -334,6 +241,7 @@ if computeselectedxcorr
 		% X{c}.selectedneurons = selectedneurons;
 
 
+
 		% find significant pairs (currently we use 1:numneurons as baseline. okay as an estimator.)
 		XX = X{c}.xcorr_pairs{1}(:,1:numneurons);
 		meanAmp = mean(XX,2);
@@ -349,13 +257,16 @@ if computeselectedxcorr
 	        height  = [1:netsize(3)];
 
 	        % # compute adjacency matrix
-	        [XX YY ZZ] = meshgrid(depth,breadth,height);
-	        XX = XX(:); YY = YY(:); ZZ = ZZ(:);
+	        [xx yy zz] = meshgrid(depth,breadth,height);
+	        xx = xx(:); yy = yy(:); zz = zz(:);
 
-	        idx = zeros(length(XX),1);
+	        idx = zeros(length(xx),1);
 	        idx(X{c}.selectedneurons) = 1;
 
-	        plotnetstruct(thisW,XX,YY,ZZ,idx,[ 1 1 1])
+
+	        mask = simresults{simidx}.perturbation.mask{1};
+	        idx = mask;
+	        plotnetstruct(thisW,xx,yy,zz,idx,[ 1 1 1])
 	        thiscmap = [ .7 .7 .7; .2 .2 1];
 			colormap(thiscmap)
 
@@ -367,7 +278,7 @@ if computeselectedxcorr
 			end
 
 			figure
-				plotSelectedNeurons(simresults{simidx},[3000:4000],selectedneurons)
+				plotSelectedNeurons(simresults{simidx},[5500:6500],selectedneurons)
 				title(num2str(simidx))
 				axis tight
 
@@ -421,4 +332,13 @@ end
 
 
 
+% xcorr_summa(simresults{1},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+% xcorr_summa(simresults{2},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+% xcorr_summa(simresults{3},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+% xcorr_summa(simresults{4},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+
+% xcorr_summa(simresults{1},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', stimulated(1:10));
+% xcorr_summa(simresults{2},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', stimulated(1:10));
+% xcorr_summa(simresults{3},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', stimulated(1:10));
+% xcorr_summa(simresults{4},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', stimulated(1:10));
 

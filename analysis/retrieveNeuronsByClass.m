@@ -4,8 +4,7 @@ function selectedneurons = retrieveNeuronsByClass(simresults, connectivityclass)
 selected_neurons = connectivityclass;
 numneurons = prod(simresults.networksize);
 nselneurons = inf;
-
-	centerneuron_index = 85;
+centerneuron_index = 85; % neighbors of this neuron
 
 	CM = simresults.networkParameters.connectivityMatrix;
 		CM(find(eye(size(CM))))=0;
