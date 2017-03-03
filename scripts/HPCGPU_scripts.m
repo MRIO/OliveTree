@@ -90,12 +90,12 @@
 
 if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
 	X_README = 'XCorr_Jochen'
-	nameprefix = 'increasing_Tau_'
+	thisnameprefix = 'increasing_Tau_'
 
 	seed = 0; tau = 20; noisesig =  0; noisemu = 0  ; sametoall = 0.1; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 10000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
-	
+
 	for val = [10:10:60]
-		nameprefix = [nameprefix 'tau_' num2str(val)];
+		nameprefix = [thisnameprefix 'tau_' num2str(val)];
 		seed = 0; gaps = [eps 0.04]; simtime = 50000; tau = val; noisesig = .4; noisemu = -.4; sametoall = 0.1; simtype = '1Hz'; conntype = 'iso' ; numruns = 2;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 	end
 
