@@ -241,45 +241,48 @@ if plotthem
 
 
 	figure
-		highlighted = pairs(1);
+		[v id] = max(XC{1}(lag+1,:));
+		keyboard
+		highlighted = id ; % pairs(1);
 		corder = cbrewer('seq', 'Greys',50);
 		set(0,'defaultaxescolororder', flip(corder))
-		axi(1) = subplot(5,1,1);
-		plot([-lag: lag], XnoAC)
-		hold on
-		plot([-lag: lag], XCs{1}(highlighted,:),'r')
-		xlabel('lag(ms)')
-		
-		% legend(num2str(sims2p'))
-		% legend({'WT' ; 'Cx36' })
-		axis tight
-		xlabel('ms')
-		ylabel('correlation (coeff)')
-		xlabel('aggregate correlation (windowed)')	
+
+		axi(1) = subplot(6,1,1);
+	
+	
+			plot(0:1000, VSoma(selectedneurons,5500:6500))
+			hold on, 
+			plot(0:1000, VSoma(selectedneurons(highlighted),5500:6500),'r','linewidth',2)
+			colormap(flip(corder))
+			xlabel('ms')
+			ylabel('mV')
+
+		axi(2) = subplot(6,1,2);
+			imagesc(VSoma(selectedneurons,5500:6500))
+			xlabel('ms')
+			ylabel('neurons')
 
 
-		axi(2) = subplot(5,1,2);
-		% plot([-lag: lag],XCs{1} )
-		area([-lag: lag], XCs{1}')
-		xlabel('lag(ms)')
-		ylabel('aggregate coeff')
+		axi(3) = subplot(6,1,3)
 
-
-		axis tight
-		xlabel('ms')
-		ylabel('correlation (coeff)')
-		xlabel('individual cross-correlations (sample)')	
-
-
-		axi(3) = subplot(5,1,3);
 			imagesc( -lag:lag, 1:length(pairs) , XCs{1})
 			line([-lag -lag+10], [highlighted *ones(1,2)],'color', 'r')
 			xlabel('lag(ms)')
 			ylabel('pairs')
+			axis tight
+			xlabel('ms')
+			ylabel('correlation (coeff)')
+			xlabel('individual cross-correlations (sample)')	
+
+		axi(4) = subplot(6,1,4);
+			area([-lag: lag], XCs{1}')
+			xlabel('lag(ms)')
+			ylabel('aggregate coeff')
+
 
 			
-		axi(4) = subplot(5,1,4);
-			% 
+		axi(5) = subplot(6,1,5);
+
 			if nwins == 2
 				line([zeros(size(delay(1,:))) ; ones(size(delay(1,:)))  ], [delay(1,:); delay(2,:)])
 			else
@@ -287,17 +290,19 @@ if plotthem
 				imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
 			end
 
-		axi_ = subplot(5,1,5);
-		
-		
-			plot(0:1000, VSoma(selectedneurons,5500:6500))
-			hold on, 
-			plot(0:1000, VSoma(selectedneurons(highlighted),5500:6500),'r','linewidth',2)
-			colormap(flip(corder))
 
-		linkaxes(axi,'x')
+		axi(6) = subplot(6,1,6);
+			plot([-lag: lag], XnoAC)
+			hold on
+			plot([-lag: lag], XCs{1}(highlighted,:),'r')
+			xlabel('lag(ms)')
+			legend({'aggregate' ; 'example' })
+			axis tight
+			xlabel('ms')
+			ylabel('correlation (coeff)')
+			xlabel('aggregate correlation (windowed)')
 
-
+		linkaxes(axi([3 4 5 6]),'x')
 
 			if 0
 			figure
