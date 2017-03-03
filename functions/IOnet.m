@@ -379,12 +379,13 @@ for t = 1:simSteps
     elseif ~mod(t,clock_freq) % report every milliseconds
         if length(to_report)>0
             for ftr = 1:length(to_report)
-                % try
+                try
                     eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = gather(state.' to_report{ftr} ');']);
                     % eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = state.' to_report{ftr} ';']);
-                % catch
-                    % to_report{ftr} = [];
-                % end
+                catch
+                    eval(['netHist.' to_report{ftr} '(:,t/clock_freq) = state.' to_report{ftr} ';']);
+                    
+                end
 
             end
         end
