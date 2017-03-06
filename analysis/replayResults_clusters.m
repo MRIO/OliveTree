@@ -189,9 +189,10 @@ if plotpopactivity
 
 	% raster / vsomma
 	   
-	a(1) = axes('position', [0.07    0.07    0.85    0.6]);
+	a(1) = axes('position', [0.12    0.07    0.85    0.6]);
 
 		imagesc(V_soma_ordered,[-68 -30]); %imagesc(V_soma_unwrapped',[-68 -30]);
+
         
         
 		% set(gca,'xtick',[1 noneurons]);
@@ -223,11 +224,12 @@ if plotpopactivity
 	% spike histogram
 
 	if sum(cell2mat(spks.spikes))
-		a(2) = axes('position', [0.07    0.67    0.85    0.3]);
+		a(2) = axes('position', [0.12    0.67    0.85    0.3]);
 		[hh x] = hist(cell2mat(spks.spikes),[1:simtime]);
 		K = conv(hh, gausswin(50), 'same')/sum(gausswin(50));
+		K = conv(hh, ones(1,10), 'same')/sum(ones(1,10));
+		xlim([time_slice(1) time_slice(end)])
 		bar(x,K,'facecolor','k')
-
 		set(a(2),'xtick',[])
 	end
 
@@ -244,6 +246,7 @@ if plotpopactivity
 	end
 	linkaxes(a, 'x')
     linkaxes([a(1) a(3)], 'y')
+    xlim([time_slice(1) time_slice(end)])
 end
 
 % figure
@@ -257,12 +260,11 @@ end
 % 	ylabel('mV')
 
 
+keyboard
 
 
 
 reconstruction = 1;
-
-
 
 
 

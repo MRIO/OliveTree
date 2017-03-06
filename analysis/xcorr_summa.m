@@ -131,10 +131,10 @@ end
 
 %=============================compute xcorrs==============================%
 
-pairs = find(triu(ones(N) - eye(N))') ;
+pairs = find(triu(ones(N) - eye(N))');
+[pairs_i pairs_j] = find(triu(ones(N) - eye(N))');
 		
 		xcorrwin = round(linspace(1,duration,nwins+1));
-
 
 		for nw = 1:length(xcorrwin)-1;
 
@@ -242,8 +242,13 @@ if plotthem
 
 	figure
 		[v id] = max(XC{1}(lag+1,:));
-		keyboard
-		highlighted = id ; % pairs(1);
+		
+		highlighted_pair = id;  % pairs(1);
+
+		highlighted_cells = [1 3]';
+		
+
+
 		corder = cbrewer('seq', 'Greys',50);
 		set(0,'defaultaxescolororder', flip(corder))
 
@@ -252,7 +257,7 @@ if plotthem
 	
 			plot(0:1000, VSoma(selectedneurons,5500:6500))
 			hold on, 
-			plot(0:1000, VSoma(selectedneurons(highlighted),5500:6500),'r','linewidth',2)
+			plot(0:1000, VSoma(selectedneurons(highlighted_cells),5500:6500),'r','linewidth',2)
 			colormap(flip(corder))
 			xlabel('ms')
 			ylabel('mV')
@@ -266,7 +271,7 @@ if plotthem
 		axi(3) = subplot(6,1,3)
 
 			imagesc( -lag:lag, 1:length(pairs) , XCs{1})
-			line([-lag -lag+10], [highlighted *ones(1,2)],'color', 'r')
+			line([-lag -lag+10], [highlighted_pair *ones(1,2)],'color', 'r')
 			xlabel('lag(ms)')
 			ylabel('pairs')
 			axis tight
@@ -294,7 +299,7 @@ if plotthem
 		axi(6) = subplot(6,1,6);
 			plot([-lag: lag], XnoAC)
 			hold on
-			plot([-lag: lag], XCs{1}(highlighted,:),'r')
+			plot([-lag: lag], XCs{1}(highlighted_pair,:),'r')
 			xlabel('lag(ms)')
 			legend({'aggregate' ; 'example' })
 			axis tight

@@ -405,6 +405,13 @@ end
 
 
 
+
+bridgecond_pspace = 1;
+if bridgecond_pspace
+	load('/Users/M/Synced/Titan/Bench4/bridge_conductance_pspace01-Mar-2017.mat')
+
+
+
 % % sync
 % fig3 = figure;;
 % 	for c = 1:no_clusters

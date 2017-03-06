@@ -16,11 +16,13 @@ fname = 'clusters_curlies_bridges_11-Feb-2017.mat';
 fname = 'clusters_curlies_bridges_24-Feb-2017';
 
 
-load([fname '.mat']);
+load('/Users/M/Synced/Titan/Bench4/bridge_conductance_pspace01-Mar-2017.mat');
+
+load([fname '.mat']); sims = sim;
 
 for s = [1:4];
 
-	phase_distribution_over_time(sim{s}, duration,1,  'group', find(sim{1}.W.stats.clusters==20),'animate',animate);
+	phase_distribution_over_time(sims{s}, duration,1,  'group', find(sims{s}.W.stats.clusters==20),'animate',animate);
 	if animate; eval(['!mv volume.mp4 ' fname '.mp4']);end
 	if animate; eval(['!mv volume.avi ' fname '.avi']);end
 

@@ -323,10 +323,10 @@ end
 
 
 
-% xcorr_summa(simresults{1},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
-% xcorr_summa(simresults{2},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
-% xcorr_summa(simresults{3},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
-% xcorr_summa(simresults{4},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+xcorr_summa(simresults{1},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+xcorr_summa(simresults{2},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+xcorr_summa(simresults{3},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
+xcorr_summa(simresults{4},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', neighbors);
 
 % xcorr_summa(simresults{1},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', stimulated(1:10));
 % xcorr_summa(simresults{2},'nwins',nwins,'plotme',plotxcorrs ,'selectedneurons', stimulated(1:10));
