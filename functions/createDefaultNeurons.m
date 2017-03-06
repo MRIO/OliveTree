@@ -43,7 +43,7 @@ switch celltypes
 		cell_parameters.g_ld     			= cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_la     			= cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
 		cell_parameters.g_ls     			= cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.gbar_ampa_soma      = 1   -  rand(noneurons,1)*(.15);
+		% cell_parameters.gbar_ampa_soma      = .5   -  rand(noneurons,1)*(.15);
 
 
 	case 'randomized2'

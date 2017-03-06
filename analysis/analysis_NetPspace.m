@@ -5,6 +5,8 @@
 % [=================================================================]
 % pathtofile  = '/Users/M/Synced/Projects/Experiments/Olive/model/simresults/netpspace/';
 pathtofile  = '/Users/M/Projects/Experiments/Olive/model/simresults/netpspace/';
+pathtofile  = './';
+
 
 if ~exist('transients') 
 	% conntype = 'iso'; load /Users/M/SyncBox/Titan/Bench/pspace_noise_gap_24_iso_10000_17-May-2016.mat
@@ -35,10 +37,11 @@ if ~exist('transients')
 	% dimnames = { 'radius', 'corr',	 'gap' };
 
 	% fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
-	fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
+	% fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
+	% dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
-	dimnames = { 'noisesig', 'noiseamp', 'gap' };	
-
+	fname = 'gapcomp_corr_R2_g04_netpspace20_iso_5000_03-Mar-2017.mat';
+	dimnames = { 'gap', 'gapcomp', 'noisesig' };	
 
 	
 	[pth fnm] = fileparts(fname)
@@ -48,7 +51,12 @@ end
 
 
 if ~exist('PTable')
-	preparetables = 1
+	try
+		load([fname(1:end-4) 'results.mat']);
+		preparetables = 0;
+	catch
+		preparetables = 1
+	end
 else 
 	preparetables = 0
 end
@@ -352,6 +360,7 @@ if summarize
 
 		[XX YY] = meshgrid(R.ticks.X, R.ticks.Y);
 		Rsz = size(R.results);
+		if prod(size(Rsz))==2; Rsz(3) = 1; end;
 
 		if plotsurfaces
 

@@ -121,7 +121,7 @@ order_parameter_GA = mean( exp(i*(bsxfun(@minus, GA, MA))));
 
 % keyboard
 
-results.sync =     [mean(mean(abs(order_parameter_GA)))   ; var(mean(abs(order_parameter_GA)))   ];
+results.sync =     [mean(mean(abs(order_parameter_GA)))   ; var(abs(order_parameter_GA))   ];
 results.order_parameter = abs(order_parameter_GA)';
 results.hilbert = H;
 results.instantaneousFrequency = InstFreq;

@@ -304,17 +304,17 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
 	nameprefix = 'gapcomp_corr_R2_g04';
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
 	p2  = [0.1];			% sametoall (noise correlation) of ornstein uhlenbeck process
-	p3  = [-.4];	% noiseamp of ornstein uhlenbeck process
-	p4  = [0.06 0.04 0.02 eps]; 	% average gap leak per connection
-	p5  = [2];			% single cell connection radius 
-	p6  = [36];			% clustersize (iff conntype='cluster')
+	p3  = [-.4 -.6];	% noiseamp of ornstein uhlenbeck process
+	p4  = [eps 0.02:0.02:0.6]; 	% average gap leak per connection
+	p5  = [2
+	p6  = [0];			% clustersize (iff conntype='cluster')
 	p7  = [1];			% intraclusterP (iff conntype='cluster')
 	p8  = [0];			% extraclusterP (iff conntype='cluster')
 	p9  = [6];			% mean number of connections
 	p10 = [10];			% N, size of N x N network
 	p11 = [2];			% depth in Z		
-	p12 = [0 1 2 3 4];			% whether using gap compensation in cells
-	p13 = [.4];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+	p12 = [0:2:10];			% whether using gap compensation in cell
+s	p13 = [.4];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
 	simtime = 5000;
 	conntype = 'iso';

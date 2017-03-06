@@ -19,9 +19,9 @@ testing = 0;
 % [=================================================================]
 
 dt = 0.02;
-simtime = 2000;
+simtime = 200;
 
-if ~exist('simtype')    	; simtype  = 'gallop'	  ; end
+if ~exist('simtype')    	; simtype  = '1pulse' ; end
 if ~exist('conntype')   	; conntype = 'iso'	  ; end
 if ~exist('numruns')    	; numruns  = 1   	  ; end
 if ~exist('sametoall')  	; sametoall = 0.1 	  ; end
@@ -44,7 +44,7 @@ displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)]
 %  % create network
 % [=================================================================]
 
-netsize = [50 1 1];
+netsize = [10 10 2];
 % netsize = [3 30 30];
 	noneurons = prod(netsize);
 
@@ -106,6 +106,9 @@ switch simtype
 		triggers = [5000:1000:simtime];
 		triggers = [5000:1000:simtime];
 		% triggers = sort(unique(bsxfun(@plus, pulses,triggers')))
+		spont = 0;
+	case '1pulse'
+		triggers = 20;
 		spont = 0;
 	case 'spont'
 		triggers = [];
@@ -218,6 +221,6 @@ for g = gaps
 			
 end
 
-eval(['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' num2str(gaps) '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' date ' -v7.3'])
+eval(['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' num2str(gaps(1)) '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' date ' -v7.3'])
 
 	
