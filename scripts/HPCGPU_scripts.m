@@ -92,11 +92,11 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
 	X_README = 'XCorr_Jochen'
 	thisnameprefix = 'increasing_Tau_'
 
-	seed = 0; tau = 20; noisesig =  0; noisemu = 0  ; sametoall = 0.1; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 10000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
+	seed = 0; tau = 20; noisesig =  0; noisemu = 0  ; sametoall = 0; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 10000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
 
 	for val = [10:10:60]
 		nameprefix = [thisnameprefix 'tau_' num2str(val)];
-		seed = 0; gaps = [eps 0.04]; simtime = 50000; tau = val; noisesig = .4; noisemu = -.4; sametoall = 0.1; simtype = '1Hz'; conntype = 'iso' ; numruns = 2;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+		seed = 0; gaps = [eps 0.04]; simtime = 50000; tau = val; noisesig = .4; noisemu = -.4; sametoall = 0.15; simtype = '1Hz'; conntype = 'iso' ; numruns = 2;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 	end
 
 end
@@ -306,7 +306,7 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
 	p2  = [0.1];			% sametoall (noise correlation) of ornstein uhlenbeck process
 	p3  = [-.4 -.6];	% noiseamp of ornstein uhlenbeck process
 	p4  = [eps 0.02:0.02:0.6]; 	% average gap leak per connection
-	p5  = [2
+	p5  = [2];			% single cell connection radius 
 	p6  = [0];			% clustersize (iff conntype='cluster')
 	p7  = [1];			% intraclusterP (iff conntype='cluster')
 	p8  = [0];			% extraclusterP (iff conntype='cluster')
@@ -314,7 +314,7 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
 	p10 = [10];			% N, size of N x N network
 	p11 = [2];			% depth in Z		
 	p12 = [0:2:10];			% whether using gap compensation in cell
-s	p13 = [.4];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+	p13 = [.4];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
 	simtime = 5000;
 	conntype = 'iso';

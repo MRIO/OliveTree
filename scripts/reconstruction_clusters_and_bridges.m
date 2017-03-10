@@ -7,7 +7,7 @@
 rng(0,'twister') % random seed
 
 steadystate_time = 300; %ms
-simtime  = 6000; %ms
+simtime  = 8000; %ms
 delta = .025;
 gpu = 1;
 
@@ -149,7 +149,7 @@ sametoall = 0.05;
 % create overlapping ampa masks
 
 % numberofmasks = 10; 
-onset_of_stim = [1005:2:1025];
+onset_of_stim = [3005:5:3025];
 
 % apply some current to check the behavior of the cells
 I_app = [];
