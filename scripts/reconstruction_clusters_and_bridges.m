@@ -1,5 +1,12 @@
 % demo_clusters.m
 
+
+%  4 simulations
+% : stimulate group 41 and one of its neighbors
+% with and without bridges
+% looking at kuramoto and mystical neighbor
+
+
 % [================================================]
 % 		 simulation parameters
 % [================================================]
@@ -158,7 +165,7 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  [curlies.stats.clusters==5] | [curlies.stats.clusters==10] | [curlies.stats.clusters==19];
+pert.mask     {1} =  [curlies.stats.clusters==41];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 10;

@@ -88,7 +88,7 @@
 
 
 
-if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench4')
+if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench2')
 	X_README = 'XCorr_Jochen'
 	thisnameprefix = 'increasing_Tau_'
 
