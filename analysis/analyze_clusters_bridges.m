@@ -17,6 +17,7 @@ tslice = 1001:4000;
 if not(exist('st_st'))
 	% load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
 	load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
+	load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
     sims = sim;
 end
 
@@ -147,9 +148,9 @@ if plotbridgeandneighbors
 
 	end
 
-
-
 end
+
+
 
 
 if STOhistograms
@@ -195,7 +196,7 @@ end
 
 % relationship between cluster amplitude and oscillator amplitude
 
-% relationship between single cell frequency and oscilltor frequency
+% relationship between single cell frequency and oscillator frequency
 
 % probability of non oscillating cluster becoming oscillating cluster
 
@@ -209,6 +210,8 @@ end
 if plot_cluster_members
 	for c = 1:no_clusters
 		c
+		cellsincluster = statevar{1}(find(clusters==c),:);
+		cellsincluster = setdiff(cellsincluster, find(bc));
 		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
 		% clustered{c}.no_neurons = length(find(clusters==c));
 
@@ -258,6 +261,11 @@ if calculatesynchrony
         
         %%
 end
+
+
+
+
+
 
 
 % % sync

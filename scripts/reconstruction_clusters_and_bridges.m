@@ -63,6 +63,7 @@ plotconn = 0;
 normalize = 1;
 
 
+
 load('JM394_horizontal_coordinates-MAO.mat')
 somatapositions = JM394_horizontal_coordinates;
 somatapositions(1,:) = [];
@@ -156,6 +157,14 @@ sametoall = 0.05;
 
 % create overlapping ampa masks
 
+bridges_from_cluster = single(bc .* clusters==41);
+		neighbors_to_bridge = find(bridges_from_cluster'*(sims{1}.W.W>0));
+		their_cluster = unique(clusters(neighbors_to_bridge(1)));
+		targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
+		% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
+		plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==their_cluster);
+
+
 % numberofmasks = 10; 
 onset_of_stim = [3005:5:3025];
 
@@ -166,7 +175,7 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  [curlies.stats.clusters==41];
+pert.mask     {1} =  [curlies.stats.clusters==41 | targeted_cluster_cells];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 10;

@@ -4,12 +4,12 @@ function plotnetstruct(W,X,Y,Z,idx, varargin)
 % plotnetstruct(W,X,Y,Z,idx, varargin)
 
     if isempty(varargin)
-        plotconnections = 1;
+        plotconnections = 0;
         plotneurons = 1;
         onlynetstruct = 1;
-        plotsingleneuronconnections = 1;
+        plotsingleneuronconnections = 0;
         plotsecondorderneighbors = 0;
-        plotconnweights = 0;
+        plotconnweights = 1;
 
     else
         if isstruct(varargin{1})
@@ -197,39 +197,39 @@ if onlynetstruct
 
 
         
-        if plotsingleneuronconnections
-            [ii jj vv] = find(triu(double(W)));
+    if plotsingleneuronconnections
+        [ii jj vv] = find(triu(double(W)));
 
 
-            neighF = @(i) find(W(i,:));
+        neighF = @(i) find(W(i,:));
 
-            if plotsecondorderneighbors
-                for n = neighF(cni)
-                    for nn = neighF(n)
+        if plotsecondorderneighbors
+            for n = neighF(cni)
+                for nn = neighF(n)
 
-                        if W(n, nn) 
+                    if W(n, nn) 
 
-                            line([X(n)  X(nn)]', ...
-                                 [Y(n)  Y(nn)]',...
-                                 [Z(n)  Z(nn)]',...
-                                 'linewidth',3 ,'color', [0 .7 0  ] )  ;
-                        end
+                        line([X(n)  X(nn)]', ...
+                             [Y(n)  Y(nn)]',...
+                             [Z(n)  Z(nn)]',...
+                             'linewidth',3 ,'color', [0 .7 0  ] )  ;
                     end
                 end
             end
-
-            for nn = neighF(cni)
-            
-                 if W(cni, nn) 
-
-                    line([X(cni)  X(nn)]', ...
-                         [Y(cni)  Y(nn)]',...
-                         [Z(cni)  Z(nn)]',...
-                         'linewidth',5 ,'color', [0 1 0] )  ;
-                end
-            end
-        
         end
+
+        for nn = neighF(cni)
+        
+             if W(cni, nn) 
+
+                line([X(cni)  X(nn)]', ...
+                     [Y(cni)  Y(nn)]',...
+                     [Z(cni)  Z(nn)]',...
+                     'linewidth',5 ,'color', [0 1 0] )  ;
+            end
+        end
+    
+    end
 
 
 

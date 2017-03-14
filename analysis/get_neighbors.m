@@ -28,13 +28,13 @@ for n = neurons
 end
 
 
-
 all_neighbors = cell(1,o);
 for o = 1:order
-
-	for n = neurons
-		all_neighbors{o} = [all_neighbors{o} non_overlap{n,o}];
-	end
+	
+		for n = neurons
+			all_neighbors{o} = [all_neighbors{o} non_overlap{n,o}];
+		end
+	
 	unique_neigh{o} = unique(all_neighbors{o});
 	neighbors_per_order.shared{o} = intersect(all_neighbors{o}, unique_neigh{o});
 end

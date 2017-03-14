@@ -18,6 +18,7 @@ plotmeanclusteractivity = 1;
 plotpopactivity = 1;
 calculatesynchrony = 0;
 plotthreeDscatter = 0;
+reconstruction = 1;
 
 trigger = 1;
 
@@ -138,7 +139,12 @@ histfreq = histc(spks.medfreq, edges);
 % [=================================================================]
 
 if savemovie
-	fname = ['sim' num2str(netsize) '_']
+	
+	if isfield(sim,'note')
+		fname = sim.note;
+	else
+		fname = ['sim' num2str(netsize) '_']
+	end
 		try
 		vidObj = VideoWriter(fname,'MPEG-4');
 		
@@ -246,7 +252,7 @@ if plotpopactivity
 	end
 	linkaxes(a, 'x')
     linkaxes([a(1) a(3)], 'y')
-    xlim([time_slice(1) time_slice(end)])
+    % xlim([time_slice(1) time_slice(end)])
 end
 
 % figure
@@ -260,11 +266,9 @@ end
 % 	ylabel('mV')
 
 
-keyboard
 
 
 
-reconstruction = 1;
 
 
 
@@ -273,48 +277,57 @@ reconstruction = 1;
 
 		if plotvolume
 			
-			g3d3 = gaussKernel3d(.2,  12, ceil(12/2)); g3d3 = g3d3/sum(g3d3(:)); g3d3(g3d3<.001) = 0; g3d3 = g3d3/sum(g3d3(:));
-			cla
-			vol3d('cdata',g3d3)
+			gksz = 7;
+			g3d3 = gaussKernel3d(.2,  gksz, ceil(gksz/2)); g3d3 = g3d3/sum(g3d3(:)); g3d3(g3d3<.005) = 0; g3d3(g3d3>0.005)=1; %g3d3 = g3d3/sum(g3d3(:)); 
+			% figure
+			% cla
+			% vol3d('cdata',g3d3)
+			% colorbar
+
+			coarseness = 4;
 
 
 			fig_volume = figure('color', [1 1 1]);
+			ax_volume = axes;
+			colormap(ax_volume, hot(32));
 
-			colormap(jet(64));
-			for tt = frames
+			for tt = 1:length(time_slice)
 				
-				VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/10+1), V_soma_unwrapped(:,tt));
-				NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/10+1), 1);
+				VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), V_soma_unwrapped(:,tt));
+				NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), 1);
 				NNNN(NNNN==0)=1;
 				VVVV = VVVV./NNNN;
 				
 				% CCCC = interp3(VVVV, 3);
 				% CCCC = convn(VVVV, g3d3, 'same');
 				% VVVV = CCCC;
+				CCCC = imerode(VVVV,g3d3);
 
 				set(0,'CurrentFigure',fig_volume);
 			    % set(fig1,'CurrentAxes',a(3));
 
 
-			    AAA = VVVV;
-				AAA(AAA<0) = .2;
-				AAA(AAA==0) = 0;
+			    AAA = CCCC;
+				AAA(CCCC>-35) = 1;
+				AAA(AAA<=-35) = 0;
 
-				VVVV(VVVV>-50) = -50;
-				VVVV(VVVV<-67) = -67;
-				VVVV(1,1,1) = -67; 
-				VVVV(1,2,1) = -50;
+				% VVVV(VVVV>-50) = -45;
+				% VVVV(VVVV<-67) = -67;
+				% VVVV(1,1,1) = -67; 
+				% VVVV(1,2,1) = -50;
 
-				cla
+				cla(ax_volume)
+				set(ax_volume, 'clim',[-65 -35])
 				
-				vol3d('cdata',VVVV, 'Alpha', AAA , 'texture','3D');
-				view(3)
-				axis off; axis tight;  daspect([1 1 1])
+				vol3d('cdata',CCCC, 'Alpha', ~AAA*.25 , 'texture','3D');
+
+				if tt==1;view(3) ; view(50,-150);axis off; axis tight;  daspect([1 1 1]);end
+				title([num2str(time_slice(tt)) 'ms'])
 				drawnow
 				if savemovie
 					writeVideo(vidObj, getframe(fig_volume))
 				end
-				title([num2str(tt) 'ms'])
+				
 
 			end
 			if savemovie
@@ -334,7 +347,7 @@ if plotthreeDscatter
 
 	if reconstruction
 
-		for tt = 1:10:3000
+		for tt = 1:size(V_soma_unwrapped,2)
 			cla
 			scatter3(coords(:,1), coords(:,2), coords(:,3), scaledV(:,tt),clusters ,'filled')
 			% caxis([-80,-30])
