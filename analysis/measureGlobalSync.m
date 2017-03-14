@@ -83,7 +83,9 @@ try
 
 catch E
 
+
   warning('could not compute hilbert')
+  keyboard
 
   results.stats.firstordersync = 0;
 	results.stats.secondordersync = 0;

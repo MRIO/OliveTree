@@ -8,9 +8,10 @@
 plotbridgeandneighbors = 1;
 	plotcellscatters  = 0;
 	joinedcellscatter  = 0;
+plot_cluster_members = 1;
 STOhistograms = 0;
 calculatesynchrony = 0;
-plot_cluster_members = 1;
+
 
 tslice = 1001:4000;
 
@@ -44,6 +45,10 @@ if not(exist('sims'))
 	% NDscatter(sel_table, 7);
 
 end
+
+
+
+
 
 
 if plotcellscatters 
@@ -103,31 +108,43 @@ bar(bins, [connhistB; connhistC]','stacked')
 title('out degree')
 legend({'bridges' 'curlies'})
 
+bridges_from_cluster = single(bc .* clusters==41);
+neighbors_to_bridge = find(bridges_from_cluster'*(sims{1}.W.W>0));
+their_cluster = unique(clusters(neighbors_to_bridge));
+targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
+% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
+
+plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==34);
+view(104,56.4);
+
 
 
 
 % [=================================================================]
 %  bridge behavior
 % [=================================================================]
-bridgeidx = find(bridgecells);
-bridge_Vm = statevar{1}(bridgeidx,:);
-[val ord] = sort(table2array(R{1}.allneurons(bridgeidx,'ampl')));
+bridgebehaviorplot  = 0;
+if bridgebehaviorplot
+	bridgeidx = find(bridgecells);
+	bridge_Vm = statevar{1}(bridgeidx,:);
+	[val ord] = sort(table2array(R{1}.allneurons(bridgeidx,'ampl')));
 
-figure
-waterfall(bridge_Vm(ord,:));
-title('bridge behavior when connected')
+	figure
+	waterfall(bridge_Vm(ord,:));
+	title('bridge behavior when connected')
 
-figure
-bridge_Vm = statevar{3}(bridgeidx,:);
-waterfall(bridge_Vm(ord,:));
-
+	figure
+	bridge_Vm = statevar{3}(bridgeidx,:);
+	waterfall(bridge_Vm(ord,:));
+end
 
 % [=================================================================]
 %  groups
 % [=================================================================]
 
 if plotbridgeandneighbors
-	for c = find(bc)'
+	bridgestoplot = find(bc.*(clusters==41))';
+	for c = bridgestoplot
 		figure
 		thisbridge = zeros(size(bc));
 		thisbridge(c) = 1;
@@ -139,12 +156,12 @@ if plotbridgeandneighbors
 		plot(tslice, statevar{1}(c,:),'linewidth', 2)
 		
 
-		Q = quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
-		text(tslice(end)*.9 , max(max(statevar{1}))*.9, num2str(Q))
+		% Q = quantile(table2array(R{1}.allneurons(neighbors{c},'freq_each')), [.25, .5, .75])
+		% text(tslice(end)*.9 , max(max(statevar{1}))*.9, num2str(Q))
 
-		pause
+		% pause
 
-		close 
+		% close 
 
 	end
 
@@ -208,18 +225,22 @@ end
 % activity of bridge cells and neighbors
 
 if plot_cluster_members
-	for c = 1:no_clusters
-		c
+	cc = 0;
+	figure
+	% their_cluster = 34;
+	for c = their_cluster' %1:no_clusters
+		cc = cc +1;
+		figure
 		cellsincluster = statevar{1}(find(clusters==c),:);
 		cellsincluster = setdiff(cellsincluster, find(bc));
 		% clustered{c}.sync = measureGroupSync(sim{1},'group', clusters==c,'plotme',0);
 		% clustered{c}.no_neurons = length(find(clusters==c));
 
 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-		plot(tslice, mean(statevar{1}(find(clusters==c),:))+c*5,'color', lc(c,:))
+		plot(tslice, mean(statevar{1}(find(clusters==c),:))+cc*5,'color', lc(c,:))
 		hold on
 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-		pause
+		% pause
 	end
 end
 
@@ -263,24 +284,6 @@ if calculatesynchrony
 end
 
 
-
-
-
-
-
-% % sync
-% fig3 = figure;;
-% 	for c = 1:no_clusters
-% 		c
-% 		clustered{c}.sync = measureGroupSync(sims{1},'group', clusters==c,'plotme',0);
-% 		clustered{c}.no_neurons = length(find(clusters==c));
-
-% 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-% 		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-% 		hold on
-% 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-% 		pause
-% 	end
 
 
 

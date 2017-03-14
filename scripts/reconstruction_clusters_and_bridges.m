@@ -113,7 +113,7 @@ if not(exist('curlies'))
 
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
 
-	brick = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
+	brick = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
 	brick_bu = brick;
 	brick.W = brick.W*gap_curlies;
 
@@ -159,7 +159,7 @@ sametoall = 0.05;
 
 bridges_from_cluster = single(bc .* clusters==41);
 		neighbors_to_bridge = find(bridges_from_cluster'*(sims{1}.W.W>0));
-		their_cluster = unique(clusters(neighbors_to_bridge(1)));
+		their_cluster = unique(clusters(neighbors_to_bridge));
 		targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
 		% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
 		plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==their_cluster);

@@ -127,6 +127,7 @@ try
 
 catch E
 
+	keyboard
   warning('could not compute hilbert')
 
   results.stats.firstordersync = 0;

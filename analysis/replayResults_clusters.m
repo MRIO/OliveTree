@@ -289,7 +289,7 @@ end
 
 			fig_volume = figure('color', [1 1 1]);
 			ax_volume = axes;
-			colormap(ax_volume, hot(32));
+			colormap(ax_volume, jet(32));
 
 			for tt = 1:length(time_slice)
 				
@@ -321,7 +321,7 @@ end
 				
 				vol3d('cdata',CCCC, 'Alpha', ~AAA*.25 , 'texture','3D');
 
-				if tt==1;view(3) ; view(50,-150);axis off; axis tight;  daspect([1 1 1]);end
+				if tt==1;view(3) ; view(-22,-56.4);axis off; axis tight;  daspect([1 1 1]);end
 				title([num2str(time_slice(tt)) 'ms'])
 				drawnow
 				if savemovie
