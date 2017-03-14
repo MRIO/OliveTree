@@ -22,10 +22,10 @@ gpu = 1;
 % simulations to perform
 % [================================================]
 
-frombrick_to_clusters = 1;
-bridge_conductance_pspace = 1;
-bridges_and_curlies = 1;
-
+frombrick_to_clusters = 0;
+bridge_conductance_pspace = 0;
+bridges_and_curlies = 0;
+conjuctive_stimulation = 1;
 
 % [================================================]
 % variables to report
@@ -175,7 +175,7 @@ I_app = [];
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 % pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);
-pert.mask     {1} =  [curlies.stats.clusters==41 | targeted_cluster_cells];
+pert.mask     {1} =  [curlies.stats.clusters==41];
 pert.amplitude{1} = 1;
 pert.triggers {1} = onset_of_stim;
 pert.duration {1} = 10;
@@ -205,6 +205,70 @@ end
 
 % 	% st_st.Plist = Plist;
 % end
+
+
+if conjuctive_stimulation
+	
+			
+pert.mask     {1} =  [curlies.stats.clusters==41];
+			
+ 	sim{1} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	sim{1}.note = '41_with_bridges'
+	sim{1}.W = bridg_curlies;
+	sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.backgroundnoise = [];
+
+
+pert.mask     {1} =  [curlies.stats.clusters==41 & curlies.stats.clusters==34];
+						
+sim{2} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	sim{2}.note = '41&34_with_bridges'
+	sim{2}.W = bridg_curlies;
+	sim{2}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{2}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{2}.networkHistory.backgroundnoise = [];
+
+
+pert.mask     {1} =  [curlies.stats.clusters==41];
+			
+ 	sim{3} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	sim{3}.note = '41_with_curlies'
+	sim{3}.W = bridg_curlies;
+	sim{3}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{3}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{3}.networkHistory.backgroundnoise = [];
+
+
+pert.mask     {1} =  [curlies.stats.clusters==41 & curlies.stats.clusters==34];
+						
+sim{4} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+	sim{4}.note = '41&34_with_curlies'
+	sim{4}.W = bridg_curlies;
+	sim{4}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{4}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{4}.networkHistory.backgroundnoise = [];
+
+
+end
+
+
 
 
 if bridge_conductance_pspace

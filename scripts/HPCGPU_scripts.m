@@ -109,7 +109,7 @@ end
 %  clusters curlies and bridges
 % [=================================================================]
 
-if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench')
+if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench3')
 
 	reconstruction_clusters_and_bridges;
 	X_README = ['clusters and bridges_' date];
@@ -295,16 +295,16 @@ end
 
 
 % [================================================]
-%  gapcomp x gap (corr =0.1)
+%  gapcomp x gap
 % [================================================]
 
 
-if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
+if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench')
 	X_README = 'GAPCOMP  Corr = 0.1 R = 2'
 	nameprefix = 'gapcomp_corr_R2_g04';
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
-	p2  = [0.1];			% sametoall (noise correlation) of ornstein uhlenbeck process
-	p3  = [-.4 -.6];	% noiseamp of ornstein uhlenbeck process
+	p2  = [0];		% sametoall (noise correlation) of ornstein uhlenbeck process
+	p3  = [-.6];	% noiseamp of ornstein uhlenbeck process
 	p4  = [eps 0.02:0.02:0.6]; 	% average gap leak per connection
 	p5  = [2];			% single cell connection radius 
 	p6  = [0];			% clustersize (iff conntype='cluster')
@@ -314,7 +314,7 @@ if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench2')
 	p10 = [10];			% N, size of N x N network
 	p11 = [2];			% depth in Z		
 	p12 = [0:2:10];			% whether using gap compensation in cell
-	p13 = [.4];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+	p13 = [-.2 -.4];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
 	simtime = 5000;
 	conntype = 'iso';
