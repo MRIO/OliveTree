@@ -56,6 +56,7 @@ to_report = vsoma;
 
 nconns_curlies = 5;
 nconns_bridges = 5;
+cells_in_cluster = 20;
 gap_curlies = .05;
 gap_bridges = .05;
 plotconn = 0;
@@ -71,11 +72,11 @@ if not(exist('curlies'))
 	% curlies:
 	% create a network with distance based connectivity for close by connections
 	% this network is clusterized with about 20cells per cluster, according to a k-means algo.
-	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 20 1 0]);
+	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 cells_in_cluster 1 0]);
 
 	% create a network with distance based connectivity for further apart cells: bridges
 	% these cells are not bound to specific clusters.
-	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_bridges, somatapositions,1,[1 20 0 1]);
+	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_bridges, somatapositions,1,[1 cells_in_cluster 0 1]);
 
 
 	% define the indices of 10% of the cells, these will be bridges

@@ -339,22 +339,22 @@ linkaxes(a,'x')
 
 
 
+if isfield(sim.networkHistory, 'brackgroundnoise')
+	if not(isempty(sim.networkHistory.backgroundnoise))
+		N = sim.networkHistory.backgroundnoise;
 
-if not(isempty(sim.networkHistory.backgroundnoise))
-	N = sim.networkHistory.backgroundnoise;
+		a(5) = axes;
+		O = [1:prod(netsize)];
+		imagesc(N(O,time_slice),[-5 5]);
+		colorbar('East')
+		
 
-	a(5) = axes;
-	O = [1:prod(netsize)];
-	imagesc(N(O,time_slice),[-5 5]);
-	colorbar('East')
-	
+		set(a(5),'position',[0.10  0.67  0.8  0.25],'TickLength', [0 0],'xticklabel',[])
+		set(a(2),'position',[0.10  0.40  0.8  0.25],'TickLength', [0 0],'xticklabel',[])
+		set(a(4),'position',[0.10  0.08  0.8  0.30],'TickLength', [0 0])
 
-	set(a(5),'position',[0.10  0.67  0.8  0.25],'TickLength', [0 0],'xticklabel',[])
-	set(a(2),'position',[0.10  0.40  0.8  0.25],'TickLength', [0 0],'xticklabel',[])
-	set(a(4),'position',[0.10  0.08  0.8  0.30],'TickLength', [0 0])
-
+	end
 end
-
 
 linkaxes(a,'x')
 colormap(bone(64))

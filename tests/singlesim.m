@@ -5,11 +5,11 @@
 % gap = 0.04;  noisesig = .7; noiseamp = 0 ; tau = 20; sametoall = 0.2; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = 0.04;  noisesig = .5; noiseamp = -.5 ; tau = 20; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = 0.04;  noisesig = .6; noiseamp = -.6 ; tau = 20; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
-gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 0; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
+gap = 0.04;  noisesig = 0; noiseamp = 0 ; tau = 0; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
 
 dt = 0.05;
 simtime = 1000;
-gpu = 0;
+gpu = 1;
 % [=================================================================]
 %  % create network
 % [=================================================================]
@@ -25,7 +25,7 @@ if ~exist('tau'); 		 tau = 20 ;end
 if ~exist('noiseamp'); 	 noiseamp = .5 ;end
 if ~exist('noisesig'); 	 noisesig = 0 ;end
 
-netsize = [1 10 1];
+netsize = [10 10 2];
 % netsize = [1 20 1];
 	noneurons = prod(netsize);
 
@@ -56,7 +56,7 @@ end
 
 rng(0,'twister')
 neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);
-neurons.gbar_ampa_soma = .1*ones(noneurons,1) + .02*rand(noneurons,1);
+neurons.gbar_ampa_soma = .05*ones(noneurons,1) + .02*rand(noneurons,1);
 
 
 %============================= perturbation ==============================%
@@ -73,7 +73,7 @@ if not(spont)
 	pert.type{1}	  = 'ampa';
 	pert.duration{1}  = 1;
 	% pert.triggers{1} = [500 504 508 512 516 850 854 858];
-	pert.triggers{1} = [300:5:330 400:5:430];
+	pert.triggers{1} = [1500];
 
 
 	% pert.mask{2}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', 2, ...

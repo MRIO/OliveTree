@@ -1,5 +1,10 @@
 % analyze_clusters_bridges.m
 
+
+% [================================================]
+%  what to do
+% [================================================]
+
 plotbridgeandneighbors = 1;
 	plotcellscatters  = 0;
 	joinedcellscatter  = 0;
@@ -96,6 +101,9 @@ figure
 bar(bins, [connhistB; connhistC]','stacked')
 title('out degree')
 legend({'bridges' 'curlies'})
+
+
+
 
 % [=================================================================]
 %  bridge behavior
