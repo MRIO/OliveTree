@@ -5,7 +5,8 @@ plotcellscatters  = 1;	sel_fields = { 'freq_each' 'g_CaL', 'g_h', 'ampl' };
 
 plotreconstruction = 0; 
 	makevideo = 0
-plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
+plotconnectivityhistogram  = 1; % comparison of degree between clusters and bridges
+plotdistan  = 1;
 
 plotclustermemberaverages = 1;
 
@@ -29,6 +30,8 @@ if not(exist('st_st'))
 	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_10-Feb-2017.mat')
 	% load('clusters_curlies_bridges_10-Feb-2017.mat')
 	% load('clusters_curlies_bridges_13-Feb-2017.mat')
+	load('curlies_bridges_stim_pair16-Mar-2017.mat')
+
     sims = sim;
 end
  
@@ -364,6 +367,7 @@ if calculatesynchrony_clusters
 	for c = 17 %1:max(clusters)
 		c = 17;
 		c = 10;
+		c = 41;
 		clustered{c,1}.sync = measureGroupSync(sims{1},'group', clusters==c,'plotme',1);
 		clustered{c,2}.sync = measureGroupSync(sims{2},'group', clusters==c,'plotme',1);
 
@@ -383,6 +387,7 @@ end
 % example cluster
 if exampleclustersync
 	figure
+	group = 34;
 	 [hclu xclu] = hist([clustered{17,1}.sync.order_parameter, clustered{17,2}.sync.order_parameter],50);
 	 BBC = bar(xclu, hclu/5000, 2, 'edgecolor', 'none');
 	 BBC(1).FaceColor  = [.9 0 .2 ];
@@ -409,6 +414,10 @@ end
 bridgecond_pspace = 1;
 if bridgecond_pspace
 	load('/Users/M/Synced/Titan/Bench4/bridge_conductance_pspace01-Mar-2017.mat')
+end
+	
+
+
 
 
 

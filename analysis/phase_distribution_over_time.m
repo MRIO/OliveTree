@@ -121,13 +121,12 @@ VS = sim.networkHistory.V_soma;
 
 
 try
-	
+        
  	H = hilbert_of_membranepotential(VS); 
  	
 
 catch E
 
-	keyboard
   warning('could not compute hilbert')
 
   results.stats.firstordersync = 0;

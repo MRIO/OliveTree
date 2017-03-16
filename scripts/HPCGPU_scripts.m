@@ -109,7 +109,7 @@ end
 %  clusters curlies and bridges
 % [=================================================================]
 
-if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench3')
+if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench4')
 
 	reconstruction_clusters_and_bridges;
 	X_README = ['clusters and bridges_' date];
@@ -267,7 +267,7 @@ end
 % [================================================]
 
 
-if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench')
+if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench')
 	X_README = 'SIG X MU Corr ETA0.1 R2 G0.04'
 	nameprefix = 'sigXmu_01corr_R2_g04_6conn';
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
@@ -303,9 +303,9 @@ if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench')
 	X_README = 'GAPCOMP  Corr = 0.1 R = 2'
 	nameprefix = 'gapcomp_corr_R2_g04';
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
-	p2  = [0];		% sametoall (noise correlation) of ornstein uhlenbeck process
-	p3  = [-.6];	% noiseamp of ornstein uhlenbeck process
-	p4  = [eps 0.02:0.02:0.6]; 	% average gap leak per connection
+	p2  = [0];			% sametoall (noise correlation) of ornstein uhlenbeck process
+	p3  = [-.6];		% noiseamp of ornstein uhlenbeck process
+	p4  = [eps 0.02:0.02:0.1]; 	% average gap leak per connection
 	p5  = [2];			% single cell connection radius 
 	p6  = [0];			% clustersize (iff conntype='cluster')
 	p7  = [1];			% intraclusterP (iff conntype='cluster')
@@ -313,7 +313,7 @@ if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench')
 	p9  = [6];			% mean number of connections
 	p10 = [10];			% N, size of N x N network
 	p11 = [2];			% depth in Z		
-	p12 = [0:2:10];			% whether using gap compensation in cell
+	p12 = [-5:5];		% whether using gap compensation in cell
 	p13 = [-.2 -.4];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
 	simtime = 5000;

@@ -85,12 +85,14 @@ if not(exist('curlies'))
 	z = zeros(noneurons,1) ; % initialize index vector
 	z(bc(1:round(.1*noneurons))) = 1; % make 10% of the cells == bridges
 	bc =z;
+	bridge_idx = find(bc);
 
 	% remove from curlie adjacency matrix all of those that will become bridges
 	curlies.W = bsxfun(@times, curlies.W, ~z);
 	curlies.W = bsxfun(@times, curlies.W, ~(z')); % multiply by the 'unitary' conductance
 	curlies_bu = curlies; %_bu -> binary undirected
 	curlies.W = curlies.W*gap_curlies;
+	% curlies.stats.clusters(bridge_idx) = 0;
 	
 	cstats = connectivity_statistics(bridges);
 	curlies.stats = cstats.stats ;
@@ -110,8 +112,11 @@ if not(exist('curlies'))
 	bridg_curlies.W = curlies.W + bridges.W;
 	bridg_curlies.stats = connectivity_statistics(bridg_curlies);
 	bridg_curlies.stats.clusters = curlies.stats.clusters;
+	% bridg_curlies.stats.clusters(bridge_idx) = 0;
 
-	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), bridg_curlies.stats.clusters)
+	clusteridx = bridg_curlies.stats.clusters;
+	clusteridx(logical(bc)) = 70;
+	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusteridx)
 
 	brick = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
 	brick_bu = brick;
@@ -157,12 +162,13 @@ sametoall = 0.05;
 
 % create overlapping ampa masks
 
-bridges_from_cluster = single(bc .* clusters==41);
-		neighbors_to_bridge = find(bridges_from_cluster'*(sims{1}.W.W>0));
+clusters = bridg_curlies.stats.clusters;
+bridges_in_cluster = single(bc .* clusters==41);
+		neighbors_to_bridge = find(bridges_in_cluster'*(bridg_curlies.W>0));
 		their_cluster = unique(clusters(neighbors_to_bridge));
 		targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
 		% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
-		plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==their_cluster);
+		plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==34);
 
 
 % numberofmasks = 10; 
@@ -220,11 +226,11 @@ pert.mask     {1} =  [curlies.stats.clusters==41];
 	sim{1}.note = '41_with_bridges'
 	sim{1}.W = bridg_curlies;
 	sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
-	sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.I_cx36 = [];
 	sim{1}.networkHistory.backgroundnoise = [];
 
 
-pert.mask     {1} =  [curlies.stats.clusters==41 & curlies.stats.clusters==34];
+pert.mask     {1} =  [curlies.stats.clusters==41 | curlies.stats.clusters==34];
 						
 sim{2} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', st_st.lastState, ...
@@ -234,7 +240,7 @@ sim{2} = IOnet( 'cell_parameters', def_neurons, ...
 	sim{2}.note = '41&34_with_bridges'
 	sim{2}.W = bridg_curlies;
 	sim{2}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
-	sim{2}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{2}.networkHistory.I_cx36 = [];
 	sim{2}.networkHistory.backgroundnoise = [];
 
 
@@ -248,11 +254,11 @@ pert.mask     {1} =  [curlies.stats.clusters==41];
 	sim{3}.note = '41_with_curlies'
 	sim{3}.W = bridg_curlies;
 	sim{3}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
-	sim{3}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{3}.networkHistory.I_cx36 = [];
 	sim{3}.networkHistory.backgroundnoise = [];
 
 
-pert.mask     {1} =  [curlies.stats.clusters==41 & curlies.stats.clusters==34];
+pert.mask     {1} =  [curlies.stats.clusters==41 | curlies.stats.clusters==34];
 						
 sim{4} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', st_st.lastState, ...
@@ -262,8 +268,10 @@ sim{4} = IOnet( 'cell_parameters', def_neurons, ...
 	sim{4}.note = '41&34_with_curlies'
 	sim{4}.W = bridg_curlies;
 	sim{4}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
-	sim{4}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{4}.networkHistory.I_cx36 = [];
 	sim{4}.networkHistory.backgroundnoise = [];
+
+		eval(['save curlies_bridges_stim_pair'  date ' -v7.3'])
 
 
 end
@@ -343,7 +351,7 @@ if bridges_and_curlies
 	 sim{1}.W = bridg_curlies;
 
 	sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
-	sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.V_soma);
+	sim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.I_cx36);
 	sim{1}.networkHistory.backgroundnoise = [];
 
 
@@ -357,7 +365,7 @@ if bridges_and_curlies
 	 sim{2}.W = curlies;
 
 	sim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);
-	sim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.V_soma);
+	sim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.I_cx36);
 	sim{2}.networkHistory.backgroundnoise = [];
 
 
@@ -372,7 +380,7 @@ if bridges_and_curlies
 	 
 
 	sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
-	sim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.V_soma);
+	sim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.I_cx36);
 	sim{3}.networkHistory.backgroundnoise = [];
 
 
@@ -389,7 +397,7 @@ if bridges_and_curlies
 	 
 
 	sim{4}.networkHistory.V_soma = single(sim{4}.networkHistory.V_soma);
-	sim{4}.networkHistory.I_cx36 = single(sim{4}.networkHistory.V_soma);
+	sim{4}.networkHistory.I_cx36 = single(sim{4}.networkHistory.I_cx36);
 	sim{4}.networkHistory.backgroundnoise = [];
 
 
