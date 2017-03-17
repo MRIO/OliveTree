@@ -72,7 +72,6 @@ function R = profile_sim(varargin)
 
 
 	K = measureGlobalSync(sim,'plotme', 0,'duration',tslice); %, 'duration', tslice
-	keyboard
 
 	freq_each = K.frequency'*1e3;
 

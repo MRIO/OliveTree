@@ -23,8 +23,6 @@ VarNames = intable.Properties.VariableNames;
 data = table2array(intable);
 N = length(VarNames);
 
-figure('color', [1 1 1])
-
 if ~isempty(groupby)
 	if length(groupby)>1
 		groups = groupby;
@@ -36,14 +34,11 @@ else
 end
 	
 	
-	
 	bgcolor = [1 1 1];
 	axiscolor = [.1 .1 .1];
 	markercolor = [0 0 0];
 	
-	ngroups = max(groups);
-
-
+	ngroups = max(groups)
 
 	try
 		groupcolors = linspecer(ngroups);
@@ -52,11 +47,12 @@ end
 	end
 
 	if ngroups ==2
-
 		% groupcolors = [.9 0 .2 ; .2 .7 .2];
 		% groupcolors = [.9 0 .2 ; .2 .7 .2];
-		groupcolors = [.9 0 .2 ; .2 .2 .7];
+		groupcolors = [.2 .7 .2 ; .2 .2 .7];
 	end
+
+	figure('color', [1 1 1], 'colormap', groupcolors)
 
 
 	l1 = linspace(0, .88, N+1); l1 = l1(1:end -1)+.08; 
@@ -70,13 +66,14 @@ end
 		for cc = l2
 			c = c+1;
 			
-			hand(r, c) = axes('position', [cc rr w h]);
+			hand(r, c) = axes('position', [cc rr w h],'colororder', groupcolors);
 			if r > c
 				hold on
 				for g = 1:ngroups
 
 					line(data(groups==g,c), data(groups==g,r), ...
 						 'markersize', 5, 'color', groupcolors(g,:), 'marker','.','linestyle','none','markersize',15)
+
 				end
 				% line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
 				hold off
@@ -86,32 +83,55 @@ end
 				end
 				xxx = linspace(min(data(:,r)), max(data(:,r)), 30);
 
-				if ngroups>1 & ngroups <3
+				if ngroups==2
 					for g = 1:ngroups
-						[hhh] = hist(data(groups==g,r),xxx);
-						plot(xxx, hhh,'color', groupcolors(g,:) )
+						[hhh(:,g)] = hist(data(groups==g,r),xxx);
+						% plot(xxx, hhh,'color', groupcolors(g,:) )
 						hold on
-
 					end
+					h_area = area(xxx, hhh);
+					% alpha(.9)
 				else
 					
 					[hhh xxx] = hist(data(:,r), xxx);
 					bar(xxx, hhh, 'facecolor', markercolor)
 				end
 
-				set(gca,'ytick', [0 max(hhh)])
+				set(gca,'ytick', [0 max(hhh(:))])
 
 			end
 
 			if c > r % & plotdistributions
 				
 				if ~hist2d
-					for g = 1:ngroups
-						line(data(groups==g,c), data(groups==g,r), ...
-							 'markersize', 5, 'color', groupcolors(g,:), 'marker','.','linestyle','none','markersize',15)
+					if ngroups ==2
+						for g = 1:ngroups
+							% line(data(groups==g,c), data(groups==g,r), ...
+								 % 'markersize', 5, 'color', groupcolors(g,:), 'marker','.','linestyle','none','markersize',15)
+
+							[groupcorr groupval] = corr(data(groups==g,c), data(groups==g,r));
+							groupregress = regress(data(groups==g,c), data(groups==g,r));
+							text_regression{g,1} = ['r=' num2str(groupcorr) '; p=' num2str(groupval) ];
+							text_regression{g,2} = ['R^2=' num2str(groupregress)];
+
+						end
+					else
+						
+							[groupcorr groupval] = corr(data(:,c), data(:,r));
+							groupregress = regress(data(:,c), data(:,r));
+							text_regression{1,1} = ['r=' num2str(groupcorr) '; p=' num2str(groupval) ];
+							text_regression{1,2} = ['R^2=' num2str(groupregress)];
 					end
 
-					% line(data(:,c), data(:,r) , 'color', markercolor, 'marker','.','linestyle','none','markersize', 5)
+					line(data(:,c), data(:,r) , 'color', [.8 .8 .8], 'marker','.','linestyle','none','markersize', 10)
+					bla = axes;
+					axis off	
+					t = text(hand(r,c), 0, 0, text_regression);
+					t.VerticalAlignment = 'bottom';
+					% axis off
+
+
+					
 
 				else
 					nedges = 20;
@@ -127,23 +147,23 @@ end
 
 
 			if r == N
-				title(VarNames{c},'interpreter', 'none')
+				title(hand(r,c), VarNames{c},'interpreter', 'none')
 				% ylabel(VarNames{c})
 			end
 			if c == N
-				ylabel(VarNames{r},'interpreter', 'none')
+				ylabel(hand(r,c), VarNames{r},'interpreter', 'none')
 			end
 			if r ~= 1
-				set(gca, 'xtick' , [])
+				set(hand(r,c), 'xtick' , [])
 			end
 			if c ~= N & c ~= 1
-				set(gca, 'ytick' , [])
+				set(hand(r,c), 'ytick' , [])
 			end
 			if c == r
-				set(gca,'ytick', [0 max(hhh)])
+				set(hand(r,c),'ytick', [0 max(hhh(:))],'yaxislocation', 'left')
 			end
-			if c == 1
-				set(gca,'yaxislocation', 'right')
+			if c == 1 & (c~=r)
+				set(hand(r,c),'yaxislocation', 'right')
 			end
 
 
@@ -153,16 +173,13 @@ end
 			end
 
 
-			set(gca,'color',bgcolor,'xcolor', axiscolor, 'ycolor', axiscolor,'tickdir', 'out','box','on');
+			set(hand(r,c),'color',bgcolor,'xcolor', axiscolor, 'ycolor', axiscolor,'tickdir', 'out','box','on');
 
 		end
 
 		c = 0;
 
 	end
-
-	colormap(jet(5))
-
 
 	pl_i = [1:length(l1)];
 	for r = pl_i

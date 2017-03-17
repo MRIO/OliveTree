@@ -1,19 +1,19 @@
 
 
 % analyze_clusters_bridges.m
-plotcellscatters  = 1;	sel_fields = { 'freq_each' 'g_CaL', 'g_h', 'ampl' };
+plotcellscatters  = 1;	sel_fields = { 'g_CaL', 'g_h' 'ampl' 'freq_each'};
 
 plotreconstruction = 0; 
 plotselectedclusters = 1;
 	makevideo = 0
 plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
 
-plotclustermemberaverages = 1;
+plotclustermemberaverages = 0;
 
-plotbridgeandneighbors_Vm = 1;
+plotbridgeandneighbors_Vm = 0;
 	plotbridgewaterfall = 0;
 
-
+analyze_group_stim = 1;
 
 STOhistograms = 0;
 calculatesynchrony_clusters = 0;
@@ -45,15 +45,9 @@ if not(exist('R'))
 
 	for nsim = 1:length(sims);
 		statevar{nsim} = double(sims{nsim}.networkHistory.V_soma(:,tslice)); % with gaps 
-		R{nsim} = profile_sim(sims{nsim},'tslice',tslice); % bridges and curlie
+		R{nsim} = profile_sim(sims{nsim},'tslice',tslice); % bridges and curlies
 	end
 	
-	
-	% RR = vertcat(R{1}.allneurons, R{2}.allneurons);
-	% RR(:,39) = table([zeros(1105,1) ; ones(1105,1)]);
-	% sel_table = RR(:,sel_fields);
-	% NDscatter(sel_table, 7);
-
 end
 
 
@@ -93,15 +87,15 @@ if plotconnectivityhistogram
 end
 
 if plotselectedclusters
-bridges_from_cluster = single(bc .* clusters==41);
-neighbors_to_bridge = find(bridges_from_cluster'*(sims{1}.W.W>0));
-their_cluster = unique(clusters(neighbors_to_bridge));
-targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
-% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
+	bridges_from_cluster = single(bc .* clusters==41);
+	neighbors_to_bridge = find(bridges_from_cluster'*(sims{1}.W.W>0));
+	their_cluster = unique(clusters(neighbors_to_bridge));
+	targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
+	% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
 
-plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==34);
-view(22,56.4);
-
+	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==34);
+	view(22,56.4);
+end
 
 
 
@@ -155,8 +149,16 @@ if plotcellscatters
 	% sel_fields = {'g_CaL', 'g_ld', 'g_K_Ca',  'freq_each', 'meanVm','minV'}
 
 	
-	% sel_table = R{1}.allneurons(:,sel_fields);
-	% NDscatter(sel_table, clusters)
+	RR = vertcat(R{1}.allneurons, R{3}.allneurons);
+	groups = [zeros(1105,1) ; ones(1105,1)];
+	sel_table = RR(:,sel_fields);
+	NDscatter(sel_table, groups+1);
+
+	sel_fields = { 'ampl' 'freq_each' 'g_CaL', 'g_h' };
+	clusterswobridges = clusters;
+	clusterswobridges(logical(bc))=0;
+	sel_table = R{1}.allneurons(:,sel_fields);
+	NDscatter(sel_table, clusterswobridges+1)
 	
 	% sel_table = R{2}.allneurons(:,sel_fields);
 	% NDscatter(sel_table, clusters)
@@ -459,7 +461,7 @@ end
 
 
 
-if 
+if  analyze_group_stim
 	M{1} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==34);
 	M{2} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==41);
 	M{3} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==41 | clusters==34);
@@ -469,6 +471,16 @@ if
 	M{5} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==41);
 	M{6} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==41 | clusters==34);
 	
+	M{7} = measureGroupSync(sims{3},'duration',tslice,'group',clusters==34);
+	M{8} = measureGroupSync(sims{3},'duration',tslice,'group',clusters==41);
+	M{9} = measureGroupSync(sims{3},'duration',tslice,'group',clusters==41 | clusters==34);
+	
+	
+	M{10} = measureGroupSync(sims{4},'duration',tslice,'group',clusters==34);
+	M{11} = measureGroupSync(sims{4},'duration',tslice,'group',clusters==41);
+	M{12} = measureGroupSync(sims{4},'duration',tslice,'group',clusters==41 | clusters==34);
+
+
 
 end
 

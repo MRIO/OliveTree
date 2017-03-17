@@ -239,7 +239,7 @@ sim{2} = IOnet( 'cell_parameters', def_neurons, ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	sim{2}.note = '41&34_with_bridges'
 	sim{2}.W = bridg_curlies;
-	sim{2}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);
 	sim{2}.networkHistory.I_cx36 = [];
 	sim{2}.networkHistory.backgroundnoise = [];
 
@@ -252,8 +252,8 @@ pert.mask     {1} =  [curlies.stats.clusters==41];
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	sim{3}.note = '41_with_curlies'
-	sim{3}.W = bridg_curlies;
-	sim{3}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{3}.W = curlies;
+	sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
 	sim{3}.networkHistory.I_cx36 = [];
 	sim{3}.networkHistory.backgroundnoise = [];
 
@@ -266,8 +266,8 @@ sim{4} = IOnet( 'cell_parameters', def_neurons, ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	sim{4}.note = '41&34_with_curlies'
-	sim{4}.W = bridg_curlies;
-	sim{4}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{4}.W = curlies;
+	sim{4}.networkHistory.V_soma = single(sim{4}.networkHistory.V_soma);
 	sim{4}.networkHistory.I_cx36 = [];
 	sim{4}.networkHistory.backgroundnoise = [];
 
