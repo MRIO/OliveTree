@@ -9,7 +9,17 @@ if exist('co_hilbproto')
 	for n = 1:size(V,1) % num neurons
 		warning off
 		out.protophase(n,:) = co_hilbproto(V(n,:),0,0,0,0);
-		[out.phi(n,:) out.arg(n,:) out.sig(n,:)] = co_fbtrT(out.protophase(n,:));
+        try
+            [out.phi(n,:) out.arg(n,:) out.sig(n,:)] = co_fbtrT(out.protophase(n,:));
+        catch
+
+           out.phi(n,:) = out.protophase(n,:);
+           out.arg(n,:) = out.protophase(n,:);
+           out.sig(n,:) = out.protophase(n,:);
+           continue
+
+        end
+        
 		warning on
 	end
 

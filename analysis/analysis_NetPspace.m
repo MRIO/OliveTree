@@ -4,8 +4,8 @@
 %  script parameters
 % [=================================================================]
 % pathtofile  = '/Users/M/Synced/Projects/Experiments/Olive/model/simresults/netpspace/';
-pathtofile  = '/Users/M/Projects/Experiments/Olive/model/simresults/netpspace/';
-pathtofile  = './';
+% pathtofile  = '/Users/M/Projects/Experiments/Olive/model/simresults/netpspace/';
+% pathtofile  = './';
 
 
 if ~exist('transients') 
@@ -40,13 +40,14 @@ if ~exist('transients')
 	% fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
 	% dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
-	fname = 'gapcomp_corr_R2_g04_netpspace20_iso_5000_03-Mar-2017.mat';
+	fname = 'gapcomp_corr_R2_g04_netpspace96_iso_5000_14-Mar-2017.mat';
 	dimnames = { 'gap', 'gapcomp', 'noisesig' };	
 
 	
 	[pth fnm] = fileparts(fname)
 
-	load([pathtofile fname])
+	% load([pathtofile fname])
+	load([fname])
 end
 
 
@@ -384,9 +385,10 @@ if summarize
 				 nlevels = max([nlevels length(h.LevelList)]);
 
 			end
-			
+			try
 			set(axx(:),'clim', [floor(min(R.results(:))) max(R.results(:))] )
-
+			catch
+			end
 
 				 if save2svg
 				 	plot2svg([fnm '_' m{1} '.svg'], f)

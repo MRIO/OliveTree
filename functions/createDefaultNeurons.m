@@ -31,6 +31,8 @@ function cell_parameters = createDefaultNeurons(varargin)
 cell_parameters = defneurons(noneurons);
 
 switch celltypes
+	case 'none'
+		% do nothing
 
 	case 'randomized'
 
@@ -159,7 +161,7 @@ switch celltypes
 		end
 
 
-case 'cellset_vanilla'
+	case 'cellset_vanilla'
 		 if exist('cellset_vanilla_3.mat')
 		 	load cellset_vanilla_3
 		 else
@@ -210,7 +212,7 @@ case 'cellset_vanilla'
 		p3 = [45 55];		% Ca act Potassium: not voltage dependent 
 		p4 = [4.5 5.5];
 
-		[p{1} p{2} p{3} p{4} ] = ndgrid(p1,p2,p3,p4);
+		[p{1} p{2} p{3} p{4}] = ndgrid(p1,p2,p3,p4);
 
 		Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) ]; 
 
@@ -228,11 +230,6 @@ case 'cellset_vanilla'
 	otherwise
 
 		disp('Legacy parameter or celltypes case not found.')
-		dbstack
-		return
-
-
-
 
 
 end
@@ -248,10 +245,6 @@ for param = Pnames'
 	string = [string 'cell_parameters.' param{1} '(:) '];
 
 end
-
-
-cell_parameters.Plist = eval([ '[' string  ']' ] );
-cell_parameters.Pnames = Pnames;
 
 
 
@@ -274,12 +267,20 @@ if gapcompensation
 		cell_parameters.g_ls  = cell_parameters.g_ls  - 0.001*gapcompensation;
 end
 
-if nogapcompensation
+if nogapcompensation~=0
+
 		% cell_parameters.g_CaL = cell_parameters.g_CaL - .1;
 		% cell_parameters.g_int = cell_parameters.g_int + 0.03;
-		cell_parameters.g_ld  = cell_parameters.g_ld  + 0.001*nogapcompensation;
+		cell_parameters.g_ld  = cell_parameters.g_ld  + 0.001*nogapcompensation
 		% cell_parameters.g_K_Ca= cell_parameters.g_K_Ca - 10;
 end
+
+
+
+
+cell_parameters.Plist = eval([ '[' string  ']' ] );
+cell_parameters.Pnames = Pnames;
+
 
 
 
