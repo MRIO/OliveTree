@@ -357,7 +357,7 @@ if isfield(sim.networkHistory, 'brackgroundnoise')
 end
 
 linkaxes(a,'x')
-colormap(bone(64))
+% colormap(bone(64))
 
 
 plotclusterneurons = 0;

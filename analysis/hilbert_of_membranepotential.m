@@ -1,26 +1,29 @@
 % calc_order_param_from_V.m
 function out  = hilbert_of_membranepotential(V)
 
-plotme = 0;
+plotme = 1;
 
 if exist('co_hilbproto')
-	V(V>-20) = -20; % crop spikes
+	V(V>-30) = -30; % crop spikes
 
 	for n = 1:size(V,1) % num neurons
 		warning off
 		out.protophase(n,:) = co_hilbproto(V(n,:),0,0,0,0);
+		warning on
         try
             [out.phi(n,:) out.arg(n,:) out.sig(n,:)] = co_fbtrT(out.protophase(n,:));
         catch
 
-           out.phi(n,:) = out.protophase(n,:);
-           out.arg(n,:) = out.protophase(n,:);
-           out.sig(n,:) = out.protophase(n,:);
+
+           out.phi(n,:) = zeros(1,size(V,2));
+           out.arg(n,:) = 0;
+           out.sig(n,:) = 0;
+
            continue
 
         end
         
-		warning on
+		
 	end
 
 	mean_phase = circ_mean(out.phi);
@@ -32,7 +35,7 @@ else	% if damoco toolbox not present, use old method
 		% crop complex spikes
 
 		disp('not using DAMOCO method for instantaneous frequency estimation')
-		V(V>-40) = -40;
+		V(V>-30) = -30;
 		N = -V;
 
 		deno = (max(N,[],2)-min(N,[],2))';

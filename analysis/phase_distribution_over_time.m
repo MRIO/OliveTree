@@ -126,7 +126,7 @@ try
  	
 
 catch E
-
+	
   warning('could not compute hilbert')
 
   results.stats.firstordersync = 0;
@@ -137,9 +137,11 @@ catch E
 	results.hilbert = 0;
 
 
+
   return 
 
 end
+
 
 
 U = H.hilbert;

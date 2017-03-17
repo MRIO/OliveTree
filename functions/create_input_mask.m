@@ -40,6 +40,20 @@ height = netsize(3);
 
 switch inputmasktype
 
+	case 'reconstruction'
+
+        
+        coords = netsize;
+
+			center = mean(coords);
+			
+        	distmat = squareform( pdist([center ; coords], 'euclidean') );
+
+        	mask = (distmat(2:end,1) <=radius);
+
+        	mask(find(mask)) = rand(size(mask(find(mask)))) <synapseprobability;
+
+
 	case 'mid_layer' % misnomer: one layer uniform excitation
 			prob = synapseprobability; 
 
@@ -150,7 +164,9 @@ end
 
 
     	if plotme
-			scatter3(coords(:,1), coords(:,2), coords(:,3), 100, mask,'filled'), axis equal
+    		keyboard
+			scatter3(coords(:,1), coords(:,2), coords(:,3), 100, mask+1,'filled'), axis equal
+
 
 			cm = [150 147 130 ; 250 35 29]/255;
 			colormap(cm)

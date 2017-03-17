@@ -9,6 +9,7 @@ p.addOptional('groupby',[])
 p.addParamValue('fields',[])
 p.addParameter('colors',[])
 p.addParameter('hist2d',0)
+p.addParameter('stackhist',0)
 
 p.parse(varargin{:}) 
 
@@ -18,6 +19,7 @@ selectedfields  = p.Results.fields;
 plotdistributions = 0;
 colors = p.Results.colors;
 hist2d = p.Results.hist2d;
+stackhist = p.Results.stackhist;
 
 VarNames = intable.Properties.VariableNames;
 data = table2array(intable);
@@ -88,9 +90,17 @@ end
 						[hhh(:,g)] = hist(data(groups==g,r),xxx);
 						% plot(xxx, hhh,'color', groupcolors(g,:) )
 						hold on
+						
+						
+						
+
 					end
-					h_area = area(xxx, hhh);
-					% alpha(.9)
+					if stackhist
+						h_area = area(xxx, hhh);
+					else
+						h_area = plot(xxx, hhh,'linewidth',2);
+					end
+					
 				else
 					
 					[hhh xxx] = hist(data(:,r), xxx);
@@ -126,8 +136,9 @@ end
 					line(data(:,c), data(:,r) , 'color', [.8 .8 .8], 'marker','.','linestyle','none','markersize', 10)
 					bla = axes;
 					axis off	
-					t = text(hand(r,c), 0, 0, text_regression);
+					t = text(double(min(data(:,c))), double(min(data(:,r))), text_regression);
 					t.VerticalAlignment = 'bottom';
+
 					% axis off
 
 

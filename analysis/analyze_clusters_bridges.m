@@ -4,7 +4,7 @@
 plotcellscatters  = 1;	sel_fields = { 'g_CaL', 'g_h' 'ampl' 'freq_each'};
 
 plotreconstruction = 0; 
-plotselectedclusters = 1;
+plotselectedclusters = 0;
 	makevideo = 0
 plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
 
@@ -13,24 +13,23 @@ plotclustermemberaverages = 0;
 plotbridgeandneighbors_Vm = 0;
 	plotbridgewaterfall = 0;
 
-analyze_group_stim = 1;
+plotclustercellactivity = 0;
+
+analyze_group_stim = 0;
+
 
 STOhistograms = 0;
 calculatesynchrony_clusters = 0;
 exampleclustersync = 0;
 
+bridgecond_pspace = 0;
 
 boxplots = 0;
 
-tslice = 1500:5000;
 
 if not(exist('st_st'))
-	% load('/Users/M/Public/Dropbox/simresults/clusters_curlies_bridges_26-Dec-2016.mat')
-	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_22-Jan-2017.mat');
-	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_20-Jan-2017.mat');
-	% load('/Users/M/Projects/Experiments/Olive/model/simresults/clusters_curlies_bridges_10-Feb-2017.mat')
-	% load('clusters_curlies_bridges_10-Feb-2017.mat')
-	% load('clusters_curlies_bridges_13-Feb-2017.mat')
+	
+	load('clusters_curlies_bridges_01-Mar-2017.mat')
     sims = sim;
 end
  
@@ -42,8 +41,9 @@ end
 if not(exist('R'))
 	sims{1}.W = bridg_curlies;
 	sims{2}.W = curlies;
+	tslice = 500:8000;
 
-	for nsim = 1:length(sims);
+	for nsim = 1:length(sims)
 		statevar{nsim} = double(sims{nsim}.networkHistory.V_soma(:,tslice)); % with gaps 
 		R{nsim} = profile_sim(sims{nsim},'tslice',tslice); % bridges and curlies
 	end
@@ -56,9 +56,9 @@ end
 %  connectivity
 % [=================================================================]
 
-
+bridgecells = bc;
 clusters = sims{1}.W.stats.clusters;
-no_clusters = length(unique(clusters));plotbridgewaterfall
+no_clusters = length(unique(clusters));
 
 if ~exist('cbrewer')
 		lc = jet(no_clusters);
@@ -69,7 +69,7 @@ set(0,'defaultaxescolororder', linspecer(10))
 set(0,'defaultfigurecolormap', linspecer(10))
 
 % bridge cells and neighbors:
-bridgecells = bc;
+
 if plotconnectivityhistogram
 	% effective number of connections clusters x bridges
 	[connhistC bins] =  hist(curlies.stats.connections,[0:20]);
@@ -130,13 +130,6 @@ if plotreconstruction
 end
 
 
-% [=================================================================]
-%  bridge behavior
-% [=================================================================]
-bridgeidx = find(bridgecells);
-bridge_Vm = statevar{1}(bridgeidx,:);
-[val ord] = sort(table2array(R{1}.allneurons(bridgeidx,'ampl')));
-
 % [================================================]
 %  cell scatters
 % [================================================]
@@ -148,8 +141,8 @@ if plotcellscatters
 	% sel_fields = {'g_CaL', 'g_ld',  'g_K_Ca', 'p1', 'g_h',  'ampl', 'freq_each', 'meanVm','minV','supth'}
 	% sel_fields = {'g_CaL', 'g_ld', 'g_K_Ca',  'freq_each', 'meanVm','minV'}
 
-	
-	RR = vertcat(R{1}.allneurons, R{3}.allneurons);
+	thesefields = {'ampl' 'freq_each'};
+	RR = vertcat(R{1}.allneurons, R{2}.allneurons);
 	groups = [zeros(1105,1) ; ones(1105,1)];
 	sel_table = RR(:,sel_fields);
 	NDscatter(sel_table, groups+1);
@@ -158,7 +151,14 @@ if plotcellscatters
 	clusterswobridges = clusters;
 	clusterswobridges(logical(bc))=0;
 	sel_table = R{1}.allneurons(:,sel_fields);
-	NDscatter(sel_table, clusterswobridges+1)
+	NDscatter(sel_table, clusters)
+
+	sel_fields = { 'ampl' 'freq_each' 'g_CaL', 'g_h' };
+	clusterswobridges = clusters;
+	clusterswobridges(logical(bc))=0;
+	sel_table = R{3}.allneurons(:,sel_fields);
+	NDscatter(sel_table, clusters)
+
 	
 	% sel_table = R{2}.allneurons(:,sel_fields);
 	% NDscatter(sel_table, clusters)
@@ -174,6 +174,16 @@ if plotcellscatters
 
 	
 end
+
+
+
+
+% [=================================================================]
+%  bridge behavior
+% [=================================================================]
+bridgeidx = find(bridgecells);
+bridge_Vm = statevar{1}(bridgeidx,:);
+[val ord] = sort(table2array(R{1}.allneurons(bridgeidx,'ampl')));
 
 
 if plotbridgewaterfall
@@ -199,10 +209,10 @@ end
 % [=================================================================]
 
 if plotbridgeandneighbors_Vm
-	selectedbridges = [1:10];
+	selectedbridges = find(single(bc .* clusters==41 | bc .* clusters==34))';
+	titleorder = {'bridges' 'only curlies' 'disconnected' 'brick'};
 
-	bc_index = find(bc)'; ind = 0;
-	for c = bc_index(selectedbridges)
+	for c = selectedbridges
 		ind = ind+1;
 		figure(c)
 		thisbridge = zeros(size(bc));
@@ -210,39 +220,56 @@ if plotbridgeandneighbors_Vm
 		neighbors{c} = find(thisbridge'*(sims{1}.W.W>0));
 				Q = quantile(table2array(R{3}.allneurons(neighbors{c},'freq_each')), [.1, .5, .9])
 
-
-		subplot(3,1,1)
+		subplot(4,1,1)
 		plot(statevar{1}(neighbors{c}',:)','color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on
 		plot( statevar{1}(c,:),'linewidth', 2)
-		title({['bridge number: ' num2str(c) ' degree:' num2str(length(neighbors{c}))] ; ['neighbor freq (lower median upper): ' num2str(Q) 'Hz'] })
+		title({['bridge number: ' num2str(c) ' degree:' num2str(length(neighbors{c}))] ; ['neighbor freq (lower median upper): ' num2str(Q) 'Hz'] ; titleorder{1}})
 
-		subplot(3,1,2)
+		subplot(4,1,2)
 		plot(statevar{2}(neighbors{c},:)','color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on
 		plot(statevar{2}(c,:),'linewidth', 2)
-		title(['neighboring clusters:' num2str(clusters(neighbors{c})') ])
+		title({['neighboring clusters:' num2str(clusters(neighbors{c})') ]; titleorder{2}})
 
-
-		subplot(3,1,3)
+		subplot(4,1,3)
 		plot(statevar{3}(neighbors{c},:)','color', [1 1 1]*.8)
 		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
 		hold on
 		plot(statevar{3}(c,:),'linewidth', 2)
-		title(['neighboring clusters:' num2str(clusters(neighbors{c})') ])
+		title({['neighboring clusters:' num2str(clusters(neighbors{c})') ]; titleorder{3}})
 
-		
+		subplot(4,1,4)
+		plot(statevar{4}(neighbors{c},:)','color', [1 1 1]*.8)
+		% plot(tslice, mean(statevar{1}(neighbors{c},:)),'color', [1 1 1]*.9)
+		hold on
+		plot(statevar{4}(c,:),'linewidth', 2)
+		title({['neighboring clusters:' num2str(clusters(neighbors{c})') ]; titleorder{4}})
 
-		% pause
-		% close 
 
 	end
 
-
-
 end
+
+
+if plotclustercellactivity
+	selected_clusters = [34 41];
+	% titleorder = {'bridges' 'only curlies' 'disconnected' 'brick'};
+	for s= [1:4]
+		for sc = selected_clusters
+			figure
+			plot(statevar{s}(find(clusters==sc),:)')
+			title({['cluster:' num2str(sc)] ; titleorder{s}})
+
+		end
+	end
+end
+
+
+
+
 
 
 if STOhistograms
@@ -423,9 +450,9 @@ end
 
 
 
-bridgecond_pspace = 1;
+
 if bridgecond_pspace
-	load('/Users/M/Synced/Titan/Bench4/bridge_conductance_pspace01-Mar-2017.mat');
+	load('bridge_conductance_pspace01-Mar-2017.mat');
 	sims = sim;
 
 	bridgepspace_sync{1} = measureGlobalSync(sims{1},'duration', [1000:6000])
@@ -445,47 +472,60 @@ if bridgecond_pspace
 
 end
 
-% % sync
-% fig3 = figure;;
-% 	for c = 1:no_clusters
-% 		c
-% 		clustered{c}.sync = measureGroupSync(sims{1},'group', clusters==c,'plotme',0);
-% 		clustered{c}.no_neurons = length(find(clusters==c));
-
-% 		% plot_mean_and_std([1:simtime], V_soma_unwrapped(find(V==c),:),'color', lc(c,:))
-% 		plot([1:simtime], mean(V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-% 		hold on
-% 		% plot([1:simtime], V_soma_unwrapped(find(clusters==c),:))+c*5,'color', lc(c,:))
-% 		pause
-% 	end
-
 
 
 if  analyze_group_stim
-	M{1} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==34);
-	M{2} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==41);
-	M{3} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==41 | clusters==34);
-	
-	
-	M{4} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==34);
-	M{5} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==41);
-	M{6} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==41 | clusters==34);
-	
-	M{7} = measureGroupSync(sims{3},'duration',tslice,'group',clusters==34);
-	M{8} = measureGroupSync(sims{3},'duration',tslice,'group',clusters==41);
-	M{9} = measureGroupSync(sims{3},'duration',tslice,'group',clusters==41 | clusters==34);
-	
-	
-	M{10} = measureGroupSync(sims{4},'duration',tslice,'group',clusters==34);
-	M{11} = measureGroupSync(sims{4},'duration',tslice,'group',clusters==41);
-	M{12} = measureGroupSync(sims{4},'duration',tslice,'group',clusters==41 | clusters==34);
+	 load /Users/M/Synced/Titan/Bench4/curlies_bridges_stim_pair17-Mar-2017.mat
+	 sims = sim; clear sim
+	 tslice = [500:8000];
+	 g1 = find(clusters==34);
+	 g2 = find(clusters==41);
+	 g1g2 = find(clusters==41 | clusters==34);
 
+	
+	M{2} = phase_distribution_over_time(sims{2},'duration',tslice,'group',g1g2);
+	saveallfigs('prefix', 'withbridges_2clusterstim','style','12x6')
+	close all
+
+	M{4} = phase_distribution_over_time(sims{4},'duration',tslice,'group',g1g2);
+	saveallfigs('prefix', 'withoutbridges_2clusterstim','style','12x6')
+	close all
+
+	M{1} = phase_distribution_over_time(sims{1},'duration',tslice,'group',g1g2);
+	saveallfigs('prefix', 'withbridges_1clusterstim','style','12x6')
+	close all
+
+	M{3} = phase_distribution_over_time(sims{3},'duration',tslice,'group',g1g2);
+	saveallfigs('prefix', 'withoutbridges_1clusterstim','style','12x6')
+	close all
+	
+
+	plot(abs(M{2}.phases.orderparameter{1}));hold on
+	plot(abs(M{4}.phases.orderparameter{1}))
+	
+	[hh xx] = hist([abs(M{2}.phases.orderparameter{2})'  abs(M{4}.phases.orderparameter{2})'],linspace(0,1,50));
+	bar(xx,hh)
+	legend({'with bridges' 'clusters only'})
+	title('synchrony for whole network')
+
+	figure
+	subplot(2,1,1)
+	plot(sims{2}.networkHistory.V_soma(g1,:)','r')
+	hold on
+	plot(sims{2}.networkHistory.V_soma(g2,:)','g')
+	title('with bridges')
+
+	subplot(2,1,2)
+	plot(sims{4}.networkHistory.V_soma(g1,:)','r')
+	hold on
+	plot(sims{4}.networkHistory.V_soma(g2,:)','g')
+	title('without bridges')
 
 
 end
 
 
-makemovies = 1;
+makemovies = 0;
 if makemovies
 	replayResults_clusters(sims{1},'savemovie',1,'time_slice', [2000:3500])
 	replayResults_clusters(sims{2},'savemovie',1,'time_slice', [2000:3500])
