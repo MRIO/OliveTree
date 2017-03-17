@@ -467,6 +467,7 @@ if maskstimulation
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 		sim{4}.note = 'brick no stim'
 		sim{4}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
-		
+
+		eval(['save curlies_bridges_randmaskstim'  date ' -v7.3'])
 
 end
