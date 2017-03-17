@@ -423,9 +423,25 @@ end
 
 bridgecond_pspace = 1;
 if bridgecond_pspace
-	load('/Users/M/Synced/Titan/Bench4/bridge_conductance_pspace01-Mar-2017.mat')
+	load('/Users/M/Synced/Titan/Bench4/bridge_conductance_pspace01-Mar-2017.mat');
+	sims = sim;
 
+	bridgepspace_sync{1} = measureGlobalSync(sims{1},'duration', [1000:6000])
+	bridgepspace_sync{2} = measureGlobalSync(sims{2},'duration', [1000:6000])
+	bridgepspace_sync{3} = measureGlobalSync(sims{3},'duration', [1000:6000])
+	bridgepspace_sync{4} = measureGlobalSync(sims{4},'duration', [1000:6000])
 
+	plot([	bridgepspace_sync{1}.stats.order_parameter_all...
+			bridgepspace_sync{2}.stats.order_parameter_all...
+			bridgepspace_sync{3}.stats.order_parameter_all...
+	 		bridgepspace_sync{4}.stats.order_parameter_all])
+
+	hist([	bridgepspace_sync{1}.stats.order_parameter_all...
+			bridgepspace_sync{2}.stats.order_parameter_all...
+			bridgepspace_sync{3}.stats.order_parameter_all...
+	 		bridgepspace_sync{4}.stats.order_parameter_all])
+
+end
 
 % % sync
 % fig3 = figure;;
@@ -443,7 +459,25 @@ if bridgecond_pspace
 
 
 
+if 
+	M{1} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==34);
+	M{2} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==41);
+	M{3} = measureGroupSync(sims{1},'duration',tslice,'group',clusters==41 | clusters==34);
+	
+	
+	M{4} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==34);
+	M{5} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==41);
+	M{6} = measureGroupSync(sims{2},'duration',tslice,'group',clusters==41 | clusters==34);
+	
 
-% M{1} = measureGlobalSync(sims{1},'duration',tslice,'group',clusters==5);
-% M{2} = measureGlobalSync(sims{2},'duration',tslice,'group',clusters==5);
-% M{3} = measureGlobalSync(sims{3},'duration',tslice,'group',clusters==5);
+end
+
+
+makemovies = 1;
+if makemovies
+	replayResults_clusters(sims{1},'savemovie',1,'time_slice', [2000:3500])
+	replayResults_clusters(sims{2},'savemovie',1,'time_slice', [2000:3500])
+	replayResults_clusters(sims{3},'savemovie',1,'time_slice', [2000:3500])
+	replayResults_clusters(sims{4},'savemovie',1,'time_slice', [2000:3500])
+end
+
