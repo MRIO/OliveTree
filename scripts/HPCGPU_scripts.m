@@ -267,29 +267,29 @@ end
 % [================================================]
 
 
-if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench')
-	X_README = 'SIG X MU Corr ETA0.1 R2 G0.04'
-	nameprefix = 'sigXmu_01corr_R2_g04_6conn';
-	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
-	p2  = [0.1];		% sametoall (noise correlation) of ornstein uhlenbeck process
-	p3  = [-.6 :.1: 0];	% noiseamp of ornstein uhlenbeck process
-	p4  = [0.04 eps]; 	% average gap leak per connection
-	p5  = [2];			% single cell connection radius 
-	p6  = [36];			% clustersize (iff conntype='cluster')
-	p7  = [1];			% intraclusterP (iff conntype='cluster')
-	p8  = [0];			% extraclusterP (iff conntype='cluster')
-	p9  = [6];			% mean number of connections
-	p10 = [10];			% N, size of N x N network
-	p11 = [2];			% depth in Z		
-	p12 = [1];			% whether using gap compensation in cells
-	p13 = [0:.1:.6];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+% if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench')
+% 	X_README = 'SIG X MU Corr ETA0.1 R2 G0.04'
+% 	nameprefix = 'sigXmu_01corr_R2_g04_6conn';
+% 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
+% 	p2  = [0.1];		% sametoall (noise correlation) of ornstein uhlenbeck process
+% 	p3  = [-.6 :.1: 0];	% noiseamp of ornstein uhlenbeck process
+% 	p4  = [0.04 eps]; 	% average gap leak per connection
+% 	p5  = [2];			% single cell connection radius 
+% 	p6  = [36];			% clustersize (iff conntype='cluster')
+% 	p7  = [1];			% intraclusterP (iff conntype='cluster')
+% 	p8  = [0];			% extraclusterP (iff conntype='cluster')
+% 	p9  = [6];			% mean number of connections
+% 	p10 = [10];			% N, size of N x N network
+% 	p11 = [2];			% depth in Z		
+% 	p12 = [1];			% whether using gap compensation in cells
+% 	p13 = [0:.1:.6];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
-	simtime = 5000;
-	conntype = 'iso';
+% 	simtime = 5000;
+% 	conntype = 'iso';
 
-	NetPspace;
-	clear;
-end
+% 	NetPspace;
+% 	clear;
+% end
 
 
 

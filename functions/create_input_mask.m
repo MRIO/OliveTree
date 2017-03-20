@@ -164,8 +164,7 @@ end
 
 
     	if plotme
-    		keyboard
-			scatter3(coords(:,1), coords(:,2), coords(:,3), 100, mask+1,'filled'), axis equal
+    		scatter3(coords(:,1), coords(:,2), coords(:,3), 100, mask+1,'filled'), axis equal
 
 
 			cm = [150 147 130 ; 250 35 29]/255;

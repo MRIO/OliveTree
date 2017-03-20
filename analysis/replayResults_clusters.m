@@ -292,7 +292,6 @@ end
 			colormap(ax_volume, jet(32));
 
 			for tt = 1:length(time_slice)
-				
 				VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), V_soma_unwrapped(:,tt));
 				NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), 1);
 				NNNN(NNNN==0)=1;

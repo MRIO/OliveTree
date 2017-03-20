@@ -25,6 +25,7 @@ gpu = 1;
 frombrick_to_clusters = 0;
 bridge_conductance_pspace = 0;
 conjuctive_stimulation = 0;
+	cluster1 = 41; cluster2 = 34;
 bridges_and_curlies_with_gaba = 0;
 maskstimulation = 1;
 
@@ -162,15 +163,15 @@ sametoall = 0.05;
 % [================================================]
 
 % create overlapping ampa masks
-
-clusters = bridg_curlies.stats.clusters;
-bridges_in_cluster = single(bc .* clusters==41);
-		neighbors_to_bridge = find(bridges_in_cluster'*(bridg_curlies.W>0));
-		their_cluster = unique(clusters(neighbors_to_bridge));
-		targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
-		% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
-		plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==34);
-
+if conjuctive_stimulation
+	clusters = bridg_curlies.stats.clusters;
+	bridges_in_cluster = single(bc .* clusters==41);
+			neighbors_to_bridge = find(bridges_in_cluster'*(bridg_curlies.W>0));
+			their_cluster = unique(clusters(neighbors_to_bridge));
+			targeted_cluster_cells = ismember(clusters, their_cluster).*clusters;
+			% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);
+			plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==34);
+end
 
 % numberofmasks = 10; 
 onset_of_stim = [3005:5:3025];
