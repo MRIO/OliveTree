@@ -103,28 +103,13 @@ if savemovie
 end
 
 
-% [=================================================================]
-%  user defined - in code!
-% [=================================================================]
-
-% if not(isempty(group))
-% 	% userdefinedgroup = [];
-% 	% % userdefinedgroup = [1:20];
-% 	% % userdefinedgroup = randi(1000,20,1);
-	
-% else
-	
-% end
 
 VS = sim.networkHistory.V_soma;
-
-
 
 try
         
  	H = hilbert_of_membranepotential(VS); 
- 	
-
+ 
 catch E
 
   warning('could not compute hilbert')
@@ -135,8 +120,6 @@ catch E
 	results.stats.order_parameter_g_fo = 0;
 	results.stats.order_parameter_g_so = 0;
 	results.hilbert = 0;
-
-
 
   return 
 
@@ -166,15 +149,17 @@ if ~isempty(group)
 		group2 = setdiff(allneu, group1);
 else
 		allneu = (pert_mask>=0);
-		group1 = (pert_mask==1); % stimulated group
-		group2 = (pert_mask==2);
+		group1 = find(pert_mask==1); % stimulated group
+		group2 = find(pert_mask==2);
 end
 
-if isempty(group2)
+if isempty(group2) 
 		group1 = [1:floor(noneurons/2)];
 		allneu = [1:noneurons];
 		group2 = setdiff(allneu, group1);
 end
+
+
 
 
 G1 = U(group1,:);
@@ -220,9 +205,9 @@ fig0 = figure('color',[1 1 1])
 	legend({'Group' 'Others' 'All'})
 	
 	subplot(2,2,3)
-	scatter(real(order_parameter_G1(tt)),imag(order_parameter_G1(tt)), 'filled','r' ); hold on
-	scatter(real(order_parameter_G2(tt)),imag(order_parameter_G2(tt)), 'filled','b' )
-	scatter(real(order_parameter_GA(tt)),imag(order_parameter_GA(tt)), 'filled','g' )
+	scatter(real(order_parameter_G1(tt)),imag(order_parameter_G1(tt)), 'filled', 'r' ); hold on
+	scatter(real(order_parameter_G2(tt)),imag(order_parameter_G2(tt)), 'filled', 'b' )
+	scatter(real(order_parameter_GA(tt)),imag(order_parameter_GA(tt)), 'filled', 'g' )
 	hold on
 	axis equal
 	axis([-1,1,-1,1])
@@ -267,9 +252,11 @@ fig1 = figure('color',[1 1 1])
 	 % plot(sim.networkHistory.V_soma')
 	 
 	 ttt = repmat(tt, numel(group2), 1);
-		line(tt',sim.networkHistory.V_soma(group2,tt)', ...
+
+
+		line(ttt',sim.networkHistory.V_soma(group2,tt)', ...
 			'color',[0 .8 1], 'linewidth', .5)
-		line(tt',sim.networkHistory.V_soma(group1,tt)', ...
+		line(ttt',sim.networkHistory.V_soma(group1,tt)', ...
 			'color',[1 .2 .6], 'linewidth', .5)
 
 	  hold on
@@ -288,18 +275,22 @@ fig1 = figure('color',[1 1 1])
 fig2 = figure('color',[1 1 1])
 	[phasedist1 tim] = hist(G1, length(tt));
 	[phasedist2 tim] = hist(G2, length(tt));
+	[phasedistA tim] = hist(GA, length(tt));
 
-	subplot(2,1,1)	
+	subplot(3,1,1)	
 	imagesc(1:length(G1),tim, phasedist1), axis xy
 	colorbar
 	title('phase distribution over time (group1)')
 	xlabel('time (ms)')
 	ylabel('Prob(phase)')
 
-	subplot(2,1,2)
+	subplot(3,1,2)
 	imagesc(1:length(G2),tim, phasedist2), axis xy
 	colorbar
-
+	
+	subplot(3,1,3)
+	imagesc(1:length(GA),tim, phasedistA), axis xy
+	colorbar
 
 
 spks1 = spikedetect(sim.networkHistory.V_soma(group1,:));
@@ -314,21 +305,11 @@ if animate
 		axes(a(1))
 		cla
 
-		% circ_plot(G2(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
-		% hold on
-		% circ_plot(G1(:,t)+pi,'oldpretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
-
-		% circ_plot(G2(:,t)+pi,'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
-		% hold on
-		% circ_plot(G1(:,t)+pi,'pretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
-		% axis off
-
 		circ_plot(GA(:,t),'pretty','',true,'linewidth',1,'color',[.7 .7 .7],'markersize',20,'marker','.');
 		hold on
 		circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
 		hold on
 		circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
-
 
 		
 		axis off

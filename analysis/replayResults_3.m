@@ -9,7 +9,7 @@ function [spks] = replayResults_3(varargin)
 
 static = 0;
 
-meanlinewidth = 1;
+meanlinewidth = 2;
 
 % [=================================================================]
 %  Parser
@@ -231,7 +231,8 @@ else
 
 
 	plot(V_soma_unwrapped'), hold on
-	plot(mean(V_soma_unwrapped),'r','linewidth', meanlinewidth)
+	meantracecolor = [1 163 218]/255;
+	plot(mean(V_soma_unwrapped),'color', meantracecolor,'linewidth', meanlinewidth)
 	nonstim_neurons = [1:noneurons];
 
 end

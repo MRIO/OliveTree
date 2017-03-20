@@ -74,7 +74,11 @@ if plotcellscatters_gap_gapless
 
 end
 
-
+sampletraces = 1;
+if sampletraces
+	replayResults_3(sims{1})
+	replayResults_3(sims{2})
+end
 
 
 
