@@ -5,10 +5,10 @@
 % gap = 0.04;  noisesig = .7; noiseamp = 0 ; tau = 20; sametoall = 0.2; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = 0.04;  noisesig = .5; noiseamp = -.5 ; tau = 20; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = 0.04;  noisesig = .6; noiseamp = -.6 ; tau = 20; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
-gap = 0.04;  noisesig = 0; noiseamp = 0 ; tau = 0; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
+gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 0; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
 
 dt = 0.05;
-simtime = 1000;
+simtime = 3000;
 gpu = 1;
 % [=================================================================]
 %  % create network

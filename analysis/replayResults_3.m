@@ -103,7 +103,7 @@ V_soma = reshape(V_soma_unwrapped(:,1) ,prod(netsize), 1);
 fig1 = gcf;
 set(fig1, 'position', [1 1 1024 768],'color', [1 1 1]);	
 try
-	cmap = flipud(cbrewer('div', 'RdBu', 30));
+	cmap = flipud(cbrewer('seq', 'Greys', 20));
 	% cmap = flipud(cbrewer('div', 'RdBu', 30));
 	colormap(cmap);	
 	clf
@@ -193,7 +193,7 @@ end
 
 % plot averages
 
-plot(mean(V_soma_unwrapped(nonstim_neurons,:)),'k','linewidth', meanlinewidth)
+
 
 if isfield(sim.perturbation, 'type')
 		n = 0;
@@ -225,8 +225,13 @@ if isfield(sim.perturbation, 'type')
 		end
 	
 else
-	plot(V_soma_unwrapped','color', [.7 1 .7]), hold on
-	plot(mean(V_soma_unwrapped),'k','linewidth', meanlinewidth)
+
+	corder = cbrewer('seq', 'Greys',50);
+	set(0,'defaultaxescolororder', flip(corder))
+
+
+	plot(V_soma_unwrapped'), hold on
+	plot(mean(V_soma_unwrapped),'r','linewidth', meanlinewidth)
 	nonstim_neurons = [1:noneurons];
 
 end
@@ -286,7 +291,7 @@ end
 % order to present the neurons
 a(2) = axes('Position',[0.1 0.55 0.8 0.4]);
 O = [1:prod(netsize)];
-imagesc(V_soma_unwrapped(O,time_slice),[-66 -35]);
+imagesc(V_soma_unwrapped(O,time_slice),[-66 -45]);
 
 try
 	if length(unique(sim.W.stats.clusters))>=2 & length(unique(sim.W.stats.clusters))<30

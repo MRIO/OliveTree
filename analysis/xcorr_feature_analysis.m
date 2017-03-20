@@ -16,7 +16,10 @@ plot_selected_neurons  = 1;
 if ~exist('loaded'); loaded = 0; end
 
 
-if 1
+
+
+
+if 0
 	if ~exist('Joinedsim')
 
 

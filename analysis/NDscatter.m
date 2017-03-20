@@ -54,6 +54,10 @@ end
 		groupcolors = [.2 .7 .2 ; .2 .2 .7];
 	end
 
+	if not(isempty(colors))
+		groupcolors = colors;
+	end
+
 	figure('color', [1 1 1], 'colormap', groupcolors)
 
 
@@ -90,16 +94,18 @@ end
 						[hhh(:,g)] = hist(data(groups==g,r),xxx);
 						% plot(xxx, hhh,'color', groupcolors(g,:) )
 						hold on
-						
-						
-						
-
 					end
+
 					if stackhist
 						h_area = area(xxx, hhh);
 					else
-						h_area = plot(xxx, hhh,'linewidth',2);
+						for g = 1:ngroups
+							h_area = patch([xxx(1) xxx xxx(end) xxx(1)] , [0; hhh(:,g) ; 0; 0], groupcolors(g,:))
+						end
+
 					end
+					alpha(.7)
+					colormap(groupcolors)
 					
 				else
 					
@@ -134,7 +140,7 @@ end
 					end
 
 					line(data(:,c), data(:,r) , 'color', [.8 .8 .8], 'marker','.','linestyle','none','markersize', 10)
-					bla = axes;
+					bla = axes('position', get(gca, 'position'));
 					axis off	
 					t = text(double(min(data(:,c))), double(min(data(:,r))), text_regression);
 					t.VerticalAlignment = 'bottom';
@@ -164,14 +170,16 @@ end
 			if c == N
 				ylabel(hand(r,c), VarNames{r},'interpreter', 'none')
 			end
-			if r ~= 1
+			if r ~= c
 				set(hand(r,c), 'xtick' , [])
 			end
 			if c ~= N & c ~= 1
 				set(hand(r,c), 'ytick' , [])
 			end
 			if c == r
-				set(hand(r,c),'ytick', [0 max(hhh(:))],'yaxislocation', 'left')
+				set(hand(r,c),'ytick', [0 max(hhh(:))/2],'yaxislocation', 'left')
+				% set(hand(r,c),'xtick', [linspace(min(data(:,c)), max(data(:,c)), 5)])
+
 			end
 			if c == 1 & (c~=r)
 				set(hand(r,c),'yaxislocation', 'right')

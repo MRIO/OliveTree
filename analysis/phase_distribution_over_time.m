@@ -95,7 +95,7 @@ if savemovie
 			vidObj = VideoWriter('volume','MPEG-4');
 		catch
 			warning('No MPEG-4 encoder in this crappy OS.')
-			vidObj = VideoWriter('volume');
+			vidObj = VideoWriter(['phase' ]);
 		end
 
 		vidObj.FrameRate = 24;
@@ -107,14 +107,14 @@ end
 %  user defined - in code!
 % [=================================================================]
 
-if not(isempty(group))
-	% userdefinedgroup = [];
-	% % userdefinedgroup = [1:20];
-	% % userdefinedgroup = randi(1000,20,1);
+% if not(isempty(group))
+% 	% userdefinedgroup = [];
+% 	% % userdefinedgroup = [1:20];
+% 	% % userdefinedgroup = randi(1000,20,1);
 	
-else
-	group = [];
-end
+% else
+	
+% end
 
 VS = sim.networkHistory.V_soma;
 
@@ -126,7 +126,7 @@ try
  	
 
 catch E
-	
+
   warning('could not compute hilbert')
 
   results.stats.firstordersync = 0;
@@ -159,7 +159,7 @@ VR = circ_var(GR);
 
 
 % - select groups
-group2=[];
+% group2=[];
 if ~isempty(group)
 		allneu = [1:noneurons];
 		group1 = group;
@@ -167,7 +167,7 @@ if ~isempty(group)
 else
 		allneu = (pert_mask>=0);
 		group1 = (pert_mask==1); % stimulated group
-		group2 = (pert_mask==0);
+		group2 = (pert_mask==2);
 end
 
 if isempty(group2)
@@ -267,7 +267,6 @@ fig1 = figure('color',[1 1 1])
 	 % plot(sim.networkHistory.V_soma')
 	 
 	 ttt = repmat(tt, numel(group2), 1);
-		
 		line(tt',sim.networkHistory.V_soma(group2,tt)', ...
 			'color',[0 .8 1], 'linewidth', .5)
 		line(tt',sim.networkHistory.V_soma(group1,tt)', ...
@@ -324,9 +323,13 @@ if animate
 		% circ_plot(G1(:,t)+pi,'pretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
 		% axis off
 
+		circ_plot(GA(:,t),'pretty','',true,'linewidth',1,'color',[.7 .7 .7],'markersize',20,'marker','.');
+		hold on
 		circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color','r','markersize',7,'marker','o');
 		hold on
 		circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
+
+
 		
 		axis off
 

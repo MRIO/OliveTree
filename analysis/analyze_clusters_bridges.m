@@ -482,14 +482,14 @@ if  analyze_group_stim
 	 g2 = find(clusters==41);
 	 g1g2 = find(clusters==41 | clusters==34);
 
-	
+		
 	M{2} = phase_distribution_over_time(sims{2},'duration',tslice,'group',g1g2);
-	saveallfigs('prefix', 'withbridges_2clusterstim','style','12x6')
-	close all
+	% saveallfigs('prefix', 'withbridges_2clusterstim','style','12x6')
+	% close all
 
 	M{4} = phase_distribution_over_time(sims{4},'duration',tslice,'group',g1g2);
-	saveallfigs('prefix', 'withoutbridges_2clusterstim','style','12x6')
-	close all
+	% saveallfigs('prefix', 'withoutbridges_2clusterstim','style','12x6')
+	% close all
 
 	M{1} = phase_distribution_over_time(sims{1},'duration',tslice,'group',g1g2);
 	saveallfigs('prefix', 'withbridges_1clusterstim','style','12x6')
@@ -533,3 +533,29 @@ if makemovies
 	replayResults_clusters(sims{4},'savemovie',1,'time_slice', [2000:3500])
 end
 
+makemoviesofstim = 1;
+if makemoviesofstim
+	M = single(sims{1}.perturbation.mask{1});
+	sims{1}.perturbation.mask{1} = M;
+	sims{1}.perturbation.mask{1}(find(g1)) = 1;
+	sims{1}.perturbation.mask{1}(find(g2)) = 2;
+	sims{2}.perturbation.mask{1} = M;
+	sims{2}.perturbation.mask{1}(find(g1)) = 1;
+	sims{2}.perturbation.mask{1}(find(g2)) = 2;
+	sims{3}.perturbation.mask{1} = M;
+	sims{3}.perturbation.mask{1}(find(g1)) = 1;
+	sims{3}.perturbation.mask{1}(find(g2)) = 2;
+	sims{4}.perturbation.mask{1} = M;
+	sims{4}.perturbation.mask{1}(find(g1)) = 1;
+	sims{4}.perturbation.mask{1}(find(g2)) = 2;
+	
+
+	M{1} = phase_distribution_over_time(sims{1},'duration',[2500:4000], 'animate', 1,'savemovie',1);
+	M{2} = phase_distribution_over_time(sims{2},'duration',[2500:4000], 'animate', 1,'savemovie',1);
+	M{3} = phase_distribution_over_time(sims{3},'duration',[2500:4000], 'animate', 1,'savemovie',1);
+	M{4} = phase_distribution_over_time(sims{4},'duration',[2500:4000], 'animate', 1,'savemovie',1);
+end
+
+	
+
+M{1} = phase_distribution_over_time(sims{1},'duration',[2900:3500], 'animate', 1);

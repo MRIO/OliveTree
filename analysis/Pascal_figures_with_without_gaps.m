@@ -1,4 +1,4 @@
-% Pascal compare oscillation properties between gap and no gaps
+% Warnaar et al. compare oscillation properties between gap and no gaps
 
 clear;
 
@@ -59,35 +59,22 @@ end
 	
 
 if plotcellscatters_gap_gapless 
+	load(noiseless_200)
 	% sel_fields = {'g_CaL', 'g_h',  'ampl', 'freq_each', 'meanVm' 'spks'};
-	sel_fields = {'ampl', 'freq_each'};
+	sel_fields = {'ampl', 'freq_each' , 'g_CaL'};
 	% sel_fields = {'g_CaL', 'ampl', 'freq_each'}
-	sel_table_1 = R{2}.allneurons(:,sel_fields);
-	sel_table_2 = R{1}.allneurons(:,sel_fields);
-	stacked = vertcat(sel_table_1, sel_table_2);
-	G = [ones(200,1)*2 ;ones(200,1)*1];
-
-	NDscatter(stacked, G)
-
-	sel_table = R{2}.allneurons(:,sel_fields);
-
-	NDscatter(sel_table, 1)
-end
-
-
-
-
-
-if joinedcellscatter
-
-	RR = vertcat(R{1}.allneurons, R{2}.allneurons);
-
-	G = [ones(200,1)*2 ;ones(200,1)*1];
+	sel_table_1 = R{1}.allneurons(:,sel_fields);
+	sel_table_2 = R{2}.allneurons(:,sel_fields);
 	
-	sel_fields = {'spks' , 'ampl', 'freq_each', 'g_int', 'g_CaL'};
-	NDscatter(RR(:,sel_fields), G)
+	stacked = vertcat(sel_table_1, sel_table_2);
+	G = [ones(200,1) ; ones(200,1)*2];
+
+	NDscatter(stacked, G, 'colors', [0 163 218; 201 28 35]/255  )
+	legend({'WT' ; 'Gdj2'})
 
 end
+
+
 
 
 
