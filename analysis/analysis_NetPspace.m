@@ -40,7 +40,7 @@ if ~exist('transients')
 	% fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
 	% dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
-	fname = 'gapcomp_corr_R2_g04_netpspace96_iso_5000_14-Mar-2017.mat';
+	fname = 'gapcomp_corr_R2_g04_netpspace9_iso_5000_22-Mar-2017.mat';
 	dimnames = { 'gap', 'gapcomp', 'noisesig' };	
 
 	

@@ -271,7 +271,8 @@ if nogapcompensation~=0
 
 		% cell_parameters.g_CaL = cell_parameters.g_CaL - .1;
 		% cell_parameters.g_int = cell_parameters.g_int + 0.03;
-		cell_parameters.g_ld  = cell_parameters.g_ld  + 0.001*nogapcompensation
+		% cell_parameters.g_ld  = cell_parameters.g_ld  + 0.001*nogapcompensation
+		cell_parameters.g_ls  = cell_parameters.g_ls  + 0.001*nogapcompensation
 		% cell_parameters.g_K_Ca= cell_parameters.g_K_Ca - 10;
 end
 

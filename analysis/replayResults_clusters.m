@@ -244,7 +244,7 @@ if plotpopactivity
 		% stimulus
 		hold on
 		a(3) = axes('position', [0.07    0.67    0.85    0.3]);
-		[hh x] = hist(sim.perturbation.triggers{1},simtime);
+		[hh x] = hist(sim.perturbation.triggers{trigger},simtime);
 		bar(x,hh,'facecolor','g')
 
 		set(a(3),'xtick',[],'ytick',[],'color','none')
