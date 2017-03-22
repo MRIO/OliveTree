@@ -41,6 +41,8 @@ end
 if not(exist('R'))
 	sims{1}.W = bridg_curlies;
 	sims{2}.W = curlies;
+	sims{3}.W = curlies;
+	sims{4}.W = brick;
 	tslice = 500:8000;
 
 	for nsim = 1:length(sims)
