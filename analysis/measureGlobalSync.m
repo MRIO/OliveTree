@@ -103,6 +103,7 @@ end
 U = H.hilbert;
 
 
+
 % [================================================]
 %  compute instantaneous freuquencies (per neuron)
 % [================================================]
@@ -113,8 +114,7 @@ cyclecount = unwrap(U');
 cyclecount = cyclecount(end,:);
 Freq = cyclecount /(2*pi) / length(tt);
 
-InstFreq = diff(unwrap(U)') /(2*pi) * 1e3; % #check
-
+InstFreq = diff(unwrap(U)') /(2*pi) * 1e3; % 
 
 [HistInstFreq x] = hist(InstFreq',[-2000:2000]); % per cell
 [HistInstFreq_overall x] = hist(InstFreq(:),x); %InstFreq

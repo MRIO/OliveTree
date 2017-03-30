@@ -8,6 +8,8 @@ joinedcellscatter = 0;
 triggeredphase =0;
 hist_sto_freq_amp_w_wo_gaps = 0;
 
+frequency_drift_singlesim_prc = 1;
+
 calculatesynchrony = 0;
 sto_and_propfiring_histograms = 0;
 
@@ -237,5 +239,60 @@ if sto_and_propfiring_histograms
 
 
 end 
+
+
+if interperiodintervals
+	netsize = [5 1 1];
+	spont = 1; gap = eps;  noisesig = .1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
+	singlesim
+	R{1} = simresults;
+
+	spont = 0; gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 10; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
+	singlesim
+	R{2} = simresults;
+
+	neurs = [1:(prod(netsize))];
+	tslice = [1000:5000];
+	H{1} = hilbert_of_membranepotential(R{1}.networkHistory.V_soma(neurs,tslice));
+	H{2} = hilbert_of_membranepotential(R{2}.networkHistory.V_soma(neurs,tslice));
+	
+	
+	for s = [1:2]
+	ISIs = [];
+	for n = [1:5]
+		[pks tpks] = findpeaks(H{s}.hilbert(n,:),'minpeakdistance', 40, 'minpeakheight', 6);
+		ISI = diff(tpks);
+		isi_hist{s}(n,:) = hist(ISI,[0:10:200]);
+	end
+	end
+
+	figure
+	subplot(3,2,[1:2])
+	plot(H{2}.hilbert(3,:),'r')
+	hold on
+	plot(H{1}.hilbert(3,:))
+	axis tight
+
+	subplot(3,2,[3:4])
+	plot(R{2}.networkHistory.V_soma(3,:),'r')
+	hold on
+	plot(R{1}.networkHistory.V_soma(3,:))
+
+	subplot(3,2,5)
+	area([0:10:200], isi_hist{1}')
+	
+	subplot(3,2,6)
+	area([0:10:200], isi_hist{2}')
+
+end
+
+alex_spectrogram = 0;
+if alex_spectrogram
+	y  = simresults.networkHistory.V_soma(1,:);
+	Spec(y,256,100,1000,'this',0)
+
+end
+
+
 
 

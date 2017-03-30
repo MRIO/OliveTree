@@ -5,17 +5,17 @@
 % gap = 0.04;  noisesig = .7; noiseamp = 0 ; tau = 20; sametoall = 0.2; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = 0.04;  noisesig = .5; noiseamp = -.5 ; tau = 20; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = 0.04;  noisesig = .6; noiseamp = -.6 ; tau = 20; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
-gap = eps;  noisesig = -.1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 0; conntype = 'iso' ;  gapcomp = 0;
+% gap = eps;  noisesig = -.1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 0; conntype = 'iso' ;  gapcomp = 0;
 
-if ~exist('dt'); 		dt = 0.05; end
-if ~exist('simtime'); 	simtime = 10000;end
-if ~exist('gpu'); 		gpu = 1;end
+dt = 0.05;
+simtime = 5000;
+gpu = 1;
 % [=================================================================]
 %  % create network
 % [=================================================================]
 
-if ~exist('conntype');	conntype  = 'iso'; end
-if ~exist('spont'); 	spont  = 0; end
+if ~exist('conntype');conntype  = 'iso'; end
+if ~exist('spont'); spont  = 0; end
 if ~exist('saveappliednoise');saveappliednoise = 1; end
 if ~exist('sametoall');  sametoall = 0.2; end
 if ~exist('rd'); 		 rd = 3; end
@@ -24,9 +24,11 @@ if ~exist('gap');	     gap = 0.04 ;end
 if ~exist('tau'); 		 tau = 20 ;end
 if ~exist('noiseamp'); 	 noiseamp = .5 ;end
 if ~exist('noisesig'); 	 noisesig = 0 ;end
-if ~exist('noneurons');  netsize = [2 1 1]; end
+if ~exist('noneurons'); netsize = [2 1 1]; end
+
 
 	noneurons = prod(netsize);
+	noise_level = [1/tau noisesig noiseamp 0];
 
 plotthis  = 0;
 
@@ -56,15 +58,11 @@ end
 rng(0,'twister')
 neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);
 neurons.gbar_ampa_soma = .05*ones(noneurons,1) + .02*rand(noneurons,1);
-neurons.g_CaL = 1.1*ones(noneurons,1);
 
 
 %============================= perturbation ==============================%
 
 
-
-noise_level = [1/tau noisesig noiseamp 0];
-% noise_level = [0 0 0 0];
 
 if not(spont)
 	pert.mask{1}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', 2, ...

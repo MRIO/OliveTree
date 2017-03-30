@@ -345,7 +345,7 @@ linkaxes(a,'x')
 
 
 
-if isfield(sim.networkHistory, 'brackgroundnoise')
+if isfield(sim.networkHistory, 'backgroundnoise')
 	if not(isempty(sim.networkHistory.backgroundnoise))
 		N = sim.networkHistory.backgroundnoise;
 

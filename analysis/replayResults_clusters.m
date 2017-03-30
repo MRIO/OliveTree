@@ -13,7 +13,7 @@ function varargout = replayResults_clusters(varargin)
 
 %TODO: accept any dt
 
-static = 0;
+static = 1;
 plotmeanclusteractivity = 1;
 plotpopactivity = 1;
 calculatesynchrony = 0;
@@ -272,7 +272,7 @@ end
 
 
 
-	if 1
+	if 0
 		plotvolume = 1;
 
 		if plotvolume
@@ -290,6 +290,7 @@ end
 			fig_volume = figure('color', [1 1 1]);
 			ax_volume = axes;
 			colormap(ax_volume, jet(32));
+			colorbar
 
 			for tt = 1:length(time_slice)
 				VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), V_soma_unwrapped(:,tt));
@@ -316,9 +317,10 @@ end
 				% VVVV(1,2,1) = -50;
 
 				cla(ax_volume)
-				set(ax_volume, 'clim',[-65 -35])
+				set(ax_volume, 'clim',[-60 -40])
 				
 				vol3d('cdata',CCCC, 'Alpha', ~AAA*.25 , 'texture','3D');
+
 
 				if tt==1;view(3) ; view(-22,-56.4);axis off; axis tight;  daspect([1 1 1]);end
 				title([num2str(time_slice(tt)) 'ms'])

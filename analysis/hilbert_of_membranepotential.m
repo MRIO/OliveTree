@@ -1,7 +1,11 @@
-% calc_order_param_from_V.m
 function out  = hilbert_of_membranepotential(V)
+% function out  = hilbert_of_membranepotential(V)
+% 
+%  calculates hilbert transform of membrane potential using DAMOCO toolbox (required)
+% 
+% 
 
-plotme = 1;
+plotme = 0;
 
 if exist('co_hilbproto')
 	V(V>-30) = -30; % crop spikes
@@ -25,11 +29,13 @@ if exist('co_hilbproto')
         
 		
 	end
+	out.phidot = diff(unwrap(out.phi)') /(2*pi) * 1e3; 
 
 	mean_phase = circ_mean(out.phi);
 	out.order_parameter = mean( exp(i*(bsxfun(@minus, out.phi, mean_phase))));
 	out.hilbert = out.phi;
 	out.phi = [];
+
 
 else	% if damoco toolbox not present, use old method
 		% crop complex spikes
@@ -53,6 +59,9 @@ else	% if damoco toolbox not present, use old method
 		out.order_parameter = mean( exp(i*(bsxfun(@minus, out.hilbert, mean_phase))));
 
 end
+
+
+
 
 
 
