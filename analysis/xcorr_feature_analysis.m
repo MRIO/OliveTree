@@ -16,6 +16,35 @@ plot_selected_neurons  = 1;
 if ~exist('loaded'); loaded = 0; end
 
 
+if 0
+	if ~exist('Joinedsim')
+
+
+		simfiles = {...
+		'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat';
+		% 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_gallop_50000_4_17-Jan-2017.mat';
+		'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017.mat'
+		};
+
+		
+			load( simfiles{1});
+			Joinedsim{1}  = joinsim(simresults,[1:3]); 
+			Joinedsim{2}  = joinsim(simresults,[5:7]); 
+
+			load( simfiles{2});
+			Joinedsim{3}  = joinsim(simresults,[1:3]); 	
+			Joinedsim{4}  = joinsim(simresults,[5:7]); 			
+
+		simlegend = ...
+		{'1Hz iso MT'; '1Hz iso WT'; 'spont iso MT'; 'spont iso WT';}
+
+	end
+
+	loaded = 1;
+	simresults = Joinedsim;
+
+
+end
 
 
 

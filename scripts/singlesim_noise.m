@@ -8,7 +8,7 @@
 gap = eps;  noisesig = -.1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 0; conntype = 'iso' ;  gapcomp = 0;
 
 if ~exist('dt'); 		dt = 0.05; end
-if ~exist('simtime'); 	simtime = 10000;end
+if ~exist('simtime'); 	simtime = 3000;end
 if ~exist('gpu'); 		gpu = 1;end
 % [=================================================================]
 %  % create network
@@ -97,7 +97,7 @@ end
                                           
 
 
-displaytext = ['singlesim'];
+displaytext = ['singlesim_noise'];
 
 
 simresults = IOnet('networksize', netsize,'time',simtime,'delta',dt,...

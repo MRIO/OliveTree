@@ -55,8 +55,10 @@ end
 % [=================================================================]
 
 rng(0,'twister')
-neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);
-neurons.gbar_ampa_soma = .05*ones(noneurons,1) + .02*rand(noneurons,1);
+if not(exist('neurons'))
+	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);
+	neurons.gbar_ampa_soma = .05*ones(noneurons,1) + .02*rand(noneurons,1);
+end
 
 
 %============================= perturbation ==============================%

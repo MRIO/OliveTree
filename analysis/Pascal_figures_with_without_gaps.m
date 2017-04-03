@@ -2,21 +2,23 @@
 
 clear;
 
-onesec_vs_30s = 1;
+onesec_vs_30s = 0;
 plotcellscatters_gap_gapless  = 0; % compare cell scatters in nets
 joinedcellscatter = 0;
 triggeredphase =0;
 hist_sto_freq_amp_w_wo_gaps = 0;
 
-frequency_drift_singlesim_prc = 1;
+frequency_drift_singlesim_prc = 0;
 
 calculatesynchrony = 0;
 sto_and_propfiring_histograms = 0;
 
+interperiodintervals = 1;
+
 
 tslice = 1:50000;
 
-if not(exist('Joinedsim'))
+if 0; %not(exist('Joinedsim'))
 	addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
 	addpath('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
 
@@ -76,7 +78,7 @@ if plotcellscatters_gap_gapless
 
 end
 
-sampletraces = 1;
+sampletraces = 0;
 if sampletraces
 	replayResults_3(sims{1})
 	replayResults_3(sims{2})
@@ -166,9 +168,6 @@ if calculatesynchrony
 
 
 		[HOPA_1 XOPA_1] = hist([sim1_sync.stats.order_parameter_all' ;  sim2_sync.stats.order_parameter_all']')
-		
-
-	
 		[HOPA_2 XOPA_2] = hist([sim1_sync.stats.order_parameter_group' ;  sim2_sync.stats.order_parameter_group']')
 
 		subplot(2,1,1)
@@ -242,47 +241,69 @@ end
 
 
 if interperiodintervals
-	netsize = [5 1 1];
-	spont = 1; gap = eps;  noisesig = .1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
+	netsize = [1 1 1];
+	neurons = createDefaultNeurons(1);
+	
+	spont = 0; gap = eps;  noisesig = 0; noiseamp  = 0 ; tau = 20; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
 	singlesim
 	R{1} = simresults;
-
-	spont = 0; gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 10; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
+	
+	spont = 1; gap = eps;  noisesig = .1; noiseamp = -.1 ; tau = 20; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
 	singlesim
 	R{2} = simresults;
+	
+	spont = 1; gap = eps;  noisesig = .2; noiseamp = -.2 ; tau = 20; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
+	singlesim
+	R{3} = simresults;
+	
 
+	
 	neurs = [1:(prod(netsize))];
 	tslice = [1000:5000];
 	H{1} = hilbert_of_membranepotential(R{1}.networkHistory.V_soma(neurs,tslice));
 	H{2} = hilbert_of_membranepotential(R{2}.networkHistory.V_soma(neurs,tslice));
+	H{3} = hilbert_of_membranepotential(R{3}.networkHistory.V_soma(neurs,tslice));
 	
-	
-	for s = [1:2]
-	ISIs = [];
-	for n = [1:5]
-		[pks tpks] = findpeaks(H{s}.hilbert(n,:),'minpeakdistance', 40, 'minpeakheight', 6);
-		ISI = diff(tpks);
-		isi_hist{s}(n,:) = hist(ISI,[0:10:200]);
-	end
+	N(1,:) = R{1}.networkHistory.backgroundnoise(1,:);
+	N(2,:) = R{2}.networkHistory.backgroundnoise(1,:);
+	N(3,:) = R{3}.networkHistory.backgroundnoise(1,:);
+
+	for s = [1:3]
+		ISIs = [];
+		for n = [1]
+			[pks tpks] = findpeaks(H{s}.hilbert(n,:),'minpeakdistance', 40, 'minpeakheight', 6);
+			ISI = diff(tpks);
+			isi_hist{s}(n,:) = hist(ISI,[0:10:200]);
+		end
 	end
 
 	figure
-	subplot(3,2,[1:2])
-	plot(H{2}.hilbert(3,:),'r')
-	hold on
-	plot(H{1}.hilbert(3,:))
+	ax(1) = subplot(3,2,[1:2])
+	ax(1).ColorOrder =  jet(3);
+	plot([H{1}.hilbert(1,:); H{2}.hilbert(1,:); H{3}.hilbert(1,:)]')
 	axis tight
 
 	subplot(3,2,[3:4])
-	plot(R{2}.networkHistory.V_soma(3,:),'r')
-	hold on
-	plot(R{1}.networkHistory.V_soma(3,:))
+	VS = [R{1}.networkHistory.V_soma(1,:);R{2}.networkHistory.V_soma(1,:);R{3}.networkHistory.V_soma(1,:)];
+	plot(VS')
 
 	subplot(3,2,5)
-	area([0:10:200], isi_hist{1}')
+	plot([0:10:200], isi_hist{1}','b')
+	hold on
+	plot([0:10:200], isi_hist{2}','g')
+	plot([0:10:200], isi_hist{3}','r')
 	
-	subplot(3,2,6)
-	area([0:10:200], isi_hist{2}')
+	figure
+	X(1,:) = xcorr(VS(1,:), 'coeff');
+	X(2,:) = xcorr(VS(2,:), 'coeff');
+	X(3,:) = xcorr(VS(3,:), 'coeff');
+	XN(1,:) = xcorr(N(1,:), 'coeff');
+	XN(2,:) = xcorr(N(2,:), 'coeff');
+	XN(3,:) = xcorr(N(3,:), 'coeff');
+
+	plot(X'); hold on; 	
+	plot(X'./max(X)'); hold on; 	
+
 
 end
 

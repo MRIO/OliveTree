@@ -46,7 +46,7 @@ plot_selected_neurons = 0;
 computerasters = 1;
 	partialcorrelations_and_responsescatters = 1;
 calculate_xcorrs = 0;
-stimtrigwaves = 0;
+stimtrigwaves = 1;
 
 
 trigger = 1; % perturbation (according to 'pert')
@@ -77,26 +77,26 @@ triggers(end-3:end) = [];
 ntrigs = length(triggers);
 
 
-	spks = sim.spikes;
+spks = sim.spikes;
 
-	spkfreq = (spks.spikespercell+eps)/sim.duration*1e3;
-
-
-	Q = quantile(spks.spikespercell,[.25 , .5, .75])
-
-	hicount = find(spks.spikespercell>Q(3),1,'last')
-
-	triggers = sim.perturbation.triggers{trigger};
-
-	W = sim.networkParameters.connectivityMatrix;
-	coords = sim.W.coords;
-
-	neurons = sim.cellParameters;
-	CAL = sim.cellParameters.g_CaL;
+spkfreq = (spks.spikespercell+eps)/sim.duration*1e3;
 
 
-	gapneighborhood = full(sum(triu(W)))+eps;	
-	noneurons = prod(netsize);
+Q = quantile(spks.spikespercell,[.25 , .5, .75])
+
+hicount = find(spks.spikespercell>Q(3),1,'last')
+
+triggers = sim.perturbation.triggers{trigger};
+
+W = sim.networkParameters.connectivityMatrix;
+coords = sim.W.coords;
+
+neurons = sim.cellParameters;
+CAL = sim.cellParameters.g_CaL;
+
+
+gapneighborhood = full(sum(triu(W)))+eps;	
+noneurons = prod(netsize);
 %===========================================================%
 if profilesim
 	profiled{1} = profile_sim(Joinedsim{1},'tslice',[1000:5000]);
