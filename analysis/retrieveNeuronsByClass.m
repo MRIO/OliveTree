@@ -26,7 +26,12 @@ centerneuron_index = 85; % neighbors of this neuron
 		
 		S = setdiff(nextneighbors, neighbors);
 
-		stimulated = find(simresults.perturbation.mask{1});
+		if isfield(simresults.perturbation, 'mask')
+				stimulated = find(simresults.perturbation.mask{1});
+			else
+				stimulated = [];
+		end
+
 
 		% remove neurons that don't fire enough spikes
 		lowfr = find(simresults.spikes.spikespercell')<50;

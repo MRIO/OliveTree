@@ -14,7 +14,7 @@ function out = xcorr_summa(varargin)
 	nwins = p.Results.nwins;
 	plotthem = p.Results.plotme;
 
-	multiwindowxcorr = 0;
+	
 	applyconvkernel =1;	
 	sortbyasym = 1;
 
@@ -109,12 +109,11 @@ end
 				selectedneurons = sorted(1:noneur);
 
 			else
-
+				% if selectedneurons is empty, take highly active
 				selectedneurons = find(sum(VSB(:,xcorrwin)')>5);
 
 				if length(selectedneurons) <= noneur
 					disp('not enough firing neurons')
-					keyboard
 					length(selectedneurons)
 					out = [];
 					return
@@ -143,8 +142,10 @@ pairs = find(triu(ones(N) - eye(N))');
 
 			xcorrset = XC{nw}(:,pairs)';
 
+
 			if applyconvkernel
 				XCs{nw} = conv2(1, mog_filter_2d_CS,xcorrset,'same');
+
 			end
 
 			
@@ -162,16 +163,6 @@ pairs = find(triu(ones(N) - eye(N))');
 			if flipasym
 				delay = abs(delay);
 			end
-
-
-			%=============================title==============================%
-
-			% if flipasym
-			% 	sdpk = abs(sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)'));
-			% else
-			% 	sdpk = sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)');
-			% end
-
 
 
 			if isfield(simulation,'noiseapplied')
@@ -241,11 +232,11 @@ if plotthem
 
 
 	figure
-		[v id] = max(XC{1}(lag+1,:));
+		[v id] = max(XCs{1}(:,lag+1));
 		
 		highlighted_pair = id;  % pairs(1);
 
-		highlighted_cells = [1 3]';
+		highlighted_cells =  [pairs_i(id) pairs_j(id)]';%   [1 3]';
 		
 
 
@@ -261,6 +252,7 @@ if plotthem
 			colormap(flip(corder))
 			xlabel('ms')
 			ylabel('mV')
+			legend(num2str(highlighted_cells))
 
 		axi(2) = subplot(6,1,2);
 			imagesc(VSoma(selectedneurons,5500:6500))
@@ -297,7 +289,7 @@ if plotthem
 
 
 		axi(6) = subplot(6,1,6);
-			plot([-lag: lag], XnoAC)
+			plot([-lag: lag], mean(XCs{1}))
 			hold on
 			plot([-lag: lag], XCs{1}(highlighted_pair,:),'r')
 			xlabel('lag(ms)')

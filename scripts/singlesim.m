@@ -7,7 +7,7 @@
 % gap = 0.04;  noisesig = .6; noiseamp = -.6 ; tau = 20; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = eps;  noisesig = -.1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 0; conntype = 'iso' ;  gapcomp = 0;
 
-dt = 0.05;
+dt = 0.025;
 simtime = 5000;
 gpu = 1;
 % [=================================================================]
