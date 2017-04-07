@@ -4,7 +4,7 @@ function out = xcorr_summa(varargin)
 	p = inputParser;
 	p.addRequired('sim')
 	p.addParamValue('selectedneurons',[])
-	p.addParamValue('nwins',2 )
+	p.addParamValue('nwins',1 )
 	p.addParamValue('plotme',1 )
 
 	p.parse(varargin{:});
@@ -210,7 +210,8 @@ if plotthem
 	        idx = zeros(length(X),1);
 	        idx(selectedneurons) = 1;
 
-	        plotnetstruct(W,X,Y,Z,sum(VSB'))
+	        % plotnetstruct(W,X,Y,Z,sum(VSB'))
+	        plotnetstruct(W,X,Y,Z,idx)
 	end
 
 	if 0
@@ -241,7 +242,9 @@ if plotthem
 
 
 		corder = cbrewer('seq', 'Greys',50);
+		cmap = cbrewer('div', 'Spectral',128);
 		set(0,'defaultaxescolororder', flip(corder))
+		colormap(cmap)
 
 		axi(1) = subplot(6,1,1);
 	
@@ -249,42 +252,50 @@ if plotthem
 			plot(0:1000, VSoma(selectedneurons,5500:6500))
 			hold on, 
 			plot(0:1000, VSoma(selectedneurons(highlighted_cells),5500:6500),'r','linewidth',2)
-			colormap(flip(corder))
+			
 			xlabel('ms')
 			ylabel('mV')
 			legend(num2str(highlighted_cells))
 
+
 		axi(2) = subplot(6,1,2);
 			imagesc(VSoma(selectedneurons,5500:6500))
+			% imagesc(VSoma(:,5500:6500))
 			xlabel('ms')
 			ylabel('neurons')
+			set(gca,'clim',[-70 -20])
 
 
 		axi(3) = subplot(6,1,3)
 
 			imagesc( -lag:lag, 1:length(pairs) , XCs{1})
-			line([-lag -lag+10], [highlighted_pair *ones(1,2)],'color', 'r')
+			line([-lag -lag+10], [highlighted_pair *ones(1,2)],'color', 'r','linewidth',2)
 			xlabel('lag(ms)')
 			ylabel('pairs')
 			axis tight
 			xlabel('ms')
 			ylabel('correlation (coeff)')
-			xlabel('individual cross-correlations (sample)')	
+			xlabel('individual cross-correlations (sample)')
+			set(gca,'clim',[0 0.01])
 
 		axi(4) = subplot(6,1,4);
 			area([-lag: lag], XCs{1}')
 			xlabel('lag(ms)')
 			ylabel('aggregate coeff')
+			ylim([0 0.7])
 
 
 			
 		axi(5) = subplot(6,1,5);
+			
 
 			if nwins == 2
 				line([zeros(size(delay(1,:))) ; ones(size(delay(1,:)))  ], [delay(1,:); delay(2,:)])
 			else
-				[v_  sortord] = sort(XCs{1}(:,lag+1));
-				imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
+				imagesc(VSoma(:,5500:6500))
+				% [v_  sortord] = sort(XCs{1}(:,lag+1));
+				% imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
+				set(gca,'clim',[-65 -30])
 			end
 
 
@@ -298,8 +309,19 @@ if plotthem
 			xlabel('ms')
 			ylabel('correlation (coeff)')
 			xlabel('aggregate correlation (windowed)')
+			ylim([0 0.02])
 
-		linkaxes(axi([3 4 5 6]),'x')
+		linkaxes(axi([3 4 6]),'x')
+		linkaxes(axi([1 2 5]),'x')
+
+
+		if 0
+			figure
+			imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
+			set(gca,'clim',[0 0.01])
+			colorbar
+		end
+
 
 			if 0
 			figure

@@ -31,12 +31,13 @@ if ~exist('noisesig')   	; noisemu = 0		  ; end
 if ~exist('noisemu')    	; noisesig = 0.7	  ; end
 if ~exist('gaps')	    	; gaps = 0.04 	      ; end
 if ~exist('gapcomp')    	; gapcomp = 0 		  ; end
+if ~exist('nogapcomp') 		; nogapcomp = 10  	  ; end % radius	
 if ~exist('moreoscillation'); moreoscillation = 0 ; end
 if ~exist('nameprefix')  	; nameprefix ='missg' ; end
 if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
 if ~exist('rd')  			; rd = 2		      ; end % radius
-if ~exist('nogapcomp') 		; nogapcomp = 10  	  ; end % radius	
+
 
  
 displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];
@@ -159,7 +160,7 @@ end
 
 if ~exist('transients')
 	
-	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp, 'nogapcomp',0);
+	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp, 'nogapcomp', nogapcomp);
 	
 	[transients] = IOnet( 'networksize', netsize ,'time',ttime1,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);
 	[continuation] = IOnet( 'networksize', netsize ,'time',ttime2,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall, 'tempState',transients.lastState);

@@ -318,7 +318,10 @@ if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench')
 
 	simtime = 5000;
 	conntype = 'iso';
+	seed = 38;
+	
 	NetPspace;
+
 	clear;
 end
 

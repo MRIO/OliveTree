@@ -528,8 +528,6 @@ if  analyze_group_stim
 	% saveallfigs('prefix', 'withoutbridges_2clusterstim','style','12x6')
 	% close all
 
-
-
 	plot(abs(M{2}.phases.orderparameter{1}));hold on
 	plot(abs(M{4}.phases.orderparameter{1}))
 	
@@ -563,7 +561,7 @@ if makemovies
 	replayResults_clusters(sims{4},'savemovie',1,'time_slice', [2000:3500])
 end
 
-makemoviesofstim = 1;
+makemoviesofstim = 0;
 if makemoviesofstim
 	M = single(sims{1}.perturbation.mask{1});
 	sims{1}.perturbation.mask{1} = M;

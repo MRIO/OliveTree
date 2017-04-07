@@ -423,7 +423,8 @@ if plotthis==1
     warning('off') % colorbrewer throws an annoyance
            % plotconnectionmatrix(W,X,Y,Z,idx,out)
  
-           plotnetstruct(W,X,Y,Z,idx,out)
+           % plotnetstruct(W,X,Y,Z,idx,out)
+           plotnetstruct(W,X,Y,Z,idx)
     warning('on')
 elseif plotthis==2
     figure
