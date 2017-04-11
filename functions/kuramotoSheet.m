@@ -38,7 +38,6 @@ function out = kuramotoSheet(varargin)
  % author: m@negrello.org
  % all rights to kuramoto and mathworks, all wrongs are mine ;D
 
-plasticity = 0;
 gpu = 0;
 
 anim = 1; makemovie = 1;
@@ -63,6 +62,7 @@ anim = 1; makemovie = 1;
 	p.addParameter('connectivity', 'euclidean')  % adjacency matrix
 	p.addParameter('clusterize', [0 0 0 0],@isvector)
 	p.addParameter('seed', 0)
+    p.addParameter('plasticity', [0 1 1],@isvector) % (1) - enabled?; (2) - epsilon; (3) - alpha
 
 	p.parse(varargin{:});
 
@@ -80,6 +80,7 @@ anim = 1; makemovie = 1;
 	seed = p.Results.seed;
 	init_cond = p.Results.init_cond;
 	oscillators = p.Results.oscillators;
+    plasticity = p.Results.plasticity;
 
 	N = netsize(1);
 	M = netsize(2);
@@ -107,7 +108,7 @@ scale_to_intrinsic_freq = 0;
 %  connectivity
 % [=================================================================]
 
-
+if ischar(connectivity)
 switch connectivity
 	case 'all to all'
 		connectivity = ones(N*M) - eye(N*M);
@@ -139,17 +140,9 @@ switch connectivity
         % # compute adjacency matrix
 		connectivity = 1./squareform( pdist([X Y], 'euclidean') );
 
-
-
 	case 'random'
 		% W = (ones(N*M)-eye(N*M) ) .* rand(N*M);
-
-
-	
-	otherwise 
-		% we use the matrix passed as a parameter
-		connectivity = connectivity
-
+end
 end
 
 
@@ -264,10 +257,9 @@ for t = 2:simtime/dt
 
 	PP(:,t) = sin(mod(theta_t(:,t),2*pi));
 
-	if plasticity
-		% potentiation of connections by phase coincidence of pairs
-
-		delta_W = connectivity./connectivity;
+	if plasticity(1)
+        connectivity = connectivity - dt*plasticity(2)* ...
+        ( plasticity(3) * cos(phasedifferences) - connectivity );
 
 	end
 
