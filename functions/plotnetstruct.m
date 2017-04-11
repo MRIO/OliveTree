@@ -4,10 +4,10 @@ function plotnetstruct(W,X,Y,Z,idx, varargin)
 % plotnetstruct(W,X,Y,Z,idx, varargin)
 
     if isempty(varargin)
-        plotconnections = 0;
+        plotconnections = 1;
         plotneurons = 1;
         onlynetstruct = 1;
-        plotsingleneuronconnections = 0;
+        plotsingleneuronconnections = 1;
         plotsecondorderneighbors = 0;
         plotconnweights = 1;
 
@@ -156,10 +156,10 @@ if onlynetstruct
 
                 if vv(li) > 0 %stdW & cni~=li
                     if idx(ii(li)) == idx(jj(li))
-                        conncolor = [1 0 0];
+                        conncolor = [0 0 0];
                         lw = .1;
                     else
-                        conncolor = [0 1 0];
+                        conncolor = [0 0 0];
                         lw = .1;
                     end
 

@@ -227,6 +227,12 @@ if plotpopactivity
 			imagesc(M)
 		end
 
+		if isfield(sim.W.stats, 'clusters')
+			C = sim.W.stats.clusters;
+			b(2) = axes('position', [0.02 0.07 0.05 0.6])
+			imagesc(orderedclusters)
+		end
+
 	% spike histogram
 
 	if sum(cell2mat(spks.spikes))
@@ -250,6 +256,8 @@ if plotpopactivity
 		set(a(3),'xtick',[],'ytick',[],'color','none')
 		axis off
 	end
+
+
 	linkaxes(a, 'x')
     linkaxes([a(1) a(3)], 'y')
     % xlim([time_slice(1) time_slice(end)])

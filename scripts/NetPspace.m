@@ -19,9 +19,9 @@ Fs = 1000; % NOTE: sampling rate for output != delta
 
 if ~exist('simtime') ;simtime = 10;end
 if ~exist('nameprefix');nameprefix =[];end
-
+if ~exist('seed');seed = 0; end
 gpu = 1;
-seed = 5; rng(seed,'twister');
+rng(seed,'twister');
 cell_function = 'vanilla'; % 'devel'
 
 savehist = 1;

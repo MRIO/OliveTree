@@ -480,17 +480,27 @@ end
 
 if bridgecond_pspace
 	load('bridge_conductance_pspace01-Mar-2017.mat');
-	sims = sim;
+	% sims = sim;
+	clusters = sims{1}.W.stats.clusters
+	g1g2 = find(clusters==41 | clusters==34);
 
-	bridgepspace_sync{1} = measureGlobalSync(sims{1},'duration', [1000:6000])
-	bridgepspace_sync{2} = measureGlobalSync(sims{2},'duration', [1000:6000])
-	bridgepspace_sync{3} = measureGlobalSync(sims{3},'duration', [1000:6000])
-	bridgepspace_sync{4} = measureGlobalSync(sims{4},'duration', [1000:6000])
+	for ss  =1:11
+		bridgepspace_sync{ss} = measureGlobalSync(sims{ss},'duration', [1000:6000],'group',g1g2,'plotme',0)
+	end
+	
 
 	plot([	bridgepspace_sync{1}.stats.order_parameter_all...
 			bridgepspace_sync{2}.stats.order_parameter_all...
 			bridgepspace_sync{3}.stats.order_parameter_all...
-	 		bridgepspace_sync{4}.stats.order_parameter_all])
+	 		bridgepspace_sync{4}.stats.order_parameter_all...
+			bridgepspace_sync{5}.stats.order_parameter_all...
+	 		bridgepspace_sync{6}.stats.order_parameter_all...
+	 		bridgepspace_sync{7}.stats.order_parameter_all...
+	 		bridgepspace_sync{8}.stats.order_parameter_all...
+	 		bridgepspace_sync{9}.stats.order_parameter_all...
+	 		bridgepspace_sync{10}.stats.order_parameter_all...
+	 		bridgepspace_sync{11}.stats.order_parameter_all...
+	 		])
 
 	hist([	bridgepspace_sync{1}.stats.order_parameter_all...
 			bridgepspace_sync{2}.stats.order_parameter_all...
@@ -528,8 +538,6 @@ if  analyze_group_stim
 	% saveallfigs('prefix', 'withoutbridges_2clusterstim','style','12x6')
 	% close all
 
-
-
 	plot(abs(M{2}.phases.orderparameter{1}));hold on
 	plot(abs(M{4}.phases.orderparameter{1}))
 	
@@ -563,7 +571,7 @@ if makemovies
 	replayResults_clusters(sims{4},'savemovie',1,'time_slice', [2000:3500])
 end
 
-makemoviesofstim = 1;
+makemoviesofstim = 0;
 if makemoviesofstim
 	M = single(sims{1}.perturbation.mask{1});
 	sims{1}.perturbation.mask{1} = M;
@@ -618,6 +626,68 @@ if render_volumetric_activity
 	plot_volume(V4, JM394_horizontal_coordinates(2:end,:),tslice)
 end
 
-sim{1}.W = curlies; replayResults_clusters(sim{1})
-replayResults_clusters(sim{2})
-replayResults_clusters(sim{3})
+spectral_clustering = 1;
+if spectral_clustering
+	% load /Users/M/Synced/Titan/Bench4/curlies_bridges_randmaskstim22-Mar-2017.mat
+	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_22-Jan-2017.mat
+	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_20-Jan-2017.mat
+	load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/curlies_bridges_01-Mar-2017.mat
+	
+
+
+	for ss = 1:3
+		ss = 2;
+		PD = phase_distribution_over_time(sim{ss}, 'duration', [1000:5000], 'plotme',0);
+		ph = PD{ss}.phases.pop{2};
+		x = sin(ph(:,1000:5000));
+		cc = partialcorr(x', mean(x)'); % partial correlation w.r.t the mean
+		rho = (cc + 1)/2; % normalize rho to get an affinity matrix 0<=rho<=1
+		rho = (rho+rho')/2; % rho had better be symmetric
+		c = spect_clust(rho, 50);
+		[bic, aic] = baic(x, c);
+
+
+	end
+
+
+
+
+	subplot(331)
+	plot(x'), axis tight
+	title('Data')
+	subplot(332)
+	pcolor(cc), shading flat
+	title('Partial correlation')
+	subplot(333)
+	hist(cc(:),100), axis tight
+	title('Partial correlation')
+
+
+	subplot(334)
+	plot(c.nc,c.gc,'-o'), axis tight
+	xlabel('Number of clusters')
+	ylabel('Eigenvalue gap')
+
+	subplot(335)
+	[~, ic] = sort(c.label(:,2));
+	pcolor(cc(ic,ic)), shading flat
+	title('Partial correlation')
+
+	subplot(336)
+	fshow(c.label(:,2))
+
+	%% Check with information criteria
+
+	subplot(337)
+	[bic, aic] = baic(x, c);
+	plot([bic aic]), axis tight % These criterion give different results.. 
+	legend('BIC','AIC')
+	subplot(338)
+	[~,ic] = sort(c.label(:,20)); % Let's go for n = 10 as BIC suggests..
+	pcolor(cc(ic,ic)), shading flat % For some reasons, it doesn't seem to work..
+	subplot(339)
+	fshow(c.label(:,10))
+end
+
+	
+

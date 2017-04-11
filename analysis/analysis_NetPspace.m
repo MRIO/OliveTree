@@ -40,7 +40,7 @@ if ~exist('transients')
 	% fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
 	% dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
-	fname = 'gapcomp_corr_R2_g04_netpspace9_iso_5000_22-Mar-2017.mat';
+	fname = 'gapcomp_corr_R2_g04_netpspace24_iso_6000_06-Apr-2017.mat';
 	dimnames = { 'gap', 'gapcomp', 'noisesig' };	
 
 	
@@ -65,7 +65,7 @@ end
 plottraces = 0;
 	% sims2plot = [];
 	sims2plot = 1:length(transients);
-	tslice = [2000:3000];
+	tslice = [1000:6000];
 
 
 summarize = 1;
@@ -181,36 +181,6 @@ if preparetables
 
 	RTable = table(truegaps, truenconn, pop_r, prop_f,  ampl, meanVm, caL, freq,  FO_sync, SO_sync, All_sync);
 
-
-
-
-
-	% PTable = array2table([(1:simcount)' Plist]);
-	% PTable.Properties.VariableNames = ['simcount'  fieldnames];
-	
-	%    for sims = 1:simcount
-
-
-	%    			fa(sims,1) = sum(transients{sims}.failed);
-	% 			ca(sims,1) = mean(transients{sims}.cellParameters.g_CaL);
-	% 			ih(sims,1) = mean(transients{sims}.cellParameters.g_h);
-
-	% 			transients{sims}.spikes = spikedetect(transients{sims});
-
-	% 			fr(sims,1) = transients{sims}.spikes.popfrequency;
-	% 			propfr(sims,1) = transients{sims}.spikes.propspkneurons;
-
-
-	% 			W = transients{sims}.networkParameters.connectivityMatrix;
-	%    			W(W==0) = [];
-	%    			meang(sims,1) = full(mean(W));
-
-
-
-	% end
-	% Res = [ fa fr propfr meang ca ih];
-	% RTable = array2table(full([ Res]));
-	% RTable.Properties.VariableNames = {'failed'; 'rate'; 'propfr'; 'meang'; 'ca'; 'ih'};
 
 	PTable.Properties.UserData = X_README;
 	save(['tables' fname], 'PTable', 'RTable')

@@ -256,6 +256,9 @@ if interperiodintervals
 	singlesim
 	R{3} = simresults;
 	
+	spont = 1; gap = eps;  noisesig = .3; noiseamp = -.3 ; tau = 20; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
+	singlesim
+	R{4} = simresults;
 
 	
 	neurs = [1:(prod(netsize))];
@@ -263,12 +266,14 @@ if interperiodintervals
 	H{1} = hilbert_of_membranepotential(R{1}.networkHistory.V_soma(neurs,tslice));
 	H{2} = hilbert_of_membranepotential(R{2}.networkHistory.V_soma(neurs,tslice));
 	H{3} = hilbert_of_membranepotential(R{3}.networkHistory.V_soma(neurs,tslice));
-	
+	H{4} = hilbert_of_membranepotential(R{4}.networkHistory.V_soma(neurs,tslice));
+
 	N(1,:) = R{1}.networkHistory.backgroundnoise(1,:);
 	N(2,:) = R{2}.networkHistory.backgroundnoise(1,:);
 	N(3,:) = R{3}.networkHistory.backgroundnoise(1,:);
+	N(4,:) = R{4}.networkHistory.backgroundnoise(1,:);
 
-	for s = [1:3]
+	for s = [1:4]
 		ISIs = [];
 		for n = [1]
 			[pks tpks] = findpeaks(H{s}.hilbert(n,:),'minpeakdistance', 40, 'minpeakheight', 6);

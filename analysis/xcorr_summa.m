@@ -4,7 +4,7 @@ function out = xcorr_summa(varargin)
 	p = inputParser;
 	p.addRequired('sim')
 	p.addParamValue('selectedneurons',[])
-	p.addParamValue('nwins',2 )
+	p.addParamValue('nwins',1 )
 	p.addParamValue('plotme',1 )
 
 	p.parse(varargin{:});
@@ -14,7 +14,7 @@ function out = xcorr_summa(varargin)
 	nwins = p.Results.nwins;
 	plotthem = p.Results.plotme;
 
-	multiwindowxcorr = 0;
+	
 	applyconvkernel =1;	
 	sortbyasym = 1;
 
@@ -109,12 +109,11 @@ end
 				selectedneurons = sorted(1:noneur);
 
 			else
-
+				% if selectedneurons is empty, take highly active
 				selectedneurons = find(sum(VSB(:,xcorrwin)')>5);
 
 				if length(selectedneurons) <= noneur
 					disp('not enough firing neurons')
-					keyboard
 					length(selectedneurons)
 					out = [];
 					return
@@ -143,8 +142,10 @@ pairs = find(triu(ones(N) - eye(N))');
 
 			xcorrset = XC{nw}(:,pairs)';
 
+
 			if applyconvkernel
 				XCs{nw} = conv2(1, mog_filter_2d_CS,xcorrset,'same');
+
 			end
 
 			
@@ -162,16 +163,6 @@ pairs = find(triu(ones(N) - eye(N))');
 			if flipasym
 				delay = abs(delay);
 			end
-
-
-			%=============================title==============================%
-
-			% if flipasym
-			% 	sdpk = abs(sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)'));
-			% else
-			% 	sdpk = sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)');
-			% end
-
 
 
 			if isfield(simulation,'noiseapplied')
@@ -219,7 +210,8 @@ if plotthem
 	        idx = zeros(length(X),1);
 	        idx(selectedneurons) = 1;
 
-	        plotnetstruct(W,X,Y,Z,sum(VSB'))
+	        % plotnetstruct(W,X,Y,Z,sum(VSB'))
+	        plotnetstruct(W,X,Y,Z,idx)
 	end
 
 	if 0
@@ -241,63 +233,75 @@ if plotthem
 
 
 	figure
-		[v id] = max(XC{1}(lag+1,:));
+		[v id] = max(XCs{1}(:,lag+1));
 		
 		highlighted_pair = id;  % pairs(1);
 
-		highlighted_cells = [1 3]';
+		highlighted_cells =  [pairs_i(id) pairs_j(id)]';%   [1 3]';
 		
 
 
 		corder = cbrewer('seq', 'Greys',50);
+		cmap = flipud(cbrewer('div', 'Spectral',128));
 		set(0,'defaultaxescolororder', flip(corder))
+		colormap(cmap)
 
+	if 0	
 		axi(1) = subplot(6,1,1);
 	
 	
 			plot(0:1000, VSoma(selectedneurons,5500:6500))
 			hold on, 
 			plot(0:1000, VSoma(selectedneurons(highlighted_cells),5500:6500),'r','linewidth',2)
-			colormap(flip(corder))
+			
 			xlabel('ms')
 			ylabel('mV')
+			legend(num2str(highlighted_cells))
+
 
 		axi(2) = subplot(6,1,2);
 			imagesc(VSoma(selectedneurons,5500:6500))
+			% imagesc(VSoma(:,5500:6500))
 			xlabel('ms')
 			ylabel('neurons')
+			set(gca,'clim',[-70 -20])
 
 
 		axi(3) = subplot(6,1,3)
 
 			imagesc( -lag:lag, 1:length(pairs) , XCs{1})
-			line([-lag -lag+10], [highlighted_pair *ones(1,2)],'color', 'r')
+			line([-lag -lag+10], [highlighted_pair *ones(1,2)],'color', 'r','linewidth',2)
 			xlabel('lag(ms)')
 			ylabel('pairs')
 			axis tight
 			xlabel('ms')
 			ylabel('correlation (coeff)')
-			xlabel('individual cross-correlations (sample)')	
+			xlabel('individual cross-correlations (sample)')
+			set(gca,'clim',[0 0.01])
 
 		axi(4) = subplot(6,1,4);
 			area([-lag: lag], XCs{1}')
 			xlabel('lag(ms)')
 			ylabel('aggregate coeff')
+			ylim([0 0.7])
 
 
 			
 		axi(5) = subplot(6,1,5);
+			
 
 			if nwins == 2
 				line([zeros(size(delay(1,:))) ; ones(size(delay(1,:)))  ], [delay(1,:); delay(2,:)])
 			else
-				[v_  sortord] = sort(XCs{1}(:,lag+1));
-				imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
+				imagesc(VSoma(:,5500:6500))
+				% [v_  sortord] = sort(XCs{1}(:,lag+1));
+				% imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
+				set(gca,'clim',[-65 -30])
 			end
 
 
 		axi(6) = subplot(6,1,6);
-			plot([-lag: lag], XnoAC)
+			plot([-lag: lag], mean(XCs{1}))
 			hold on
 			plot([-lag: lag], XCs{1}(highlighted_pair,:),'r')
 			xlabel('lag(ms)')
@@ -306,8 +310,20 @@ if plotthem
 			xlabel('ms')
 			ylabel('correlation (coeff)')
 			xlabel('aggregate correlation (windowed)')
+			ylim([0 0.02])
 
-		linkaxes(axi([3 4 5 6]),'x')
+		linkaxes(axi([3 4 6]),'x')
+		linkaxes(axi([1 2 5]),'x')
+
+end
+
+		if 0
+			figure
+			imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
+			set(gca,'clim',[0 0.01])
+			colorbar
+		end
+
 
 			if 0
 			figure
@@ -318,6 +334,106 @@ if plotthem
 				subplot(133)
 				boxplot([ asym(1,:)'],'notch', 'on'); title('asymmetry')
 			end	
+
+
+
+
+
+
+figure
+		[v id] = max(XCs{1}(:,lag+1));
+		
+		highlighted_pair = id;  % pairs(1);
+
+		highlighted_cells =  [pairs_i(id) pairs_j(id)]';%   [1 3]';
+		
+
+
+		corder = cbrewer('seq', 'Greys',50);
+		cmap = cbrewer('div', 'Spectral',128);
+		set(0,'defaultaxescolororder', flip(corder))
+		colormap(cmap)
+
+	figure	
+		axi(1)= axes;
+	
+	
+			plot(0:1000, VSoma(selectedneurons,5500:6500))
+			hold on, 
+			plot(0:1000, VSoma(selectedneurons(highlighted_cells),5500:6500),'r','linewidth',2)
+			
+			xlabel('ms')
+			ylabel('mV')
+			legend(num2str(highlighted_cells))
+
+figure
+		axi(2)= axes;
+			imagesc(VSoma(selectedneurons,5500:6500))
+			% imagesc(VSoma(:,5500:6500))
+			xlabel('ms')
+			ylabel('neurons')
+			set(gca,'clim',[-70 -20])
+
+figure
+		axi(3)= axes;
+
+			imagesc( -lag:lag, 1:length(pairs) , XCs{1})
+			line([-lag -lag+10], [highlighted_pair *ones(1,2)],'color', 'r','linewidth',2)
+			xlabel('lag(ms)')
+			ylabel('pairs')
+			axis tight
+			xlabel('ms')
+			ylabel('correlation (coeff)')
+			xlabel('individual cross-correlations (sample)')
+			set(gca,'clim',[0 0.01])
+figure
+		axi(4)= axes;
+			area([-lag: lag], XCs{1}')
+			xlabel('lag(ms)')
+			ylabel('aggregate coeff')
+			ylim([0 0.7])
+
+
+figure
+		axi(5) = axes;
+			
+
+			if nwins == 2
+				line([zeros(size(delay(1,:))) ; ones(size(delay(1,:)))  ], [delay(1,:); delay(2,:)])
+			else
+				imagesc(VSoma(:,5500:6500))
+				% [v_  sortord] = sort(XCs{1}(:,lag+1));
+				% imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
+				set(gca,'clim',[-65 -30])
+			end
+
+figure 
+		axi(6) = axes;
+			plot([-lag: lag], mean(XCs{1}))
+			hold on
+			plot([-lag: lag], XCs{1}(highlighted_pair,:),'r')
+			xlabel('lag(ms)')
+			legend({'aggregate' ; 'example' })
+			axis tight
+			xlabel('ms')
+			ylabel('correlation (coeff)')
+			xlabel('aggregate correlation (windowed)')
+			ylim([0 0.02])
+
+		linkaxes(axi([3 4 6]),'x')
+		linkaxes(axi([1 2 5]),'x')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 end
