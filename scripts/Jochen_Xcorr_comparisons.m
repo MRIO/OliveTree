@@ -23,7 +23,7 @@ saveallfigs('prefix', 'xcorr_neighbors_spont_MT', 'style', '29x9')
 close all
 
 XC{2} = xcorr_summa(js{2}, 'selectedneurons', neighbors)
-saveallfigs('prefix', 'xcorr_neighbors_spont_WT', 'style', '29x9')
+saveallfigs('prefix', 'xcorr_neighbors_spont_WT', 'style', '12x12')
 close all
 
 X(1,:) = zscore(XC{1}.XcorrNoAc);
@@ -33,7 +33,7 @@ plot(X')
 
 % compare stimulated neurons before and after stimulation -- also with gaps
 XC{3} = xcorr_summa(js{3}, 'selectedneurons', stimulated)
-saveallfigs('prefix', 'xcorr_stimulated_stim_MT', 'style', '29x9')
+saveallfigs('prefix', 'xcorr_stimulated_stim_MT', 'style', '12x12')
 close all
 
 XC{4} = xcorr_summa(js{4}, 'selectedneurons', stimulated)
