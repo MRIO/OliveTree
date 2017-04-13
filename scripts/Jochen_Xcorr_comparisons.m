@@ -13,7 +13,7 @@ js{4} = joinsim(simresults, [5:8])
 
 neighbors = retrieveNeuronsByClass(js{2}, 'neighbors');
 nextneighbors = retrieveNeuronsByClass(js{2}, 'nextneighbors');
-stimulated= retrieveNeuronsByClass(js{2}, 'stimulated');
+stimulated= retrieveNeuronsByClass(js{4}, 'stimulated');
 stimulated= stimulated(1:10);
 nextneighbors= nextneighbors(1:10);
 
@@ -58,4 +58,16 @@ xcorr_summa(js{3}, 'selectedneurons', nextneighbors)
 xcorr_summa(js{4}, 'selectedneurons', neighbors)
 xcorr_summa(js{4}, 'selectedneurons', stimulated)
 xcorr_summa(js{4}, 'selectedneurons', nextneighbors)
+
+
+
+
+
+
+gap = 0.05;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
+
+
+
+
+
 

@@ -92,11 +92,11 @@ if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench2')
 	X_README = 'XCorr_Jochen'
 	thisnameprefix = 'increasing_Tau_'
 
-	seed = 0; tau = 20; noisesig =  0; noisemu = 0  ; sametoall = 0; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 10000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
+	seed = 0; tau = 40; noisesig =  0; noisemu = 0  ; sametoall = 0; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 10000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
 
 	for val = [10:10:60]
 		nameprefix = [thisnameprefix 'tau_' num2str(val)];
-		seed = 0; gaps = [eps 0.04]; simtime = 50000; tau = val; noisesig = .4; noisemu = -.4; sametoall = 0.15; simtype = '1Hz'; conntype = 'iso' ; numruns = 2;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+		seed = 0; gaps = [eps 0.04]; simtime = 5000; tau = val; noisesig = .3; noisemu = -.3; sametoall = 0.15; simtype = '1Hz'; conntype = 'iso' ; numruns = 2;  HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 	end
 
 end

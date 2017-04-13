@@ -336,6 +336,8 @@ end
 
 
 if frombrick_to_clusters
+%%% TODO: MAKE SURE THAT THE TOTAL GAP CONDUCTANCE IN THE NETWORK IS IDENTICAL
+
 	s = 0;
 	for alpha_W = [0:.25:1]
 		s = s +1;
@@ -351,9 +353,9 @@ if frombrick_to_clusters
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', mixture.W ,'ou_noise', gnoise , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall, 'displaytext' , [note '_' num2str(s)] );
-	 	sims{s}.note = 'from brick to clusters';
+	 	sims{s}.note = ['from brick to clusters, alpha = ' num2str(alpha_W)];
 	 	sims{s}.W = mixture;
-	 	sims{s}.bridge_conductance = num2str(bridge_conductance);
+	 	
 	 end
 	 eval(['save brick_to_clusters_'  date ' -v7.3'])
 	 clear sims

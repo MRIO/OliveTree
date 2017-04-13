@@ -630,16 +630,17 @@ spectral_clustering = 1;
 if spectral_clustering
 	% load /Users/M/Synced/Titan/Bench4/curlies_bridges_randmaskstim22-Mar-2017.mat
 	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_22-Jan-2017.mat
-	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_20-Jan-2017.mat
-	load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/curlies_bridges_01-Mar-2017.mat
+	load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_20-Jan-2017.mat
+	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/curlies_bridges_01-Mar-2017.mat
 	
 
 
+
 	for ss = 1:3
-		ss = 2;
-		PD = phase_distribution_over_time(sim{ss}, 'duration', [1000:5000], 'plotme',0);
-		ph = PD{ss}.phases.pop{2};
-		x = sin(ph(:,1000:5000));
+		ss = 5;
+		PD = phase_distribution_over_time(sims{ss}, 'duration', [2000:5000]);
+		ph = PD.phases.pop{2};
+		x = sin(ph(:,2000:5000));
 		cc = partialcorr(x', mean(x)'); % partial correlation w.r.t the mean
 		rho = (cc + 1)/2; % normalize rho to get an affinity matrix 0<=rho<=1
 		rho = (rho+rho')/2; % rho had better be symmetric
