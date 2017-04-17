@@ -31,13 +31,13 @@ if ~exist('noisesig')   	; noisemu = 0		  ; end
 if ~exist('noisemu')    	; noisesig = 0.7	  ; end
 if ~exist('gaps')	    	; gaps = 0.04 	      ; end
 if ~exist('gapcomp')    	; gapcomp = 0 		  ; end
-if ~exist('nogapcomp') 		; nogapcomp = 10  	  ; end % radius	
+if ~exist('nogapcomp') 		; nogapcomp = 0  	  ; end % radius	
 if ~exist('moreoscillation'); moreoscillation = 0 ; end
 if ~exist('nameprefix')  	; nameprefix ='missg' ; end
 if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
-if ~exist('rd')  			; rd = 2		      ; end % radius
-
+if ~exist('rd')  			; rd = 3		      ; end % radius
+if ~exist('netsize')  		; netsize = [2 10 10] ; end % radius
 
  
 displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];
@@ -46,7 +46,7 @@ displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)]
 %  % create network
 % [=================================================================]
 
-netsize = [2 10 10];
+
 % netsize = [3 30 30];
 	noneurons = prod(netsize);
 
@@ -80,6 +80,7 @@ disp( ['gap conditions:' num2str(gaps   )])
 disp( ['sametoall:' num2str(sametoall)])
 disp( ['simtime:' num2str(simtime) 'ms'])
 disp('[=================================================================]')
+
 
 
 
@@ -126,6 +127,19 @@ else
 	pert = [];
 end
 
+
+
+
+% [=================================================================]
+%  create neurons
+% [=================================================================]
+
+	neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'nogapcompensation', nogapcomp);
+
+
+
+
+
 % [=================================================================]
 %  create perturbations OU noise
 % [=================================================================]
@@ -160,7 +174,6 @@ end
 
 if ~exist('transients')
 	
-	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp, 'nogapcomp', nogapcomp);
 	
 	[transients] = IOnet( 'networksize', netsize ,'time',ttime1,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);
 	[continuation] = IOnet( 'networksize', netsize ,'time',ttime2,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall, 'tempState',transients.lastState);
@@ -183,9 +196,7 @@ for g = gaps
 	%  % create neurons
 	% [=================================================================]
 
-	rng(0,'twister')
-
-	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);
+	neurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp , 'nogapcompensation', nogapcomp , 'rng' , rng(seed));
 
 	if randampa
 		neurons.gbar_ampa_soma = .08*ones(noneurons,1) + .02*rand(noneurons,1);
@@ -194,15 +205,15 @@ for g = gaps
 	if moreoscillation
 		neurons.g_CaL = neurons.g_CaL+.05;
 	end
-
+			thisseed = seed;
 			for n = 1:numruns
 				s = s+1;
 
-				seed = seed+1;
+				thisseed = thisseed+1;
 
 				displaytext = [simtype '_' conntype '_' num2str(n) '_' num2str(sametoall)];
 
-				noise_level(4) = seed;
+				noise_level(4) = thisseed;
 				simresults{s} = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
 
 				simresults{s}.spikes  = spikedetect(simresults{s});	
@@ -214,7 +225,7 @@ for g = gaps
 
 			end
 
-			seed = 0;
+			
 			
 end
 
@@ -222,7 +233,7 @@ end
 %  save with timestamp
 % [=================================================================]
 
-evalstring = ['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3']
+evalstring = ['save periodic_ampa_' nameprefix '_' num2str(s) '_' conntype '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' num2str(date) ' -v7.3']
 
 eval(evalstring)
 

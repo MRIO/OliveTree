@@ -86,6 +86,13 @@ if ~randomize
 
         state.curr_noise_pert = zeros(noNeurons,1);
         state.ou_noise = zeros(noNeurons,1);
+else
+    
+    
+    
+    % #TODO: randomize cell initial states
+
+
 end
 
 

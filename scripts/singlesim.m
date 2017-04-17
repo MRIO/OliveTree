@@ -9,10 +9,10 @@
 
 
 % gap = 0.05;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
-gap = eps;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
+gap = eps;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 10;
 
 dt = 0.025;
-simtime = 3000;
+simtime = 10000;
 gpu = 1;
 % [=================================================================]
 %  % apply defaults
@@ -28,7 +28,7 @@ if ~exist('gap');	     		gap = 0.04 ;end
 if ~exist('tau'); 		 		tau = 20 ;end
 if ~exist('noiseamp'); 	 		noiseamp = .5 ;end
 if ~exist('noisesig'); 	 		noisesig = 0 ;end
-if ~exist('netsize');    		netsize = [6 1 1]; end
+if ~exist('netsize');    		netsize = [5 5 1]; end
 if ~exist('seed');  	 		seed = 0; end
 
 

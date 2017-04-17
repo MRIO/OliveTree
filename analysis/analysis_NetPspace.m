@@ -75,7 +75,7 @@ summarize = 1;
 		% measured = {'pop_r', 'ampl'};
 
 	save2svg = 0;
-	save2png = 1;
+	save2png = 0;
 
 computeselectedxcorr = 0;
 	nwins = 1;

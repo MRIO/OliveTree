@@ -16,104 +16,20 @@
 	"buffers":
 	[
 		{
-			"file": "analysis/analysis_NetPspace.m",
-			"settings":
-			{
-				"buffer_size": 12377,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "analysis/analyze_clusters_bridges.m",
-			"settings":
-			{
-				"buffer_size": 17066,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "analysis/NDscatter.m",
-			"settings":
-			{
-				"buffer_size": 4997,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "functions/plotnetstruct.m",
-			"settings":
-			{
-				"buffer_size": 6045,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "% demo_clusters.m\n\n\n%  4 simulations\n% : stimulate group 41 and one of its neighbors\n% with and without bridges\n% looking at kuramoto and mystical neighbor\n\n\n% [================================================]\n% \t\t simulation parameters\n% [================================================]\n% clear\nrng(0,'twister') % random seed\n\nsteadystate_time = 1000; %ms\nsimtime  = 10000; %ms\ndelta = .025;\ngpu = 1;\n\n% [================================================]\n% simulations to perform\n% [================================================]\n\nfrombrick_to_clusters = 0;\nbridge_conductance_pspace = 0;\nconjuctive_stimulation = 0;\n\tcluster1 = 41; cluster2 = 34;\nbridges_and_curlies_with_gaba = 0;\nmaskstimulation = 1;\n\n% [================================================]\n% variables to report\n% [================================================]\n\nactivations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};\ncurrents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};\nvsoma = {'V_soma'};\ngapcur= {'V_soma' 'I_cx36'};\n\n% variables to store\nto_report = vsoma;\n\n\n% [================================================]\n% \t\tconnectivity\n% [================================================]\n \n% out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)\n\n% nconns_curlies = 8;\n% nconns_bridges = 6;\n\n% gap_curlies = .1;\n% gap_bridges = .1;\n% plotconn = 1;\n% normalize = 1;\n\nnconns_curlies = 5;\nnconns_bridges = 5;\ncells_in_cluster = 20;\ngap_curlies = .05;\ngap_bridges = .05;\nplotconn = 0;\nnormalize = 1;\n\n\n\nload('JM394_horizontal_coordinates-MAO.mat')\nsomatapositions = JM394_horizontal_coordinates;\nsomatapositions(1,:) = [];\nnoneurons = length(somatapositions);\n\nif not(exist('curlies'))\n\t% curlies:\n\t% create a network with distance based connectivity for close by connections\n\t% this network is clusterized with about 20cells per cluster, according to a k-means algo.\n\tcurlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 cells_in_cluster 1 0]);\n\n\t% create a network with distance based connectivity for further apart cells: bridges\n\t% these cells are not bound to specific clusters.\n\tbridges = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_bridges, somatapositions,1,[1 cells_in_cluster 0 1]);\n\n\n\t% define the indices of 10% of the cells, these will be bridges\n\tbc = randperm(noneurons); % randomly permute cell indices\n\tz = zeros(noneurons,1) ; % initialize index vector\n\tz(bc(1:round(.1*noneurons))) = 1; % make 10% of the cells == bridges\n\tbc =z;\n\tbridge_idx = find(bc);\n\n\t% remove from curlie adjacency matrix all of those that will become bridges\n\tcurlies.W = bsxfun(@times, curlies.W, ~z);\n\tcurlies.W = bsxfun(@times, curlies.W, ~(z')); % multiply by the 'unitary' conductance\n\tcurlies_bu = curlies; %_bu -> binary undirected\n\tcurlies.W = curlies.W*gap_curlies;\n\t% curlies.stats.clusters(bridge_idx) = 0;\n\t\n\tcstats = connectivity_statistics(bridges);\n\tcurlies.stats = cstats.stats ;\n\n\t% remove connections from curlies to bridges from bridge adjacency matrix\n\tbridges.W = bsxfun(@times, bridges.W, z);\n\t% create bridge cells connectivity \n\tbridges.W = (bridges.W+bridges.W');\n\tbridges_bu = bridges; % _bu -> binary undirected\n\tbridges.W = bridges.W*gap_bridges;\n\n\tbstats = connectivity_statistics(bridges);\n\tbridges.stats = bstats.stats ;\n\n\tbridg_curlies.coords = curlies.coords;\n\n\tbridg_curlies.W = curlies.W + bridges.W;\n\tbridg_curlies.stats = connectivity_statistics(bridg_curlies);\n\tbridg_curlies.stats.clusters = curlies.stats.clusters;\n\t% bridg_curlies.stats.clusters(bridge_idx) = 0;\n\n\tclusteridx = bridg_curlies.stats.clusters;\n\tclusteridx(logical(bc)) = 70;\n\tplotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusteridx)\n\n\tbrick = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);\n\tbrick_bu = brick;\n\tbrick.W = brick.W*gap_curlies;\n\nend\n\n\n\n% Wcluster150 = createW('3d_chebychev', netsize, 3, 1, 1, 1, [], 8, [], plotconn, [1 150 .9 .01],1);\n\n\n% [=================================================================]\n%  create cells\n% [=================================================================]\n\ncell_function = 'vanilla'; % 'devel'\n% netsize = [3 15 15];\n\n% def_neurons = createDefaultNeurons(noneurons,'celltypes','param_sweep');\n% def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');\ndef_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3') \n% def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized4');\n\n% randomized2 = \n% neurons.g_CaL = linspace(.5, 1, noneurons);\n\n\n\n% [================================================]\n% \t\t input\n% [================================================]\n\n% currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2\n% gnoise = [.2 .3 0 5];\ngnoise = [0 0 0 0];\nsametoall = 0.05;\n\n\n% [================================================]\n%  Distribute Ampa Perturbation over time and masks\n% [================================================]\n\n% create overlapping ampa masks\nif conjuctive_stimulation\n\tclusters = bridg_curlies.stats.clusters;\n\tbridges_in_cluster = single(bc .* clusters==41);\n\t\t\tneighbors_to_bridge = find(bridges_in_cluster'*(bridg_curlies.W>0));\n\t\t\ttheir_cluster = unique(clusters(neighbors_to_bridge));\n\t\t\ttargeted_cluster_cells = ismember(clusters, their_cluster).*clusters;\n\t\t\t% plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), targeted_cluster_cells);\n\t\t\tplotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusters==41 | clusters==34);\nend\n\n% numberofmasks = 10; \nonset_of_stim = [3005:5:3025];\n\n% apply some current to check the behavior of the cells\nI_app = [];\n% I_app = zeros(noneurons, simtime*(1/delta));\n% I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] \n% I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] \n\n% pert.mask     {1} =  create_input_mask(netsize, 'dist_to_center','radius',2, 'synapseprobability', 1,'plotme',1);\npert.mask     {1} =  [curlies.stats.clusters==41];\npert.amplitude{1} = 1;\npert.triggers {1} = onset_of_stim;\npert.duration {1} = 10;\n% pert.type\t  {1} = 'gaba_soma';\npert.type\t  {1} = 'ampa';\n\n\n\n\n\n% [===========================================================================================================]\n \n\n%%================================================]\n% \t\t compute transients/steadystate\n%=================================================]\n if ~exist('st_st','var')\n\tdisp('calculating transients')\n\n\t st_st = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W*0 ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t st_st.note = 'curlies and bridges'\nend\n\n% \t% st_st.Plist = Plist;\n% end\n\n\nif conjuctive_stimulation\n\t\n\t\t\t\npert.mask     {1} =  [curlies.stats.clusters==41];\n\t\t\t\n \tsim{1} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\tsim{1}.note = '41_with_bridges'\n\tsim{1}.W = bridg_curlies;\n\tsim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);\n\tsim{1}.networkHistory.I_cx36 = [];\n\tsim{1}.networkHistory.backgroundnoise = [];\n\n\npert.mask     {1} =  [curlies.stats.clusters==41 | curlies.stats.clusters==34];\n\t\t\t\t\t\t\nsim{2} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\tsim{2}.note = '41&34_with_bridges'\n\tsim{2}.W = bridg_curlies;\n\tsim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);\n\tsim{2}.networkHistory.I_cx36 = [];\n\tsim{2}.networkHistory.backgroundnoise = [];\n\n\npert.mask     {1} =  [curlies.stats.clusters==41];\n\t\t\t\n \tsim{3} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\tsim{3}.note = '41_with_curlies'\n\tsim{3}.W = curlies;\n\tsim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);\n\tsim{3}.networkHistory.I_cx36 = [];\n\tsim{3}.networkHistory.backgroundnoise = [];\n\n\npert.mask     {1} =  [curlies.stats.clusters==41 | curlies.stats.clusters==34];\n\t\t\t\t\t\t\n\tsim{4} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\tsim{4}.note = '41&34_with_curlies'\n\tsim{4}.W = curlies;\n\tsim{4}.networkHistory.V_soma = single(sim{4}.networkHistory.V_soma);\n\tsim{4}.networkHistory.I_cx36 = [];\n\tsim{4}.networkHistory.backgroundnoise = [];\n\n\tsim{5} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', [], 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\tsim{5}.note = 'nostim_curlies'\n\tsim{5}.W = curlies;\n\tsim{5}.networkHistory.V_soma = single(sim{5}.networkHistory.V_soma);\n\tsim{5}.networkHistory.I_cx36 = [];\n\tsim{5}.networkHistory.backgroundnoise = [];\n\n\tsim{6} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', [], 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\tsim{6}.note = 'nostim_curlies'\n\tsim{6}.W = curlies;\n\tsim{6}.networkHistory.V_soma = single(sim{6}.networkHistory.V_soma);\n\tsim{6}.networkHistory.I_cx36 = [];\n\tsim{6}.networkHistory.backgroundnoise = [];\n\n\n\n\t\teval(['save curlies_bridges_stim_pair'  date ' -v7.3'])\n\n\nend\n\n\n\n\nif bridge_conductance_pspace\n\ts = 0;\n\tfor bridge_conductance = [eps 0.01:0.01:0.1]\n\t\ts = s +1;\n\n\t\tbridg_conduct.W = curlies_bu.W*gap_curlies + bridges_bu.W*bridge_conductance;\n\t\tbridg_conduct.stats = connectivity_statistics(bridg_conduct);\n\t\tbridg_conduct.stats.clusters = curlies.stats.clusters;\n\n\t\tnote = 'bridge conductance pspace';\n\t \tsims{s} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_conduct.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall, 'displaytext', [note '_' num2str(s)]);\n\t \tsims{s}.note = note;\n\t \tsims{s}.W = bridg_conduct;\n\t \tsims{s}.bridge_conductance = num2str(bridge_conductance);\n\t end\n\t eval(['save bridge_conductance_pspace'  date ' -v7.3'])\n\t clear sims\n\nend\n\n\n\n\n\n\nif frombrick_to_clusters\n\ts = 0;\n\tfor alpha_W = [0:.25:1]\n\t\ts = s +1;\n\n\t\tmixture.W = alpha_W*curlies.W + (1-alpha_W)*brick.W;\n\n\t\tmixture.stats = connectivity_statistics(mixture);\n\t\tmixture.stats.clusters = curlies.stats.clusters;\n\t\tnote = 'brick to clusters';\n\n\t \tsims{s} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', mixture.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall, 'displaytext' , [note '_' num2str(s)] );\n\t \tsims{s}.note = 'from brick to clusters';\n\t \tsims{s}.W = mixture;\n\t \tsims{s}.bridge_conductance = num2str(bridge_conductance);\n\t end\n\t eval(['save brick_to_clusters_'  date ' -v7.3'])\n\t clear sims\nend\n\n\n\n\n\n% [=================================================================]\n%  GABA\n% [=================================================================]\n\n% BRIDGES AND CURLIES WITH PERTURBATION\nif bridges_and_curlies_with_gaba \n\t sim{1} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t sim{1}.note = 'curlies and bridges'\n\t sim{1}.W = bridg_curlies;\n\n\tsim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);\n\tsim{1}.networkHistory.I_cx36 = single(sim{1}.networkHistory.I_cx36);\n\tsim{1}.networkHistory.backgroundnoise = [];\n\n\n% ONLY CURLIES\n\tsim{2} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t sim{2}.note = 'only curlies'\n\t sim{2}.W = curlies;\n\n\tsim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);\n\tsim{2}.networkHistory.I_cx36 = single(sim{2}.networkHistory.I_cx36);\n\tsim{2}.networkHistory.backgroundnoise = [];\n\n\n% DISCONNECTED NETWORK\n\t sim{3} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W*0 ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t sim{3}.note = 'gap is zero'\n\t sim{3}.W = curlies.W*0;\n\t \n\n\tsim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);\n\tsim{3}.networkHistory.I_cx36 = single(sim{3}.networkHistory.I_cx36);\n\tsim{3}.networkHistory.backgroundnoise = [];\n\n\n\n\n% BRICK NETWORK\n\t sim{4} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t sim{4}.note = 'brick connectivity'\n\t sim{4}.W = brick;\n\t \n\n\tsim{4}.networkHistory.V_soma = single(sim{4}.networkHistory.V_soma);\n\tsim{4}.networkHistory.I_cx36 = single(sim{4}.networkHistory.I_cx36);\n\tsim{4}.networkHistory.backgroundnoise = [];\n\n\n\teval(['save curlies_bridges_'  date ' -v7.3'])\n\n\nend\n\n\n\nif maskstimulation\n\tpert.mask{1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',.4, 'radius', 100, 'plotme',1)\n\t\n\tsim{1} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{1}.note = 'curlies random mask';\n\t\tsim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);\n\n\tsim{2} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);\n\t\tsim{2}.note = 'bridge random mask'\n\n\tsim{3} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', [], 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{3}.note = 'bridge no stim'\n\t\tsim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);\n\n\tsim{4} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{4}.note = 'brick no stim'\n\t\tsim{4}.networkHistory.V_soma = single(sim{4}.networkHistory.V_soma);\n\n\t\teval(['save curlies_bridges_randmaskstim'  date ' -v7.3'])\n\nend\n\n\n\nif nostimulation\n\tsimtime = 15000;\n\tpert = [];\n\t\n\tsim{1} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{1}.note = 'curlies random mask';\n\t\tsim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);\n\t\tsim{1}.W = curlies;\n\n\tsim{2} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);\n\t\tsim{2}.note = 'bridge random mask'\n\t\tsim{2}.W = bridg_curlies;\n\n\tsim{3} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', [], 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{3}.note = 'bridge no stim'\n\t\tsim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);\n\t\tsim{3}.bridg_curlies \n\n\tsim{4} = IOnet( 'cell_parameters', def_neurons, ...\n\t \t\t'perturbation', pert, 'tempState', st_st.lastState, ...\n\t\t   \t'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', gnoise , ...\n\t\t   \t'to_report', to_report ,'gpu', gpu , ...\n\t\t   \t'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);\n\t\tsim{4}.note = 'brick no stim'\n\t\tsim{4}.networkHistory.V_soma = single(sim{4}.networkHistory.V_soma);\n\n\t\teval(['save curlies_bridges_nostim'  date ' -v7.3'])\n\nend\n\n\n",
-			"file": "scripts/reconstruction_clusters_and_bridges.m",
-			"file_size": 19265,
-			"file_write_time": 131346427857130432,
-			"settings":
-			{
-				"buffer_size": 19339,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "functions/createW.m",
-			"settings":
-			{
-				"buffer_size": 16680,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "scripts/HPCGPU_scripts.m",
 			"settings":
 			{
-				"buffer_size": 15853,
+				"buffer_size": 15867,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "analysis/replayResults_clusters.m",
+			"file": "scripts/Jochen_Xcorr_comparisons.m",
 			"settings":
 			{
-				"buffer_size": 10239,
+				"buffer_size": 2086,
 				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "% This script generates a periodically stimulated inferior olive                                                                             \n% \n% preface script call with parameters\n% \n% example: HPGCGPU_scripts\n\nrng(0,'twister')\n\n% [=================================================================]\n%  script parameters\n% [=================================================================]\n\nsavehist = true;\nsaveappliednoise = true;\ntesting = 0;\n\n% [=================================================================]\n%  simulation parameters\n% [=================================================================]\n\n% if parameters not initialized, use these defaults\n\ndt = 0.02;\nif ~exist('simtime')\t\t; simtime = 5000\t  ; end\t\nif ~exist('simtype')    \t; simtype  = '1Hz'\t  ; end\nif ~exist('conntype')   \t; conntype = 'iso'\t  ; end\nif ~exist('numruns')    \t; numruns  = 2    \t  ; end\nif ~exist('sametoall')  \t; sametoall = 0.1 \t  ; end\nif ~exist('tau')\t    \t; tau = 20  \t\t  ; end\nif ~exist('noisesig')   \t; noisemu = 0\t\t  ; end\nif ~exist('noisemu')    \t; noisesig = 0.7\t  ; end\nif ~exist('gaps')\t    \t; gaps = 0.04 \t      ; end\nif ~exist('gapcomp')    \t; gapcomp = 0 \t\t  ; end\nif ~exist('moreoscillation'); moreoscillation = 0 ; end\nif ~exist('nameprefix')  \t; nameprefix ='missg' ; end\nif ~exist('randampa')  \t\t; randampa = 0\t      ; end\nif ~exist('seed')  \t\t\t; seed = 0\t\t      ; end\nif ~exist('rd')  \t\t\t; rd = 2\t\t      ; end % radius\nif ~exist('nogapcomp') \t\t; nogapcomp = 10  \t  ; end % radius\t\n\n \ndisplaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];\n\n% [=================================================================]\n%  % create network\n% [=================================================================]\n\nnetsize = [2 10 10];\n% netsize = [3 30 30];\n\tnoneurons = prod(netsize);\n\nplotthis  = 0;\nrd = 2;\nmeannoconn = 8;\n\nnormleak  = 1;\nrandomize = 1;\nscaling   = 1;\nmaxiter\t  = 1;\nsomatapositions = [];\nrandomize = 1;\nsymmetrize = 1;\n\n\n\nif ~exist(conntype);conntype = 'iso';end\nswitch conntype\n\tcase 'iso'\n\t\tW  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [0 0 0 0], normleak);\n\tcase 'cluster'\n\t\tW  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [1 100 1 0], normleak);\nend\n\n\ndisp('[=================================================================]')\ndisp( ['using:' conntype])\ndisp( ['netsize:' num2str(netsize)])\ndisp( ['gap conditions:' num2str(gaps   )])\ndisp( ['sametoall:' num2str(sametoall)])\ndisp( ['simtime:' num2str(simtime) 'ms'])\ndisp('[=================================================================]')\n\n\n\n% [=================================================================]\n%  % noise levels\n% [=================================================================]\nnoise_level_transients = [0 0 0 0];\n\nnoise_level = [1/tau noisesig noisemu 0];\n\n% [=================================================================]\n%  create perturbations AMPA\n% [=================================================================]% \n\npulses = [1 5 9 13];\ninputrad  = 4;\nswitch simtype\n\tcase 'gallop'\n\t\ttriggersS = [5250:650:simtime];\n\t\ttriggersL = [5650:650:simtime];\n\t\ttriggers = union(triggersS, triggersL);\n\t\t% maybe repair, perchance remove: triggers = sort(unique(bsxfun(@plus, pulses,triggers')))\n\t\tspont = 0;\n\tcase '1Hz'\n\t\ttriggers = [5000:1000:simtime];\n\t\ttriggers = [5000:1000:simtime];\n\t\t% triggers = sort(unique(bsxfun(@plus, pulses,triggers')))\n\t\tspont = 0;\n\tcase 'spont'\n\t\ttriggers = [];\n\t\tspont = 1;\n\totherwise\n\t\tdisp('simtype not recognized')\n\t\tdisp('check string')\nend\n\n\nif not(spont)\n\tpert.mask{1}  \t  = create_input_mask(netsize, 'dist_to_point', 'radius', inputrad,'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',.6,'plotme',plotthis);\n\tpert.amplitude{1} = 2;\n\tpert.type{1}\t  = 'ampa';\n\tpert.duration{1}  = 1;\nelse\n\tpert = [];\nend\n\n% [=================================================================]\n%  create perturbations OU noise\n% [=================================================================]\n\n% pert.mask{2}  \t   = create_input_mask(netsize, 'random', 'synapse_probability', .5);;\n% pert.amplitude{2} = 2;\n% pert.type{2}\t  = 'ou_noise';\n% pert.duration{2}  = 1;\n\n% th =\t 1/5 ; % decay time parameter\n% mu = \t 0 ; % pA\n% sig = \t 0 ; % pA\n% mix =    1;\n\n% pert.param{nm}(1)  = 1/5 ;\n% pert.param{nm}(2)  = 0  ;\n% pert.param{nm}(3)  = sig ;\n% pert.param{nm}(4)  = 0.1;\n\n%     ____  __  ___   __   _____ ______  ___\n%    / __ \\/ / / / | / /  / ___//  _/  |/  /\n%   / /_/ / / / /  |/ /   \\__ \\ / // /|_/ / \n%  / _, _/ /_/ / /|  /   ___/ // // /  / /  \n% /_/ |_|\\____/_/ |_/   /____/___/_/  /_/   \n                                          \nif testing\n\tttime1 = 3; ttime2 =100 ; pks = 5;  pko = 5; simtime = 20;\nelse\t \n\tttime1 = 100;\n\tttime2 = 300;\nend\n\nif ~exist('transients')\n\t\n\tneurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp, 'nogapcomp',0);\n\t\n\t[continuation] = IOnet( 'networksize', netsize ,'time',ttime2,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall, 'tempState',transients.lastState);\n\t[transients] = IOnet( 'networksize', netsize ,'time',ttime1,'delta',dt,'cell_parameters', neurons ,'W',W.W*gaps(1),'ou_noise', noise_level_transients, 'sametoall',sametoall);\n\n\nend\n\nif ~spont\n\t\t[v pks] = findpeaks(mean(continuation.networkHistory.V_soma),'minpeakdistance', 80);\n\t\tpko = pks(1);\n\t\tpert.triggers{1}  = pko + sort(unique(bsxfun(@plus, pulses,triggers')));\nend\n\n\ns = 0; \nfor g = gaps\n\n\n\t% [=================================================================]\n\t%  % create neurons\n\t% [=================================================================]\n\n\trng(0,'twister')\n\n\tneurons = createDefaultNeurons(noneurons,'celltypes','randomized','gapcompensation',gapcomp);\n\n\tif randampa\n\t\tneurons.gbar_ampa_soma = .08*ones(noneurons,1) + .02*rand(noneurons,1);\n\tend\n\n\tif moreoscillation\n\t\tneurons.g_CaL = neurons.g_CaL+.05;\n\tend\n\n\t\t\tfor n = 1:numruns\n\t\t\t\ts = s+1;\n\n\t\t\t\tseed = seed+1;\n\n\t\t\t\tdisplaytext = [simtype '_' conntype '_' num2str(n) '_' num2str(sametoall)];\n\n\t\t\t\tnoise_level(4) = seed;\n\t\t\t\tsimresults{s} = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);\n\n\t\t\t\tsimresults{s}.spikes  = spikedetect(simresults{s});\t\n\t\t\t\tsimresults{s}.W = W;\n\n\t\t\t\tif not(savehist) & s>1\n\t\t\t   \t\tsimresults{s}.networkHistory = [];\n\t\t\t    end\n\n\t\t\tend\n\n\t\t\tseed = 0;\n\t\t\t\nend\n\n% [=================================================================]\n%  save with timestamp\n% [=================================================================]\n\nevalstring = ['save periodic_ampa_' nameprefix num2str(s) '_' conntype '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' date ' -v7.3']\n\neval(evalstring)\n\n\n\n\t\n\n\n",
-			"file": "scripts/HPCGPU_periodic_ampa.m",
-			"file_size": 7059,
-			"file_write_time": 131346420426712967,
-			"settings":
-			{
-				"buffer_size": 7059,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "functions/createDefaultNeurons.m",
-			"settings":
-			{
-				"buffer_size": 12034,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "scripts/NetPspace.m",
-			"settings":
-			{
-				"buffer_size": 9826,
 				"line_ending": "Unix"
 			}
 		}
@@ -125,12 +41,16 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 0.0,
-		"last_filter": "",
+		"height": 392.0,
+		"last_filter": "packa",
 		"selected_items":
 		[
+			[
+				"packa",
+				"Package Control: Install Package"
+			]
 		],
-		"width": 0.0
+		"width": 449.0
 	},
 	"console":
 	{
@@ -150,39 +70,47 @@
 	},
 	"expanded_folders":
 	[
-		"/home/titanuser1/OliveTree_git"
+		"/home/titanuser1/OliveTree_git",
+		"/home/titanuser1/OliveTree_git/analysis",
+		"/home/titanuser1/OliveTree_git/functions"
 	],
 	"file_history":
 	[
-		"/home/titanuser1/OliveTree_git/functions/createDefaultNeurons.m",
-		"/home/titanuser1/OliveTree_git/analyze_clusters_bridges.m",
-		"/home/titanuser1/OliveTree_git/functions/IOnet.m",
-		"/home/titanuser1/OliveTree_git/scripts/reconstruction_clusters_and_bridges.m",
-		"/home/titanuser1/OliveTree_git/analysis/measureGlobalSync.m",
 		"/home/titanuser1/OliveTree_git/scripts/HPCGPU_periodic_ampa.m",
-		"/home/titanuser1/OliveTree_git/analysis/phase_distribution_over_time.m",
-		"/home/titanuser1/OliveTree_git/scripts/HPCGPU_periodic_ampa_test.m",
-		"/home/titanuser1/OliveTree_git/functions/kuramotoSheet.m",
-		"/home/titanuser1/OliveTree_git/analysis/measureGroupSync.m",
-		"/home/titanuser1/OliveTree_git/analysis/cluster_bridges_phaseanalysis_groupstim.m",
-		"/home/titanuser1/OliveTree_git/scripts/HPCGPU_scripts.m",
-		"/home/titanuser1/OliveTree_git/analysis/stim_trig_spikes.m",
-		"/home/titanuser1/OliveTree_git/analysis/profile_sim.m",
-		"/home/titanuser1/OliveTree_git/analysis/NDscatter.m",
-		"/home/titanuser1/OliveTree_git/scripts/Jochen_figure_gap_alignment.m",
+		"/home/titanuser1/OliveTree_git/functions/initNetState.m",
 		"/home/titanuser1/OliveTree_git/tests/cells_pspace.m",
-		"/home/titanuser1/OliveTree_git/scripts/NetPspace.m",
-		"/home/titanuser1/OliveTree_git/functions/createW.m",
-		"/home/titanuser1/OliveTree_git/analysis/saveallfigs.m",
+		"/home/titanuser1/OliveTree_git/functions/IOnet.m",
 		"/home/titanuser1/OliveTree_git/analysis/replayResults_clusters.m",
 		"/home/titanuser1/OliveTree_git/scripts/script_kuramoto.m",
-		"/home/titanuser1/OliveTree_git/tests/bla.m",
-		"/home/titanuser1/OliveTree_git/functions/initNetState.m",
-		"/home/titanuser1/OliveTree_git/analysis/analysis_NetPspace.m"
+		"/home/titanuser1/OliveTree_git/scripts/NetPspace.m",
+		"/home/titanuser1/OliveTree_git/functions/createDefaultNeurons.m",
+		"/home/titanuser1/OliveTree_git/analysis/analysis_NetPspace.m",
+		"/home/titanuser1/Downloads/Bar_training_database_lickraster_SL_V2.m",
+		"/home/titanuser1/.local/bla.m",
+		"/home/titanuser1/OliveTree_git/functions/createW.m",
+		"/home/titanuser1/OliveTree_git/scripts/HPCGPU_scripts.m",
+		"/home/titanuser1/OliveTree_git/analysis/Pascal_figures_with_without_gaps.m",
+		"/home/titanuser1/OliveTree_git/functions/kuramotoSheet.m",
+		"/home/titanuser1/OliveTree_git/functions/create_input_mask.m",
+		"/home/titanuser1/OliveTree_git/analysis/analyze_clusters_bridges.m",
+		"/home/titanuser1/OliveTree_git/analysis/NDscatter.m",
+		"/home/titanuser1/OliveTree_git/functions/plotnetstruct.m",
+		"/home/titanuser1/OliveTree_git/scripts/reconstruction_clusters_and_bridges.m",
+		"/home/titanuser1/OliveTree_git/analyze_clusters_bridges.m",
+		"/home/titanuser1/OliveTree_git/analysis/measureGlobalSync.m",
+		"/home/titanuser1/OliveTree_git/analysis/phase_distribution_over_time.m",
+		"/home/titanuser1/OliveTree_git/scripts/HPCGPU_periodic_ampa_test.m",
+		"/home/titanuser1/OliveTree_git/analysis/measureGroupSync.m",
+		"/home/titanuser1/OliveTree_git/analysis/cluster_bridges_phaseanalysis_groupstim.m",
+		"/home/titanuser1/OliveTree_git/analysis/stim_trig_spikes.m",
+		"/home/titanuser1/OliveTree_git/analysis/profile_sim.m",
+		"/home/titanuser1/OliveTree_git/scripts/Jochen_figure_gap_alignment.m",
+		"/home/titanuser1/OliveTree_git/analysis/saveallfigs.m",
+		"/home/titanuser1/OliveTree_git/tests/bla.m"
 	],
 	"find":
 	{
-		"height": 34.0
+		"height": 36.0
 	},
 	"find_in_files":
 	{
@@ -196,6 +124,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"gpuArray",
+			"bridg_curlies",
 			"gapcomp",
 			"maskstimulation",
 			"thisbri",
@@ -251,204 +181,24 @@
 	"groups":
 	[
 		{
-			"selected": 4,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "analysis/analysis_NetPspace.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 12377,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1470,
-								1470
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "analysis/analyze_clusters_bridges.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 17066,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								478,
-								478
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "analysis/NDscatter.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4997,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 11,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "functions/plotnetstruct.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6045,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1911,
-								1911
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 12,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "scripts/reconstruction_clusters_and_bridges.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 19339,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								18827,
-								18827
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 7326.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "functions/createW.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 16680,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6875,
-								6875
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2862.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
 					"file": "scripts/HPCGPU_scripts.m",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15853,
+						"buffer_size": 15867,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								12628,
-								13634
+								6125,
+								6125
 							]
 						],
 						"settings":
@@ -457,193 +207,38 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3996.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 3,
-			"sheets":
-			[
-				{
-					"buffer": 0,
-					"file": "analysis/analysis_NetPspace.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 12377,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1846,
-								1846
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "analysis/replayResults_clusters.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10239,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6696,
-								6696
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 3512.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "scripts/HPCGPU_scripts.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 15853,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6133,
-								6133
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1386.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "scripts/HPCGPU_periodic_ampa.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7059,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3620,
-								3620
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1908.0,
+						"translation.y": 704.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
-					"file": "functions/createDefaultNeurons.m",
+					"buffer": 1,
+					"file": "scripts/Jochen_Xcorr_comparisons.m",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12034,
+						"buffer_size": 2086,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								1896,
+								1896
 							]
 						],
 						"settings":
 						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "scripts/NetPspace.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9826,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2528,
-								2528
-							]
-						],
-						"settings":
-						{
-							"history_list_is_closing": true,
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 10,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -651,11 +246,11 @@
 	],
 	"incremental_find":
 	{
-		"height": 26.0
+		"height": 28.0
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 29.0
 	},
 	"layout":
 	{
@@ -666,18 +261,11 @@
 				0,
 				1,
 				1
-			],
-			[
-				1,
-				0,
-				2,
-				1
 			]
 		],
 		"cols":
 		[
 			0.0,
-			0.5,
 			1.0
 		],
 		"rows":
@@ -695,7 +283,7 @@
 	"project": "Olive-Titan.sublime-project",
 	"replace":
 	{
-		"height": 48.0
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -705,12 +293,64 @@
 		"selected_items":
 		[
 			[
-				"period",
+				"jochen",
+				"scripts/Jochen_Xcorr_comparisons.m"
+			],
+			[
+				"",
 				"scripts/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"ampa",
+				"scripts/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"ione",
+				"functions/IOnet.m"
 			],
 			[
 				"create",
 				"functions/createDefaultNeurons.m"
+			],
+			[
+				"cells",
+				"tests/cells_pspace.m"
+			],
+			[
+				"cellsp",
+				"tests/cells_pspace.m"
+			],
+			[
+				"netp",
+				"scripts/NetPspace.m"
+			],
+			[
+				"kura",
+				"scripts/script_kuramoto.m"
+			],
+			[
+				"pascal",
+				"analysis/Pascal_figures_with_without_gaps.m"
+			],
+			[
+				"crea",
+				"functions/createDefaultNeurons.m"
+			],
+			[
+				"reconstr",
+				"scripts/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"net",
+				"scripts/NetPspace.m"
+			],
+			[
+				"plot",
+				"functions/plotnetstruct.m"
+			],
+			[
+				"period",
+				"scripts/HPCGPU_periodic_ampa.m"
 			],
 			[
 				"results",
@@ -733,16 +373,8 @@
 				"scripts/HPCGPU_scripts.m"
 			],
 			[
-				"netp",
-				"scripts/NetPspace.m"
-			],
-			[
 				"netps",
 				"analysis/analysis_NetPspace.m"
-			],
-			[
-				"plot",
-				"functions/plotnetstruct.m"
 			],
 			[
 				"analy",
@@ -761,10 +393,6 @@
 				"analysis/NDscatter.m"
 			],
 			[
-				"reconstr",
-				"scripts/reconstruction_clusters_and_bridges.m"
-			],
-			[
 				"measure",
 				"analysis/measureGlobalSync.m"
 			],
@@ -781,20 +409,12 @@
 				"scripts/Jochen_figure_gap_alignment.m"
 			],
 			[
-				"cells",
-				"tests/cells_pspace.m"
-			],
-			[
 				"profil",
 				"analysis/profile_sim.m"
 			],
 			[
 				"stim",
 				"analysis/stim_trig_spikes.m"
-			],
-			[
-				"jochen",
-				"scripts/Jochen_figure_gap_alignment.m"
 			],
 			[
 				"perio",
@@ -813,24 +433,12 @@
 				"scripts/Jochen_figure_gap_alignment.m"
 			],
 			[
-				"ampa",
-				"scripts/HPCGPU_periodic_ampa.m"
-			],
-			[
 				"h",
 				"scripts/HPCGPU_scripts.m"
 			],
 			[
-				"net",
-				"scripts/NetPspace.m"
-			],
-			[
 				"createw",
 				"functions/createW.m"
-			],
-			[
-				"crea",
-				"functions/createDefaultNeurons.m"
 			],
 			[
 				"saveall",
@@ -843,10 +451,6 @@
 			[
 				"scrip",
 				"scripts/script_kuramoto.m"
-			],
-			[
-				"kura",
-				"functions/kuramotoSheet.m"
 			],
 			[
 				"kuramo",
@@ -871,10 +475,6 @@
 			[
 				"inni",
 				"functions/initNetState.m"
-			],
-			[
-				"ione",
-				"functions/IOnet.m"
 			]
 		],
 		"width": 0.0
@@ -905,7 +505,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 315.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
