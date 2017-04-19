@@ -26,7 +26,7 @@ if ~exist('simtype')    	; simtype  = '1Hz'	  ; end
 if ~exist('conntype')   	; conntype = 'iso'	  ; end
 if ~exist('numruns')    	; numruns  = 2    	  ; end
 if ~exist('sametoall')  	; sametoall = 0.1 	  ; end
-if ~exist('tau')	    	; tau = 20  		  ; end
+if ~exist('tau')	    	; tau = 30  		  ; end
 if ~exist('noisesig')   	; noisemu = 0		  ; end
 if ~exist('noisemu')    	; noisesig = 0.7	  ; end
 if ~exist('gaps')	    	; gaps = 0.04 	      ; end
@@ -36,7 +36,7 @@ if ~exist('moreoscillation'); moreoscillation = 0 ; end
 if ~exist('nameprefix')  	; nameprefix ='missg' ; end
 if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
-if ~exist('rd')  			; rd = 3		      ; end % radius
+if ~exist('rd')  			; rd = 2		      ; end % radius
 if ~exist('netsize')  		; netsize = [2 10 10] ; end % radius
 
  

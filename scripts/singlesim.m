@@ -8,11 +8,11 @@
 % gap = eps;  noisesig = -.1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 0; conntype = 'iso' ;  gapcomp = 0;
 
 
-% gap = 0.05;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
-gap = eps;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 10;
+gap = 0.04;  noisesig = .4; noiseamp = -.4 ; tau = 30; sametoall = 0.15; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
+% gap = eps;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 10;
 
 dt = 0.025;
-simtime = 10000;
+simtime = 1000;
 gpu = 1;
 % [=================================================================]
 %  % apply defaults
@@ -106,8 +106,6 @@ end
 %  (__  ) / / / / / / /_/ / / /_/ / /_/  __/
 % /____/_/_/ /_/ /_/\__,_/_/\__,_/\__/\___/ 
             
-rng(0,'twister')                              
-
 
 displaytext = ['singlesim'];
 rng(seed,'twister')

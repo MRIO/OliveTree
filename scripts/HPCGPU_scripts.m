@@ -99,18 +99,19 @@ if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench2')
 
 
 	for val = [30]
-		nameprefix = [thisnameprefix 'tau_' num2str(val)];
+		nameprefix = [thisnameprefix '_tau_' num2str(val)  '_MT'];
 		seed = 0; gaps = [eps]; simtime = 50000; tau = val; noisesig = .4; noisemu = -.4; sametoall = 0.15; simtype = '1Hz'; conntype = 'iso' ; numruns = 4;  nogapcomp = 20; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+		nameprefix = [thisnameprefix '_tau_' num2str(val)  '_WT'];
 		seed = 0; gaps = [0.04]; simtime = 50000; tau = val; noisesig = .4; noisemu = -.4; sametoall = 0.15; simtype = '1Hz'; conntype = 'iso' ; numruns = 4; nogapcomp = 0; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 	end
 
 	clear simresults, netsize = [8 1 1];
-	thisnameprefix = 'xcorr_tau_eta_pspace_'
+	thisnameprefix = '_tau_eta_pspace_'
 
 	for val_tau = [10 20 30 40 50 60]
 		for val_eta = [0 .1 .2 .3]
 	
-		nameprefix = [thisnameprefix 'tau_eta_' num2str(val) num2str(eta)];
+		nameprefix = [thisnameprefix 'tau_eta_' num2str(val_tau) num2str(val_eta)];
 		seed = 0; gaps = [eps]; simtime = 50000; tau = val_tau; noisesig = .4; noisemu = -.4; sametoall = val_eta; simtype = 'spont'; conntype = 'iso' ; numruns = 1;  nogapcomp = 20; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 		seed = 0; gaps = [0.04]; simtime = 50000; tau = val_tau; noisesig = .4; noisemu = -.4; sametoall = val_eta; simtype = 'spont'; conntype = 'iso' ; numruns = 1; nogapcomp = 0; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 		end

@@ -231,8 +231,6 @@ if plotthem
 		
 		% Ptable = [sc gp nc na fr ];
 
-
-	figure
 		[v id] = max(XCs{1}(:,lag+1));
 		
 		highlighted_pair = id;  % pairs(1);
@@ -246,7 +244,9 @@ if plotthem
 		set(0,'defaultaxescolororder', flip(corder))
 		colormap(cmap)
 
+
 	if 0	
+		figure
 		axi(1) = subplot(6,1,1);
 	
 	
@@ -315,7 +315,7 @@ if plotthem
 		linkaxes(axi([3 4 6]),'x')
 		linkaxes(axi([1 2 5]),'x')
 
-end
+	end
 
 		if 0
 			figure
@@ -340,7 +340,6 @@ end
 
 
 
-figure
 		[v id] = max(XCs{1}(:,lag+1));
 		
 		highlighted_pair = id;  % pairs(1);
@@ -354,13 +353,16 @@ figure
 		set(0,'defaultaxescolororder', flip(corder))
 		colormap(cmap)
 
-	figure	
+figure	
+	interval = [5000:8000];
+
+
 		axi(1)= axes;
 	
 	
-			plot(0:1000, VSoma(selectedneurons,5500:6500))
+			plot(interval, VSoma(selectedneurons,interval))
 			hold on, 
-			plot(0:1000, VSoma(selectedneurons(highlighted_cells),5500:6500),'r','linewidth',2)
+			plot(interval, VSoma(selectedneurons(highlighted_cells),interval),'r','linewidth',2)
 			
 			xlabel('ms')
 			ylabel('mV')
@@ -368,8 +370,7 @@ figure
 
 figure
 		axi(2)= axes;
-			imagesc(VSoma(selectedneurons,5500:6500))
-			% imagesc(VSoma(:,5500:6500))
+			imagesc(interval, [1:length(selectedneurons)], VSoma(selectedneurons,interval))
 			xlabel('ms')
 			ylabel('neurons')
 			set(gca,'clim',[-70 -20])
@@ -385,13 +386,13 @@ figure
 			xlabel('ms')
 			ylabel('correlation (coeff)')
 			xlabel('individual cross-correlations (sample)')
-			set(gca,'clim',[0 0.01])
+			set(gca,'clim',[0 0.005])
 figure
 		axi(4)= axes;
 			area([-lag: lag], XCs{1}')
 			xlabel('lag(ms)')
 			ylabel('aggregate coeff')
-			ylim([0 0.7])
+			ylim([0 0.3])
 
 
 figure
@@ -401,7 +402,7 @@ figure
 			if nwins == 2
 				line([zeros(size(delay(1,:))) ; ones(size(delay(1,:)))  ], [delay(1,:); delay(2,:)])
 			else
-				imagesc(VSoma(:,5500:6500))
+				imagesc(interval, [1:noneur], VSoma(:,interval))
 				% [v_  sortord] = sort(XCs{1}(:,lag+1));
 				% imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
 				set(gca,'clim',[-65 -30])

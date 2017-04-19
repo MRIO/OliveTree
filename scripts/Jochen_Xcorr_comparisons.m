@@ -9,18 +9,16 @@
 load periodic_ampa_increasing_Tau_tau_308_iso_1Hz_50000_4_.mat 
  
 js{3} = joinsim(simresults, [1:4])
-js{4} = joinsim(simresults, [5:8])
 
-
-neighbors = retrieveNeuronsByClass(js{4}, 'neighbors');
-nextneighbors = retrieveNeuronsByClass(js{4}, 'nextneighbors');
-stimulated= retrieveNeuronsByClass(js{4}, 'stimulated');
-nonstimulated= setdiff(randperm(200,10), stimulated);
-stimulated= stimulated(1:10);
-nextneighbors= nextneighbors(1:10);
+neighbors 		= retrieveNeuronsByClass(js{3}, 'neighbors');
+nextneighbors 	= retrieveNeuronsByClass(js{3}, 'nextneighbors');
+stimulated 		= retrieveNeuronsByClass(js{3}, 'stimulated');
+nonstimulated 	= setdiff(randperm(200,10), stimulated);
+stimulated 		= stimulated(1:10);
+nextneighbors 	= nextneighbors(1:10);
 
 % compare neighbor cells with and without gap junctions
-XC_stim_WT = xcorr_summa(js{4}, 'selectedneurons', stimulated(1:9))
+XC_stim_WT = xcorr_summa(js{3}, 'selectedneurons', stimulated)
 saveallfigs('prefix', 'xcorr_stim_WT', 'style', '7x7')
 close all
 

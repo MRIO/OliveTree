@@ -30,8 +30,8 @@ if ~exist('transients')
 	% fname = '/Users/M/Synced/Titan/Bench/netpspace/tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
 	% dimnames = {'sametoall', 'tau', 'gap' };
 
-	% fname = 'sigXmu_0corr_netpspace98_iso_3000_28-Jun-2016.mat'
-	% dimnames = {'noisesig', 'noiseamp', 'gap' };
+	fname = 'sigXmu_0corr_netpspace98_iso_3000_28-Jun-2016.mat'
+	dimnames = {'noisesig', 'noiseamp', 'gap' };
 
 	% fname = 'RADIUS_X_NCORR_netpspace25_iso_3000_28-Jun-2016.mat'
 	% dimnames = { 'radius', 'corr',	 'gap' };
@@ -40,8 +40,8 @@ if ~exist('transients')
 	% fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
 	% dimnames = { 'noisesig', 'noiseamp', 'gap' };	
 
-	fname = 'gapcomp_corr_R2_g04_netpspace24_iso_6000_06-Apr-2017.mat';
-	dimnames = { 'gap', 'gapcomp', 'noisesig' };	
+	% fname = 'gapcomp_corr_R2_g04_netpspace24_iso_5000_14-Apr-2017';
+	% dimnames = { 'gap', 'gapcomp', 'noisesig' };	
 
 	
 	[pth fnm] = fileparts(fname)
@@ -65,7 +65,7 @@ end
 plottraces = 0;
 	% sims2plot = [];
 	sims2plot = 1:length(transients);
-	tslice = [1000:6000];
+	tslice = [1000:simtime];
 
 
 summarize = 1;
