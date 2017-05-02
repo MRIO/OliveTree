@@ -174,7 +174,7 @@ pairs = find(triu(ones(N) - eye(N))');
 		end
 
 
-	delay = delay - centerwin +1 ;
+	delay = delay - centerwin + 1 ;
 
 
 vsomacorr = 0;
@@ -284,6 +284,7 @@ if plotthem
 			xlabel('lag(ms)')
 			ylabel('aggregate coeff')
 			ylim([0 0.7])
+			colormap(cmap)
 
 
 			
@@ -297,6 +298,8 @@ if plotthem
 				% [v_  sortord] = sort(XCs{1}(:,lag+1));
 				% imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
 				set(gca,'clim',[-65 -30])
+				xlabel('ms')
+			ylabel('neurons')
 			end
 
 
@@ -348,13 +351,14 @@ if plotthem
 		
 
 
-		corder = cbrewer('seq', 'Greys',50);
-		cmap = cbrewer('div', 'Spectral',128);
+		corder = cbrewer('seq', 'Greys',length(selectedneurons));
+		cmap = flipud(cbrewer('div', 'Spectral',128));
 		set(0,'defaultaxescolororder', flip(corder))
-		colormap(cmap)
+
+		
 
 figure	
-	interval = [5000:8000];
+	interval = [6000:7000];
 
 
 		axi(1)= axes;
@@ -374,6 +378,7 @@ figure
 			xlabel('ms')
 			ylabel('neurons')
 			set(gca,'clim',[-70 -20])
+			colormap(cmap)
 
 figure
 		axi(3)= axes;
@@ -387,12 +392,14 @@ figure
 			ylabel('correlation (coeff)')
 			xlabel('individual cross-correlations (sample)')
 			set(gca,'clim',[0 0.005])
+			colormap(cmap)
 figure
 		axi(4)= axes;
 			area([-lag: lag], XCs{1}')
 			xlabel('lag(ms)')
 			ylabel('aggregate coeff')
 			ylim([0 0.3])
+			colormap(cmap)
 
 
 figure
@@ -406,7 +413,11 @@ figure
 				% [v_  sortord] = sort(XCs{1}(:,lag+1));
 				% imagesc([-lag: lag], 1:length(pairs), XCs{1}(sortord,:))
 				set(gca,'clim',[-65 -30])
+				xlabel('ms')
+				ylabel('neurons')
+
 			end
+			colormap(cmap)
 
 figure 
 		axi(6) = axes;

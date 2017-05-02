@@ -636,8 +636,8 @@ if spectral_clustering
 
 
 
-	for ss = 1:3
-		ss = 5;
+	% for ss = 1:3
+		ss = 3;
 		PD = phase_distribution_over_time(sims{ss}, 'duration', [2000:5000]);
 		ph = PD.phases.pop{2};
 		x = sin(ph(:,2000:5000));
@@ -647,8 +647,7 @@ if spectral_clustering
 		c = spect_clust(rho, 50);
 		[bic, aic] = baic(x, c);
 
-
-	end
+	% end
 
 
 

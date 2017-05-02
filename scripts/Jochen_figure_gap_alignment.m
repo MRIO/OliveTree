@@ -165,15 +165,15 @@ R{1} = profile_sim(simresults{1});
 R{2} = profile_sim(simresults{2});
 
 for c = 1:noneurons
-	[iii PKS POS]  = find(simresults{1}.networkHistory.V_soma(c,150:600)>-65,1,'first');
-	ADPD(c) = POS(1)-100;
+	[V_ POS]  = find(simresults{1}.networkHistory.V_soma(c,150:600)>-65,1,'first');
+	ADPD(c) = POS(1)-51;
 end
 R{1}.allneurons = horzcat(R{1}.allneurons,table(ADPD'));
 R{1}.allneurons.Properties.VariableNames{39} = 'ADPD';
 
 for c = 1:noneurons
-	[iii PKS POS]  = find(simresults{2}.networkHistory.V_soma(c,150:600)>-65,1,'first');
-	ADPD(c) = POS(1)-100;
+	[V_ POS]  = find(simresults{2}.networkHistory.V_soma(c,150:600)>-65,1,'first');
+	ADPD(c) = POS(1)-51;
 end
 R{2}.allneurons = horzcat(R{2}.allneurons,table(ADPD'));
 R{2}.allneurons.Properties.VariableNames{39} = 'ADPD';
@@ -181,11 +181,14 @@ R{2}.allneurons.Properties.VariableNames{39} = 'ADPD';
 
 stacked = vertcat(R{2}.allneurons,R{1}.allneurons);
 G = [ones(noneurons,1)*2 ;ones(noneurons,1)*1];
-sel_fields = {'ampl', 'freq_each', 'g_CaL', 'g_h' , 'ADPD'};
-NDscatter(stacked(:,sel_fields), G);
+sel_fields = {'ampl', 'freq_each', 'ADPD'};
+NDscatter(stacked(:,sel_fields), G,'colors', [  0.7961    0.0941    0.1137;  0.4314    0.6902    0.8431]);
 
+%  0.7961    0.0941    0.1137
+%  0.1294    0.4431    0.7098
 
-
+% 0.4314    0.6902    0.8431
+% 0.9843    0.4275    0.2980
 
 % figure
 % imagesc(st_st.networkHistory.V_soma,[-80 -20]), colorbar
@@ -199,6 +202,7 @@ NDscatter(stacked(:,sel_fields), G);
 % p = plot([1:steadystate_time],   st_st.networkHistory.V_soma');
 % legend(num2str(Plist))
 
+if 1
 
 figure
 imagesc(simresults{1}.networkHistory.V_soma,[-80 -20]), colorbar
@@ -209,15 +213,19 @@ figure
 imagesc(simresults{2}.networkHistory.V_soma,[-80 -20]), colorbar
 set(gca,'ytick', [1:noneurons],'yticklabel', num2str(Plist),'fontsize',8)
 % title([num2str(spks.popfrequency) ' Hz'])
+end
 
 
 figure
 ca = axis;
-set(0,'defaultaxescolororder', linspecer(length(Plist)));
+cmap1= cbrewer('seq', 'Reds', length(Plist));
+set(0,'defaultaxescolororder', cmap1);
 p = plot([1:simtime],   simresults{1}.networkHistory.V_soma');
-legend(num2str(Plist))
+% legend(num2str(Plist))
 
 figure
+cmap2= cbrewer('seq', 'Blues', length(Plist));
+set(0,'defaultaxescolororder', cmap2);
 p = plot([1:simtime],   simresults{2}.networkHistory.V_soma');
 % R = replayResults(simresults{1})
 
@@ -227,12 +235,12 @@ p = plot([1:simtime],   simresults{2}.networkHistory.V_soma');
 % figure, plot(transients.networkHistory.V_soma',transients.networkHistory.Calcium_r'),legend(num2str(Plist)),title('V vs Calcium\_r')
 
 
- pos = subplus(simresults{2}.networkHistory.I_cx36');
- neg = -subplus(-simresults{2}.networkHistory.I_cx36');
+%  pos = subplus(simresults{2}.networkHistory.I_cx36');
+%  neg = -subplus(-simresults{2}.networkHistory.I_cx36');
 
-area([pos ; neg])
+% area([pos ; neg])
 
-	receiving = area(pos,'edgecolor','none'), hold on
-	donating  = area(neg,'edgecolor','none')
+% 	receiving = area(pos,'edgecolor','none'), hold on
+% 	donating  = area(neg,'edgecolor','none')
 
 
