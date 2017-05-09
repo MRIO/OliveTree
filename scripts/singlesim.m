@@ -8,16 +8,18 @@
 % gap = eps;  noisesig = -.1; noiseamp = .1 ; tau = 10; sametoall = 0.0; spont = 0; conntype = 'iso' ;  gapcomp = 0;
 
 
-gap = 0.04;  noisesig = .4; noiseamp = -.4 ; tau = 30; sametoall = 0.15; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
+% gap = 0.04;  noisesig = .4; noiseamp = -.4 ; tau = 30; sametoall = 0.15; spont = 0; conntype = 'iso' ;  gapcomp = 0;
+% gap = eps;  noisesig = .4; noiseamp = -.4 ; tau = 30; sametoall = 0.15; spont = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 % gap = eps;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 10;
 
 dt = 0.025;
-simtime = 1000;
+
 gpu = 1;
+to_report = {'V_soma' 'V_dend'};
 % [=================================================================]
 %  % apply defaults
 % [=================================================================]
-
+if ~exist('simtime');			simtime = 1000; end
 if ~exist('conntype');	 		conntype  = 'iso'; end
 if ~exist('spont'); 	 		spont  = 0; end
 if ~exist('saveappliednoise');  saveappliednoise = 1; end
@@ -70,13 +72,14 @@ end
 	else
 		neurons = createDefaultNeurons(noneurons,'celltypes','randomized','nogapcompensation',gapcomp);
 	end
-	neurons.gbar_ampa_soma = .05*ones(noneurons,1) + .02*rand(noneurons,1);
+	% neurons.gbar_ampa_soma = .05*ones(noneurons,1) + .02*rand(noneurons,1);
+	% neurons.gbar_ampa_dend = .05*ones(noneurons,1) + .02*rand(noneurons,1);
 
 %============================= perturbation ==============================%
 
 
 
-if not(spont)
+if not(spont) & not(exist('pert'))
 	rng(seed,'twister')
 	pert.mask{1}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', 2, ...
 					'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',1,'plotme',0);
@@ -84,15 +87,18 @@ if not(spont)
 	pert.type{1}	  = 'ampa';
 	pert.duration{1}  = 1;
 	% pert.triggers{1} = [500 504 508 512 516 850 854 858];
-	pert.triggers{1} = [1500];
+	pert.triggers{1} = [301:4:312];
 
 
-	% pert.mask{2}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', 2, ...
-	% 				'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',1,'plotme',0);
-	% pert.amplitude{2} = 2;
-	% pert.type{2}	  = 'ampa';
-	% pert.duration{2}  = 1;
-	% pert.triggers{2} = [500 504 508 512 516 850 854 858];
+	pert.mask{2}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', 2, ...
+					'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',1,'plotme',0);
+	pert.amplitude{2} = 2;
+	pert.type{2}	  = 'ampa_dend';
+	pert.duration{2}  = 1;
+	pert.triggers{2} = [501:4:512];
+elseif not(spont) & exist('pert')
+	% use passed pert
+	displaytest = ['using pert....'];
 else
 	pert = [];
 end
@@ -113,7 +119,7 @@ rng(seed,'twister')
 simresults = IOnet('networksize', netsize,'time',simtime,'delta',dt,...
 	'cell_parameters',neurons,'W',W.W*gap ,...
 	'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,...
-	'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
+	'saveappliednoise',saveappliednoise, 'displaytext',displaytext , 'to_report', to_report);
 
 
 

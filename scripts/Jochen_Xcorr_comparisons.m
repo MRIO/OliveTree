@@ -95,6 +95,9 @@ XX(5,:) = sum(XC_NEIG_WT .XC{1});
 XX(6,:) = sum(XC_NEIG_MT .XC{1});
 
 
-plot(XX', 'linewidth',3)
+plot([-400:400], XX', 'linewidth',3)
+axis tight
+xlabel('lag (ms)')
+ylabel('sum of correlations for selected cells (N=10)')
 legend({'stim WT; corr = .15' 'no stim WT; corr = .15' 'stim MT; corr = .15' 'no stim MT; corr = .15' 'NEIGH WT; corr = 0' 'NEIGH MT; corr = 0'})
 
