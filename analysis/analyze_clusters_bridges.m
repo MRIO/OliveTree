@@ -702,7 +702,7 @@ randstim_carpet_diffs = 1;
 if randstim_carpet_diffs
 	clear
 	load curlies_bridges_randmaskstim22-Mar-2017.mat
-	tslice = [2500:6500];;
+	tslice = [2500:6500];
 	for ii = 1:3
 		H{ii} = hilbert_of_membranepotential(sim_RM{ii}.networkHistory.V_soma(:,tslice));
 	end
@@ -710,14 +710,6 @@ if randstim_carpet_diffs
 	[v ord] = sort(clusters);
 	oord = ord(~bc);
 	
-	f100 = figure;
-		ax(1) = subplot(3,1,1);
-		imagesc(H{1}.hilbert(oord,:))
-		ax(2) = subplot(3,1,2);
-		imagesc(H{2}.hilbert(oord,:))
-		ax(3) = subplot(3,1,3);
-		imagesc(H{3}.hilbert(oord,:))
-
 
 
 	load curlies_bridges_nostim22-Mar-2017
@@ -727,15 +719,31 @@ if randstim_carpet_diffs
 	end
 
 
-	f101 = figure;
+	for s = 1:6
+		for g = 1:50;
+			GS{s}(g,:) = abs(mean(H{s}.hilbert(clusters==g,:))) ;
+		end
+	end
+
+
+
+	f100 = figure;
+			
+	oord = ord(~bc(ord))
+	ax(1) = subplot(2,3,1);
+		imagesc(H{1}.hilbert(oord,:))
+		ax(2) = subplot(2,3,2);
+		imagesc(H{2}.hilbert(oord,:))
+		ax(3) = subplot(2,3,3);
+		imagesc(H{3}.hilbert(oord,:))
 
 		
-		oord = ord(~bc(ord))
-		ax(1) = subplot(3,1,1);
+		
+		ax(4) = subplot(2,3,4);
 		imagesc(H{4}.hilbert(oord,:))
-		ax(2) = subplot(3,1,2);
+		ax(5) = subplot(2,3,5);
 		imagesc(H{5}.hilbert(oord,:))
-		ax(3) = subplot(3,1,3);
+		ax(6) = subplot(2,3,6);
 		imagesc(H{6}.hilbert(oord,:))
 end
 
@@ -755,12 +763,6 @@ if measuregropusync
 end
 
 
-	for s = 1:3
-		for g = 1:50;
-			groupsync{g} = measureGroupSync(sim_nostim{s}, 'duration',[2500:4500], 'plotme', 0, 'group', find(sim_nostim{s}.W.stats.clusters==g));
-			GS{s}(g,:) = groupsync{g}.hilbert.order_parameter;
-		end
-	end
 
 
 	f102 = figure;

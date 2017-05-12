@@ -2,8 +2,8 @@
 
 if [ -n "$1" ]; then
 	echo $1
+	git add .; git commit -m "$1"; git push
 else
-	$1="small changes"
+	git add .; git commit -m "small changes"; git push
 fi
 
-git add .; git commit -m "$1"; git push
