@@ -5,7 +5,7 @@ savemovie = 1;
 frames2file = 0;
 plotdiffact = 0;
 if plotdiffact
-	 clims = [-5 5];
+	 clims = [0 2*pi];
 else
 	clims = [-68 -40];
 end
@@ -53,15 +53,16 @@ for tt = 1:size(V_soma_unwrapped,2)
 	% CCCC = convn(VVVV, g3d3, 'same');
 	% VVVV = CCCC;
 	CCCC = imerode(VVVV,g3d3);
+	% CCCC = imdilate(VVVV,g3d3);
 
 	set(0,'CurrentFigure',fig_volume);
     % set(fig1,'CurrentAxes',a(3));
 
     if plotdiffact
     	AAA = abs(CCCC);
-		AAA(AAA<5)  = 1;
+		AAA(AAA<0)  = 0;
 		AAA(AAA==0) = 0;
-		AAA(AAA>5)  = 1;
+		AAA(AAA>=0)  = 1;
 		AAA =AAA*.25;
 
     else

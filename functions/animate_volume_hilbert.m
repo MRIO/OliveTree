@@ -1,6 +1,6 @@
 % animate_volume.m
 
-function animate_volume(sim,frames, savemovie, varargin)
+function animate_volume_hilbert(sim,frames, savemovie, varargin)
 
 backgroundcolor = 'dark';
 backgroundcolor = 'light';
@@ -9,7 +9,7 @@ plotvol = 1;
 trigger = 1;
 showcolorbar = 1;
 scatterit = 1;
-printframes = true;
+printframes = false;
 
 if nargin==4
 	interpv = varargin{1};
@@ -95,38 +95,38 @@ end
 
 
 
-f = figure('position', [440 37 481 761]);
+% f = figure('position', [440 37 481 761]);
 
 
 
-switch backgroundcolor
-	case 'light'
-		try
-			% load activity_cmap_hot
-			load activity_cmap_hot
-			cm = cmap;
-		catch
-			cm = hot(40); 
-		end
-		try
-		cm  = flipud(cbrewer('div', 'RdBu', 40));
-		catch
-		end
+% switch backgroundcolor
+% 	case 'light'
+% 		try
+% 			% load activity_cmap_hot
+% 			load activity_cmap_hot
+% 			cm = cmap;
+% 		catch
+% 			cm = hot(40); 
+% 		end
+% 		try
+% 		cm  = flipud(cbrewer('div', 'RdBu', 40));
+% 		catch
+% 		end
 
-		% !cm = bone(40);
-		set(f,'colormap', cm,'color', [1 1 1])
+% 		% !cm = bone(40);
+% 		set(f,'colormap', cm,'color', [1 1 1])
 
-	case 'dark'
-		try
-			% load activity_cmap_hot
-			load activity_cmap_jet
-			cm = cmap;
-		catch
-			cm = jet(40); 
-		end
+% 	case 'dark'
+% 		try
+% 			% load activity_cmap_hot
+% 			load activity_cmap_jet
+% 			cm = cmap;
+% 		catch
+% 			cm = jet(40); 
+% 		end
 		
-		set(f,'colormap', cm,'color', [.2 .2 .2])
-	end
+% 		set(f,'colormap', cm,'color', [.2 .2 .2])
+% end
 
 if savemovie
 	% fname = [num2str(rows) 'x' num2str(columns) '_.avi']
@@ -195,6 +195,7 @@ end
 HH = hilbert_of_membranepotential(sim.networkHistory.V_soma(:,frames));
 HHH = HH.hilbert;
 
+figure; imagesc(HHH)
 
 
 
@@ -222,32 +223,26 @@ HHH = HH.hilbert;
 				NNNN(NNNN==0)=1;
 				VVVV = VVVV./NNNN;
 				
+
 				% CCCC = interp3(VVVV, 3);
 				% CCCC = convn(VVVV, g3d3, 'same');
 				% VVVV = CCCC;
-				CCCC = imerode(VVVV,g3d3);
+				CCCC = imdilate(VVVV,g3d3);
 
 				set(0,'CurrentFigure',fig_volume);
 			    % set(fig1,'CurrentAxes',a(3));
 
 
-			    AAA = CCCC;
-				AAA(CCCC>-35) = 1;
-				AAA(AAA<=-35) = 0;
-
-				% VVVV(VVVV>-50) = -45;
-				% VVVV(VVVV<-67) = -67;
-				% VVVV(1,1,1) = -67; 
-				% VVVV(1,2,1) = -50;
+			    AAA = CCCC>.1;
 
 				cla(ax_volume)
-				set(ax_volume, 'clim',[-60 -40])
+				set(ax_volume, 'clim',[0 2*pi])
 				
-				vol3d('cdata',CCCC, 'Alpha', ~AAA*.25 , 'texture','3D');
+				vol3d('cdata',CCCC, 'Alpha', AAA*.25 , 'texture','3D');
 
 
 				if tt==1;view(3) ; view(-22,-56.4);axis off; axis tight;  daspect([1 1 1]);end
-				title([num2str(time_slice(tt)) 'ms'])
+				title([num2str(frames(tt)) 'ms'])
 				drawnow
 				if savemovie
 					writeVideo(vidObj, getframe(fig_volume))
