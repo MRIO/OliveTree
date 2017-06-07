@@ -10,6 +10,7 @@ plotreconstruction = 0;
 plotselectedclusters = 0;
 	makevideo = 0
 plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
+distance_histogram = 0;
 
 plotclustermemberaverages = 0;
 
@@ -93,7 +94,7 @@ if plotconnectivityhistogram
 end
 
 
-distance_histogram = 1;
+
 if distance_histogram
 	[rr cc v_] = find(bridg_curlies.W);
 	 %overall distance matrix
@@ -709,8 +710,6 @@ if randstim_carpet_diffs
 
 	[v ord] = sort(clusters);
 	oord = ord(~bc);
-	
-
 
 	load curlies_bridges_nostim22-Mar-2017
 
