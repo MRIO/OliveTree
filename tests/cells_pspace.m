@@ -21,7 +21,7 @@ clear
 rng(0,'twister')
 gpu = 1;
 
-debugging = 1;
+debugging = 0;
 % [=================================================================]
 %  simulation parameters
 % [=================================================================]
@@ -31,7 +31,7 @@ delta = .02;
 cell_function = 'vanilla'; % 'devel'
 nconn = 3;
 
-steadystate_time = 400	;
+steadystate_time = 1000;
 simtime  = 1000;
 
 % currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
@@ -56,7 +56,7 @@ gaps = [0];
 
 pspace_type = 'pgrid';
 % pspace_type = 'randomized';%
- pspace_type = '2p_sweep';
+ % pspace_type = '2p_sweep';
 switch pspace_type
 
 
@@ -70,7 +70,9 @@ switch pspace_type
 
 	case '2p_sweep'
 	
-	def_neurons = createDefaultNeurons(1,'celltypes','param_sweep','Pnames',{'g_CaL' ; 'g_int'});
+	% def_neurons = createDefaultNeurons(1,'celltypes','param_sweep','Pnames',{'g_CaL' ; 'g_int'});
+	def_neurons = createDefaultNeurons(1,'celltypes','psweep_gh_gcal');
+	
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
 	noneurons = length(Plist);
@@ -80,16 +82,16 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [1]; 		% CalciumL - conductance range
+	p1 = [1 2 3]; 		% CalciumL - conductance range
 	p2 = [0];      	    % g_h_s
 	p3 = [.15]; 	% g_int
-	p4 = [1.2];      	% g_h
-	p5 = [.1]; % ratio soma dendrite
-	p6 = [35 45 55];	% Ca act Potassium: not voltage dependent 
-	p7 = [4.5]; % Ca High threshold
-	p8 = [016];    % leak
-	p9 = [016];; % arbitrary
-	p10 = [.1:.2:.8];; % arbitrary
+	p4 = [0 1];      	% g_h
+	p5 = [.15]; % ratio soma dendrite
+	p6 = [35 55 85];	% Ca act Potassium: not voltage dependent 
+	p7 = [4.5 6.5]; % Ca High threshold
+	p8 = [0.013 0.016];    % leak
+	p9 = [0.013 0.016];; % leak
+	p10 = [0];; % arbitrary
 
 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9} p{10}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10);
 

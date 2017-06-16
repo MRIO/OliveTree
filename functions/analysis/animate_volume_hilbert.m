@@ -7,9 +7,9 @@ backgroundcolor = 'light';
 
 plotvol = 1; 
 trigger = 1;
-showcolorbar = 1;
+showcolorbar = 0;
 scatterit = 1;
-printframes = false;
+printframes = true;
 
 if nargin==4
 	interpv = varargin{1};
@@ -192,13 +192,10 @@ if isempty(frames)
 	frames = 1:simtime;
 end
 
-HH = hilbert_of_membranepotential(sim.networkHistory.V_soma(:,frames));
+HH = hilbert_of_membranepotential(sim.networkHistory.V_soma(:,frames(1):frames(end)));
 HHH = HH.hilbert;
 
 figure; imagesc(HHH)
-
-
-
 
 
 			
@@ -214,10 +211,10 @@ figure; imagesc(HHH)
 
 			fig_volume = figure('color', [1 1 1]);
 			ax_volume = axes;
-			colormap(ax_volume, jet(32));
-			colorbar
+			colormap(ax_volume, linspecer(128));
+			% colorbar
 
-			for tt = 1:length(frames)
+			for tt = frames-frames(1)+1;
 				VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), HHH(:,tt));
 				NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), 1);
 				NNNN(NNNN==0)=1;
@@ -241,12 +238,23 @@ figure; imagesc(HHH)
 				vol3d('cdata',CCCC, 'Alpha', AAA*.25 , 'texture','3D');
 
 
-				if tt==1;view(3) ; view(-22,-56.4);axis off; axis tight;  daspect([1 1 1]);end
-				title([num2str(frames(tt)) 'ms'])
+				if tt==1;view(3) ; view(-22,-56.4);axis off; axis tight;  daspect([1 1 1]); axis equal; end
+				title([num2str(frames(1)+ tt) 'ms'])
 				drawnow
 				if savemovie
 					writeVideo(vidObj, getframe(fig_volume))
 				end
+
+				if printframes
+						prefix = 'netstate@';
+						style = '4x4';
+						fname = [prefix '_' num2str(frames(1)+tt) '.png'];
+						snam=style;
+						s=hgexport('readstyle',snam);
+					    s.Format = 'png';
+					    hgexport(fig_volume,fname,s);
+				end
+
 				
 
 			end

@@ -48,7 +48,7 @@
 cell_function = 'vanilla';
 % synapse_type = 'gaba_soma';
 synapse_type = 'ampa';
-phase_partitions  = 15;
+phase_partitions  = 13;
 gbar_ampa = .25;
 reset_pulse = 90;
 
@@ -172,7 +172,7 @@ meanT = LOCS(2) - LOCS(1);
 
 % return
 
-% pertphases = round(linspace(LOCS(1),LOCS(2),phase_partitions));
+
 estimatedT = 240;
 
 pertphases = round(linspace(reset_pulse,reset_pulse+estimatedT,phase_partitions));
@@ -298,14 +298,14 @@ figure
 	set(gca,'xtick', [0:.5*pi:4*pi])
 	%============================= means ==============================%
 	subplot(3,1,2)
-	plot_mean_and_std([1:350], VVV(1:54,:))
+	plot_mean_and_std(VVV(1:54,:),[1:350])
 	xlim([pertphases(1) pertphases(end)])
 	xlabel('ms')
 	ylabel('mV')
 
 	subplot(3,1,3)
 	for c = 1:length(pertphases)
-		plot_mean_and_std([1:350], VVV(1+(c-1)*no_stimcells:c*no_stimcells,:),'color', lc(c,:))
+		plot_mean_and_std( VVV(1+(c-1)*no_stimcells:c*no_stimcells,:),[1:350],'color', lc(c,:))
 		hold on
 	end
 	xlabel('time (ms)')
@@ -316,7 +316,7 @@ figure
 
 figure
 	for c = 1:length(pertphases)
-		line([1:350], mean(PPP(1+(c-1)*no_stimcells:c*no_stimcells,:)),'color', lc(c,:))
+		line(mean(PPP(1+(c-1)*no_stimcells:c*no_stimcells,:)),[1:350],'color', lc(c,:))
 		hold on
 	end
 	xlabel('time (ms)')

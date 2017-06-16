@@ -85,6 +85,66 @@ if sampletraces
 end
 
 
+sortedsampletraces = 1;
+if sortedsampletraces
+
+	load noiseless_200.mat
+
+	colorder = flipud(cbrewer('seq', 'Greys', 30));
+	colrmap = flipud(cbrewer('seq', 'Greys', 30));
+
+	V1 = sims{1}.networkHistory.V_soma;
+	V2 = sims{2}.networkHistory.V_soma;
+
+	ampV1 = max(V1')-min(V1')
+	ampV2 = max(V2')-min(V2')
+
+	[V ordV1] = sort(ampV1)
+	[V ordV2] = sort(ampV2)
+	figure 
+	imagesc(V1(ordV1,1000:1500))
+	colormap(colrmap);
+	caxis([-70 -40])
+
+	figure 
+	imagesc(V2(ordV2,1000:1500))
+	colormap(colrmap);
+	caxis([-70 -40])
+	
+
+	
+	figure 
+	set(0,'defaultaxescolororder', colorder)
+	plot(V1(ordV1,1000:1500)')
+	hold on , plot(mean(V1(ordV1,1000:1500)),'b','linewidth', 2)
+	axis tight
+	ylim([-70, -40])
+
+
+	figure 
+	plot(V2(ordV2,1000:1500)')
+	hold on , plot(mean(V2(ordV2,1000:1500)),'r','linewidth', 2)
+	axis tight
+	ylim([-70, -40])
+
+	saveallfigs('prefix', 'nonoise_traces_w_wo', 'style', '4x4')
+
+
+end
+
+
+noisesnippets = 1;
+
+if noisesnippets
+	for i = 1:5
+		ounoise(i,:) = OUnoise('seed', i, 'plotme', 0, 'simtime', 500, 'dt', 1 ,'thetas', 1/30);
+		figure
+		plot(subplus(ounoise(i,:)),'r'); hold on;plot(-subplus(-ounoise(i,:)),'b');
+		axis tight
+		ylim([-10 10])
+	end
+	saveallfigs('prefix',  'noisesnips', 'style', '4x4');
+end
 
 
 if triggeredphase

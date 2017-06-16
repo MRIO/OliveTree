@@ -1,7 +1,7 @@
-gap = 0.1;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.2; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
+gap = 0.0;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.2; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
 
 dt = 0.02;
-simtime = 1500;
+simtime = 500;
 gpu = 0;
 % [=================================================================]
 %  % create network
@@ -58,8 +58,9 @@ neurons = createDefaultNeurons(noneurons, 'gapcompensation',gapcomp);
 neurons.gbar_ampa_soma = .3*ones(noneurons,1);
 neurons.gbar_gaba_soma = .25*ones(noneurons,1);
 neurons.g_CaL = ones(noneurons,1)*.7;
-neurons.g_CaL(1) = 1.;
+neurons.g_CaL(1) = 2.;
 neurons.g_CaL(2) = .5;
+neurons.g_CaH(2) = .5;
 
 %============================= perturbation ==============================%
 
@@ -70,13 +71,13 @@ noise_level = [1/tau noisesig noiseamp 0];
 if not(spont)
 	npulses  = 5;
 	bfreq    = 3; bT = round(1000/bfreq);
-	% isramp 	 = 0;
+	isdelay  = 0;
 	isramp 	 = linspace(0,npulses*bfreq, npulses)
 	onset 	 = 450;
 
 
-	pert.mask{1}  	  = [1 0]';
-	pert.type{1}	  = 'ampa';
+	pert.mask{1}  	  = [1 1]';
+	pert.type{1}	  = 'gaba_soma';
 	pert.duration{1}  = 1;
 	pert.triggers{1} = onset + isdelay + isramp	;
 else

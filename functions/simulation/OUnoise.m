@@ -1,4 +1,14 @@
 function O = OUnoise(varargin)
+% function O = OUnoise(varargin)
+% 
+% produces an OU noise trace with the given parameters]
+%   p.addParamValue('mu', 0)
+% 	p.addParamValue('sig', .7)
+% 	p.addParamValue('thetas', [1/20])
+% 	p.addParamValue('simtime', 2000)
+% 	p.addParamValue('dt', 0.02)
+% 	p.addParamValue('plotme', 1)
+% 	p.addParamValue('seed', 0)
 
 	p = inputParser;
 	
