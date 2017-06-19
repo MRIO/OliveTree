@@ -233,7 +233,7 @@ end
 %  save with timestamp
 % [=================================================================]
 
-evalstring = ['save periodic_ampa_' nameprefix '_' num2str(s) '_' conntype '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' seed '_' num2str(date) ' -v7.3']
+evalstring = ['save periodic_ampa_' nameprefix '_' num2str(s) '_' conntype '_' simtype '_' num2str(simtime) '_' num2str(numruns) '_' num2str(seed) '_' num2str(date) ' -v7.3']
 
 eval(evalstring)
 

@@ -32,6 +32,8 @@ F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2
 
 
 
+
+
 % [=================================================================]
 %  analysis to run
 % [=================================================================]
@@ -58,6 +60,8 @@ cellselection = [];
 % [=================================================================]
 %  defaults
 % [=================================================================]
+
+fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], color ,'edgecolor','none');
 
 [az el] = view(-30,30);
 
@@ -416,7 +420,7 @@ if 0
 
 end
 
-fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], color ,'edgecolor','none');
+
 if stimtrigwaves
 
 	for n = cellselection
