@@ -22,7 +22,6 @@ end
                   
                   
 % pert.mask                 
-% pert.amplitude
 % pert.triggers
 % pert.pulse_duration
 % pert.type

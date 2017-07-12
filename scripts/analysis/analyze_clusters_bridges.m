@@ -135,17 +135,48 @@ figure
 	 H1_nonBC = hist(NC{1}(~bc) ,[0:15]);
 	 H1_BC    = hist(NC{1}      ,[0:15]);
 	 title('curlies')
+	 histopatch([0:15],H1_nonBC, curlycolor)
+	 histopatch([0:15],H1_BC, bridgecolor)
+	 alpha(.3)
 
 	subplot(3,1,2)
 	 H2_nonBC = hist(NC{2}(~bc),[0:15]);
 	 H2_BC    = hist(NC{2},[0:15]);
+	 histopatch([0:15],H2_nonBC, curlycolor)
+	 histopatch([0:15],H2_BC, bridgecolor)
+	 alpha(.3)
+
 	 title('bridges+curlies')
 
 	subplot(3,1,3)
-	 H2_nonBC =hist(NC{3}(~bc),[0:15])
+	 H3 =hist(NC{3}(~bc),[0:15])
+	 histopatch([0:15],H3, [.7 .7 .7])
 	 title('brick')
 
 
+
+figure
+	subplot(3,1,1)
+	 H1_nonBC = hist(NC{1}(~bc) ,[0:15]);
+	 H1_BC    = hist(NC{1}      ,[0:15]);
+	 title('curlies')
+	 histopatch([0:15],H1_nonBC, curlycolor)
+	 histopatch([0:15],H1_BC, bridgecolor)
+	 alpha(.3)
+
+	subplot(3,1,2)
+	 H2_nonBC = hist(NC{2}(~bc),[0:15]);
+	 H2_BC    = hist(NC{2},[0:15]);
+	 histopatch([0:15],H2_nonBC, curlycolor)
+	 histopatch([0:15],H2_BC, bridgecolor)
+	 alpha(.3)
+
+	 title('bridges+curlies')
+
+	subplot(3,1,3)
+	 H3 =hist(NC{3}(~bc),[0:15])
+	 histopatch([0:15],H3, [.7 .7 .7])
+	 title('brick')
 
 end
 
@@ -761,7 +792,7 @@ if phase_activity_volume_snapshots
 	cd ..
 
 	mkdir sim3_nostim
-	cd sim3_randmask/
+	cd sim3_nostim/
 	animate_volume_hilbert(sim_nostim{3}, framestoprint,savemovie);
 	close all
 	cd ..

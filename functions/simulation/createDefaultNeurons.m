@@ -166,7 +166,6 @@ switch celltypes
 		 	load cellset_vanilla_3
 		 else
 		 	disp('couldnt find the cell set')
-		 	keyboard
 		 	return
 		 end
 

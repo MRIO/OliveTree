@@ -48,7 +48,7 @@
 cell_function = 'vanilla';
 % synapse_type = 'gaba_soma';
 synapse_type = 'ampa';
-phase_partitions  = 13;
+phase_partitions  = 15;
 gbar_ampa = .25;
 reset_pulse = 90;
 
@@ -172,7 +172,7 @@ meanT = LOCS(2) - LOCS(1);
 
 % return
 
-
+% peak of next oscillation
 estimatedT = 240;
 
 pertphases = round(linspace(reset_pulse,reset_pulse+estimatedT,phase_partitions));
@@ -237,7 +237,7 @@ VVV = VV(find(repmat(pert.mask{1},1, length(pertphases))),:);
 PPP = PP(find(repmat(pert.mask{1},1, length(pertphases))),:);
 
 % spike count of membrane potential of stimulated cells
-SSS = sum(VVV(:,150:350)>-30,2)>0;
+SSS = sum(VVV(:,150:350)>-20,2)>0;
 
 for c = 1:length(pertphases)
 	spkcells(c) = sum(SSS(no_stimcells*(c-1)+1:no_stimcells*c));
@@ -248,43 +248,46 @@ if ~exist('cbrewer')
 		lc = jet(length(pertphases));
 	else
 		lc = cbrewer('qual', 'Set1', length(pertphases))
+		colrmap = flipud(cbrewer('seq', 'Greys', 60));
 end
 
 
 %============================= membrane potential of stimulated groups==============================%
 figure
 	waterfall(VVV(no_stimcells+1:end,:)), zlabel('mV'), ylabel('perturbation group'), xlabel('ms')
-	set(gca,'ytick', [], 'xtick', [90 190], 'xticklabel', [0 100] )
-	colormap(bone)
+	set(gca,'ytick', [], 'xtick', [-90 90 190 290 390], 'xticklabel', [-0.1 0 0.1 0.2 0.3] )
+	colormap(colrmap)
 	hold on
 	
 	for c = 1:length(pertphases)
 		line([simtime simtime] , [no_stimcells*(c-1)+1 no_stimcells*c], [-70 -70], 'color', lc(c,:), 'linewidth',5);
 	end	
+	view(30,50)
 
 
 figure
-	subplot(2,1,1)
+	% subplot(2,1,1)
 	imagesc(VVV(no_stimcells+1:end,:)), ylabel('perturbation group'), xlabel('ms')
 	set(gca,'ytick', [],'clim',[-80 -30])
-	colormap(bone)
+	colormap(colrmap)
 	hold on	
 	for c = 1:length(pertphases)
 		line([simtime simtime] , [no_stimcells*(c-1)+1 no_stimcells*c],  'color', lc(c,:), 'linewidth',5);
 	end
 	%=============================unperturbed membrane potential==============================%
-	subplot(2,1,2)
-	imagesc(VVV(1:no_stimcells,:)), ylabel('perturbation group'), xlabel('ms')
-	set(gca,'ytick', [],'clim',[-80 -30])
+	% subplot(2,1,2)
+	% imagesc(VVV(1:no_stimcells,:)), ylabel('perturbation group'), xlabel('ms')
+	% set(gca,'ytick', [],'clim',[-80 -30])
 	
 
 %=============================spikes per cell histogram==============================%
 figure
-	 bar((pertphases-pertphases(1))/meanT*2*pi,spkcells/no_stimcells)
+	 bar((pertphases(1:end-1)-pertphases(1))/(meanT)*2*pi,spkcells(2:end)/no_stimcells)
 	 ylabel('probability of CS')
 	 xlabel('stimulation phase')
 	hold on
-	set(gca,'xtick', [0:.5*pi:4*pi])
+	set(gca,'xtick', [0:pi/3:4*pi])
+	xlim([0,3*pi])
 
 %=============================PRC ==============================%
 %  only valid for the first period
@@ -295,13 +298,15 @@ figure
 	ylabel('perturbation phase (radians)')
 	xlabel('\Delta phase')
 	title('PRC')
-	set(gca,'xtick', [0:.5*pi:4*pi])
+	set(gca,'xtick', [0:(1/3)*pi:4*pi])
+	xlim([0,2*pi])
 	%============================= means ==============================%
 	subplot(3,1,2)
 	plot_mean_and_std(VVV(1:54,:),[1:350])
 	xlim([pertphases(1) pertphases(end)])
 	xlabel('ms')
 	ylabel('mV')
+	
 
 	subplot(3,1,3)
 	for c = 1:length(pertphases)
@@ -314,17 +319,17 @@ figure
 
 
 
-figure
-	for c = 1:length(pertphases)
-		line(mean(PPP(1+(c-1)*no_stimcells:c*no_stimcells,:)),[1:350],'color', lc(c,:))
-		hold on
-	end
-	xlabel('time (ms)')
-	ylabel('mV')
+% figure
+% 	for c = 1:length(pertphases)
+% 		line(mean(PPP(1+(c-1)*no_stimcells:c*no_stimcells,:)'),[1:350],'color', lc(c,:))
+% 		hold on
+% 	end
+% 	xlabel('time (ms)')
+% 	ylabel('mV')
 
-	xlim([pertphases(1) pertphases(end)])
-	xlabel('ms')
-	ylabel('phase')
+% 	xlim([pertphases(1) pertphases(end)])
+% 	xlabel('ms')
+% 	ylabel('phase')
 
 
 

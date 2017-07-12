@@ -120,7 +120,6 @@ end
 
 if not(spont)
 	pert.mask{1}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', inputrad,'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',.6,'plotme',plotthis);
-	pert.amplitude{1} = 2;
 	pert.type{1}	  = 'ampa';
 	pert.duration{1}  = 1;
 else
@@ -200,6 +199,8 @@ for g = gaps
 
 	if randampa
 		neurons.gbar_ampa_soma = .08*ones(noneurons,1) + .02*rand(noneurons,1);
+	else 
+		neurons.gbar_ampa_soma = .15*ones(noneurons,1);
 	end
 
 	if moreoscillation

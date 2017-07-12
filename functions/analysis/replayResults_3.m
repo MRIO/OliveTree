@@ -23,16 +23,22 @@ p.addOptional('savemovie',0)
 p.addParamValue('plotallfields', 0) % stdandard deviation criterion for offset threshold
 p.addParamValue('fhandle', gcf)
 p.addParamValue('plot_info', 1)
+p.addParamValue('stimcolors', [0 0 .7])
 
 p.parse(varargin{:});
 
 sim = p.Results.sim;
 time_slice = p.Results.time_slice;
 savemovie = p.Results.savemovie;
+stimcolors = p.Results.stimcolors;
 
 plotallfields  = p.Results.plotallfields;
 fhandle = p.Results.fhandle;
 plot_info = p.Results.plot_info;
+
+ampacolor_traces = [.7 .4 .4];
+ampacolor_mean   = [1  0  0];
+withcolorbar = 0;
 
 
 % [=================================================================]
@@ -103,7 +109,7 @@ V_soma = reshape(V_soma_unwrapped(:,1) ,prod(netsize), 1);
 fig1 = gcf;
 set(fig1, 'position', [1 1 1024 768],'color', [1 1 1]);	
 try
-	cmap = flipud(cbrewer('seq', 'Greys', 20));
+	cmap = flipud(cbrewer('seq', 'Greys', 60));
 	% cmap = flipud(cbrewer('div', 'RdBu', 30));
 	colormap(cmap);	
 	clf
@@ -148,6 +154,10 @@ if isfield(sim.perturbation, 'type')
   
 			stn = find(pert.mask{i});
 			tr = pert.triggers{i};
+			tr(tr>time_slice(end))=[];
+			tr(tr<time_slice(1))=[];
+			tr = tr-time_slice(1);  
+
 			if iscolumn(tr)
 				tr = tr';
 			end
@@ -157,7 +167,7 @@ if isfield(sim.perturbation, 'type')
 					case 'ampa'
 
 						line([tr; tr] , [ones(size(tr))*min(V_soma_unwrapped(:)); ones(size(tr))*min(V_soma_unwrapped(:))+10],'color','r')
-						plot(V_soma_unwrapped(stn,time_slice)','color', [1 .8 .8])
+						plot(V_soma_unwrapped(stn,time_slice)','color', ampacolor_traces)
 
 					case 'gaba_soma'
 
@@ -203,7 +213,7 @@ if isfield(sim.perturbation, 'type')
 				switch pert.type{i}
 					case 'ampa'
 						
-						plot(mean(V_soma_unwrapped(stn,time_slice)),'r','linewidth', meanlinewidth)
+						plot(mean(V_soma_unwrapped(stn,time_slice)),'color', ampacolor_mean,'linewidth', meanlinewidth)
 
 					case 'gaba_soma'
 
@@ -292,13 +302,13 @@ end
 % order to present the neurons
 a(2) = axes('Position',[0.1 0.55 0.8 0.4]);
 O = [1:prod(netsize)];
-imagesc(V_soma_unwrapped(O,time_slice),[-66 -45]);
+imagesc(V_soma_unwrapped(O,time_slice),[-70 -30]);
 
 try
 	if length(unique(sim.W.stats.clusters))>=2 & length(unique(sim.W.stats.clusters))<30
 		[v O] = sort(sim.W.stats.clusters);	
 
-		imagesc(V_soma_unwrapped(O,time_slice),[-66 -35]);
+		imagesc(V_soma_unwrapped(O,time_slice),[-70 -30]);
 		[u_ yt] = unique(v);
 		set(gca,'tickdir','out')
 
@@ -322,8 +332,8 @@ hold on;
 ylabel('neurons');  
 
 % plotspikes1 = @(c)plot(c,spks.spikes{c},'markersize', 1,'marker', 'o','linestyle', 'none','color', 'w','markersize',6);
-plotspikes2 = @(c)plot(spks.spikes{O(c)}-time_slice(1),c, 'markersize', 3,'marker', '.','linestyle', 'none','color', 'k','markersize',18);
-plotspikes3 = @(c)plot(spks.spikes{O(c)}-time_slice(1),c, 'markersize', 3,'marker', '*','linestyle', 'none','color', [1 1 1],'markersize',4);
+plotspikes2 = @(c)plot(spks.spikes{O(c)}-time_slice(1),c, 'markersize', 3,'marker', '.','linestyle', 'none','color', 'k','markersize',6);
+plotspikes3 = @(c)plot(spks.spikes{O(c)}-time_slice(1),c, 'markersize', 3,'marker', 'o','linestyle', 'none','color', [1 1 1],'markersize',3	);
 for c = [1:noneurons]
 	if not(isempty(spks.spikes{O(c)}))
 		% plotspikes1(c);
@@ -337,7 +347,7 @@ l = line([1 prod(netsize)], [0 0],'color', 'c');
 
 if static, simtime=1;end
 
-colorbar('east');
+if withcolorbar; colorbar('east'); end
 title('Vm')
 
 linkaxes(a,'x')
@@ -352,7 +362,7 @@ if isfield(sim.networkHistory, 'backgroundnoise')
 		a(5) = axes;
 		O = [1:prod(netsize)];
 		imagesc(N(O,time_slice),[-5 5]);
-		colorbar('East')
+		if withcolorbar; colorbar('East'); end
 		
 
 		set(a(5),'position',[0.10  0.67  0.8  0.25],'TickLength', [0 0],'xticklabel',[])
@@ -376,8 +386,6 @@ if plotclusterneurons
 
 	figure, imagesc(W.W(O,O))
 end
-
-
 
 
 

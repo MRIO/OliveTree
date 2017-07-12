@@ -17,8 +17,9 @@ interperiodintervals = 1;
 
 sortedsampletraces = 1;
 
-
 tslice = 1:50000;
+
+
 
 if 0
 	addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
@@ -37,15 +38,14 @@ if 0
 	Joinedsim{1}  = joinsim(simresults,runs_without); 
 	Joinedsim{2}  = joinsim(simresults,runs_with); 
 
-
 	statevar{1} = Joinedsim{1}.networkHistory.V_soma(:,tslice);
 	statevar{2} = Joinedsim{2}.networkHistory.V_soma(:,tslice);
 
 	% replayResults_clusters(sim{1});
 	% replayResults_clusters(sim{1});
-	disp('profiling...1')
+	disp('profiling...without gaps')
 	R{1} = profile_sim(Joinedsim{1},'tslice',tslice);
-	disp('profiling...2')
+	disp('profiling...with gaps')
 	R{2} = profile_sim(Joinedsim{2},'tslice',tslice);
 
 	set(0,'defaultaxescolororder', linspecer(10))
@@ -56,6 +56,8 @@ end
 
 
 if onesec_vs_30s
+		tslice = 1:50000;
+
 		Ronesec_withgap = profile_sim(Joinedsim{2},'tslice', [4000:5000]);
 		stacked = vertcat(R{2}.allneurons,Ronesec_withgap.allneurons );
 		G = [ones(200,1)*2 ;ones(200,1)*1];
@@ -67,7 +69,7 @@ end
 	
 
 if plotcellscatters_gap_gapless 
-	load(noiseless_200)
+	load noiseless_200
 	% sel_fields = {'g_CaL', 'g_h',  'ampl', 'freq_each', 'meanVm' 'spks'};
 	sel_fields = {'ampl', 'freq_each' , 'g_CaL'};
 	% sel_fields = {'g_CaL', 'ampl', 'freq_each'}
@@ -84,8 +86,18 @@ end
 
 sampletraces = 1;
 if sampletraces
-	replayResults_3(sims{1})
-	replayResults_3(sims{2})
+	t_slice = [9750:11350];
+	t_slice = [11750:13350];
+	t_slice = [12750:14350];
+	close all
+	load periodic_ampa_1Hz_20s_ou_input_24Jun-2017.mat
+	figure
+	replayResults_3(simresults{1}, t_slice)
+	load periodic_ampa_1Hz_20s_no_noise_24Jun-2017.mat
+	figure
+	replayResults_3(simresults{1}, t_slice)
+	saveallfigs('prefix', 'Pascal_traces', 'style', '1col')
+	close all
 end
 
 
@@ -95,7 +107,7 @@ if sortedsampletraces
 	load noiseless_200.mat
 
 	colorder = flipud(cbrewer('seq', 'Greys', 30));
-	colrmap = flipud(cbrewer('seq', 'Greys', 30));
+	colrmap = flipud(cbrewer('seq', 'Greys', 60));
 
 	V1 = sims{1}.networkHistory.V_soma;
 	V2 = sims{2}.networkHistory.V_soma;
@@ -105,36 +117,42 @@ if sortedsampletraces
 
 	[V ordV1] = sort(ampV1)
 	[V ordV2] = sort(ampV2)
+	
+	interv = [2000 2500];
 	figure 
-	imagesc(V1(ordV1,1000:1500))
+	imagesc(V1(ordV1,:))
 	colormap(colrmap);
 	caxis([-70 -40])
 	axis off
+	xlim(interv)
 
 	figure 
-	imagesc(V2(ordV2,1000:1500))
+	imagesc(V2(ordV2,:))
 	colormap(colrmap);
 	caxis([-70 -40])
 	axis off
+	xlim(interv)
 	
 
 	
 	figure 
 	set(0,'defaultaxescolororder', colorder)
-	plot(V1(ordV1,1000:1500)')
-	hold on , plot(mean(V1(ordV1,1000:1500)),'b','linewidth', 2)
+	plot(V1(ordV1,:)')
+	hold on , plot(mean(V1(ordV1,:)),'b','linewidth', 2)
 	axis off, axis tight
 	ylim([-70, -40])
-	add_x_scalebar(gca, 100)
+	addScalebar(gca, [100 10])
+	xlim(interv)
 
 
 	figure 
-	plot(V2(ordV2,1000:1500)')
-	hold on , plot(mean(V2(ordV2,1000:1500)),'r','linewidth', 2)
+	plot(V2(ordV2,:)')
+	hold on , plot(mean(V2(ordV2,:)),'r','linewidth', 2)
 	axis tight, axis off
 	ylim([-70, -40])
+	xlim(interv)
 	
-	add_x_scalebar(gca, 100)
+	addScalebar(gca, [100 10])
 
 	saveallfigs('prefix', 'nonoise_traces_w_wo', 'style', '4x4')
 
