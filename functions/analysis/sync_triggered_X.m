@@ -28,10 +28,10 @@ perispikenoise = [];
 
 for c = 1:noneurons
 	somasnip = @(spk) vsoma(c,spk-win: spk+win)';
-	perispikevsoma = [perispikevsoma ; cell2mat(arrayfun(somasnip, spks.spikes{c}(3:end-3),'uniformoutput', 0))'];
+	perispikevsoma = [perispikevsoma ; cell2mat(arrayfun(somasnip, spks.spikes{c}(5:end-3),'uniformoutput', 0))'];
 
 	noissnip = @(spk) noise(c,spk-win: spk+win)';
-	perispikenoise = [perispikenoise ; cell2mat(arrayfun(noissnip, spks.spikes{c}(3:end-3),'uniformoutput', 0))'];
+	perispikenoise = [perispikenoise ; cell2mat(arrayfun(noissnip, spks.spikes{c}(5:end-3),'uniformoutput', 0))'];
 end
 
 

@@ -71,6 +71,9 @@ function R = profile_sim(varargin)
 	supth = pos/length(tslice);
 
 
+	% # Todo: introduce CS shoulder width
+
+
 	K = measureGlobalSync(sim,'plotme', 0,'duration',tslice); %, 'duration', tslice
 
 	freq_each = K.frequency'*1e3;

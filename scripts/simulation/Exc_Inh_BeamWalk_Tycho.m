@@ -48,7 +48,7 @@ netsize = [1 noneurons 1];
 
 cell_function = 'vanilla';
 
-w = 298;
+w = 1000;
 
 plotthis  = 0;
 

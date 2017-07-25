@@ -17,7 +17,7 @@ make_summary_tables 		  = 1;
 delta = .02; 
 Fs = 1000; % NOTE: sampling rate for output != delta
 
-if ~exist('simtime') ;simtime = 10;end
+if ~exist('simtime'); simtime = 10;end
 if ~exist('nameprefix');nameprefix =[];end
 if ~exist('seed');seed = 0; end
 gpu = 1;

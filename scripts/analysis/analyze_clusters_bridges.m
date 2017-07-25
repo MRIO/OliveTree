@@ -2,15 +2,15 @@
 
 % analyze_clusters_bridges.m
 
-profile_brick_curlies = 1;
-plotcellscatters  = 1;	sel_fields = { 'g_CaL', 'g_h' 'ampl' 'freq_each'};
+profile_brick_curlies = 0;
+plotcellscatters  = 0;	sel_fields = { 'g_CaL', 'g_h' 'ampl' 'freq_each'};
 
 
 plotreconstruction = 0; 
 plotselectedclusters = 0;
 	makevideo = 0
 plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
-distance_histogram = 0;
+distance_histogram = 1;
 
 plotclustermemberaverages = 0;
 
@@ -19,9 +19,9 @@ plotbridgeandneighbors_Vm = 0;
 
 plotclustercellactivity = 0;
 
-analyze_group_stim = 1;
-activitydifference = 1;
-spectral_clustering = 1;
+analyze_group_stim = 0;
+activitydifference = 0;
+spectral_clustering = 0;
 
 
 STOhistograms = 0;
@@ -681,8 +681,9 @@ if makemovies
 	replayResults_clusters(sims{4},'savemovie',1,'time_slice', [2000:3500])
 end
 
-makemoviesofstim = 0;
+makemoviesofstim = 1;
 if makemoviesofstim
+	load curlies_bridges_randmaskstim22-Mar-2017.mat
 	M = single(sims{1}.perturbation.mask{1});
 	sims{1}.perturbation.mask{1} = M;
 	sims{1}.perturbation.mask{1}(find(g1)) = 1;
@@ -704,7 +705,15 @@ if makemoviesofstim
 	M{4} = phase_distribution_over_time(sims{4},'duration',[2500:4000], 'animate', 1,'savemovie',1);
 end
 
-	
+makephasemovieofrandmaskstim = 1;
+if makephasemovieofrandmaskstim
+	load /Users/M/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_01-Mar-2017.mat
+	M{1} = phase_distribution_over_time(sim{1},'duration',[2000:3500], 'animate', 1,'savemovie',1); !mv voume.mp4 sim1.mp4
+	M{2} = phase_distribution_over_time(sim{2},'duration',[2000:3500], 'animate', 1,'savemovie',1); !mv voume.mp4 sim2.mp4
+	M{3} = phase_distribution_over_time(sim{3},'duration',[2000:3500], 'animate', 1,'savemovie',1); !mv voume.mp4 sim3.mp4
+	M{4} = phase_distribution_over_time(sim{4},'duration',[2000:3500], 'animate', 1,'savemovie',1); !mv voume.mp4 sim4.mp4
+end
+
 
 M{1} = phase_distribution_over_time(sims{1},'duration',[2900:3500], 'animate', 1);
 
@@ -732,7 +741,7 @@ if render_volumetric_activity
 	V1 = sim{1}.networkHistory.V_soma(:,tslice);
 	V2 = sim{2}.networkHistory.V_soma(:,tslice);
 	V3 = sim{3}.networkHistory.V_soma(:,tslice);
-	V4 = sim{4}.networkHistory.V_soma(:,tslice); slice)
+	V4 = sim{4}.networkHistory.V_soma(:,tslice);
 	plot_volume(V2, JM394_horizontal_coordinates(2:end,:),tslice)
 	plot_volume(V3, JM394_horizontal_coordinates(2:end,:),tslice)
 	plot_volume(V4, JM394_horizontal_coordinates(2:end,:),tslice)
@@ -914,7 +923,7 @@ if randstim_carpet_diffs
 	subplot(131), imagesc([H{4}.hilbert(oord,:) - H{1}.hilbert(oord,:)]')	
 	subplot(132), imagesc([H{5}.hilbert(oord,:) - H{2}.hilbert(oord,:)]')	
 	subplot(133), imagesc([H{6}.hilbert(oord,:) - H{3}.hilbert(oord,:)]')
-[
+
 end
 
 

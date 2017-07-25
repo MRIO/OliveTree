@@ -24,7 +24,7 @@ gpu = 1;
 
 frombrick_to_clusters = 0;
 bridge_conductance_pspace = 0;
-conjuctive_stimulation = 1
+conjuctive_stimulation = 0;
 	cluster1 = 41; cluster2 = 34;
 bridges_and_curlies_with_gaba = 0;
 maskstimulation = 1;
@@ -509,9 +509,6 @@ if nostimulation
 		eval(['save curlies_bridges_nostim'  date ' -v7.3'])
 
 end
-
-
-
 
 
 
