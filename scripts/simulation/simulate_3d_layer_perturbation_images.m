@@ -24,7 +24,7 @@ cell_function = 'vanilla';
 steadystatetime = 40; simtime = 50;
 
 % other parameters
-gaps 	  = .01;
+gaps 	  = .04;
 connset   = [3];   
 radiuses  = [2.5 10];
 alpha    = [7];    % alpha parameter
@@ -82,7 +82,7 @@ def_neurons = createDefaultNeurons(noneurons);
 
 
 % create net
-	radius = 2.5; gaps = 0.01;
+	radius = 2.5; 
 	% W_3d_trans = createW('3d', netsize,2,radius, gaps, 1);
 	W_3d = createW('3d',netsize,1,gaps, 1);
 	W = W_3d.W;
@@ -202,7 +202,7 @@ conds = [1:conds-1];
 
 transientnoise = 0;
 	
-    [transients] = IOnet( 'networksize', netsize ,'appCurrent',0,'time',steadystatetime,'delta',dt,'cell_parameters', def_neurons ,'W',W,'ou_noise', noise_level, 'sametoall',sametoall);
+    [transients] = IOnet( 'networksize', netsize ,'time',steadystatetime,'delta',dt,'cell_parameters', def_neurons ,'W',W,'ou_noise', noise_level, 'sametoall',sametoall);
 
 
 
