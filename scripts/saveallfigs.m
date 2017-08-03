@@ -11,6 +11,7 @@ function saveallfigs(varargin)
 	p.addParameter('format', 'pdf')
 	p.addParameter('style', '12x12')
 	p.addParameter('savefig', 1)
+	p.addParameter('exportfig', 0)
 
 	
 	p.parse(varargin{:});
@@ -19,23 +20,26 @@ function saveallfigs(varargin)
 	format = p.Results.format;
 	style = p.Results.style;
 	savefigs = p.Results.savefig;
+	exportfig = p.Results.exportfig;
 
 	h = get(0,'children');
 
 for i=1:length(h)
 	h(i).Color = [1 1 1];
-	fname = [prefix '_' num2str(i)]
+	fname = [prefix '_' num2str(i) ]
 	if savefigs
 		figure(h(i))
-	   savefig(h(i), fname);
+	   savefig(h(i), [fname '.fig']);
 
 	end
 
-	fname = [prefix '_' num2str(i) '.' format];
-	snam=style;
-	s=hgexport('readstyle',snam);
-    s.Format = format;
-    hgexport(h(i),fname,s);
+	if exportfig
+		fname = [prefix '_' num2str(i) '.' format];
+		snam=style;
+		s=hgexport('readstyle',snam);
+	    s.Format = format;
+	    hgexport(h(i),fname,s);
+	end
 
 end
 
