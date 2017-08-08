@@ -1,12 +1,12 @@
 % simulate_3d_layer_perturbation_images.m
 
-prep_conditions    = 0;
-compute_transients = 0;
+prep_conditions    = 1;
+compute_transients = 1;
 stimulate_layer    = 1;
-display_results    = 0;
-volumetric_activity = 1;
+display_results    = 1;
+volumetric_activity = 0;
 
-savemovies = 1;
+savemovies = 0;
 
 	IM = imread('Sierpinski_carpet.gif');
 
@@ -82,15 +82,16 @@ def_neurons = createDefaultNeurons(noneurons);
 
 
 % create net
-	radius = 2.5; 
+	radius = 2; 
 	% W_3d_trans = createW('3d', netsize,2,radius, gaps, 1);
-	W_3d = createW('3d',netsize,1,gaps, 1);
+	% W_3d = createW('3d',netsize,1,gaps, 1);
+	W_3d  = createW('3d_chebychev', netsize, radius, 1, 1, 0, 0, 4, [], 1, [0 0 0 0]);
 	W = W_3d.W;
 
 
 % noise input
 
-	noise_level = [3 2 0 0]; % pA/ms per cell
+	noise_level = [0 0 0 0]; % pA/ms per cell
 	sametoall   = .1;
 	
 
