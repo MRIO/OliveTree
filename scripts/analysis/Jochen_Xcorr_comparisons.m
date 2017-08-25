@@ -7,6 +7,7 @@ plotstyle = '5x5';
 %% load 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+addpath('/Users/M/Projects/Experiments/Olive/model/simresults/xcorr')
 
 load periodic_ampa_xcorr_stim_tau_30_WT_4_iso_1Hz_50000_4_.mat
  
@@ -67,32 +68,19 @@ close all
 
 end
 
-if 0
 
-% X(1,:) = zscore(.XcorrNoAc);
-% X(2,:) = zscore(.XcorrNoAc);
-% plot(X')
-
-
-XZ2(1,:) = zscore(XC{3}.XcorrNoAc);
-XZ2(2,:) = zscore(XC{4}.XcorrNoAc);
-XZ2(3,:) = zscore(XC{5}.XcorrNoAc);
-plot(X2')
-legend({'stim MT' 'stim WT' 'spont WT'})
-
-end
 
 % gap = 0.05;  noisesig = .3; noiseamp = -.3 ; tau = 30; sametoall = 0.0; simtype = 'spont'; conntype = 'iso' ;  gapcomp = 0;
 
 cmap = flipud(cbrewer('qual', 'Paired',6));
 set(0,'defaultaxescolororder', cmap)
 
-XX(1,:) = sum(XC_stim_WT  .XC{1});
-XX(2,:) = sum(XC_nostim_WT.XC{1});
-XX(3,:) = sum(XC_stim_MT .XC{1});
-XX(4,:) = sum(XC_nostim_MT.XC{1});
-XX(5,:) = sum(XC_NEIG_WT .XC{1});
-XX(6,:) = sum(XC_NEIG_MT .XC{1});
+XX(1,:) = mean(XC_stim_WT  .XC{1});
+XX(2,:) = mean(XC_nostim_WT.XC{1});
+XX(3,:) = mean(XC_stim_MT .XC{1});
+XX(4,:) = mean(XC_nostim_MT.XC{1});
+XX(5,:) = mean(XC_NEIG_WT .XC{1});
+XX(6,:) = mean(XC_NEIG_MT .XC{1});
 
 
 plot([-400:400], XX', 'linewidth',3)

@@ -183,6 +183,11 @@ if vsomacorr
 end
 
 
+fr = sum(VSB( selectedneurons,:),2)/size(VSB,2);
+
+
+
+
 
 out.winsize = winsize;
 out.asymmetry = asym;
