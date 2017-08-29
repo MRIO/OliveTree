@@ -36,8 +36,8 @@ simtime  = 1000;
 
 % currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
-% [=================================================================]
-%  state variables to report
+% [=================================================================
+]%  state variables to report
 % [=================================================================]
 
 activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};

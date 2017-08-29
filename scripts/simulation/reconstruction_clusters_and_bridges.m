@@ -1,4 +1,4 @@
-\% demo_clusters.m
+% demo_clusters.m
 
 
 %  4 simulations
@@ -27,8 +27,9 @@ bridge_conductance_pspace = 0;
 conjuctive_stimulation = 0;
 	cluster1 = 41; cluster2 = 34;
 bridges_and_curlies_with_gaba = 0;
-maskstimulation = 1;
-nostimulation = 1;
+maskstimulation = 0;
+two_maskstimulation = 1;
+nostimulation = 0;
 
 % [================================================]
 % variables to report
@@ -471,6 +472,99 @@ if maskstimulation
 		eval(['save curlies_bridges_randmaskstim'  date ' -v7.3'])
 
 end
+
+
+
+if two_maskstimulation
+
+	figure
+	subplot(2,1,1)
+	PM1 = create_input_mask(somatapositions, 'reconstruction','synapseprobability',.4, 'radius', 100, 'plotme',1);
+	subplot(2,1,2)
+	PM2 = create_input_mask(somatapositions, 'reconstruction','synapseprobability',.4, 'radius', 100, 'plotme',1, 'offset', [0 200 0]);
+	
+	% make sure we stimulate the same number of neurons
+	if sum(PM1)>sum(PM2)
+		CSPM1 = cumsum(PM1);
+		cropid = find(CSPM1==sum(PM2));
+		PM1(cropid+1:end) = 0;
+	else
+		CSPM2 = cumsum(PM2);
+		cropid = find(CSPM2==sum(PM1));
+		PM2(cropid+1:end) = 0;
+	end
+
+	sum(PM1), sum(PM2)
+
+
+	pert.mask{1} = PM1;
+
+	sim{1} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{1}.note = 'curlies random mask';
+		sim{1}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+		sim{1}.W = curlies;
+
+	sim{2} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{2}.networkHistory.V_soma = single(sim{2}.networkHistory.V_soma);
+		sim{2}.note = 'bridge random mask'
+		sim{2}.W = bridg_curlies;
+
+
+	sim{3} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{3}.note = 'brick no stim'
+		sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
+		sim{3}.W = brick;
+
+		
+	
+	
+
+	pert.mask{1} = PM2;
+	
+	sim{4} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{4}.note = 'curlies random mask';
+		sim{4}.networkHistory.V_soma = single(sim{4}.networkHistory.V_soma);
+		sim{4}.W = curlies;
+
+	sim{5} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{5}.networkHistory.V_soma = single(sim{5}.networkHistory.V_soma);
+		sim{5}.note = 'bridge random mask'
+		sim{5}.W = bridg_curlies;
+
+
+	sim{6} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', gnoise , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{6}.note = 'brick no stim'
+		sim{6}.networkHistory.V_soma = single(sim{6}.networkHistory.V_soma);
+		sim{6}.W = brick;
+
+		eval(['save curlies_bridges_two_maskstim'  date ' -v7.3'])
+
+end
+
 
 
 

@@ -10,7 +10,10 @@ plotreconstruction = 0;
 plotselectedclusters = 0;
 	makevideo = 0
 plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
-distance_histogram = 1;
+cluster_bridges_netstructs = 0;
+
+
+distance_histogram = 0;
 
 plotclustermemberaverages = 0;
 
@@ -19,10 +22,22 @@ plotbridgeandneighbors_Vm = 0;
 
 plotclustercellactivity = 0;
 
+makemovies = 0;
+makemoviesofstim = 0;
+makephasemovieofrandmaskstim = 0;
+
+render_volumetric_activity = 0;
+
+randstim_carpet_diffs = 0;
+
+phase_activity_volume_snapshots = 0;
+
 analyze_group_stim = 0;
 activitydifference = 0;
 spectral_clustering = 0;
 
+
+twomaskstim = 1;
 
 STOhistograms = 0;
 calculatesynchrony_clusters = 0;
@@ -41,18 +56,20 @@ boxplots = 0;
 bridgecolor = [.2 .2 .9 ];
 curlycolor = [ .2 .7 .2];
 
-
-if not(exist('st_st'))
-	
-	load('clusters_curlies_bridges_01-Mar-2017.mat')
-    sims = sim;
-end
+no_clusters = 50;
  
 % [================================================]
 %  profile simulations
 % [================================================]
 
 if profile_brick_curlies
+
+
+	load('clusters_curlies_bridges_01-Mar-2017.mat')
+    sims = sim;
+    clusters = sims{1}.W.stats.clusters;
+
+	
 	if not(exist('R'))
 		sims{1}.W = bridg_curlies;
 		sims{2}.W = curlies;
@@ -72,9 +89,7 @@ end
 %  connectivity
 % [=================================================================]
 
-bridgecells = bc;
-clusters = sims{1}.W.stats.clusters;
-no_clusters = length(unique(clusters));
+
 
 if ~exist('cbrewer')
 		lc = jet(no_clusters);
@@ -318,12 +333,14 @@ end
 % [=================================================================]
 %  bridge behavior
 % [=================================================================]
-bridgeidx = find(bridgecells);
-bridge_Vm = statevar{1}(bridgeidx,:);
-[val ord] = sort(table2array(R{1}.allneurons(bridgeidx,'ampl')));
 
 
 if plotbridgewaterfall
+
+	bridgeidx = find(bridgecells);
+	bridge_Vm = statevar{1}(bridgeidx,:);
+	[val ord] = sort(table2array(R{1}.allneurons(bridgeidx,'ampl')));
+
 	figure
 	waterfall(bridge_Vm(ord,:));
 	title('bridge behavior when connected, ordered by amplitude')
@@ -673,7 +690,7 @@ if  analyze_group_stim
 end
 
 
-makemovies = 0;
+
 if makemovies
 	replayResults_clusters(sims{1},'savemovie',1,'time_slice', [2000:3500])
 	replayResults_clusters(sims{2},'savemovie',1,'time_slice', [2000:3500])
@@ -681,7 +698,7 @@ if makemovies
 	replayResults_clusters(sims{4},'savemovie',1,'time_slice', [2000:3500])
 end
 
-makemoviesofstim = 1;
+
 if makemoviesofstim
 	load curlies_bridges_randmaskstim22-Mar-2017.mat
 	M = single(sims{1}.perturbation.mask{1});
@@ -705,7 +722,6 @@ if makemoviesofstim
 	M{4} = phase_distribution_over_time(sims{4},'duration',[2500:4000], 'animate', 1,'savemovie',1);
 end
 
-makephasemovieofrandmaskstim = 1;
 if makephasemovieofrandmaskstim
 	load /Users/M/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_01-Mar-2017.mat
 	M{1} = phase_distribution_over_time(sim{1},'duration',[2000:3500], 'animate', 1,'savemovie',1); !mv voume.mp4 sim1.mp4
@@ -715,7 +731,6 @@ if makephasemovieofrandmaskstim
 end
 
 
-M{1} = phase_distribution_over_time(sims{1},'duration',[2900:3500], 'animate', 1);
 
 
 if activitydifference
@@ -762,7 +777,6 @@ if cluster_bridges_netstructs
 
 end
 
-phase_activity_volume_snapshots = 1;
 if phase_activity_volume_snapshots
 	savemovie = 1;
 	load('curlies_bridges_randmaskstim22-Mar-2017.mat')
@@ -872,7 +886,6 @@ if spectral_clustering
 end
 
 
-randstim_carpet_diffs = 1;
 if randstim_carpet_diffs
 	clear
 	load curlies_bridges_randmaskstim22-Mar-2017.mat
@@ -902,14 +915,12 @@ if randstim_carpet_diffs
 	f100 = figure;
 			
 	oord = ord(~bc(ord))
-	ax(1) = subplot(2,3,1);
+		ax(1) = subplot(2,3,1);
 		imagesc(H{1}.hilbert(oord,:))
 		ax(2) = subplot(2,3,2);
 		imagesc(H{2}.hilbert(oord,:))
 		ax(3) = subplot(2,3,3);
 		imagesc(H{3}.hilbert(oord,:))
-
-		
 		
 		ax(4) = subplot(2,3,4);
 		imagesc(H{4}.hilbert(oord,:))
@@ -920,14 +931,118 @@ if randstim_carpet_diffs
 
 
 	f200 = figure;
-	subplot(131), imagesc([H{4}.hilbert(oord,:) - H{1}.hilbert(oord,:)]')	
-	subplot(132), imagesc([H{5}.hilbert(oord,:) - H{2}.hilbert(oord,:)]')	
-	subplot(133), imagesc([H{6}.hilbert(oord,:) - H{3}.hilbert(oord,:)]')
+	subplot(131), imagesc(abs(angdiff(H{4}.hilbert(oord,:), H{1}.hilbert(oord,:)))')	
+	subplot(132), imagesc(abs(angdiff(H{5}.hilbert(oord,:), H{2}.hilbert(oord,:)))')	
+	subplot(133), imagesc(abs(angdiff(H{6}.hilbert(oord,:), H{3}.hilbert(oord,:)))')
 
 end
 
 
-measuregropusync = 1;
+
+if twomaskstim
+
+	load curlies_bridges_two_maskstim15-Aug-2017.mat
+
+	bridgecells = bc;
+	clusters = sim{1}.W.stats.clusters;
+
+
+	no_clusters = length(unique(clusters));
+
+
+	clusters = sim{1}.W.stats.clusters;
+	[v ord] = sort(clusters);
+	oord = ord(~bc);
+	oord = ord(~bc(ord));
+	
+	tslice=[3030:10000];
+	for ii = 1:6
+		H_pos{ii} = hilbert_of_membranepotential(sim{ii}.networkHistory.V_soma(:,tslice));
+	end
+
+
+	tslice=[1:3000];
+	for ii = 1:6
+		H_pre{ii} = hilbert_of_membranepotential(sim{ii}.networkHistory.V_soma(:,tslice));
+	end
+
+	PD_pre{1} = abs(angdiff(H_pre{4}.hilbert(oord,:), H_pre{1}.hilbert(oord,:)));
+	PD_pre{2} = abs(angdiff(H_pre{5}.hilbert(oord,:), H_pre{2}.hilbert(oord,:)));
+	PD_pre{3} = abs(angdiff(H_pre{6}.hilbert(oord,:), H_pre{3}.hilbert(oord,:)));
+
+	PD_pos{1} = abs(angdiff(H_pos{4}.hilbert(oord,:), H_pos{1}.hilbert(oord,:)));
+	PD_pos{2} = abs(angdiff(H_pos{5}.hilbert(oord,:), H_pos{2}.hilbert(oord,:)));
+	PD_pos{3} = abs(angdiff(H_pos{6}.hilbert(oord,:), H_pos{3}.hilbert(oord,:)));
+
+
+
+	f200 = figure;
+	subplot(131), imagesc([PD_pre{1} PD_pos{1}]', [0 pi]); title('curlies'); colorbar
+	subplot(132), imagesc([PD_pre{2} PD_pos{2}]', [0 pi]); title('curlies+bridges')
+	subplot(133), imagesc([PD_pre{3} PD_pos{3}]', [0 pi]); title('brick')
+
+
+	SSPD_pre(1,:) = mean(abs(angdiff(H_pre{4}.hilbert(oord,:), H_pre{1}.hilbert(oord,:))));
+	SSPD_pre(2,:) = mean(abs(angdiff(H_pre{5}.hilbert(oord,:), H_pre{2}.hilbert(oord,:))));	
+	SSPD_pre(3,:) = mean(abs(angdiff(H_pre{6}.hilbert(oord,:), H_pre{3}.hilbert(oord,:))));
+
+	SSPD_pos(1,:) = mean(abs(angdiff(H_pos{4}.hilbert(oord,:), H_pos{1}.hilbert(oord,:))))	
+	SSPD_pos(2,:) = mean(abs(angdiff(H_pos{5}.hilbert(oord,:), H_pos{2}.hilbert(oord,:))))	
+	SSPD_pos(3,:) = mean(abs(angdiff(H_pos{6}.hilbert(oord,:), H_pos{3}.hilbert(oord,:))))
+
+	SSPD = [SSPD_pre SSPD_pos];
+
+
+	f300 = figure;
+
+	subplot(3,1,1)
+	plot(abs(H{1}.order_parameter)) 
+	hold on
+	plot(abs(H{4}.order_parameter),'r')
+	ylim([0 1])
+	title('curlies')
+	ylabel('K-param')
+
+	subplot(3,1,2)
+	plot(abs(H{2}.order_parameter)) 
+	hold on
+	plot(abs(H{5}.order_parameter),'r')
+	ylim([0 1])
+	title('curlies+bridges')
+	ylabel('K-param')
+
+
+	subplot(3,1,3)
+	plot(abs(H{3}.order_parameter)) 
+	hold on
+	plot(abs(H{6}.order_parameter),'r')
+	ylim([0 1])
+	title('brick')
+	ylabel('K-param')
+
+
+
+
+
+	f400 = figure
+
+	D1 = abs(sim{4}.networkHistory.V_soma-sim{1}.networkHistory.V_soma);
+	D2 = abs(sim{5}.networkHistory.V_soma-sim{2}.networkHistory.V_soma);
+	D3 = abs(sim{6}.networkHistory.V_soma-sim{3}.networkHistory.V_soma);
+	
+	subplot(1,3,1)
+	imagesc(D1')
+	subplot(1,3,2)
+	imagesc(D2')
+	subplot(1,3,3)
+	imagesc(D3')
+
+
+end
+
+
+
+measuregropusync = 0;
 if measuregropusync
 
 	for s = 1:3

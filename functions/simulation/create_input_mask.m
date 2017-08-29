@@ -21,6 +21,8 @@ p.addParamValue('radius', 2)
 p.addParamValue('cell_coordinates', [])
 p.addParamValue('projection_center', [])
 p.addParamValue('plotme', 0)
+p.addParamValue('offset', 0)
+p.addParamValue('seed', 0)
 
 
 p.parse(varargin{:});
@@ -32,11 +34,15 @@ radius = p.Results.radius;
 coords = p.Results.cell_coordinates;
 projcenter = p.Results.projection_center;
 plotme = p.Results.plotme;
-
+offset = p.Results.offset;
+seed = p.Results.seed;
 
 depth = netsize(1);
 breadth = netsize(2);
 height = netsize(3);
+
+
+rng(seed)
 
 switch inputmasktype
 
@@ -45,7 +51,7 @@ switch inputmasktype
         
         coords = netsize;
 
-			center = mean(coords);
+			center = mean(coords)+ offset
 			
         	distmat = squareform( pdist([center ; coords], 'euclidean') );
 
