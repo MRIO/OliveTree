@@ -3,7 +3,7 @@
 prep_conditions    = 1;
 compute_transients = 1;
 stimulate_layer    = 1;
-display_results    = 1;
+display_results    = 0;
 volumetric_activity = 0;
 
 savemovies = 0;
@@ -21,16 +21,16 @@ fs = 1/dt;
 fieldstosave = {'V_soma'};%, 'V_dend'};
 cell_function = 'vanilla';
 
-steadystatetime = 40; simtime = 50;
+steadystatetime = 40; simtime = 500;
 
 % other parameters
-gaps 	  = .04;
+gaps 	  = .02;
 connset   = [3];   
 radiuses  = [2.5 10];
 alpha    = [7];    % alpha parameter
 bet      = [3];    % beta parameter
 
-betasup  = [.5 1.2]% support for the 
+betasup  = [.3 1.2]% support for the 
 
 % net size
 depth = 2; breadth = 25; height = 25;
@@ -85,7 +85,7 @@ def_neurons = createDefaultNeurons(noneurons);
 	radius = 2; 
 	% W_3d_trans = createW('3d', netsize,2,radius, gaps, 1);
 	% W_3d = createW('3d',netsize,1,gaps, 1);
-	W_3d  = createW('3d_chebychev', netsize, radius, 1, 1, 0, 0, 4, [], 1, [0 0 0 0]);
+	W_3d  = createW('3d_chebychev', netsize, radius, 1, 1, 0, 1, 3, [], 1, [0 0 0 0]);
 	W = W_3d.W;
 
 
@@ -167,10 +167,10 @@ for s = firstpulse_inh
 				if glurelease
 			        glu_mask = perturbation;
 					glu_onsets = s + cumsum(repmat([0 excT],1,exc_n_of_pulses)) + lag;
-					condition{conds}.perturbation_onsets{2} = glu_onsets;
-					condition{conds}.perturbation_mask{2} 	= glu_mask; % selection of stimulated neurons
-					condition{conds}.perturbation_type{2} = 'ampa';
-					condition{conds}.perturbation_pulse_duration{2} = exc_pulse_dur;
+					condition{conds}.perturbation_onsets{1} = glu_onsets;
+					condition{conds}.perturbation_mask{1} 	= glu_mask; % selection of stimulated neurons
+					condition{conds}.perturbation_type{1} = 'ampa';
+					condition{conds}.perturbation_pulse_duration{1} = exc_pulse_dur;
 					
 				
 				else
@@ -222,38 +222,38 @@ if stimulate_layer
 			
 
 			sim3D = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',def_neurons,'tempState',transients.lastState,'W',W ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall);
-			
+			 
 			sim3D.perturbation = pert;
 			sim3D.condition = condition{ccc};
 
 
+			if volumetric_activity
 
-
-		if volumetric_activity
-
-			% which sim to display
-			sim = sim3D;
-		    animate_volume(sim3D,[1:simtime],savemovies,0)
-		    if savemovies
-				eval(['!mv volume.mp4 3d_pert_' num2str(ccc) 'pA.mp4'])
-				close all
+				% which sim to display
+				sim = sim3D;
+			    animate_volume(sim3D,[1:simtime],savemovies,0)
+			    if savemovies
+					eval(['!mv volume.mp4 3d_pert_' num2str(ccc) 'pA.mp4'])
+					close all
+				end
 			end
-		end
 
 
-		% if savemovies
-		% 	ons = condition{ccc}.perturbation_onsets;
-		% 	amps = condition{ccc}.perturbation_amplitude;
+			% if savemovies
+			% 	ons = condition{ccc}.perturbation_onsets;
+			% 	amps = condition{ccc}.perturbation_amplitude;
 
-		% 	% replayResults(sim3D,[1:simtime],0);
-		% 	% eval(['!mv sim.avi samp_' num2str(ons(1)) 'ms' num2str(amps) 'pA.mp4'])
+			% 	% replayResults(sim3D,[1:simtime],0);
+			% 	% eval(['!mv sim.avi samp_' num2str(ons(1)) 'ms' num2str(amps) 'pA.mp4'])
 
-		% 	% close all
-		% end
+			% 	% close all
+			% end
 
 
 			if flush
 				save(['sim3D_image' num2str(ccc)],  'sim3D')
+				disp('saving...')
+				ccc
 				clear sim3D
 				gpuDevice(1)
 			end
