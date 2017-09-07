@@ -72,7 +72,7 @@ gapcur= {'V_soma' 'I_cx36'};
 to_report = gapcur;
 cell_function = 'vanilla'; % 'devel'
 steadystate_time = 300;
-simtime  = 1000;
+simtime  = 5000;
 
 delta = .025;
 currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2

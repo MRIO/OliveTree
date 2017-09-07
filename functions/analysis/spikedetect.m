@@ -11,6 +11,7 @@ function out = spikedetect(varargin)
   p.addParamValue('thresh', -30)
   p.addParamValue('returnbinarymatrix', 1)
   p.addParamValue('time_slice', [])
+  p.addParamValue('detect_spikelet', 0)
 
   p.parse(varargin{:});
 

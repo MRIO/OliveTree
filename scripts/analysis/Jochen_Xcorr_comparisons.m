@@ -35,36 +35,36 @@ nextneighbors 	= nextneighbors(1:10);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if 1
-% compare neighbor cells with and without gap junctions
-XC_stim_WT = xcorr_summa(JS{1}, 'selectedneurons', stimulated);
-saveallfigs('prefix', 'xcorr_stim_WT', 'style', plotstyle)
-close all
+	% compare neighbor cells with and without gap junctions
+	XC_stim_WT = xcorr_summa(JS{1}, 'selectedneurons', stimulated);
+	saveallfigs('prefix', 'xcorr_stim_WT', 'style', plotstyle)
+	close all
 
-XC_stim_MT = xcorr_summa(JS{2}, 'selectedneurons', stimulated);
-saveallfigs('prefix', 'xcorr_stim_MT', 'style', plotstyle)
-close all
+	XC_stim_MT = xcorr_summa(JS{2}, 'selectedneurons', stimulated);
+	saveallfigs('prefix', 'xcorr_stim_MT', 'style', plotstyle)
+	close all
 end
 
 if 1
-nonstim = [2    10    19    76    96   108   127   131   140];
-XC_nostim_WT = xcorr_summa(JS{1}, 'selectedneurons', nonstim);
-% saveallfigs('prefix', 'xcorr_nonstim_WT', 'style', plotstyle)
-close all
+	nonstim = [2    10    19    76    96   108   127   131   140];
+	XC_nostim_WT = xcorr_summa(JS{1}, 'selectedneurons', nonstim);
+	% saveallfigs('prefix', 'xcorr_nonstim_WT', 'style', plotstyle)
+	close all
 
-nonstim = [2    10    19    76    96   108   127   131   140];
-XC_nostim_MT = xcorr_summa(JS{2}, 'selectedneurons', nonstim);
+	nonstim = [2    10    19    76    96   108   127   131   140];
+	XC_nostim_MT = xcorr_summa(JS{2}, 'selectedneurons', nonstim);
 
-% saveallfigs('prefix', 'xcorr_nonstim_MT', 'style', plotstyle)
-close all
+	% saveallfigs('prefix', 'xcorr_nonstim_MT', 'style', plotstyle)
+	close all
 
 
-XC_NEIG_WT = xcorr_summa(SPONT_WT, 'selectedneurons', neighbors);
-% saveallfigs('prefix', 'xcorr_neighbors_spont_WT', 'style', plotstyle)
-close all
+	XC_NEIG_WT = xcorr_summa(SPONT_WT, 'selectedneurons', neighbors);
+	% saveallfigs('prefix', 'xcorr_neighbors_spont_WT', 'style', plotstyle)
+	close all
 
-XC_NEIG_MT = xcorr_summa(SPONT_MT, 'selectedneurons', neighbors);
-% saveallfigs('prefix', 'xcorr_neighbors_spont_MT', 'style', plotstyle)
-close all
+	XC_NEIG_MT = xcorr_summa(SPONT_MT, 'selectedneurons', neighbors);
+	% saveallfigs('prefix', 'xcorr_neighbors_spont_MT', 'style', plotstyle)
+	close all
 
 end
 

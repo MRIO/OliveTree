@@ -1,7 +1,7 @@
 % under construction
 % Jochen_stats.m
 
-
+addpath('/Users/M/Projects/Experiments/Olive/model/simresults/xcorr')
 
 load periodic_ampa_xcorr_stim_tau_30_WT_4_iso_1Hz_50000_4_.mat
  
@@ -66,7 +66,7 @@ freq_stim_cells_MT freq_neigh_cells_MT freq_nostim_cells_MT]/simtime
 	XC_nostim_MT = xcorr_summa(JS{2}, 'selectedneurons', nonstim);
 
 	XC_NEIG_WT = xcorr_summa(SPONT_WT, 'selectedneurons', neighbors);
-	XC_NEIG_MT = xcorr_summa(SPONT_MT, 'selectedneurons', neighbors);
+		XC_NEIG_MT = xcorr_summa(SPONT_MT, 'selectedneurons', neighbors);
 
 
 % repeated measures anova
@@ -80,5 +80,7 @@ freq_stim_cells_MT freq_neigh_cells_MT freq_nostim_cells_MT]/simtime
 
 
 % measures: xcorr peak, baseline firing rate, added spikes
+
+%frequency increase due to stim
 
 

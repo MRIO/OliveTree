@@ -133,45 +133,47 @@ end
 pairs = find(triu(ones(N) - eye(N))');
 [pairs_i pairs_j] = find(triu(ones(N) - eye(N))');
 		
-		xcorrwin = round(linspace(1,duration,nwins+1));
+	xcorrwin = round(linspace(1,duration,nwins+1));
 
-		for nw = 1:length(xcorrwin)-1;
-
-
-			XC{nw} = xcorr(VSB( selectedneurons ,xcorrwin(nw):xcorrwin(nw+1))',lag,'coeff');
-
-			xcorrset = XC{nw}(:,pairs)';
+	for nw = 1:length(xcorrwin)-1;
 
 
-			if applyconvkernel
-				XCs{nw} = conv2(1, mog_filter_2d_CS,xcorrset,'same');
+		XC{nw} = xcorr(VSB( selectedneurons ,xcorrwin(nw):xcorrwin(nw+1))',lag,'coeff');
 
-			end
-
-			
-			if flipasym
-				asym = abs(sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)'));
-			else
-				asym = sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)');
-			end
-			
-			XnoAC(:,nw) = mean(XCs{nw},'omitnan');
+		xcorrset = XC{nw}(:,pairs)';
 
 
-			[ampl(nw,:) delay(nw,:)] = max(XCs{nw}(:,lag-centerwin:lag+centerwin+1), [], 2);
-
-			if flipasym
-				delay = abs(delay);
-			end
-
-
-			if isfield(simulation,'noiseapplied')
-				XCNoise{nw} = xcorr(simulation.noiseapplied(selectedneurons , xcorrwin(nw)-1:1/dt:xcorrwin(nw+1))',lag,'coeff');
-			end
-
-
+		if applyconvkernel
+			XCs{nw} = conv2(1, mog_filter_2d_CS,xcorrset,'same');
 
 		end
+
+		
+		if flipasym
+			asym = abs(sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)'));
+		else
+			asym = sum(xcorrset(:,lag-centerwin:lag)')-sum(xcorrset(:,lag+1:lag+1+centerwin)');
+		end
+		
+		XnoAC(:,nw) = mean(XCs{nw},'omitnan');
+
+
+		[ampl(nw,:) delay(nw,:)] = max(XCs{nw}(:,lag-centerwin:lag+centerwin+1), [], 2);
+
+		if flipasym
+			delay = abs(delay);
+		end
+
+
+		if isfield(simulation,'noiseapplied')
+			XCNoise{nw} = xcorr(simulation.noiseapplied(selectedneurons , xcorrwin(nw)-1:1/dt:xcorrwin(nw+1))',lag,'coeff');
+		end
+
+
+	end
+
+
+
 
 
 	delay = delay - centerwin + 1 ;
