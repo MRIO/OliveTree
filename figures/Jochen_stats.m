@@ -65,8 +65,10 @@ freq_stim_cells_MT freq_neigh_cells_MT freq_nostim_cells_MT]/simtime
 	XC_nostim_WT = xcorr_summa(JS{1}, 'selectedneurons', nonstim);
 	XC_nostim_MT = xcorr_summa(JS{2}, 'selectedneurons', nonstim);
 
+
+
 	XC_NEIG_WT = xcorr_summa(SPONT_WT, 'selectedneurons', neighbors);
-		XC_NEIG_MT = xcorr_summa(SPONT_MT, 'selectedneurons', neighbors);
+	XC_NEIG_MT = xcorr_summa(SPONT_MT, 'selectedneurons', neighbors);
 
 
 % repeated measures anova
