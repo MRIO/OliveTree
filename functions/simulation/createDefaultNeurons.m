@@ -28,7 +28,7 @@ function cell_parameters = createDefaultNeurons(varargin)
 	rng(ip.Results.rng)
 
 	
-cell_parameters = defneurons(noneurons);
+cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
 
 switch celltypes
 	case 'none'
