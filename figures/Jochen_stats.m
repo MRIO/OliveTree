@@ -1,7 +1,7 @@
-% under construction
+		% under construction
 % Jochen_stats.m
 
-addpath('/Users/M/Projects/Experiments/Olive/model/simresults/xcorr')
+
 
 load periodic_ampa_xcorr_stim_tau_30_WT_4_iso_1Hz_50000_4_.mat
  
@@ -56,6 +56,39 @@ freq_stim_cells_MT freq_neigh_cells_MT freq_nostim_cells_MT]/simtime
 
 
 
+
+files = {'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0_MT_4_iso_1Hz_50000_4_0_29-Aug-2017.mat';
+		'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0.15_MT_4_iso_1Hz_50000_4_0_30-Aug-2017.mat';
+		'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0.3_MT_4_iso_1Hz_50000_4_0_30-Aug-2017..mat';
+		'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0.45_MT_4_iso_1Hz_50000_4_0_30-Aug-2017.mat';
+		'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0_WT_4_iso_1Hz_50000_4_0_29-Aug-2017.mat';
+		'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0.15_WT_4_iso_1Hz_50000_4_0_30-Aug-2017.mat';
+		'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0.3_WT_4_iso_1Hz_50000_4_0_30-Aug-2017.mat';
+		'periodic_ampa_xcorr_stim_ncorr_pspace_ncorr_0.45_WT_4_iso_1Hz_50000_4_0_31-Aug-2017.mat'};
+
+		ff = 0;
+		for f= files'
+			ff = ff+1;
+			load(f{1});
+			JS{ff} = joinsim(simresults, [1:4]);
+			stimulated 		= retrieveNeuronsByClass(JS{1}, 'stimulated');
+			nonstimulated   = setdiff([1:200], stimulated);
+			XC_stim{ff}       = xcorr_summa(JS{ff}, 'selectedneurons', stimulated);
+			XC_nostim{ff}     = xcorr_summa(JS{ff}, 'selectedneurons', nonstimulated);
+
+
+
+
+
+		end
+
+		neighbors 		= retrieveNeuronsByClass(JS{1}, 'neighbors');
+		nextneighbors 	= retrieveNeuronsByClass(JS{1}, 'nextneighbors');
+		stimulated 		= retrieveNeuronsByClass(JS{1}, 'stimulated');
+
+
+
+
 	% compare neighbor cells with and without gap junctions
 	XC_stim_WT = xcorr_summa(JS{1}, 'selectedneurons', stimulated);
 	XC_stim_MT = xcorr_summa(JS{2}, 'selectedneurons', stimulated);
@@ -64,8 +97,6 @@ freq_stim_cells_MT freq_neigh_cells_MT freq_nostim_cells_MT]/simtime
 	nonstim = [2    10    19    76    96   108   127   131   140];
 	XC_nostim_WT = xcorr_summa(JS{1}, 'selectedneurons', nonstim);
 	XC_nostim_MT = xcorr_summa(JS{2}, 'selectedneurons', nonstim);
-
-
 
 	XC_NEIG_WT = xcorr_summa(SPONT_WT, 'selectedneurons', neighbors);
 	XC_NEIG_MT = xcorr_summa(SPONT_MT, 'selectedneurons', neighbors);
@@ -83,6 +114,8 @@ freq_stim_cells_MT freq_neigh_cells_MT freq_nostim_cells_MT]/simtime
 
 % measures: xcorr peak, baseline firing rate, added spikes
 
-%frequency increase due to stim
+
+% distribution of median instantaneous firing rates across different correlation conditions
+
 
 
