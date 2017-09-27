@@ -25,6 +25,7 @@ function cell_parameters = createDefaultNeurons(varargin)
 	addrand = ip.Results.addrand;
 	Pnames = ip.Results.Pnames;
 
+	disp('seed for creating neurons:')
 	rng(ip.Results.rng)
 
 	

@@ -18,7 +18,7 @@ delta = .025;
 gpu = 1;
 
 if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
-thisseed = rng(seed,'twister') % random seed
+thisseed = rng(seed,'twister') % random seed only for simulations (not for network cells)
 
 
 % [================================================]
