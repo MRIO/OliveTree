@@ -302,7 +302,7 @@ pert.mask     {1} =  [curlies.stats.clusters==41 | curlies.stats.clusters==34];
 
 
 
-		eval(['save curlies_bridges_stim_pair'  date ' -v7.3'])
+		eval(['save curlies_bridges_stim_pair_seeded_' num2str(seed) '_'  date ' -v7.3'])
 
 
 end
