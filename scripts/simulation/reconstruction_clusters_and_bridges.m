@@ -17,9 +17,6 @@ simtime  = 10000; %ms
 delta = .025;
 gpu = 1;
 
-if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
-thisseed = rng(seed,'twister') % random seed only for simulations (not for network cells)
-
 
 % [================================================]
 % simulations to perform
@@ -159,7 +156,7 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3', 'rng', t
 
 % currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 % ounoise_params = [.2 .3 0 5];
-ounoise_params = [0 0 0 thisseed];
+ounoise_params = [0 0 0 double(thisseed.Seed)];
 sametoall = 0.05;
 
 
@@ -201,6 +198,9 @@ pert.type	  {1} = 'ampa';
 
 % [===========================================================================================================]
  
+if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
+thisseed = rng(seed,'twister') % random seed only for simulations (not for network cells)
+
 
 %%================================================]
 % 		 compute transients/steadystate
