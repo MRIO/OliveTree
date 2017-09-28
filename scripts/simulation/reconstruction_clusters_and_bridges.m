@@ -17,6 +17,8 @@ simtime  = 10000; %ms
 delta = .025;
 gpu = 1;
 
+if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
+thisseed = rng(seed,'twister') % random seed only for simulations (not for network cells)
 
 % [================================================]
 % simulations to perform
@@ -198,9 +200,6 @@ pert.type	  {1} = 'ampa';
 
 % [===========================================================================================================]
  
-if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
-thisseed = rng(seed,'twister') % random seed only for simulations (not for network cells)
-
 
 %%================================================]
 % 		 compute transients/steadystate
