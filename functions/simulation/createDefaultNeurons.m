@@ -13,7 +13,7 @@ function cell_parameters = createDefaultNeurons(varargin)
 	ip.addParameter('nogapcompensation', 0);
 	ip.addParameter('shuffle', 0) 
 	ip.addParameter('addrand',0)
-	ip.addParameter('rng', rng(0))
+	ip.addParameter('rng', rng(0));
 	
 	ip.parse(varargin{:});
 
@@ -23,10 +23,10 @@ function cell_parameters = createDefaultNeurons(varargin)
 	shuffle = ip.Results.shuffle;
 	nogapcompensation = ip.Results.nogapcompensation;
 	addrand = ip.Results.addrand;
-	Pnames = ip.Results.Pnames;
+	randngen = ip.Results.rng;
 
 	disp('seed for creating neurons:')
-	rng(ip.Results.rng)
+	rng(ip.Results.randgen)
 
 	
 cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
