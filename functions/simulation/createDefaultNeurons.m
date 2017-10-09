@@ -23,10 +23,11 @@ function cell_parameters = createDefaultNeurons(varargin)
 	shuffle = ip.Results.shuffle;
 	nogapcompensation = ip.Results.nogapcompensation;
 	addrand = ip.Results.addrand;
-	randngen = ip.Results.rng;
+	randgen = ip.Results.rng;
+	Pnames = ip.Results.Pnames;
 
 	disp('seed for creating neurons:')
-	rng(ip.Results.randgen)
+	rng(randgen)
 
 	
 cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
