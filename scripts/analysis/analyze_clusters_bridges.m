@@ -34,10 +34,10 @@ phase_activity_volume_snapshots = 0;
 
 analyze_group_stim = 0;
 activitydifference = 0;
-spectral_clustering = 0;
+spectral_clustering = 1;
 
 
-twomaskstim = 1;
+twomaskstim = 0;
 
 STOhistograms = 0;
 calculatesynchrony_clusters = 0;
@@ -826,63 +826,68 @@ end
 if spectral_clustering
 	% load /Users/M/Synced/Titan/Bench4/curlies_bridges_randmaskstim22-Mar-2017.mat
 	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_22-Jan-2017.mat
-	load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_20-Jan-2017.mat
+	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/clusters_curlies_bridges_20-Jan-2017.mat
 	% load /Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/curlies_bridges_01-Mar-2017.mat
-	
+	load /Users/M/Synced/Titan/Bench4/curlies_bridges_two_maskstim_seeded_6_25-Sep-2017
+
+	sims = sim; clear sim;
 
 
+	t_interval = 1000:4000;
+	for ss = 1:3
+		% ss = 3;
+		PD{ss} = phase_distribution_over_time(sims{ss}, 'duration', t_interval);
 
-	% for ss = 1:3
-		ss = 3;
-		PD = phase_distribution_over_time(sims{ss}, 'duration', [2000:5000]);
-		ph = PD.phases.pop{2};
-		x = sin(ph(:,2000:5000));
-		cc = partialcorr(x', mean(x)'); % partial correlation w.r.t the mean
-		rho = (cc + 1)/2; % normalize rho to get an affinity matrix 0<=rho<=1
+		ph{ss} = PD{ss}.phases.pop{2};
+		x = sin(ph{ss}(:,t_interval));
+		cc{ss} = partialcorr(x', mean(x)'); % partial correlation w.r.t the mean
+		% cc{ss} = partialcorr(x'); % partial correlation w.r.t the mean
+		rho = (cc{ss} + 1)/2; % normalize rho to gaet an affinity matrix 0<=rho<=1
 		rho = (rho+rho')/2; % rho had better be symmetric
-		c = spect_clust(rho, 50);
-		[bic, aic] = baic(x, c);
-
-	% end
+		specclust_results{ss} = spect_clust(rho, 100);
+		[bic{ss}, aic{ss}] = baic(x, specclust_results{ss});
 
 
 
+		figure
 
-	subplot(331)
-	plot(x'), axis tight
-	title('Data')
-	subplot(332)
-	pcolor(cc), shading flat
-	title('Partial correlation')
-	subplot(333)
-	hist(cc(:),100), axis tight
-	title('Partial correlation')
+			subplot(221)
+			plot(x'), axis tight
+			title('Data')
+
+			subplot(222)
+			pcolor(cc{ss}), shading flat, colorbar
+			title('Partial correlation')
+
+			subplot(223)
+			hist(cc{ss}(:),100), axis tight
+			title('Partial correlation')
 
 
-	subplot(334)
-	plot(c.nc,c.gc,'-o'), axis tight
-	xlabel('Number of clusters')
-	ylabel('Eigenvalue gap')
+			subplot(224)
+			[~, ic] = sort(specclust_results{ss}.label(:,2));
+			pcolor(cc{ss}(ic,ic)), shading flat
+			title('Partial correlation')
 
-	subplot(335)
-	[~, ic] = sort(c.label(:,2));
-	pcolor(cc(ic,ic)), shading flat
-	title('Partial correlation')
 
-	subplot(336)
-	fshow(c.label(:,2))
+	end
 
-	%% Check with information criteria
+	figure
+		subplot(211)
+		plot(specclust_results{ss}.nc,specclust_results{ss}.gc,'-o'), axis tight
+		xlabel('Number of clusters')
+		ylabel('Eigenvalue gap')
 
-	subplot(337)
-	[bic, aic] = baic(x, c);
-	plot([bic aic]), axis tight % These criterion give different results.. 
-	legend('BIC','AIC')
-	subplot(338)
-	[~,ic] = sort(c.label(:,20)); % Let's go for n = 10 as BIC suggests..
-	pcolor(cc(ic,ic)), shading flat % For some reasons, it doesn't seem to work..
-	subplot(339)
-	fshow(c.label(:,10))
+
+		%% Check with information criteria
+		subplot(212)
+		[bic{ss}, aic] = baic(x, specclust_results{ss});
+		plot([bic{ss} aic{ss}]), axis tight 
+		legend('BIC','AIC')
+
+
+
+
 end
 
 

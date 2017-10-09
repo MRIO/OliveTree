@@ -4,7 +4,9 @@
 % 
 % example: HPGCGPU_scripts
 
-rng(0,'twister')
+if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
+rng(seed,'twister') % random seed only for simulations (not for network cells)
+
 
 % [=================================================================]
 %  script parameters

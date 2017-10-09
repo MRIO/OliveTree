@@ -25,15 +25,10 @@ noneu = [length(neighbors) length(nextneighbors) length(stimulated)]
 
 
 
-
-
-
 % [================================================]
 %  stats
 % [================================================]
 simtime = 200;
-
-
 
 freq_stim_cells_WT = mean(JS{1}.spikes.spikespercell(stimulated));
 freq_neigh_cells_WT = mean(JS{1}.spikes.spikespercell(neighbors));
@@ -43,8 +38,22 @@ freq_stim_cells_MT = mean(JS{2}.spikes.spikespercell(stimulated));
 freq_neigh_cells_MT = mean(JS{2}.spikes.spikespercell(neighbors));
 freq_nostim_cells_MT = mean(JS{2}.spikes.spikespercell(setdiff([1:200], stimulated)));
 
+
+freq_stim_cells_MT_SPONT   = mean(SPONT_MT.spikes.spikespercell(stimulated));
+freq_neigh_cells_MT_SPONT  = mean(SPONT_MT.spikes.spikespercell(neighbors));
+freq_nostim_cells_MT_SPONT = mean(SPONT_MT.spikes.spikespercell(setdiff([1:200], stimulated)));
+
+freq_stim_cells_WT_SPONT   = mean(SPONT_WT.spikes.spikespercell(stimulated));
+freq_neigh_cells_WT_SPONT  = mean(SPONT_WT.spikes.spikespercell(neighbors));
+freq_nostim_cells_WT_SPONT = mean(SPONT_WT.spikes.spikespercell(setdiff([1:200], stimulated)));
+
+
 [freq_stim_cells_WT freq_neigh_cells_WT freq_nostim_cells_WT ;
 freq_stim_cells_MT freq_neigh_cells_MT freq_nostim_cells_MT]/simtime
+
+
+
+
 
 % must compute:
 % - probability of response for stimulated/neighbors/nostim cells WT MT
