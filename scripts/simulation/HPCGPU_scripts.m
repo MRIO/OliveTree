@@ -14,7 +14,7 @@
 
 % if strcmp(pwd,'/home/titanuser1/Titan/Bench')
 % 	X_README = 'sims for pascal_'
-% 	nameprefix = 'moreoscillations_nocorr_'
+% 	nameprefix = 'nocorr_'
 % 	gaps = 0.04; tau = 30; noisesig = .4; noisemu = -.4; sametoall = 0; simtype = '1Hz'   ;  conntype = 'iso'     ; HPCGPU_periodic_ampa		;% 4Pascal 3: 
 % 	gaps = 0.04; tau = 30; noisesig = .4; noisemu = -.4; sametoall = 0; simtype = 'spont' ;  conntype = 'iso'     ; HPCGPU_periodic_ampa		;% 4Pascal 1: 
 % 	gaps = 0.04; tau = 30; noisesig = .4; noisemu = -.4; sametoall = 0; simtype = 'gallop';  conntype = 'iso'     ; HPCGPU_periodic_ampa		;% 4Pascal 1: 
@@ -179,6 +179,11 @@ end
 % 	p12 = [1];	% whether using gap compensation in cells
 % 	p13 = [.5];	    % variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
+
+% [=================================================================]
+%  tau x eta NetPspace
+% [=================================================================]
+
 % Lastrun: 20/6/2016
 % if strcmp(pwd,'/home/titanuser1/Titan/Bench2')
 % 	X_README = 'THIS IS A SIMULATION FOR TAU - gapfactor introduced'
@@ -230,7 +235,7 @@ end
 
 
 % [=================================================================]
-%  noise tests
+%  noise tests SIG x MU (corr = 0)
 % [=================================================================]
 
 	% p1  = [20];			% time constant of ornstein uhlenbeck process (tau)

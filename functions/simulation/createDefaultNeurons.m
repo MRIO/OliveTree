@@ -23,12 +23,11 @@ function cell_parameters = createDefaultNeurons(varargin)
 	shuffle = ip.Results.shuffle;
 	nogapcompensation = ip.Results.nogapcompensation;
 	addrand = ip.Results.addrand;
-	randgen = ip.Results.rng;
+	randngen = ip.Results.rng;
 	Pnames = ip.Results.Pnames;
 
 	disp('seed for creating neurons:')
-	rng(randgen)
-
+	rng(ip.Results.rng)
 	
 cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
 cell_parameters.rng = randgen;
@@ -212,8 +211,8 @@ switch celltypes
 		% parameter ranges
 		p1 = [.5:.1:1.1]; 		% CalciumL - conductance range
 		p2 = [.12:.12:1.2];      	% g_h
-		p3 = [45 55];		% Ca act Potassium: not voltage dependent 
-		p4 = [4.5 5.5];
+		p3 = [45 ];		% Ca act Potassium: not voltage dependent 
+		p4 = [5.5];
 
 		[p{1} p{2} p{3} p{4}] = ndgrid(p1,p2,p3,p4);
 

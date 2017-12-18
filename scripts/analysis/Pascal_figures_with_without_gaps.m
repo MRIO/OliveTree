@@ -2,22 +2,28 @@
 
 clear;
 
+produce_data = 1;
+
 onesec_vs_30s = 0;
 plotcellscatters_gap_gapless  = 0; % compare cell scatters in nets
 joinedcellscatter = 0;
 triggeredphase =0;
 hist_sto_freq_amp_w_wo_gaps = 0;
-
 frequency_drift_singlesim_prc = 0;
-
 calculatesynchrony = 0;
 sto_and_propfiring_histograms = 0;
-
 interperiodintervals = 1;
-
 sortedsampletraces = 1;
 
 tslice = 1:50000;
+
+
+if produce_data
+
+
+end
+
+
 
 
 
@@ -26,7 +32,6 @@ if 0
 	addpath('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/periodic_ampa/')
 
 	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017';
-	
 	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017';
 
 	load(F1)
