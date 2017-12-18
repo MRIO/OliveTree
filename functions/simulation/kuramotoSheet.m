@@ -25,6 +25,7 @@ function out = kuramotoSheet(varargin)
 % ('dt', 1e-3) 	
 % ('simtime',1) % in seconds
 % ('omega_mean', 10) 
+% ('omega_std', 2) 
 % ('plotme', 1) 
 % ('noise', 0) 
 % ('connectivity', []) 
@@ -41,7 +42,7 @@ function out = kuramotoSheet(varargin)
 plasticity = 0;
 gpu = 0;
 
-anim = 1; makemovie = 1;
+anim = 1; makemovie = 0;
 
 % [=================================================================]
 %  parse inputs
@@ -65,6 +66,8 @@ anim = 1; makemovie = 1;
 	p.addParameter('seed', 0)
 
 	p.parse(varargin{:});
+
+	keyboard
 
 	netsize = p.Results.networksize;
 	scaling = p.Results.scaling;
@@ -143,6 +146,14 @@ switch connectivity
 
 	case 'random'
 		% W = (ones(N*M)-eye(N*M) ) .* rand(N*M);
+
+
+	case 'mexican'
+		[X Y] = meshgrid([1:N],[1:M]);
+        X = X(:); Y = Y(:); 
+
+        % # compute adjacency matrix
+		connectivity = squareform( pdist([X Y], 'euclidean') <= radius );
 
 
 	
@@ -230,6 +241,8 @@ end
 %  randomize initial condition
 % [=================================================================]
 %initial condition (initial phase)
+theta_t = zeros(N*M,simtime/dt);
+PP = zeros(N*M,simtime/dt);
 if isempty(init_cond)
 	theta_t(:,1) = rand(N*M,1)*2*pi;
 else
@@ -306,7 +319,7 @@ if plotme
 	plot(linspace(0,simtime, simtime*dt^-1), mod(theta_t,2*pi)')
 	ylabel('phase (theta)')
 	subplot(2,2,2)
-	imagesc(connectivity), colorbar
+	imagesc(connectivity), colormap(hot(60)),colorbar
 	title('connectivity')
 	subplot(2,2,3)
 	plot(linspace(0,simtime, simtime*dt^-1), sin(theta_t'))
@@ -331,11 +344,12 @@ if plotme
 	
 
 	if exist('linspecer')
-		LSpec = linspecer(length(unique(idx)))
+		LSpec = linspecer(length(unique(idx)));
 		set(ffff, 'colormap',   LSpec);
 		set(a(1), 'colororder', LSpec);
 		set(a(2), 'colororder', LSpec);
 	else
+		LSpec = jet(length(unique(idx)));
 		set(ffff, 'colormap',   jet(length(unique(idx))));
 		set(a(1), 'colororder', jet(length(unique(idx))));
 		set(a(2), 'colororder', jet(length(unique(idx))));
@@ -386,5 +400,73 @@ out.oscillators = omega_i/(2*pi);
 out.orderparameter = abs(k);
 out.meanphase = MP;
 out.seed = seed;
+out.connectivity = connectivity;
  if makemovie && plotme ; out.movie = MOV; end
 % out.all =  sin(mod(theta_t,2*pi));
+
+
+
+
+
+
+
+
+
+
+function [mu ul ll] = circ_mean(alpha, w, dim)
+%
+% mu = circ_mean(alpha, w)
+%   Computes the mean direction for circular data.
+%
+%   Input:
+%     alpha	sample of angles in radians
+%     [w		weightings in case of binned angle data]
+%     [dim  compute along this dimension, default is 1]
+%
+%     If dim argument is specified, all other optional arguments can be
+%     left empty: circ_mean(alpha, [], dim)
+%
+%   Output:
+%     mu		mean direction
+%     ul    upper 95% confidence limit
+%     ll    lower 95% confidence limit 
+%
+% PHB 7/6/2008
+%
+% References:
+%   Statistical analysis of circular data, N. I. Fisher
+%   Topics in circular statistics, S. R. Jammalamadaka et al. 
+%   Biostatistical Analysis, J. H. Zar
+%
+% Circular Statistics Toolbox for Matlab
+
+% By Philipp Berens, 2009
+% berens@tuebingen.mpg.de - www.kyb.mpg.de/~berens/circStat.html
+
+if nargin < 3
+  dim = 1;
+end
+
+if nargin < 2 || isempty(w)
+  % if no specific weighting has been specified
+  % assume no binning has taken place
+	w = ones(size(alpha));
+else
+  if size(w,2) ~= size(alpha,2) || size(w,1) ~= size(alpha,1) 
+    error('Input dimensions do not match');
+  end 
+end
+
+% compute weighted sum of cos and sin of angles
+r = sum(w.*exp(1i*alpha),dim);
+
+% obtain mean by
+mu = angle(r);
+
+% confidence limits if desired
+if nargout > 1
+  t = circ_confmean(alpha,0.05,w,[],dim);
+  ul = mu + t;
+  ll = mu - t;
+end
+

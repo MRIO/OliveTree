@@ -2,12 +2,13 @@ function [ ...
             I_CaL, I_ds, I_as, I_Na_s, I_ls, I_Kdr_s, I_K_s, ...
             I_CaH, I_sd, I_ld, I_K_Ca, I_cx36, I_h, I_h_s,... %#change g_h_s
             I_K_a, I_sa, I_la, I_Na_a, ...
-            V_soma, h, n, x_s, k, l, V_dend, r, s, q, q_s, Ca2Plus, V_axon, m_a, h_a, x_a ] =... % #change add q_s
-                 IOcell_devel(...
-                     V_soma, Sodium_h, Potassium_n, Potassium_x_s,...
-                     Calcium_k, Calcium_l, V_dend, Calcium_r, Potassium_s,...
-                     Hcurrent_q, Hcurrent_q_s, Ca2Plus, I_CaH, ... % #change Hcurrent_q_s
-                     V_axon, Sodium_h_a, Potassium_x_a, ...
+            V_soma, h_new, n_new, x_s_new,...
+            k_new, l_new, V_dend, r_new, s_new, ...
+            q_new, q_s_new, Ca2Plus_new, V_axon, ...
+            m_a_new, h_a_new, x_a_new ] = ... % #change add q_s
+                 IOcell(...
+                     V_soma, h, n, x_s, k, l, V_dend, r, s, q, q_s, Ca2Plus, I_CaH, ... % #change Hcurrent_q_s
+                     V_axon, h_a, x_a, ...
                      I_cx36, I_app, V_app, g_CaL, g_int, g_K_Ca, g_Ld,...
                      C_m, g_Na_s ,g_Kdr_s, g_K_s, g_ls,g_CaH,g_h,g_h_s, g_Na_a, g_K_a, g_la, ... % #change g_h_s
                      p1 , p2, V_Na, V_K, V_Ca, V_h, V_l, V_gaba_dend, V_gaba_soma, V_ampa, ...
@@ -16,10 +17,17 @@ function [ ...
 
 
 
-I_h_s = 0; % (matlab requires that we initialize every variable.)
-q_s = 0;   % no h current in the soma 
+I_h_s = 0; % (matlab 2015 requires that we initialize every variable for gpu use.)
+q_s_new = 0;   % no h current in the soma 
 
-%% Cell properties
+
+%% Cell mechanisms found in the supplementary material from:
+% 
+% Climbing fiber burst size and olivary sub-threshold oscillations in a network setting. 
+% PLoS Computational Biololgy, 8(12), e1002814.
+% De Gruijl, J. R., Bazzigaluppi, P., de Jeu, M. T. G., & De Zeeuw, C. I. (2012). 
+% http://doi.org/10.1371/journal.pcbi.1002814
+
 
 % Capacitance
 % C_m    =   1; % uF/cm^2 
@@ -30,14 +38,14 @@ q_s = 0;   % no h current in the soma
 % g_K_s    =    5;      % Potassium
 % g_ls     =    0.016;  % Leaks
     
-% Dendritic conductances (mS/cm2) - SK
-% g_K_Ca   =  35;       % Potassium -- now a parameter
-% g_CaH    =   4.5;     % High-threshold calcium
+% Dendritic conductances (mS/cm2)
+% g_K_Ca   =  35;       % Potassium 
+% g_CaH    =   4.5;     % High-threshold calcium -- P/Q type
 % g_ld     =   0.016;   % Leak
 % g_h      =   0.12;    % H current
 
 
-% Axon hillock conductances (mS/cm2)    
+% Axon hillock conductances (mS/cm2)
 % g_Na_a   =  240;      % Sodium
 % g_K_a    =   20;      % Potassium
 % g_la     =    0.016;  % Leak
@@ -47,6 +55,7 @@ q_s = 0;   % no h current in the soma
 % p2     = 0.15;        % Cell surface ratio axon(hillock)/soma
 
 % g_int  = 0.13;        % Cell internal conductance  -- now a parameter
+
 
 %% Reversal potentials
 % V_Na =  55;       % Sodium
@@ -60,129 +69,26 @@ q_s = 0;   % no h current in the soma
 % V_ampa = 0;
 
 
-%% New state...
-
-    %%================================================]
-    %          update somatic components
-    %=================================================]
-    
-
-    % somatic Sodium
-    m_inf = 1 / (1 + (exp((-30 - V_soma)/ 5.5)));
-    h_inf = 1 / (1 + (exp((-70 - V_soma)/-5.8)));
-    tau_h =       3 * exp((-40 - V_soma)/33);
-
-    dh_dt = (h_inf - Sodium_h)/tau_h;
-    
-        m     = m_inf;
-        h     = Sodium_h + delta * dh_dt;
-
-     n_inf = 1 / (1 + exp( ( -3 - V_soma) /  10));
-     tau_n =   5 + (  47 * exp( -(-50 - V_soma) /  900));
-     dn_dt = (n_inf - Potassium_n) / tau_n;
-     n     = delta * dn_dt + Potassium_n;
-          
-     alpha_x_s = 0.13 * (V_soma + 25) / (1 - exp(-(V_soma + 25) / 10));
-     beta_x_s  = 1.69 * exp(-0.0125 * (V_soma + 35));
-    
-     x_inf_s   = alpha_x_s / (alpha_x_s + beta_x_s);
-     tau_x_s   =         1 / (alpha_x_s + beta_x_s);
-    
-    
-     dx_dt_s   = (x_inf_s - Potassium_x_s) / tau_x_s;
-    
-     x_s       = delta * dx_dt_s + Potassium_x_s;
-          
-   
-    % [================================================]
-              %% update dendritic components
-    % [================================================]
-
-     %% update CaT components
-    
-    k_inf = (1 / (1 + exp(-1 * (V_dend + 61)   / 4.2)));
-    l_inf = (1 / (1 + exp((     V_dend + 85.5) / 8.5)));
-
-    tau_k = 1;
-    tau_l = ((20 * exp((V_dend + 160) / 30) / (1 + exp((V_dend + 84) / 7.3))) +35);
-        
-    dk_dt = (k_inf - Calcium_k) / tau_k;
-    dl_dt = (l_inf - Calcium_l) / tau_l;
-
-        k = delta * dk_dt + Calcium_k;
-        l = delta * dl_dt + Calcium_l;
-
-    
-    % Update dendritic H current component
-    q_inf = 1 /(1 + exp((V_dend + 80) / 4));
-    tau_q = 1 /(exp(-0.086 * V_dend - 14.6) + exp(0.070 * V_dend - 1.87));
-        
-    dq_dt = (q_inf - Hcurrent_q) / tau_q;
-        q = delta * dq_dt + Hcurrent_q; % original
-        % q = (~(Hcurrent_q >1)) *(delta * dq_dt + Hcurrent_q) + (Hcurrent_q >1) ;
-
-        
-     % Update dendritic high-threshold Ca current component
-     alpha_r = 1.7 / (1 + exp( -(V_dend - 5) / 13.9));
-      beta_r = 0.02 * (V_dend + 8.5) / (exp((V_dend + 8.5) / 5) - 1);
-
-       r_inf = alpha_r / (alpha_r + beta_r);
-       tau_r = 5 / (alpha_r + beta_r);
-        
-       dr_dt = (r_inf - Calcium_r) / tau_r;
-           r = delta * dr_dt + Calcium_r;
 
 
-      % Update dendritic Ca-dependent K current component
-      % alpha_s = min([0.00002 * Ca2Plus, 0.01]);
-      
-      alpha_s = (0.00002 * Ca2Plus) * (0.00002 * Ca2Plus < 0.01) + 0.01*((0.00002 * Ca2Plus)> 0.01); % nefarious calcium creates instabilities?
-       beta_s = 0.015;
-        s_inf = alpha_s / (alpha_s + beta_s);
-        tau_s = 1 / (alpha_s + beta_s);
-        
-        ds_dt = (s_inf - Potassium_s) / tau_s;
-        
-            s = delta * ds_dt + Potassium_s;
-        
-       
-        
 
-       %% update axon hillock components
-       
-       % Update axonal Na components
-       % NOTE: current has shortened inactivation to account for high
-       % firing frequencies in axon hillock
-     m_inf_a   = 1 / (1 + (exp((-30 - V_axon)/ 5.5)));
-     h_inf_a   = 1 / (1 + (exp((-60 - V_axon)/-5.8)));
-     tau_h_a   =     1.5 * exp((-40 - V_axon)/33);
-
-     dh_dt_a   = (h_inf_a - Sodium_h_a)/tau_h_a;
-     
-     m_a       = m_inf_a;
-     h_a       = Sodium_h_a + delta * dh_dt_a;
-     
-
-
-     % Update potassium components
-     alpha_x_a = 0.13 * (V_axon + 25) / (1 - exp(-(V_axon + 25) / 10));
-     beta_x_a  = 1.69 * exp(-0.0125 * (V_axon + 35));
-    
-     x_inf_a   = alpha_x_a / (alpha_x_a + beta_x_a);
-     tau_x_a   =         1 / (alpha_x_a + beta_x_a);
-    
-     dx_dt_a   = (x_inf_a - Potassium_x_a) / tau_x_a;
-    
-     x_a       = delta * dx_dt_a + Potassium_x_a;
-     
-     
-        %% update currents
+      %    _   ___   __                    __      __                                          __
+      %   (_)_/_(_)_/_/   __  ______  ____/ /___ _/ /____     _______  _______________  ____  / /______
+      %    _/_/  _/_/    / / / / __ \/ __  / __ `/ __/ _ \   / ___/ / / / ___/ ___/ _ \/ __ \/ __/ ___/
+      %  _/_/_ _/_/_    / /_/ / /_/ / /_/ / /_/ / /_/  __/  / /__/ /_/ / /  / /  /  __/ / / / /_(__  )
+      % /_/ (_)_/ (_)   \__,_/ .___/\__,_/\__,_/\__/\___/   \___/\__,_/_/  /_/   \___/_/ /_/\__/____/
+      %                     /_/
   
-    % SOMATIC CURRENTS
+    % [=================================================================]
+    %  % SOMATIC CURRENTS
+    % [=================================================================]
         
     % Dendrite-soma interaction current
     I_ds  = (g_int / p1) * (V_soma - V_dend); 
+    % Inward low-threshold Ca current
+    I_CaL = g_CaL * k * k * k * l * (V_soma - V_Ca);
     % Inward Na current
+    m = 1 / (1 + (exp((-30 - V_soma)/ 5.5)));
     I_Na_s  = g_Na_s * m * m * m * h * (V_soma - V_Na);
     % Leak current
     I_ls  = g_ls * (V_soma - V_l);
@@ -198,10 +104,9 @@ q_s = 0;   % no h current in the soma
         
 
     
-    % DENDRITIC CURRENTS
-    
-    % Inward low-threshold Ca current #new
-    I_CaL = g_CaL * k * k * k * l * (V_dend - V_Ca);
+    % [=================================================================]
+    %  % DENDRITIC CURRENTS
+    % [=================================================================]
     
     % Soma-dendrite interaction current I_sd
     I_sd   = (g_int / (1 - p1)) * (V_dend - V_soma);
@@ -215,19 +120,15 @@ q_s = 0;   % no h current in the soma
     I_h    =  g_h * q * (V_dend - V_h);
     %***** GABA A current *****
     I_gab_dend   = gbar_gaba_dend * g_gaba_dend * (V_dend - V_gaba_dend);
-
+    %***** AMPA current *****
     I_amp_dend   = gbar_ampa_dend * g_ampa_dend * (V_dend - V_ampa);
     
-
-    % update Calcium concentration
-        dCa_dt = arbitrary *-3 * I_CaH - 0.075 * Ca2Plus - 0.01 * I_CaL; % #new #checkliterature
-        Ca2Plus = delta * dCa_dt + Ca2Plus;
-
-
-    
-    % AXONAL CURRENTS
+    % [=================================================================]
+    %  AXONAL CURRENTS
+    % [=================================================================] 
 
     % Sodium
+    m_a   = 1 / (1 + (exp((-30 - V_axon)/ 5.5)));
     I_Na_a  = g_Na_a  * m_a * m_a * m_a * h_a * (V_axon - V_Na);
     % Leak
     I_la    = g_la    * (V_axon - V_l);
@@ -237,8 +138,6 @@ q_s = 0;   % no h current in the soma
     I_K_a   = g_K_a * (x_a ^ 4) * (V_axon - V_K);
     
     %% update voltages
-    
-
 
     dVs_dt = (-(I_CaL   + I_ds  + I_as + I_Na_s + I_ls   + I_Kdr_s + I_K_s  + I_amp + I_gab_soma) ) / C_m;
     dVd_dt = (-(I_CaH   + I_sd  + I_ld + I_K_Ca + I_cx36 + I_h     + I_gab_dend + I_amp_dend) + I_app  ) / C_m;
@@ -251,20 +150,118 @@ q_s = 0;   % no h current in the soma
     V_axon = delta * dVa_dt + V_axon;
 
 
+% [=================================================================]
+%  %% New state...
+% [=================================================================]
+
+    %% update somatic components
     
+    k_inf = (1 / (1 + exp(-1 * (V_soma + 61)   / 4.2)));
+    l_inf = (1 / (1 + exp((     V_soma + 85.5) / 8.5)));
 
-% a = whos;
-% for i = 1:length(a)
-%     if isnan(a(i).name) | isinf(a(i).name)
-%         keyboard
-%     end
-% end
+    tau_k = 1;
+    tau_l = ((20 * exp((V_soma + 160) / 30) / (1 + exp((V_soma + 84) / 7.3))) +35);
+        
+    dk_dt = (k_inf - k) / tau_k;
+    dl_dt = (l_inf - l) / tau_l;
 
+        k_new = delta * dk_dt + k;
+        l_new = delta * dl_dt + l;
 
+    m_inf = 1 / (1 + (exp((-30 - V_soma)/ 5.5)));
+    h_inf = 1 / (1 + (exp((-70 - V_soma)/-5.8)));
+    tau_h =       3 * exp((-40 - V_soma)/33);
 
+    dh_dt = (h_inf - h)/tau_h;
+     
+    m_new     = m_inf;
+    h_new     = h + delta * dh_dt;
 
-
-
-
-
+     n_inf = 1 / (1 + exp( ( -3 - V_soma) /  10));
+     tau_n =   5 + (  47 * exp( -(-50 - V_soma) /  900));
+     dn_dt = (n_inf - n) / tau_n;
+     n_new     = delta * dn_dt + n;
+          
+     alpha_x_s = 0.13 * (V_soma + 25) / (1 - exp(-(V_soma + 25) / 10));
+     beta_x_s  = 1.69 * exp(-0.0125 * (V_soma + 35));
     
+     x_inf_s   = alpha_x_s / (alpha_x_s + beta_x_s);
+     tau_x_s   =         1 / (alpha_x_s + beta_x_s);
+    
+    
+     dx_dt_s   = (x_inf_s - x_s) / tau_x_s;
+    
+     x_s_new       = delta * dx_dt_s + x_s;
+          
+   
+    % [=================================================================]
+    %  %% update dendritic components
+    % [=================================================================]
+    
+    % Update dendritic H current component
+    q_inf = 1 /(1 + exp((V_dend + 80) / 4));
+    tau_q = 1 /(exp(-0.086 * V_dend - 14.6) + exp(0.070 * V_dend - 1.87));
+        
+    dq_dt = (q_inf - q) / tau_q;
+    q_new = delta * dq_dt + q; % original
+        
+     % Update dendritic high-threshold Ca current component
+    alpha_r = 1.7 / (1 + exp( -(V_dend - 5) / 13.9));
+    beta_r = 0.02 * (V_dend + 8.5) / (exp((V_dend + 8.5) / 5) - 1);
+
+    r_inf = alpha_r / (alpha_r + beta_r);
+    tau_r = 5 / (alpha_r + beta_r);
+        
+    dr_dt = (r_inf - r) / tau_r;
+    r_new = delta * dr_dt + r;
+
+
+    % [=================================================================]
+    %        % Update dendritic Ca-dependent K current component
+    % alpha_s = min([0.00002 * Ca2Plus, 0.01]);
+    % [=================================================================]      
+
+      alpha_s = (0.00002 * Ca2Plus) * (0.00002 * Ca2Plus < 0.01) + 0.01*((0.00002 * Ca2Plus)> 0.01); 
+       beta_s = 0.015;
+        s_inf = alpha_s / (alpha_s + beta_s);
+        tau_s = 1 / (alpha_s + beta_s);
+        
+        ds_dt = (s_inf - s) / tau_s;
+        
+        s_new = delta * ds_dt + s;
+        
+       % update Calcium concentration
+         dCa_dt = -3 * I_CaH - 0.075 * Ca2Plus;
+        Ca2Plus_new = delta * dCa_dt + Ca2Plus;
+
+       
+       %% update axon hillock components
+       
+       % Update axonal Na components
+       % NOTE: current has shortened inactivation to account for high
+       % firing frequencies in axon hillock
+     m_inf_a   = 1 / (1 + (exp((-30 - V_axon)/ 5.5)));
+     h_inf_a   = 1 / (1 + (exp((-60 - V_axon)/-5.8)));
+     tau_h_a   =     1.5 * exp((-40 - V_axon)/33);
+
+     dh_dt_a   = (h_inf_a - h_a)/tau_h_a;
+     
+     m_a_new       = m_inf_a;
+     h_a_new       = h_a + delta * dh_dt_a;
+     
+
+
+     % Update potassium components
+     alpha_x_a = 0.13 * (V_axon + 25) / (1 - exp(-(V_axon + 25) / 10));
+     beta_x_a  = 1.69 * exp(-0.0125 * (V_axon + 35));
+    
+     x_inf_a   = alpha_x_a / (alpha_x_a + beta_x_a);
+     tau_x_a   =         1 / (alpha_x_a + beta_x_a);
+    
+     dx_dt_a   = (x_inf_a - x_a) / tau_x_a;
+    
+     x_a_new       = delta * dx_dt_a + x_a;
+     
+     
+  
+

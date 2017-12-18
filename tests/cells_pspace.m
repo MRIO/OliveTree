@@ -20,6 +20,7 @@
 clear
 rng(0,'twister')
 gpu = 1;
+verbose = 1;
 
 debugging = 0;
 % [=================================================================]
@@ -27,8 +28,8 @@ debugging = 0;
 % [=================================================================]
 delta = .02;
 
-% cell_function = 'devel';
-cell_function = 'vanilla'; % 'devel'
+cell_function = 'devel';
+% cell_function = 'vanilla'; % 'devel'
 nconn = 3;
 
 steadystate_time = 1000;
@@ -36,8 +37,8 @@ simtime  = 1000;
 
 % currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
-% [=================================================================
-]%  state variables to report
+% [=================================================================]
+%  state variables to report
 % [=================================================================]
 
 activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
@@ -54,15 +55,15 @@ to_report = currents;
 % gaps = [];
 gaps = [0];
 
-pspace_type = 'pgrid';
-% pspace_type = 'randomized';%
+% pspace_type = 'pgrid';
+pspace_type = 'randomized';%
  % pspace_type = '2p_sweep';
 switch pspace_type
 
 
 	case 'randomized'
 
-	noneurons = 100;
+	noneurons = 10;
 	netsize = [noneurons 1 1];
 	def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
 	Plist = def_neurons.Plist;
@@ -82,15 +83,15 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [.5 1 2 3]; 		% CalciumL - conductance range
-	p2 = [0 1];      	    % g_h_s
+	p1 = [.8 .9 1 1.1 1.2 1.3 ]; 		% CalciumL - conductance range
+	p2 = [0];      	    % g_h_s
 	p3 = [.15]; 	% g_int
-	p4 = [0 1 2];      	% g_h
-	p5 = [.1 .2 ]; % ratio soma dendrite
-	p6 = [35 55 85];	% Ca act Potassium: not voltage dependent 
-	p7 = [4.5 6.5]; % Ca High threshold
-	p8 = [0.013 0.016];    % leak
-	p9 = [0.013 0.016];; % leak
+	p4 = [0.1];      	% g_h
+	p5 = [.1 ]; % ratio soma dendrite
+	p6 = [45];	% Ca act Potassium: not voltage dependent 
+	p7 = [6.5]; % Ca High threshold
+	p8 = [0.011 0.013];    % leak
+	p9 = [0.011 0.013];; % leak
 	p10 = [0];; % arbitrary
 
 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9} p{10}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10);
@@ -170,7 +171,7 @@ pert = [];
 %=================================================]
 if ~exist('st_st','var')
 	disp('calculating transients')
-	st_st = IOnet('cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta,'ou_noise', [0 0 0 0],'debug',debugging);
+	st_st = IOnet('verbose', verbose, 'cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta,'ou_noise', [0 0 0 0],'debug',debugging);
 	st_st.Plist = Plist;
 	st_st.Pnames = Pnames;
 
@@ -186,7 +187,7 @@ end
 s = 0;
 for gap = gaps
 	s = s+1;
-   [simresults{s}] = IOnet('tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
+   [simresults{s}] = IOnet('verbose', verbose, 'tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
    	'networksize', netsize,'time',simtime ,'W', W.W*gap ,'ou_noise', ounoise , ...
    	'to_report', to_report ,'gpu', gpu , 'appCurrent', I_app, ...
    	'cell_function', cell_function ,'delta',delta,'sametoall', 0 , 'displaytext', ['sim: ' num2str(s)]);

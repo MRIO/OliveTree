@@ -76,14 +76,6 @@ activations =  {'V_soma','Calcium_l'};
 to_report = activations;
 
 
-switch conntype
-	case 'iso'
-		W  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [0 0 0 0], normleak);
-	case 'cluster'
-		W  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [1 25 .5 .05], normleak);
-end
-
-
 % [=================================================================]
 %  % create neurons
 % [=================================================================]
@@ -100,6 +92,15 @@ netsize = [1 length(select_cells) 1];
 noneurons = prod(netsize);
 
 neurons = createDefaultNeurons(length(select_cells));
+
+
+switch conntype
+	case 'iso'
+		W  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [0 0 0 0], normleak);
+	case 'cluster'
+		W  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [1 25 .5 .05], normleak);
+end
+
 
 
 c = 0;

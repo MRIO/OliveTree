@@ -101,6 +101,7 @@ p.addParamValue('sametoall',0) % value between 0 and 1 representing how much of 
 p.addParamValue('saveappliednoise',1) 
 p.addParamValue('displaytext',[]) 
 p.addParamValue('debug',[])
+p.addParamValue('verbose',1)
 
 p.parse(varargin{:});
 
@@ -124,6 +125,7 @@ sametoall           = p.Results.sametoall;
 saveappliednoise    = p.Results.saveappliednoise;
 displaytext         = p.Results.displaytext;
 debugging           = p.Results.debug;
+verbose           = p.Results.verbose;
 
 interrupt_when_fail = 1;
 report_all_dt = false;
@@ -357,7 +359,7 @@ for t = 1:simSteps
                 E.stack
                 disp('problem computing the selected cell function!')
                 keyboard
-                
+                    
             end
 
     
@@ -417,13 +419,15 @@ for t = 1:simSteps
 
         clc
 
-        disp('[================================================]')
-        disp(['Running simulation...' wgpu])
-        disp(['cell_function: ' cell_function])
-        disp(['Complete:' num2str(100*t/simSteps) '%'])
-        disp(['Time elapsed:' num2str(toc(tstart)) 's'])
-        disp(displaytext)
-        disp('[================================================]')
+        if verbose
+            disp('[================================================]')
+            disp(['Running simulation...' wgpu])
+            disp(['cell_function: ' cell_function])
+            disp(['Complete:' num2str(100*t/simSteps) '%'])
+            disp(['Time elapsed:' num2str(toc(tstart)) 's'])
+            disp(displaytext)
+            disp('[================================================]')
+        end
     end
 
 
