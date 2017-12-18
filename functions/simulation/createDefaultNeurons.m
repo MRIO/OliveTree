@@ -28,7 +28,6 @@ function cell_parameters = createDefaultNeurons(varargin)
 
 	disp('seed for creating neurons:')
 	rng(ip.Results.rng)
-
 	
 cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
 

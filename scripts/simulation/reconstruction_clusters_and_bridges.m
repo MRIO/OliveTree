@@ -525,7 +525,7 @@ if two_maskstimulation
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', ounoise_params , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
-		sim{3}.note = 'brick no stim'
+		sim{3}.note = 'brick random mask'
 		sim{3}.networkHistory.V_soma = single(sim{3}.networkHistory.V_soma);
 		sim{3}.W = brick;
 
@@ -559,11 +559,45 @@ if two_maskstimulation
 		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', ounoise_params , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
-		sim{6}.note = 'brick no stim'
+		sim{6}.note = 'brick random mask'
 		sim{6}.networkHistory.V_soma = single(sim{6}.networkHistory.V_soma);
 		sim{6}.W = brick;
 
-		eval(['save curlies_bridges_two_maskstim'  date ' -v7.3'])
+
+
+
+	pert= [];
+	
+	sim{7} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', curlies.W ,'ou_noise', ounoise_params , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{7}.note = 'curlies no stim';
+		sim{7}.networkHistory.V_soma = single(sim{7}.networkHistory.V_soma);
+		sim{7}.W = curlies;
+
+	sim{8} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', ounoise_params , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{8}.networkHistory.V_soma = single(sim{8}.networkHistory.V_soma);
+		sim{8}.note = 'bridge no stim'
+		sim{8}.W = bridg_curlies;
+
+
+	sim{9} = IOnet( 'cell_parameters', def_neurons, ...
+	 		'perturbation', pert, 'tempState', st_st.lastState, ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', ounoise_params , ...
+		   	'to_report', to_report ,'gpu', gpu , ...
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+		sim{9}.note = 'brick no stim'
+		sim{9}.networkHistory.V_soma = single(sim{9}.networkHistory.V_soma);
+		sim{9}.W = brick;
+
+		eval(['save curlies_bridges_two_maskstim_seeded_' num2str(seed) '_'  date ' -v7.3'])
+
 
 end
 
