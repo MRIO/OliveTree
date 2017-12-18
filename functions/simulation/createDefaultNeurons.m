@@ -31,6 +31,8 @@ function cell_parameters = createDefaultNeurons(varargin)
 
 	
 cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
+cell_parameters.rng = randgen;
+
 
 switch celltypes
 	case 'none'
