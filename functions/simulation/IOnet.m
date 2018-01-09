@@ -357,7 +357,7 @@ for t = 1:simSteps
                 state
                 cell_parameters
                 E.stack
-                disp('problem computing the selected cell function!')
+                disp('problem computing the selected cell function!') 
                 keyboard
                     
             end

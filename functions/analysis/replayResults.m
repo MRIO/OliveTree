@@ -290,11 +290,12 @@ V_soma_unwrapped = V_soma_unwrapped(O,:);
 a(2) = axes('Position',[0.70 0.07 0.275 0.85]);
 imagesc(V_soma_unwrapped',[-66 -30]);
 
+if noneurons>1
 set(gca,'xtick',[1 noneurons]);
 hold on;
   ylabel('ms');
   xlabel('neurons');  
-
+end
 
 
 % plotspikes1 = @(c)plot(c,spks.spikes{c},'markersize', 1,'marker', 'o','linestyle', 'none','color', 'w','markersize',6);

@@ -30,7 +30,7 @@ function cell_parameters = createDefaultNeurons(varargin)
 	rng(ip.Results.rng)
 	
 cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
-cell_parameters.rng = randgen;
+cell_parameters.rng = randngen;
 
 
 switch celltypes
