@@ -94,8 +94,8 @@ if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench2')
 
 	seed = 0; tau = 30; noisesig =  0; noisemu = 0  ; sametoall = 0; simtype = 'spont' ; gaps = [eps 0.04] ; simtime = 10000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;
 
-	nameprefix = 'test_WT'; seed = 0; tau = 30; noisesig =  .4; noisemu = -.4  ; sametoall = 0; simtype = '1Hz' ; gaps = [0.04]   ; nogapcomp = 0 ; simtime = 10000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
-	nameprefix = 'test_MT'; seed = 0; tau = 30; noisesig =  .4; noisemu = -.4  ; sametoall = 0; simtype = 'spont' ; gaps = [eps]  ; nogapcomp = 20; simtime = 50000; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
+	nameprefix = 'test_WT'; seed = 0; tau = 30; noisesig =  .4; noisemu = -.4  ; sametoall = 0; simtype = 'spont' ; gaps = [0.04]   ; nogapcomp = 0 ; simtime = 50000; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
+	nameprefix = 'test_MT'; seed = 0; tau = 30; noisesig =  .4; noisemu = -.4  ; sametoall = 0; simtype = 'spont' ; gaps = [eps]    ; nogapcomp = 15; simtime = 50000; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		;% 4Pascal 2 : 
 
 
 	for val = [30]
@@ -119,7 +119,10 @@ if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench2')
 
 end
 
-
+val_tau = 100;
+val_eta = .5;
+seed = 1; gaps = [eps]; simtime = 50000; tau = val_tau; noisesig = .4; noisemu = -.4; sametoall = val_eta; simtype = 'spont'; conntype = 'iso' ; numruns = 1;  nogapcomp = 15; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
+seed = 1; gaps = [0.04]; simtime = 50000; tau = val_tau; noisesig = .4; noisemu = -.4; sametoall = val_eta; simtype = 'spont'; conntype = 'iso' ; numruns = 1; nogapcomp = 0; HPCGPU_periodic_ampa	 	;% 4Pascal 2: 
 
 
 
@@ -160,7 +163,7 @@ end
 % 	 NetPspace
 
 % [=================================================================]
-%  sig x tau
+%  sig x tau with gap comp
 % [=================================================================]
 % Lastrun: 7/6/2016
 % X_README = 'THIS IS A SIMULATION FOR TAU - gapfactor introduced'

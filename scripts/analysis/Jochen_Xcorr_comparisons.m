@@ -7,7 +7,7 @@ plotstyle = '5x5';
 %% load 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-addpath('/Users/M/Projects/Experiments/Olive/model/simresults/xcorr')
+addpath('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/xcorr')
 
 load periodic_ampa_xcorr_stim_tau_30_WT_4_iso_1Hz_50000_4_.mat
  

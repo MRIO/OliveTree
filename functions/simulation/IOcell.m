@@ -35,22 +35,23 @@ q_s = 0;   % no h current in the soma
 % C_m    =   1; % uF/cm^2 
     
 % Somatic conductances (mS/cm2)
-% g_Na_s   =  150;      % Sodium
-% g_Kdr_s  =    9.0;    % Potassium
-% g_K_s    =    5;      % Potassium
-% g_ls     =    0.016;  % Leaks
+% g_Na_s   =  150;      % Sodium  - (Na v1.6 )
+% g_Kdr_s  =    9.0;    % Potassium - (K v4.3)
+% g_K_s    =    5;      % Potassium - (K v3.4)
+% g_ls     =    0.016;  % Leak soma
+% g_CaL    = 0-3        % Calcium T - (CaV 3.1)
     
 % Dendritic conductances (mS/cm2)
-% g_K_Ca   =  35;       % Potassium 
-% g_CaH    =   4.5;     % High-threshold calcium -- P/Q type
-% g_ld     =   0.016;   % Leak
-% g_h      =   0.12;    % H current
+% g_K_Ca   =  35;       % Potassium  (KCa v1.1 - BK)
+% g_CaH    =   4.5;     % High-threshold calcium -- Ca V2.1
+% g_ld     =   0.016;   % Leak dendrite
+% g_h      =   0.12;    % H current (HCN)
 
 
 % Axon hillock conductances (mS/cm2)
 % g_Na_a   =  240;      % Sodium
 % g_K_a    =   20;      % Potassium
-% g_la     =    0.016;  % Leak
+% g_la     =    0.016;  % Leak axon
     
 % Cell morphology
 % p1     = 0.25;        % Cell surface ratio soma/dendrite

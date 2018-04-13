@@ -53,7 +53,7 @@ Ca_set = [.3:.2:.5];
 %  'Potassium_s', 'Hcurrent_q', 'Ca2Plus', 'V_axon', 'Sodium_m_a', 'Sodium_h_a', 'Potassium_x_a' , 'g_GABA_soma','g_GABA_dend', 'g_AMPA', 'Ca2_soma'};
 
 
-experiment = 1;
+experiment = 2;
 switch experiment
 	
 	case 1 % stimulate first cell then second cell to compute asymmetries
@@ -64,7 +64,7 @@ switch experiment
 	 % 'Potassium_s', 'Hcurrent_q', 'Ca2Plus',  'Sodium_m_a', 'curr_noise'};
 		netsize = [1 2 1];
 		simtime  = 2000;
-		gap = .1;
+		gap = .05;
 		W = [0 1; 1 0]*gap;
 		dt = 0.01;
 		I_app = zeros(2, simtime*(1/dt));
@@ -85,7 +85,7 @@ switch experiment
 	 
 		netsize = [1 2 1];
 		simtime  = 2000;
-		gap = .5;
+		gap = .05;
 		W = [0 1; 1 0]*gap;
 		I_app = zeros(2, simtime*(1/dt));
 		I_app(2,300*(1/dt):800*(1/dt))   = -10;
@@ -224,7 +224,7 @@ switch experiment
 end	
 
 
-st_st = IOnet('delta', 0.05, 'networksize', netsize, 'time',2000 ,'W', W*0 ,'to_report',{'V_soma'},'gpu', gpu,'cell_parameters', cell_parameters , 'ou_noise', stnoise);
+st_st = IOnet('delta', 0.01, 'networksize', netsize, 'time',2000 ,'W', W*0 ,'to_report',{'V_soma'},'gpu', gpu,'cell_parameters', cell_parameters , 'ou_noise', stnoise);
 
 	% to continue the network and see if it stitches well
 

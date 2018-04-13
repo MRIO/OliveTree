@@ -343,7 +343,7 @@ end
 Wsteps{5} = W;
 
 
-% add a random multiplier for confusion
+% add a random multiplier
 if randomize 
     R = rand(size(W))*randomize*scaling*.1; % jitter weights  
     R(find(eye(size(R)))) = 0; % no self connections, naturally.

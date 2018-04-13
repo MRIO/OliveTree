@@ -98,7 +98,7 @@ end
 			takemostactive = 0;
 			takeall = 1;
 			if not(isempty(selectedneurons))
-				% do nothign because
+				% do nothing because
 				% selectedneurons = selectedneurons;
 
 			elseif takemostactive
