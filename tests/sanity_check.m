@@ -13,7 +13,10 @@ pert = []; I_app = [];
 
 dt = .02;
 
+iapp = false;
+
 experiment = 'tycho'
+experiment = 'devel against vanilla'
 
 switch experiment
 
@@ -174,7 +177,7 @@ switch experiment
 		% to_report = {'V_soma','Ca2Plus', 'I_CaH', 'V_axon', 'Calcium_r','Hcurrent_q', 'Potassium_s'};
 		netsize = [1 2 1];
 		simtime  = 500;
-		gap = .1;
+		gap = .0;
 		W = [0 1; 1 0]*gap;
 		I_app = zeros(2, simtime*20);
 		I_app(2,(100:350)*20) = -10; % nAmpere 20/dt [nA/cm^2] 
@@ -184,6 +187,7 @@ switch experiment
 		gnoise = [0 0 0 0];
 
 		cell_parameters = createDefaultNeurons(2);
+		iapp = true;
 
 
 	case 'continuations'
@@ -236,21 +240,58 @@ switch experiment
 
 		gnoise = [0 0 0 0];
 
+	case 'devel against vanilla'
+
+		to_report = availablefieldstosave;
+		% to_report = {'V_soma','Ca2Plus', 'I_CaH', 'V_axon', 'Calcium_r','Hcurrent_q', 'Potassium_s'};
+		netsize = [1 2 1];
+		simtime  = 200;
+		gap = 0;
+		W = [0 1; 1 0]*gap;
+		g_CaL = [.4 1.2];
+		dt = 0.05;
+
+		gnoise = [0 0 0 0];
+
+		cell_parameters = createDefaultNeurons(2);
+		cell_parameters.g_CaL = [.4 1.2];
+		
+
+	
+		[tr_vanilla] = IOnet('cell_function', 'vanilla', 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
+	'perturbation', pert ,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
+
+		[tr_devel]   = IOnet('cell_function', 'devel', 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
+	'perturbation', pert ,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
+
+		replayResults(tr_vanilla, 'plotallfields',1)
+		replayResults(tr_devel, 'plotallfields',1)
+
+
+		plot(tr_devel.networkHistory.V_soma', 'b'); hold on
+		plot(tr_vanilla.networkHistory.V_soma', 'r');
+		plot([tr_devel.networkHistory.V_soma-tr_vanilla.networkHistory.V_soma]', 'g');
+		
+		
 
 
 end
 
 
 % [transients] = IOnet('networksize', netsize,'perturbation', pert ,'appCurrent',I_app,'time',simtime,'g_CaL', g_CaL ,'W', W ,'ou_noise', gnoise ,'to_report', to_report,'gpu', gpu);
+
+if iapp
 [transients] = IOnet('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
 	'perturbation', pert ,'appCurrent',I_app,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
-
-
+else
+	
 [transients] = IOnet('cell_function', cell_function, 'networksize', netsize, 'cell_parameters', cell_parameters,  ...
 	'perturbation', pert ,'time',simtime ,'W', W ,'ou_noise', gnoise ,'to_report', to_report ,'gpu', gpu, 'delta', dt);
-
+end
 
 replayResults_3(transients)
+
+replayResults(transients, 'plotallfields',1)
 
 
 

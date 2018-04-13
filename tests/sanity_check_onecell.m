@@ -15,13 +15,16 @@
 
 % ## Author:  mnegrello@gmail.com
 
-clear
-
+clea
+r
 cell_function = 'vanilla'; % unless specified below
+cell_function = 'devel'; % unless specified below
+
 
 availablefieldstosave =  {'V_soma', 'I_cx36', 'Sodium_h', 'Potassium_n', 'Potassium_x_s', 'Calcium_k', 'Calcium_l', 'V_dend', 'Calcium_r',...
  'I_CaH', 'Potassium_s', 'Hcurrent_q', 'Ca2Plus', 'V_axon', 'Sodium_m_a', 'Sodium_h_a', 'Potassium_x_a', 'Ca2_soma'};
 to_report =  {'V_soma','V_dend', 'Ca2Plus', 'I_cx36'};
+to_report = availablefieldstosave;
 
 pert = []; I_app = [];
 dt = .025;
@@ -39,6 +42,7 @@ switch experiment
 
 		W = 0;
 		cell_parameters = createDefaultNeurons(1);
+
 		
 		I_app = zeros(1, simtime*(1/dt));
 		I_app(1,(300*(1/dt):400*(1/dt))) = -15;% uA/cm^2 
@@ -67,5 +71,6 @@ xlabel('ms')
 ylabel('[Ca]')
 
 
+replayResults(transients, 'plotallfields',1)
 
 
