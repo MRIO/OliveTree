@@ -138,9 +138,6 @@ end
 	neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'nogapcompensation', nogapcomp);
 
 
-
-
-
 % [=================================================================]
 %  create perturbations OU noise
 % [=================================================================]
@@ -208,28 +205,28 @@ for g = gaps
 	if moreoscillation
 		neurons.g_CaL = neurons.g_CaL+.05;
 	end
-			thisseed = seed;
-			for n = 1:numruns
-				s = s+1;
+	
+	thisseed = seed;
+	for n = 1:numruns
+		s = s+1;
 
-				thisseed = thisseed+1;
+		thisseed = thisseed+1;
 
-				displaytext = [simtype '_' conntype '_' num2str(n) '_' num2str(sametoall)];
+		displaytext = [simtype '_' conntype '_' num2str(n) '_' num2str(sametoall)];
 
-				noise_level(4) = thisseed;
-				simresults{s} = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
+		noise_level(4) = thisseed;
 
-				simresults{s}.spikes  = spikedetect(simresults{s});	
-				simresults{s}.W = W;
+		simresults{s} = IOnet('networksize', netsize,'time',simtime,'delta',dt,'cell_parameters',neurons,'tempState',transients.lastState,'W',W.W*g ,'ou_noise', noise_level , 'perturbation', pert,'sametoall',sametoall,'saveappliednoise',saveappliednoise, 'displaytext',displaytext);
 
-				if not(savehist) & s>1
-			   		simresults{s}.networkHistory = [];
-			    end
+		simresults{s}.spikes  = spikedetect(simresults{s});	
+		simresults{s}.W = W;
 
-			end
+		if not(savehist) & s>1
+	   		simresults{s}.networkHistory = [];
+	    end
 
-			
-			
+	end
+		
 end
 
 % [=================================================================]
