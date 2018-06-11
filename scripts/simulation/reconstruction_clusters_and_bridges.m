@@ -26,7 +26,7 @@ thisseed.Seed
 % [================================================]
 
 frombrick_to_clusters = 0;
-bridge_conductance_pspace = 0;
+bridge_conductance_pspace = 1;
 conjuctive_stimulation = 0;
 	cluster1 = 41; cluster2 = 34;
 bridges_and_curlies_with_gaba = 0;
@@ -227,7 +227,7 @@ pert.mask     {1} =  [curlies.stats.clusters==41];
 			
  	sim{1} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', st_st.lastState, ...
-		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', ounoise_params , ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', bridg_curlies.W ,'ou_noise', ounoise_params  ,...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 	sim{1}.note = '41_with_bridges'

@@ -109,7 +109,7 @@ end
 				selectedneurons = sorted(1:noneur);
 
 			else
-				% if selectedneurons is empty, take highly active
+				% if selectedneurons is empty, take neurons that fired at least 5 spikes
 				selectedneurons = find(sum(VSB(:,xcorrwin)')>5);
 
 				if length(selectedneurons) <= noneur
