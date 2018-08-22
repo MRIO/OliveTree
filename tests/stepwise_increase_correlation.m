@@ -8,7 +8,7 @@
 steadystate_time = 2; %ms
 simtime  = 2; %ms
 delta = .025;
-gpu = 0;
+gpu = 1;
 
 if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
 thisseed = rng(int8(seed),'twister') % random seed only for simulations (not for network cells)
