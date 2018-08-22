@@ -16,7 +16,7 @@ if isempty(INIT)
     AMPAGAUGE_DEND                    = zeros(noneurons,1);
     GABAGAUGE_DEND                    = zeros(noneurons,1);
     GABAGAUGE_SOMA                    = zeros(noneurons,1);
-    CURRNOISE                         = zeros(noneurons,1);
+    CURRNOISE                         = zeros(noneurons, sum(cellfun(@(x) strcmp('ou_noise', x) , pert.type)));
     INIT = 1;                 
 end                 
                   
@@ -80,7 +80,7 @@ for P = 1:length(pert.type)
       nm = nm +1;
 
       if t >= pert.triggers{P}*clock_freq & t < pert.triggers{P}*clock_freq + pert.duration{P}*clock_freq;
-        % disp('yeah')
+         % disp('yeah')
 
         th = pert.param{P}(1);
         mu = pert.param{P}(2);

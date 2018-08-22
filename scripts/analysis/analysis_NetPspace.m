@@ -1,4 +1,4 @@
-% ANALYSIS noise_corr_gap_comparisons.m
+% analysis_NetPspace.m
 
 % [=================================================================]
 %  script parameters

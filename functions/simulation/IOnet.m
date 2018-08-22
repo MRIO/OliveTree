@@ -111,7 +111,7 @@ networksize         = p.Results.networksize;
 tempState           = p.Results.tempState;
 W                   = p.Results.W; % REPRESENTS GAP JUNCTION WEIGHTS
 connections         = p.Results.connections;
-ou_noise          = p.Results.ou_noise;
+ou_noise            = p.Results.ou_noise;
 I_app               = p.Results.appCurrent;
 V_app               = p.Results.appVoltage;
 use_gpu             = p.Results.gpu;
@@ -294,7 +294,7 @@ for t = 1:simSteps
 
         % state.ou_noise =  state.ou_noise +th*(mu-state.ou_noise)*delta + ...
         %                     (1-mixalpha)*sig*sqrt(delta)*randn(noNeurons,1) + ...
-        %                      mixalpha*sig*sqrt(de§lta)*randn*ones(noNeurons,1);
+        %                      mixalpha*sig*sqrt(delta)*randn*ones(noNeurons,1);
 
 
         state.ou_noise =  state.ou_noise +th*(mu-state.ou_noise)*delta + ...
