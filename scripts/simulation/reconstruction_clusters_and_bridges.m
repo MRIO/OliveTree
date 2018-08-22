@@ -66,7 +66,7 @@ nconns_bridges = 5;
 cells_in_cluster = 20;
 gap_curlies = .05;
 gap_bridges = .05;
-plotconn = 0;
+plotconn = 1;
 normalize = 1;
 
 
