@@ -468,7 +468,7 @@ end
 
 results.networkHistory = netHist;
 
-if gpu; results.networkParameters.connectivityMatrix = sparse(gather(W)); else; results.networkParameters.connectivityMatrix = sparse(W);end
+if use_gpu; results.networkParameters.connectivityMatrix = sparse(gather(W)); else; results.networkParameters.connectivityMatrix = sparse(W);end
 
 results.networksize = networksize;
 % results.networkParameters.connectivity = Wstuct;
