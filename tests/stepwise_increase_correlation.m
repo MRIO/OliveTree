@@ -5,8 +5,8 @@
 % [================================================]
 % clear
 
-steadystate_time = 2; %ms
-simtime  = 2; %ms
+steadystate_time = 500; %ms
+simtime  = 10000; %ms
 delta = .025;
 gpu = 1;
 
