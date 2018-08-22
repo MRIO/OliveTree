@@ -49,11 +49,9 @@ somatapositions = JM394_horizontal_coordinates;
 somatapositions(1,:) = [];
 noneurons = length(somatapositions);
 
-if 0
 brick = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
 brick_bu = brick;
 brick.W = brick.W*gap_curlies;
-end
 
 
 
