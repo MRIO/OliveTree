@@ -72,18 +72,17 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3', 'rng', t
 
 
 onset_of_stim = 100;
-stim_dur      = 1500;
+stim_dur      = 9000;
 offset_stim   = 100;
-synapseprobability = 0;
+synapseprobability = 1;
 
 th =	 1/5 ; % decay time parameter
 mu = 	 -.5 ; % pA
 sig = 	 .5 ; % pA
 mix =    0;
 
-stim_dur = 10;
 
-pert.mask     {1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',1, 'radius', 100, 'plotme',1)
+pert.mask     {1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',synapseprobability, 'radius', 100, 'plotme',1)
 pert.mask     {2} = double(not(pert.mask{1}))
 
 pert.amplitude{1} = 1;
