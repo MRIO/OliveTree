@@ -1,48 +1,17 @@
-% analysis_NetPspace.m
+% ANALYSIS noise_corr_gap_comparisons.m
 
 % [=================================================================]
 %  script parameters
 % [=================================================================]
-% pathtofile  = '/Users/M/Synced/Projects/Experiments/Olive/model/simresults/netpspace/';
-% pathtofile  = '/Users/M/Projects/Experiments/Olive/model/simresults/netpspace/';
 % pathtofile  = './';
 
 
 if ~exist('transients') 
-	% conntype = 'iso'; load /Users/M/SyncBox/Titan/Bench/pspace_noise_gap_24_iso_10000_17-May-2016.mat
-	% load /Users/M/SyncBox/Titan/Bench/pspace_noise_gap_24_cluster_10000_18-May-2016
-	% load /Users/M/Synced/Titan/Bench2/netpspace24_iso_5000_27-May-2016.mat
-	% load /Users/M/SyncBox/Titan/Bench/netpspace24_iso_30000_28-May-2016.mat
-	% fname = '/Users/M/SyncBox/Titan/Bench/netpspace30_iso_5000_03-Jun-2016.mat'; % pspace for gap compensation
 	
-	% fname =  '/Users/M/Synced/Titan/Bench/netpspace/netpspace_input_108_cluster_10000_02-Jun-2016.mat'; %pspace for noise amplitude and sigma
-	% dimnames = {'noiseamp', 'noisesig', 'gap' };
+	fname = 'tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
+	dimnames = {'sametoall', 'tau', 'gap' };
+
 	
-	% fname = '/Users/M/Synced/Titan/Bench/netpspace/netpspace16_iso_3000_07-Jun-2016.mat';
-	% dimnames = {'sametoall', 'gapcomp', 'gap' };
-	
-	% fname = '/Users/M/Synced/Titan/Bench/netpspace/netpspace16_iso_3000_07-Jun-2016_2.mat';
-	% dimnames = {'sametoall', 'tau', 'gap' };
-
-	% fname = '/Users/M/Synced/Titan/Bench/clustersize_netpspace40_cluster_5000_11-Jun-2016.mat'; 
-	% dimnames = {'sametoall', 'clustersize', 'gap' };
-
-	% fname = '/Users/M/Synced/Titan/Bench/netpspace/tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
-	% dimnames = {'sametoall', 'tau', 'gap' };
-
-	fname = 'sigXmu_0corr_netpspace98_iso_3000_28-Jun-2016.mat'
-	dimnames = {'noisesig', 'noiseamp', 'gap' };
-
-	% fname = 'RADIUS_X_NCORR_netpspace25_iso_3000_28-Jun-2016.mat'
-	% dimnames = { 'radius', 'corr',	 'gap' };
-
-	% fname = 'sigXmu_01corr_R2_netpspace98_iso_3000_25-Sep-2016.mat'
-	% fname =	'sigXmu_01corr_R2_netpspace98_iso_5000_25-Feb-2017.mat';
-	% dimnames = { 'noisesig', 'noiseamp', 'gap' };	
-
-	% fname = 'gapcomp_corr_R2_g04_netpspace24_iso_5000_14-Apr-2017';
-	% dimnames = { 'gap', 'gapcomp', 'noisesig' };	
-
 	
 	[pth fnm] = fileparts(fname)
 

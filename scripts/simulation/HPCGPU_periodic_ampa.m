@@ -1,8 +1,8 @@
 % This script generates a periodically stimulated inferior olive                                                                             
 % 
-% preface script call with parameters
+% USAGE: preface script call with parameters
 % 
-% example: HPGCGPU_scripts
+% example: netsize = [3 5 5]; HPGCGPU_scripts
 
 if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
 rng(seed,'twister') % random seed only for simulations (not for network cells)
@@ -35,7 +35,7 @@ if ~exist('gaps')	    	; gaps = 0.04 	      ; end
 if ~exist('gapcomp')    	; gapcomp = 0 		  ; end
 if ~exist('nogapcomp') 		; nogapcomp = 0  	  ; end % radius	
 if ~exist('moreoscillation'); moreoscillation = 0 ; end
-if ~exist('nameprefix')  	; nameprefix ='missg' ; end
+if ~exist('nameprefix')  	; nameprefix='default'; end
 if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
 if ~exist('rd')  			; rd = 2		      ; end % radius
@@ -97,7 +97,7 @@ noise_level = [1/tau noisesig noisemu 0];
 %  create perturbations AMPA
 % [=================================================================]% 
 
-pulses = [1 5 9 13];
+pulses = [1 5 9 13]; % 4 ampa pulses per sensory trigger
 inputrad  = 4;
 switch simtype
 	case 'gallop'
