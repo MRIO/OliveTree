@@ -149,14 +149,15 @@ if isfield(sim.perturbation, 'type')
 
 
 
-		n = 0; colors = jet(length(pert.type));
+		n = 0; colors = copper(length(pert.type));
 		for i = 1:length(pert.type)
   
 			stn = find(pert.mask{i});
 			tr = pert.triggers{i};
 			tr(tr>time_slice(end))=[];
 			tr(tr<time_slice(1))=[];
-			tr = tr-time_slice(1);  
+			tr = tr-time_slice(1);
+			tr = 0;  
 
 			if iscolumn(tr)
 				tr = tr';
@@ -180,10 +181,11 @@ if isfield(sim.perturbation, 'type')
 						line([tr; tr] , [ones(size(tr))*min(V_soma_unwrapped(:)); ones(size(tr))*max(V_soma_unwrapped(:))],'color','b')
 						plot(V_soma_unwrapped(stn,time_slice)','color', [.7 .7 1])
 
-					case 'ou-noise'
+					case 'ou_noise'
+						'yep'
 						n = n+1;
 						line([tr; tr] , [ones(size(tr))*min(V_soma_unwrapped(:)); ones(size(tr))*max(V_soma_unwrapped(:))],'color','r')
-						plot(V_soma_unwrapped(stn,time_slice)','color', colors(n,:))
+						plot(mean(V_soma_unwrapped(stn,time_slice))','color', colors(n,:))
 
 					otherwise
 

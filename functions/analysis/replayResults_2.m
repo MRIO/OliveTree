@@ -233,15 +233,26 @@ bar(x,K,'facecolor','k')
 
 set(a(2),'xtick',[])
 
-if isfield(sim.perturbation,'all_pulses')
+if isfield(sim.perturbation,'amplitude')
 	% spike histogram
-	hold on
-	a(3) = axes('position', [0.07    0.67    0.85    0.3]);
-	[hh x] = hist(sim.perturbation.all_pulses(:),simtime);
-	bar(x,hh,'facecolor','g')
+	% hold on
+	% a(3) = axes('position', [0.07    0.67    0.85    0.3]);
+	% [hh x] = hist(sim.perturbation.triggers{ii}(:),simtime);
+	% bar(x,hh,'facecolor','g')
 
-	set(a(3),'xtick',[],'ytick',[],'color','none')
-	axis off
+	% set(a(3),'xtick',[],'ytick',[],'color','none')
+	% axis off
+
+	
+	num_pert = length(sim.perturbation.mask);
+	for ii = 1:num_pert
+		% subplot(ii,1,num_pert)
+		figure
+		keyboard
+		plot_mean_and_std([1:simtime], V_soma_unwrapped(sim.perturbation.mask{ii},:)')
+	end
+
+
 end
 
 
