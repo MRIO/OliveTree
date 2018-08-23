@@ -8,7 +8,7 @@
 % simulates an inferior olive !
 % 
 % Matlab implementation of the model used in:
-% Negrello, Sokol extensions (GABA, AMPA) to the model in De Gruijl et al., 2012, PLoS Computational Biology
+% Negrello, Sokol: extensions (GABA, AMPA) to the model in De Gruijl et al., 2012, PLoS Computational Biology
 %
 % authors: mnegrello@gmail.com, piotr sokol, jornt de gruijl
 %
@@ -143,7 +143,8 @@ if strcmp(cell_function, 'devel'); disp('warning: debugging not compatible with 
 try 
     if gpuDeviceCount == 0; use_gpu = 0; disp('no gpu found in this machine'); end     
 catch E
-    use_gpu = 0; disp('no gpu found in this machine');  
+    use_gpu = 0; disp('No CUDA gpu found in this machine.'); 
+    use_gpu = 0;
         % keyboard
 end
 
@@ -229,7 +230,10 @@ end
 % [=================================================================]
 %  % USE SPECIFIED RANDOM SEED 
 % [=================================================================]
-rng(ou_noise(4),'twister');
+
+try rng(ou_noise(5),'twister');
+catch disp('no rnd seed. Setting to rng(0)') ;rng(0);
+end
 
 totalcurr_noise = zeros(noNeurons,1); % for logging purposes
 tstart  = tic; 

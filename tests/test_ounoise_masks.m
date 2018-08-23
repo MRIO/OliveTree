@@ -8,10 +8,10 @@
 % clear
 
 cell_function = 'vanilla'; % 'devel'
-steadystate_time = 100; %ms
-simtime  = 1000; %ms
+steadystate_time = 10; %ms
+simtime  = 500; %ms
 delta = .025;
-gpu = 1;
+gpu = 0;
 
 activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
 currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};
@@ -25,14 +25,14 @@ to_report = vsoma;
 % [================================================]
 % 		 create default neurons
 % [================================================]
-noneurons = 5;
+noneurons = 2;
 netsize = [1 noneurons 1];
 
 gap_neurons = createDefaultNeurons(noneurons,'celltype', 'randomized','gapcompensation', 1);
 gap_neurons.gbar_ampa_soma = ones(noneurons,1)*.15; %linspace(0,.3,noneurons);
 gap_neurons.gbar_gaba_soma = ones(noneurons,1)*.5; %ones(noneurons,1)*.3;
 
-def_neurons = createDefaultNeurons(noneurons,'celltype', 'randomized','gapcompensation', 0);
+def_neurons = createDefaultNeurons(noneurons,'celltype', 'clones','gapcompensation', 0);
 def_neurons.gbar_ampa_soma = ones(noneurons,1)*.15; %linspace(0,.3,noneurons);
 def_neurons.gbar_gaba_soma = ones(noneurons,1)*.5; %ones(noneurons,1)*.3;
 
@@ -44,7 +44,7 @@ def_neurons.gbar_gaba_soma = ones(noneurons,1)*.5; %ones(noneurons,1)*.3;
  W = zeros(noneurons);
  % W = createW(noneurons);
 
-gaps = [0.025];
+gaps = [0.05];
 W = createW('all to all', netsize, [], 1, 0, 0, 0, 10, []);
 
 % [================================================]
@@ -52,25 +52,25 @@ W = createW('all to all', netsize, [], 1, 0, 0, 0, 10, []);
 % [================================================]
 
 % currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
-% gnoise = [0 0 0 0];
-gnoise = [1/20 1 0 4]; sametoall = 0.2;
+gnoise = [0 0 0 0]; sametoall = 0;
+% gnoise = [1/20 1 0 4]; sametoall = 0.2;
 % [================================================]
 %  Ornstein Uhlenbeck Perturbation over masks
 % [================================================]
 
 % create overlapping ou-masks
 
-numberofmasks = 1;
+numberofmasks = 2;
 
-onset_of_stim = 100;
-stim_dur      = 1500;
-offset_stim   = 100;
+onset_of_stim = 50;
+stim_dur      = 100;
+offset_stim   = 50;
 synapseprobability = 0;
 
 th =	 1/5 ; % decay time parameter
-mu = 	 0 ; % pA
-sig = 	 0 ; % pA
-mix =    1;
+mu = 	 -.6 ; % pA
+sig = 	 .6 ; % pA
+mix =    .5;
 
 
 	for nm = 1:numberofmasks

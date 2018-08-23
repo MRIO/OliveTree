@@ -60,7 +60,7 @@ brick.W = brick.W*gap_curlies;
 % [=================================================================]
 
 cell_function = 'vanilla'; % 'devel'
-def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized3', 'rng', thisseed) 
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', thisseed) 
 
 
 
@@ -77,9 +77,10 @@ offset_stim   = 100;
 synapseprobability = 1;
 
 th =	 1/5 ; % decay time parameter
-mu = 	 -.5 ; % pA
-sig = 	 .5 ; % pA
+mu = 	 -.6 ; % pA
+sig = 	 .6 ; % pA
 mix =    0;
+
 
 
 pert.mask     {1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',synapseprobability, 'radius', 100, 'plotme',1)
