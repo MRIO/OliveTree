@@ -89,9 +89,9 @@ disp('[=================================================================]')
 % [=================================================================]
 %  % noise levels
 % [=================================================================]
-noise_level_transients = [0 0 0 0];
+noise_level_transients = [0 0 0 sametoall];
 
-noise_level = [1/tau noisesig noisemu 0];
+noise_level = [1/tau noisesig noisemu sametoall ];
 
 % [=================================================================]
 %  create perturbations AMPA

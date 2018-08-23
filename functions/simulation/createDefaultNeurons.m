@@ -34,7 +34,7 @@ cell_parameters.rng = randngen;
 
 
 switch celltypes
-	case 'none'
+	case 'clones'
 		% do nothing
 
 	case 'randomized'
@@ -307,30 +307,29 @@ cell_parameters.C_m    =   1 .* O; % mF/cm^2
 % Defaults
 
 % Somatic conductances (mS/cm2)
-cell_parameters.g_CaL    =  1.1   .*O; 
-cell_parameters.g_Na_s   =  150   .*O;      % Sodium
-cell_parameters.g_Kdr_s  =  9.0   .*O;      % Potassium
-cell_parameters.g_K_s    =  5     .*O;      % Potassium
-cell_parameters.g_ls     =  0.016 .*O;      % Leaks
+cell_parameters.g_CaL    =  1.1   .* O; 
+cell_parameters.g_Na_s   =  150   .* O;      % Sodium
+cell_parameters.g_Kdr_s  =  9.0   .* O;      % Potassium
+cell_parameters.g_K_s    =  5     .* O;      % Potassium
+cell_parameters.g_ls     =  0.016 .* O;      % Leaks
     
 % Dendritic conductances (mS/cm2)
-cell_parameters.g_K_Ca   =  35      .*O;       % Potassium: not voltage dependent 
-cell_parameters.g_CaH    =  4.5     .*O;     % High-threshold calcium
-cell_parameters.g_ld     =  0.016  .*O;   % Leak
-cell_parameters.g_h      =  .12    .*O;    % H current .12
-cell_parameters.g_h_s    =  .12    .*O;    % H current, somatic
+cell_parameters.g_K_Ca   =  35      .* O;       % Potassium: not voltage dependent 
+cell_parameters.g_CaH    =  4.5     .* O;     % High-threshold calcium
+cell_parameters.g_ld     =  0.016   .* O;   % Leak
+cell_parameters.g_h      =  .12     .* O;    % H current .12
+cell_parameters.g_h_s    =  .12     .* O;    % H current, somatic
 
 
 % Axon hillock conductances (mS/cm2)
-cell_parameters.g_Na_a   =  240		.*O;      % Sodium
-cell_parameters.g_K_a    =  240		.*O;      % Potassium
-cell_parameters.g_la     =  0.016	.*O;      % Leak
+cell_parameters.g_Na_a   =  240		.* O;      % Sodium
+cell_parameters.g_K_a    =  240		.* O;      % Potassium
+cell_parameters.g_la     =  0.016	.* O;      % Leak
     
 % Cell morphology
-cell_parameters.p1     = 0.25		.*O;        % Cell surface ratio soma/dendrite
-cell_parameters.p2     = 0.15 		.*O;        % Cell surface ratio axon(hillock)/soma
-
-cell_parameters.g_int  = 0.13		.*O;        % Cell internal conductance 
+cell_parameters.p1     = 0.25		.* O;        % Cell surface ratio soma/dendrite
+cell_parameters.p2     = 0.15 		.* O;        % Cell surface ratio axon(hillock)/soma
+cell_parameters.g_int  = 0.13		.* O;        % Cell internal conductance 
 
 
 % synaptic conductances

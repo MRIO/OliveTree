@@ -77,9 +77,10 @@ offset_stim   = 100;
 synapseprobability = 1;
 
 th =	 1/5 ; % decay time parameter
-mu = 	 -.5 ; % pA
-sig = 	 .5 ; % pA
+mu = 	 -.6 ; % pA
+sig = 	 .6 ; % pA
 mix =    0;
+
 
 
 pert.mask     {1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',synapseprobability, 'radius', 100, 'plotme',1)
