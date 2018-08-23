@@ -40,7 +40,6 @@ for P = 1:length(pert.type)
       % dirac triggers to release neurotransmitter according to mask.    
       % AMPA
 
-      
         if ismember(t, pert.triggers{P}*clock_freq);
           AMPAGAUGE = max(AMPAGAUGE,  pert.mask{P}.*pert.duration{P}*clock_freq);
         end 

@@ -228,11 +228,11 @@ end
 
 
 % [=================================================================]
-%  % USE SPECIFIED RANDOM SEED 
+%  IF USE SPECIFIED RANDOM SEED 
 % [=================================================================]
 
 try rng(ou_noise(5),'twister');
-catch disp('no rnd seed. Setting to rng(0)') ;rng(0);
+catch disp('no rnd seed. Using rng current state.') ;rngseed = rng;
 end
 
 totalcurr_noise = zeros(noNeurons,1); % for logging purposes
@@ -490,6 +490,8 @@ results.timeElapsed = toc(tstart);
 
 results.perturbation = pert;
 results.perturbation.noise = ou_noise;
+
+results.seed = rngseed;
 
 
 
