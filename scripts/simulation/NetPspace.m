@@ -14,7 +14,7 @@ make_summary_tables 		  = 1;
 % [================================================]
 %  common parameters
 % [================================================]
-delta = .02; 
+delta = .01; 
 Fs = 1000; % NOTE: sampling rate for output != delta
 
 if ~exist('simtime'); simtime = 10;end
@@ -256,6 +256,7 @@ if make_summary_tables
 
 		K 		= measureGlobalSync(transients{s},'plotme', 0,'duration',tslice); %, 'duration', tslice
 		spikes  = spikedetect(transients{s});
+
 
 		FO_sync (s, :)  = K.stats.firstordersync;
 		SO_sync (s, :)  = K.stats.secondordersync;

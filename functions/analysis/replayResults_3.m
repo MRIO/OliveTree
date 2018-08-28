@@ -313,6 +313,9 @@ end
 a(2) = axes('Position',[0.1 0.55 0.8 0.4]);
 O = [1:prod(netsize)];
 
+try [v O] = sort(sim.perturbation.mask{1}); catch; end
+
+
 imagesc(V_soma_unwrapped(O,time_slice),[-70 -30]);
 
 try

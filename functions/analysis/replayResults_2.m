@@ -1,16 +1,18 @@
 function replayResults_2(varargin)
 
-
+% p = inputParser;
 % p.addRequired('sim')  % a matrix with two columns or a cell array with two cells;
-% p.addRequired('time_slice')
-% p.addRequired('savemovie')
+% p.addOptional('time_slice',[])
+% p.addOptional('savemovie',0)
+% p.addOptional('snap_time',1)
+
 % p.addParamValue('plotallfields', 0) % stdandard deviation criterion for offset threshold
 % p.addParamValue('fhandle', gcf)
 
 %TODO: accept any dt
 
 static = 0;
-convolve = 0;
+convolve = 1;
 
 % [=================================================================]
 %  Parser
@@ -20,7 +22,7 @@ p = inputParser;
 p.addRequired('sim')  % a matrix with two columns or a cell array with two cells;
 p.addOptional('time_slice',[])
 p.addOptional('savemovie',0)
-p.addOptional('snap_time',1)
+p.addParameter('snap_time',1)
 
 p.addParamValue('plotallfields', 0) % stdandard deviation criterion for offset threshold
 p.addParamValue('fhandle', gcf)
@@ -30,6 +32,7 @@ p.parse(varargin{:});
 sim = p.Results.sim;
 time_slice = p.Results.time_slice;
 savemovie = p.Results.savemovie;
+snap_time = p.Results.snap_time;
 
 plotallfields  = p.Results.plotallfields;
 fhandle = p.Results.fhandle;
@@ -88,7 +91,7 @@ O = [1:prod(netsize)];
 % [=================================================================]
 win = 300;
 try
-noise = sim.networkHistory.backgroundnoise;
+	noise = sim.networkHistory.backgroundnoise;
 catch
 	noise = [];
 end
@@ -179,7 +182,6 @@ f = sprintf('%.2f', popfreq);
 edges = [-1 0.01:.5:max(spks.medfreq)];
 histfreq = histc(spks.medfreq, edges);
 
-colormap(hot)
 
 %    _   __    __    _      __                                       
 %   (_)_/_/   / /_  (_)____/ /_____  ____ __________ _____ ___  _____
@@ -244,14 +246,6 @@ if isfield(sim.perturbation,'amplitude')
 	% axis off
 
 	
-	num_pert = length(sim.perturbation.mask);
-	for ii = 1:num_pert
-		% subplot(ii,1,num_pert)
-		figure
-		keyboard
-		plot_mean_and_std([1:simtime], V_soma_unwrapped(sim.perturbation.mask{ii},:)')
-	end
-
 
 end
 
@@ -263,7 +257,7 @@ linkaxes(a, 'x')
 threeD = 1;
 if threeD
 		
-	plotvolume = 0;
+	plotvolume = 1;
 	if plotvolume
 	fig2 = figure;
 	[xx yy zz]  = meshgrid(1:netsize(1),1:netsize(2),1:netsize(3));

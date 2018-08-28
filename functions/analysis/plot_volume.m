@@ -1,7 +1,7 @@
 function plot_volume(V_soma_unwrapped, coords, ttt)
 
 fname = ['volume_' num2str(now)];
-savemovie = 1;
+savemovie = 0;
 frames2file = 0;
 plotdiffact = 0;
 if plotdiffact

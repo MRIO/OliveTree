@@ -5,12 +5,12 @@
 % [================================================]
 % clear
 
-simtime  = 2000; %ms
-delta = .025;
+simtime  = 5000; %ms
+delta = .01;
 gpu = 1;
 
 stim_dur      = 1500;
-mix_increments = [0 .5 .75];
+mix_increments = [.1 .2 .3 .4 .5 ];
 
 
 if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
@@ -38,7 +38,7 @@ to_report = noise;
  
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
-gap      = eps;
+gap      = .1;
 nconns   = 5;
 cells_in_cluster = 20;
 
@@ -60,16 +60,13 @@ W = brick;
 plotnetstruct(brick.W, somatapositions(:,1), somatapositions(:,2), somatapositions(:,3), ones(length(somatapositions),1))
 
 
-
-
-
 % [=================================================================]
 %  create cells
 % [=================================================================]
 
 cell_function = 'vanilla'; % 'devel'
 % def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2', 'rng', thisseed) 
-def_neurons = createDefaultNeurons(noneurons,'celltypes','clones', 'rng', thisseed) 
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', thisseed) 
 
 
 
@@ -82,21 +79,21 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','clones', 'rng', thisse
 
 synapseprobability = 1;
 
-th =	 1/3 ; % decay time parameter
-mu = 	 -.6 ; % pA
-sig = 	 .6 ; % pA
+th =	 1/20 ; % decay time parameter
+mu = 	 -.8 ; % pA
+sig = 	  .8 ; % pA
 radius = 150;
 
 pert.mask     {1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',synapseprobability, 'radius', 100, 'plotme',1)
 pert.mask     {2} = not(pert.mask{1});
 
 pert.amplitude{1} = 1;
-pert.triggers {1} = 200;
+pert.triggers {1} = 50;
 pert.duration {1} = stim_dur;
 pert.type	  {1} = 'ou_noise';
 
 pert.amplitude{2} = 1;
-pert.triggers {2} = 200;
+pert.triggers {2} = 50;
 pert.duration {2} = stim_dur;
 pert.type	  {2} = 'ou_noise';
 
@@ -110,15 +107,14 @@ pert.param{2}  = [th sig mu 0 ]; % 50% correlation in the reveiving mask
 
 sim{1} = IOnet( 'cell_parameters', def_neurons, ...
  		'perturbation', pert, ... 
-	   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W , ... 
+	   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', W , ... 
 	   	'to_report', to_report ,'gpu', gpu , ...
 	   	'cell_function', cell_function ,'delta',delta);
 
 
 for ii = 2:length(mix_increments(2:end))+1
-	ii
 
-	pert.param{1}  = [1/5 sig mu mix_increments(ii)];  % no correlation outside the mask
+	pert.param{1}  = [th sig mu mix_increments(ii)];  % no correlation outside the mask
 
  	sim{ii} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', sim{ii-1}.lastState, ...
@@ -127,7 +123,7 @@ for ii = 2:length(mix_increments(2:end))+1
 		   	'cell_function', cell_function ,'delta',delta);
 	sim{ii}.note = ['incremental noise' num2str(ii)];
 	sim{ii}.W = brick.W;
-	sim{ii}.networkHistory.V_soma = single(sim{1}.networkHistory.V_soma);
+	sim{ii}.networkHistory.V_soma = single(sim{ii}.networkHistory.V_soma);
 	
 end
 
