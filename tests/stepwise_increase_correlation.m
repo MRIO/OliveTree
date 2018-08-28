@@ -53,9 +53,14 @@ noneurons = length(somatapositions);
 brick = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns, somatapositions,1,[0 0 0 0]);
 brick_bu = brick;
 brick.W = brick.W*gap;
+W = brick;
+
+% curlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns, somatapositions,1,[1 cells_in_cluster 1 0]);
+
+plotnetstruct(brick.W, somatapositions(:,1), somatapositions(:,2), somatapositions(:,3), ones(length(somatapositions),1))
 
 
-curlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns, somatapositions,1,[1 cells_in_cluster 1 0]);
+
 
 
 % [=================================================================]
@@ -117,7 +122,7 @@ for ii = 2:length(mix_increments(2:end))+1
 
  	sim{ii} = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', pert, 'tempState', sim{ii-1}.lastState, ...
-		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W , ...
+		   	'networksize', [1 1 noneurons] ,'time',simtime ,'W', W , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
 		   	'cell_function', cell_function ,'delta',delta);
 	sim{ii}.note = ['incremental noise' num2str(ii)];

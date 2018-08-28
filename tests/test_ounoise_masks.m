@@ -87,7 +87,7 @@ mix =    .5;
 		pert.param{nm}(1)  = th  ;
 		pert.param{nm}(2)  = mu  ;
 		pert.param{nm}(3)  = sig ;
-		pert.param{nm}(4)  = 0.1;
+		pert.param{nm}(4)  = 0.5 ;
 
 
 	end 

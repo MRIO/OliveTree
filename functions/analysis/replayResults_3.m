@@ -149,7 +149,7 @@ if isfield(sim.perturbation, 'type')
 
 
 
-		n = 0; colors = copper(length(pert.type));
+		n = 0; colors = copper(length(pert.type)); colors = [1 0 0; 0 0 0];
 		for i = 1:length(pert.type)
   
 			stn = find(pert.mask{i});
@@ -182,7 +182,6 @@ if isfield(sim.perturbation, 'type')
 						plot(V_soma_unwrapped(stn,time_slice)','color', [.7 .7 1])
 
 					case 'ou_noise'
-						'yep'
 						n = n+1;
 						line([tr; tr] , [ones(size(tr))*min(V_soma_unwrapped(:)); ones(size(tr))*max(V_soma_unwrapped(:))],'color','r')
 						plot(mean(V_soma_unwrapped(stn,time_slice))','color', colors(n,:))
@@ -206,11 +205,12 @@ end
 % plot averages
 
 
-
+ksdaccum = [];
 if isfield(sim.perturbation, 'type')
 		n = 0;
 		for i = 1:length(pert.type)
 			stn = find(pert.mask{i});
+
 			if not(isempty(tr))
 				switch pert.type{i}
 					case 'ampa'
@@ -233,6 +233,14 @@ if isfield(sim.perturbation, 'type')
 					otherwise
 
 				end
+
+
+			[i_ spkbag] = find(spks.binaryspikes(pert.mask{i},:));
+
+			spks_in_slice = spkbag(spkbag>=time_slice(1) & spkbag<=time_slice(end));
+			ksd = ksdensity(spks_in_slice,time_slice,'width', 5,'kernel', 'epanechnikov')*length(spks_in_slice) / sum(pert.mask{i});
+			ksdaccum = [ksdaccum; ksd]
+
 			end
 		end
 	
@@ -304,6 +312,7 @@ end
 % order to present the neurons
 a(2) = axes('Position',[0.1 0.55 0.8 0.4]);
 O = [1:prod(netsize)];
+
 imagesc(V_soma_unwrapped(O,time_slice),[-70 -30]);
 
 try
@@ -343,6 +352,7 @@ for c = [1:noneurons]
 		plotspikes3(c);
 	end
 end
+
 
 
 l = line([1 prod(netsize)], [0 0],'color', 'c');
@@ -389,7 +399,13 @@ if plotclusterneurons
 	figure, imagesc(W.W(O,O))
 end
 
-
+figure
+a(6) = axes;
+area(ksdaccum');
+alpha(.3)
+xlabel('ms');
+ylabel('spike density (spks/ms/neuron)')
+linkaxes(a,'x')
 
 
 if plotallfields

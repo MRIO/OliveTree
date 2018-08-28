@@ -237,9 +237,12 @@ figure; imagesc(HHH)
 				
 				vol3d('cdata',CCCC, 'Alpha', AAA*.25 , 'texture','3D');
 
+				if tt==1;view(3) ; view(-140,-40); daspect([1 1 1]); axis off ;end
 
-				if tt==1;view(3) ; view(-22,-56.4);axis off; axis tight;  daspect([1 1 1]); axis equal; end
 				title([num2str(frames(1)+ tt) 'ms'])
+				line([0 20],[0 0],[0 0],'linewidth',2,'color','k')
+				line([0 0],[0 20],[0 0],'linewidth',2,'color','k')
+				line([0 0],[0 0] ,[0 20],'linewidth',2,'color','k')
 				drawnow
 				if savemovie
 					writeVideo(vidObj, getframe(fig_volume))

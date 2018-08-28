@@ -23,14 +23,12 @@ else
         plotneurons = 1;
         onlynetstruct = 0;
         plotsingleneuronconnections = 1;
-        plotsingleneuronconnections = 1;
         plotsecondorderneighbors = 0;
         plotconnweights = 0;
     else
         plotconnections = varargin{1}(1);
         plotneurons = varargin{1}(2);
         onlynetstruct = varargin{1}(3);
-        plotsingleneuronconnections = 1;
         plotsingleneuronconnections = 1;
         plotsecondorderneighbors = 0;
         plotconnweights = 0;
@@ -45,8 +43,9 @@ conncolor = [ .6 .6 .6];
 try
     % cmap = cbrewer('qual', 'Set1', max(ncols,3));
     % cmap = flipud(cbrewer('seq', 'YlOrRd', max(ncols,3)));
-    cmap = cbrewer('seq', 'Purples', 15);
-    cmap = cbrewer('div', 'Spectral', length(unique(idx)));
+    % cmap = cbrewer('seq', 'Purples', 15);
+    % cmap = cbrewer('div', 'Spectral', length(unique(idx)));
+    cmap = [.2 .8 .2];
     
 catch
     disp('did not find color brewer')
@@ -154,13 +153,13 @@ if onlynetstruct
 
                 if vv(li) > 0 %stdW & cni~=li
                     if idx(ii(li)) == idx(jj(li)) & idx(ii(li)) ~= 0
-                        conncolor = [.2 .9 .2];
+                        conncolor = conncolor;
                         lw = .1;
                     else
                         conncolor = [.2 .2 .9];
                         lw = .5;
                     end
-
+                    % conncolor = [ .6 .6 .6];
                     line([X(ii(li))  X(jj(li))]', ...
                          [Y(ii(li))  Y(jj(li))]',...
                          [Z(ii(li))  Z(jj(li))]',...
@@ -178,7 +177,13 @@ if onlynetstruct
         hold on
         % scatter3(X,Y,Z,sum(logical(W))*5+eps,sum(logical(W)),'filled') 
         if ~isempty(idx)
+            sz = sum(W>0)*5+eps;
             scatter3(X,Y,Z,sum(W>0)*10+eps,idx,'filled') 
+            scatter3(X,Y,Z,sum(W>0)*5+eps,[1 1 1],'filled') 
+
+            scatter3(X(find(idx)),Y(find(idx)),Z(find(idx)),sz(find(idx)),[1 0 0],'filled')
+            
+
         else
             scatter3(X,Y,Z,sum(W>0)*10+eps,sum(W),'filled') 
         end
@@ -189,9 +194,16 @@ if onlynetstruct
         axis tight
     end
                     
-        view(-120,20)
+        view(-120,40)
         drawnow
+        axis off
 
+        scfac = max(max([X Y Z])-min([X Y Z]))/2;
+        scfac = 50;
+        line([0 scfac],[0 0],[0 0],'linewidth',2,'color','k')
+        line([0 0],[0 scfac],[0 0],'linewidth',2,'color','k')
+        line([0 0],[0 0] ,[0 scfac],'linewidth',2,'color','k')
+        drawnow
 
 
         
