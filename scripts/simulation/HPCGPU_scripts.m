@@ -185,30 +185,28 @@
 %  tau x eta NetPspace
 % [=================================================================]
 
-% Lastrun: 20/6/2016
-% if strcmp(pwd,'/home/titanuser1/Titan/Bench2')
-% 	X_README = 'THIS IS A SIMULATION FOR TAU - gapfactor introduced'
-% 	p1  = [5 10 20 40 60 80];		% time constant of ornstein uhlenbeck process (tau)
-% 	p2  = [0:0.05:.3];	    % sametoall (noise correlation) of ornstein uhlenbeck process
-% 	p3  = [-.6];			% noiseamp of ornstein uhlenbeck process
-% 	p4  = [0.04 eps]; 	% average gap leak per connection
-% 	p5  = [2];			% single cell connection radius 
-% 	p6  = [36];			% clustersize (iff conntype='cluster')
-% 	p7  = [1];			% intraclusterP (iff conntype='cluster')
-% 	p8  = [0];			% extraclusterP (iff conntype='cluster')
-% 	p9  = [8];			% mean number of connections
-% 	p10 = [6];			% N, size of N x N network
-% 	p11 = [2];			% depth in Z		
-% 	p12 = [1];			% whether using gap compensation in cells
-% 	p13 = [.6];	    % variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+% Lastrun: 25/9/2018
+if strcmp(pwd,'/home/titanuser1/Titan/Bench')
+	X_README = 'THIS IS A SIMULATION FOR TAU - gapfactor introduced'
+	p1  = [5 10 20 40 60 80];		% time constant of ornstein uhlenbeck process (tau)
+	p2  = [0:0.05:.3];	    % sametoall (noise correlation) of ornstein uhlenbeck process
+	p3  = [-.5];			% noiseamp of ornstein uhlenbeck process
+	p4  = [0.05 eps]; 	% average gap leak per connection
+	p5  = [2];			% single cell connection radius 
+	p6  = [36];			% clustersize (iff conntype='cluster')
+	p7  = [1];			% intraclusterP (iff conntype='cluster')
+	p8  = [0];			% extraclusterP (iff conntype='cluster')
+	p9  = [8];			% mean number of connections
+	p10 = [6];			% N, size of N x N network
+	p11 = [2];			% depth in Z		
+	p12 = [1];			% whether using gap compensation in cells
+	p13 = [.5];	    % variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
-% 	conntype = 'iso';
-
-% 	simtime = 3000;
-% 	conntype = 'iso';
-
-% 	NetPspace;
-% end
+	dt = 0.01;
+	simtime = 5000;
+	conntype = 'iso';
+	NetPspace;
+end
 
 %============================= gap compensation tests ==============================%
 
@@ -261,30 +259,30 @@
 % [================================================]
 
 
-if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench4')
-	X_README = 'SIG X MU Corr = 0'
-	nameprefix = 'sigXmu_0corr';
-	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
-	p2  = [0];			% sametoall (noise correlation) of ornstein uhlenbeck process
-	p3  = [-.7 :.1: 0];% noiseamp of ornstein uhlenbeck process
-	p4  = [0.05 eps]; 	% average gap leak per connection
-	p5  = [3];			% single cell connection radius (grid distance)
-	p6  = [36];			% clustersize (iff conntype='cluster')
-	p7  = [1];			% intraclusterP (iff conntype='cluster')
-	p8  = [0];			% extraclusterP (iff conntype='cluster')
-	p9  = [6];			% mean number of connections
-	p10 = [10];			% N, size of N x N network
-	p11 = [2];			% depth in Z		
-	p12 = [0];			% whether using gap compensation in cells
-	p13 = [0:.1:.7];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
+% if strcmp(pwd,'/mnt/linuxData/titanuser1Bulk/Sync/Titan/Bench4')
+% 	X_README = 'SIG X MU Corr = 0'
+% 	nameprefix = 'sigXmu_0corr';
+% 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
+% 	p2  = [0];			% sametoall (noise correlation) of ornstein uhlenbeck process
+% 	p3  = [-.7 :.1: 0];% noiseamp of ornstein uhlenbeck process
+% 	p4  = [0.05 eps]; 	% average gap leak per connection
+% 	p5  = [3];			% single cell connection radius (grid distance)
+% 	p6  = [36];			% clustersize (iff conntype='cluster')
+% 	p7  = [1];			% intraclusterP (iff conntype='cluster')
+% 	p8  = [0];			% extraclusterP (iff conntype='cluster')
+% 	p9  = [6];			% mean number of connections
+% 	p10 = [10];			% N, size of N x N network
+% 	p11 = [2];			% depth in Z		
+% 	p12 = [0];			% whether using gap compensation in cells
+% 	p13 = [0:.1:.7];	% variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;
 
-	simtime = 5000;
-	conntype = 'iso';
-	delta = .01;
+% 	simtime = 5000;
+% 	conntype = 'iso';
+% 	delta = .01;
 
-	NetPspace;
-	clear;
-end
+% 	NetPspace;
+% 	clear;
+% end
 
 
 % [================================================]

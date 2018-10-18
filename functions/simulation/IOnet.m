@@ -5,7 +5,7 @@
 %  DESCRIPTION
 % [=================================================================]
 % 
-% simulates an inferior olive !
+% simulates an inferior olive network with bells (synapses) and whistles (noise)!
 % 
 % Matlab implementation of the model used in:
 % Negrello, Sokol: extensions (GABA, AMPA) to the model in De Gruijl et al., 2012, PLoS Computational Biology
@@ -167,14 +167,13 @@ if isempty(W)
         W = zeros(noNeurons);
         warning('no Weight matrix given, we are creating a matrix with no connections.')
     end
-
-    if isstruct(W)
-        % Wstruct = W;
-        W = W.W;
-
-    end
-
 end
+
+if isstruct(W)
+       
+        W = W.W;
+end
+
 if use_gpu
     W = gpuArray(full(W));
     wgpu = 'withgpu';

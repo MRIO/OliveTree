@@ -9,7 +9,7 @@ simtime  = 5000; %ms
 delta = .01;
 gpu = 1;
 
-stim_dur      = 1500;
+stim_dur      = 4000;
 mix_increments = [.1 .2 .3 .4 .5 ];
 
 
@@ -56,7 +56,7 @@ brick.W = brick.W*gap;
 W = brick;
 
 % curlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns, somatapositions,1,[1 cells_in_cluster 1 0]);
-
+figure
 plotnetstruct(brick.W, somatapositions(:,1), somatapositions(:,2), somatapositions(:,3), ones(length(somatapositions),1))
 
 
@@ -84,7 +84,7 @@ mu = 	 -.8 ; % pA
 sig = 	  .8 ; % pA
 radius = 150;
 
-pert.mask     {1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',synapseprobability, 'radius', 100, 'plotme',1)
+pert.mask     {1} = create_input_mask(somatapositions, 'reconstruction','synapseprobability',synapseprobability, 'radius', 100, 'plotme',0)
 pert.mask     {2} = not(pert.mask{1});
 
 pert.amplitude{1} = 1;

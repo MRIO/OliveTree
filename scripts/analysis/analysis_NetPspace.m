@@ -30,8 +30,12 @@ if ~exist('transients')
 	% fname = '/Users/M/Synced/Titan/Bench/netpspace/tauXeta_netpspace84_iso_3000_20-Jun-2016.mat';
 	% dimnames = {'sametoall', 'tau', 'gap' };
 
-	fname = 'sigXmu_0corr_netpspace98_iso_3000_28-Jun-2016.mat'
-	dimnames = {'noisesig', 'noiseamp', 'gap' };
+	% fname = 'sigXmu_0corr_netpspace98_iso_3000_28-Jun-2016.mat'
+	% dimnames = {'noisesig', 'noiseamp', 'gap' };
+
+
+	fname = 'sigXmu_0corr_netpspace128_iso_5000_30-Aug-2018.mat';
+	dimnames = {'noisesig', 'noiseamp', 'gap' };	
 
 	% fname = 'RADIUS_X_NCORR_netpspace25_iso_3000_28-Jun-2016.mat'
 	% dimnames = { 'radius', 'corr',	 'gap' };
@@ -76,6 +80,7 @@ summarize = 1;
 
 	save2svg = 0;
 	save2png = 0;
+	save2mat = 1;
 
 computeselectedxcorr = 0;
 	nwins = 1;
@@ -111,8 +116,6 @@ set(0, 'defaultfigurecolormap', CB(20))
 
 if preparetables 
 
-
-
 	ci = [0.05 .5 .95];
 	qt = [0.25 .5 .75];
 
@@ -135,8 +138,7 @@ if preparetables
 
 
 	 for s = 1:size(Plist,1)
-	 	s
-				
+	 	disp(['analyzing sim' num2str(s)])		
 
 		T = transients{s};
 		V = T.networkHistory.V_soma;
@@ -285,11 +287,7 @@ if plottraces
 				   		snam='12x12';
 				   		s=hgexport('readstyle',snam);
 					    s.Format = 'png';
-					    hgexport(f,fname,s);
-
-
-					% export_fig(['netpspace_noise' num2str(pind)],'-png',f,'-m2')
-						% export_fig(,'-png','-r300', f)
+					    hgexport(f,fname,s);				
 					end
 
 				close
@@ -369,6 +367,11 @@ if summarize
 				 	set(f,'position', [0 0 425 800])
 				 	export_fig([fname '_' m{1} '.png'],'-r300')
 				 end
+
+				 if save2mat
+				 	savefig(f, [fname '_' m{1}])
+				 end
+
 
 		end
 	end
