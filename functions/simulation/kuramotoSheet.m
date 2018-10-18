@@ -50,24 +50,22 @@ anim = 1; makemovie = 0;
 
 	p = inputParser;
 	p.addRequired('networksize')  
-	p.addRequired('scaling')  
+	p.addRequired('scaling')  % of coupling function
 
 	p.addParameter('radius', 3)
 	p.addParameter('dt', 1e-3) 	
 	p.addParameter('time',1) % in seconds
 	p.addParameter('omega_mean', 7) % in Hz 
-	p.addParameter('init_cond', []) % in Hz 
+	p.addParameter('init_cond', []) % in rad
 	p.addParameter('omega_std', 2) % in Hz 
 	p.addParameter('oscillators', []) 
-	p.addParameter('plotme', 1) 
+	p.addParameter('plotme', 1)
 	p.addParameter('noise', 0) 
-	p.addParameter('connectivity', 'euclidean')  % adjacency matrix
+	p.addParameter('connectivity', 'all to all')  % adjacency matrix
 	p.addParameter('clusterize', [0 0 0 0],@isvector)
 	p.addParameter('seed', 0)
 
 	p.parse(varargin{:});
-
-	keyboard
 
 	netsize = p.Results.networksize;
 	scaling = p.Results.scaling;
@@ -158,8 +156,8 @@ switch connectivity
 
 	
 	otherwise 
-		% we use the matrix passed as a parameter
-		connectivity = connectivity
+		disp('we use the matrix passed as a parameter')
+		connectivity
 
 end
 
@@ -210,10 +208,10 @@ connectivity(find(eye(M*N))) = 0;
 % Hu, X., Boccaletti, S., Huang, W., Zhang, X., Liu, Z., Guan, S., & Lai, C.-H. (2014). Exact solution for first-order synchronization transition in a generalized Kuramoto model. Scientific Reports, 4, 7262–6. http://doi.org/10.1038/srep07262
 
 
-if scale_to_intrinsic_freq
+if scale_to_intrinsic_freq	
 	connectivity = bsxfun(@times, omega_i, connectivity) * scaling / NO;
 else
-	connectivity = scaling*connectivity;
+	connectivity = scaling*connectivity / NO;
 end
 
 
