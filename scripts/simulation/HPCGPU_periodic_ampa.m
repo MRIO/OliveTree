@@ -39,7 +39,7 @@ if ~exist('nameprefix')  	; nameprefix='default'; end
 if ~exist('randampa')  		; randampa = 0	      ; end
 if ~exist('seed')  			; seed = 0		      ; end
 if ~exist('rd')  			; rd = 2		      ; end % radius
-if ~exist('CaH_KO')  		; CaH_KO = 0		  ; end % radius
+if ~exist('CaH_bump')  		; CaH_bump = 0		  ; end % radius
 if ~exist('CaL_KO')  		; CaL_KO = 0		  ; end % radius
 
  
@@ -50,7 +50,7 @@ displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)]
 % [=================================================================]
 
 
-% netsize = [3 30 30];
+netsize = [2 10 10];
 	noneurons = prod(netsize);
 
 plotthis  = 0;
