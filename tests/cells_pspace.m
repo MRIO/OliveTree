@@ -83,15 +83,15 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [.8 .9 1 1.1 1.2 1.3 ]; 		% CalciumL - conductance range
+	p1 = [.2 1.1 2. ]; 		% CalciumL - conductance range
 	p2 = [0];      	    % g_h_s
 	p3 = [.15]; 	% g_int
 	p4 = [0.1];      	% g_h
-	p5 = [.1 ]; % ratio soma dendrite
+	p5 = [.2 ]; % ratio soma dendrite
 	p6 = [45];	% Ca act Potassium: not voltage dependent 
-	p7 = [6.5]; % Ca High threshold
-	p8 = [0.011 0.013];    % leak
-	p9 = [0.011 0.013];; % leak
+	p7 = [0 4.5 45]; % Ca High threshold
+	p8 = [0.013];    % leak
+	p9 = [0.013];; % leak
 	p10 = [0];; % arbitrary
 
 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9} p{10}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10);

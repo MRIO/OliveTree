@@ -85,14 +85,14 @@ function R = profile_sim(varargin)
 	str = [];
 	bla = 0;
 	for ff = fields(T.cellParameters)'
-		if strcmp(ff{1}, 'Plist') | strcmp(ff{1}, 'Pnames'); 
+		if strcmp(ff{1}, 'Plist') | strcmp(ff{1}, 'Pnames' )| strcmp(ff{1}, 'rng' ); 
 			continue
 		end
 		eval([ff{1} '= T.cellParameters.' ff{1} ';'])
 				str = [str ff{1} ','];
 	end
 
-
+	% keyboard
 	eval(['R.allneurons = table(' str '  freq_each, ampl, meanVm, spks, supth, minV, maxV );'])
 
 	% ColumnsOfInterst = T.Pnames; 

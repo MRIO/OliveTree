@@ -13,7 +13,7 @@ NOTE: Running the model requires a CUDA enabled GPU.
 Analysis is performed in these scripts:
 
 - Pascal_figures_with_without_gaps.m
-	Produces thorough network analysis and analysis of phase resets.
+	Produces thorough network analysis including PSTH's and analysis of phase resets.
 
 
 - analysis_NetPspace
