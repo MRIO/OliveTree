@@ -207,8 +207,8 @@ for g = gaps
 		neurons.g_CaL = neurons.g_CaL+.05;
 	end
 
-	if CaH_KO == 1
-		neurons.g_CaH = neurons.g_CaH.*0;
+	if CaH_bump == 1
+		neurons.g_CaH = neurons.g_CaH + 2;
 	end
 
 	if CaL_KO == 1
