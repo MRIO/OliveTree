@@ -96,9 +96,9 @@
 
 	val = .6;
  	
- 	nameprefix = 'Control' ; seed = 0; CaL_KO = 0; CaH_bump = 0; simtime = 5; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
-	nameprefix = 'CaL_KO'  ; seed = 0; CaL_KO = 1; CaH_bump = 0; simtime = 5; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
-	nameprefix = 'CaH_bump'; seed = 0; CaL_KO = 0; CaH_bump = 1; simtime = 5; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
+ 	nameprefix = 'Control' ; seed = 0; CaL_KO = 0; CaH_bump = 0; simtime = 50000; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
+	nameprefix = 'CaL_KO'  ; seed = 0; CaL_KO = 1; CaH_bump = 0; simtime = 50000; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
+	nameprefix = 'CaH_bump'; seed = 0; CaL_KO = 0; CaH_bump = 1; simtime = 50000; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
 		
 
 % end
