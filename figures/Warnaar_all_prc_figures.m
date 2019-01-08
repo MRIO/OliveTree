@@ -1,4 +1,4 @@
-% Warnaar_all_figures.m
+% Warnaar_all_prc_figures.m
 
 whattodo = 'prc'
 

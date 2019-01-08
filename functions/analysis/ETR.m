@@ -224,7 +224,12 @@ end
 if ~isempty(cell2mat(OETR(:)))
 		[H X] = ksdensity(cell2mat(OETR(:)), [-win:1:win],'kernel', 'box', 'width', bin);
 	else
-		disp('Ordered ETR variable is empty')
+		disp('Cannot compute spike density. Ordered ETR variable is empty')
+		out.eventTriggeredRaster = [];
+		out.triggers = triggers;
+		out.events = spikes;
+
+		
 		return
 end
 
@@ -411,7 +416,7 @@ out.events = spikes;
 out.eventOrder = spikeOrder;
 out.Fs =  Fs;
 if ~isempty(LFP)
-out.eventTriggeredWaveforms = OETW;
+	out.eventTriggeredWaveforms = OETW;
 end
 out.CS = triggers(spikeOrder);
 out.histogram = {X,H};

@@ -47,36 +47,10 @@
 			}
 		},
 		{
-			"file": "functions/simulation/IOcell_devel.m",
+			"file": "scripts/simulation/Jochen_figure_gap_alignment.m",
 			"settings":
 			{
-				"buffer_size": 9686,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "tests/sanity_check.m",
-			"settings":
-			{
-				"buffer_size": 8647,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "functions/simulation/IOcell_wrapper.m",
-			"settings":
-			{
-				"buffer_size": 3395,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "functions/analysis/replayResults.m",
-			"settings":
-			{
-				"buffer_size": 10021,
+				"buffer_size": 8598,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -86,7 +60,14 @@
 			"settings":
 			{
 				"buffer_size": 30518,
-				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "functions/analysis/plot_volume.m",
+			"settings":
+			{
+				"buffer_size": 2021,
 				"line_ending": "Unix"
 			}
 		},
@@ -94,16 +75,93 @@
 			"file": "functions/simulation/createDefaultNeurons.m",
 			"settings":
 			{
-				"buffer_size": 12154,
+				"buffer_size": 12174,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "functions/simulation/OUnoise.m",
+			"settings":
+			{
+				"buffer_size": 2385,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "functions/analysis/stim_trig_phase_dist.m",
+			"settings":
+			{
+				"buffer_size": 4085,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "tests/stepwise_increase_correlation.m",
+			"settings":
+			{
+				"buffer_size": 4180,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "scripts/analysis/analysis_NetPspace_Warnaar.m",
+			"settings":
+			{
+				"buffer_size": 9770,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "scripts/simulation/HPCGPU_periodic_ampa.m",
+			"settings":
+			{
+				"buffer_size": 7702,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "scripts/simulation/the_origin_of_synchrony.m",
+			"settings":
+			{
+				"buffer_size": 5462,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "tests/cells_pspace.m",
+			"settings":
+			{
+				"buffer_size": 8564,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "functions/analysis/profile_sim.m",
+			"settings":
+			{
+				"buffer_size": 4314,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "functions/simulation/IOcell.m",
+			"settings":
+			{
+				"buffer_size": 8630,
+				"line_ending": "Windows"
 			}
 		},
 		{
 			"file": "functions/simulation/IOnet.m",
 			"settings":
 			{
-				"buffer_size": 17657,
+				"buffer_size": 17890,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -112,44 +170,62 @@
 			"file": "scripts/simulation/HPCGPU_scripts.m",
 			"settings":
 			{
-				"buffer_size": 18691,
+				"buffer_size": 18815,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "functions/analysis/xcorr_boot.m",
+			"file": "scripts/analysis/xcorr_feature_analysis.m",
 			"settings":
 			{
-				"buffer_size": 419,
-				"encoding": "UTF-8",
-				"line_ending": "Unix",
-				"name": "xcorr_boot.m"
-			}
-		},
-		{
-			"file": "functions/analysis/xcorr_summa.m",
-			"settings":
-			{
-				"buffer_size": 9314,
+				"buffer_size": 9379,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "functions/analysis/joinsim.m",
+			"file": "scripts/analysis/Warnaar_README.txt",
 			"settings":
 			{
-				"buffer_size": 1460,
+				"buffer_size": 1812,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "functions/analysis/spikedetect.m",
+			"file": "/home/titanuser1/oliveML/iclamp_three_cells.net.nml",
 			"settings":
 			{
-				"buffer_size": 2853,
-				"line_ending": "Windows"
+				"buffer_size": 1156,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/titanuser1/oliveML/olive.cell.nml",
+			"settings":
+			{
+				"buffer_size": 5555,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "scripts/simulation/NetPspace.m",
+			"settings":
+			{
+				"buffer_size": 9848,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "scripts/analysis/analysis_NetPspace.m",
+			"settings":
+			{
+				"buffer_size": 11662,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
 			}
 		}
 	],
@@ -198,26 +274,43 @@
 	"expanded_folders":
 	[
 		"/home/titanuser1/OliveTree_git",
-		"/home/titanuser1/OliveTree_git/functions",
+		"/home/titanuser1/OliveTree_git/figures",
 		"/home/titanuser1/OliveTree_git/scripts",
-		"/home/titanuser1/OliveTree_git/scripts/simulation"
+		"/home/titanuser1/OliveTree_git/scripts/simulation",
+		"/home/titanuser1/OliveTree_git/tests"
 	],
 	"file_history":
 	[
+		"/home/titanuser1/oliveML/experiment_3cells_iclamp.xml",
+		"/home/titanuser1/OliveTree_git/functions/simulation/IOcell_vanilla.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/spikedetect.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/joinsim.m",
 		"/home/titanuser1/OliveTree_git/tests/sanity_check_onecell.m",
+		"/home/titanuser1/OliveTree_git/scripts/analysis/Warnaar_README.txt",
+		"/home/titanuser1/OliveTree_git/scripts/analysis/stim_trig_spikes.m",
+		"/home/titanuser1/OliveTree_git/scripts/analysis/Pascal_figures_with_without_gaps.m",
+		"/home/titanuser1/OliveTree_git/functions/simulation/IOnet.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/replayResults_3.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/replayResults_2.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/animate_volume.m",
+		"/home/titanuser1/OliveTree_git/functions/simulation/create_input_mask.m",
+		"/home/titanuser1/OliveTree_git/functions/simulation/apply_perturbation.m",
+		"/home/titanuser1/OliveTree_git/scripts/simulation/HPCGPU_scripts.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/xcorr_boot.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/xcorr_summa.m",
+		"/home/titanuser1/OliveTree_git/scripts/simulation/HPCGPU_periodic_ampa.m",
+		"/home/titanuser1/OliveTree_git/functions/simulation/createW.m",
+		"/home/titanuser1/OliveTree_git/functions/simulation/IOcell_devel.m",
+		"/home/titanuser1/OliveTree_git/tests/sanity_check.m",
+		"/home/titanuser1/OliveTree_git/functions/simulation/IOcell_wrapper.m",
+		"/home/titanuser1/OliveTree_git/functions/analysis/replayResults.m",
+		"/home/titanuser1/OliveTree_git/scripts/analysis/analyze_clusters_bridges.m",
 		"/home/titanuser1/OliveTree_git/scripts/simulation/Jochen_Xcorr_comparisons.m",
 		"/home/titanuser1/OliveTree_git/tests/cells_pspace.m",
 		"/home/titanuser1/OliveTree_git/functions/analysis/profile_sim.m",
 		"/home/titanuser1/OliveTree_git/scripts/simulation/simulate_3d_layer_perturbation_images.m",
 		"/home/titanuser1/OliveTree_git/scripts/simulation/reconstruction_clusters_and_bridges.m",
-		"/home/titanuser1/OliveTree_git/scripts/analysis/analyze_clusters_bridges.m",
-		"/home/titanuser1/OliveTree_git/functions/simulation/create_input_mask.m",
-		"/home/titanuser1/OliveTree_git/functions/analysis/replayResults.m",
 		"/home/titanuser1/OliveTree_git/functions/simulation/IOcell.m",
-		"/home/titanuser1/OliveTree_git/scripts/simulation/HPCGPU_scripts.m",
-		"/home/titanuser1/OliveTree_git/scripts/simulation/HPCGPU_periodic_ampa.m",
-		"/home/titanuser1/OliveTree_git/functions/simulation/IOnet.m",
-		"/home/titanuser1/OliveTree_git/functions/analysis/xcorr_summa.m",
 		"/home/titanuser1/OliveTree_git/functions/simulation/hilbert_of_membranepotential.m",
 		"/home/titanuser1/OliveTree_git/scripts/analysis/Jochen_Xcorr_comparisons.m",
 		"/home/titanuser1/OliveTree_git/scripts/saveallfigs.m",
@@ -262,11 +355,11 @@
 	],
 	"find":
 	{
-		"height": 42.0
+		"height": 38.0
 	},
 	"find_in_files":
 	{
-		"height": 124.0,
+		"height": 134.0,
 		"where_history":
 		[
 			"<current file>"
@@ -277,6 +370,27 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"wgpu",
+			"display",
+			"displaytext",
+			"gpu",
+			"using",
+			"gpu",
+			"\n% Lastrun: 20/6/2016\n% if strcmp(pwd,'/home/titanuser1/Titan/Bench2')\n% \tX_README = 'THIS IS A SIMULATION FOR TAU - gapfactor introduced'\n% \tp1  = [5 10 20 40 60 80];\t\t% time constant of ornstein uhlenbeck process (tau)\n% \tp2  = [0:0.05:.3];\t    % sametoall (noise correlation) of ornstein uhlenbeck process\n% \tp3  = [-.6];\t\t\t% noiseamp of ornstein uhlenbeck process\n% \tp4  = [0.05 eps]; \t% average gap leak per connection\n% \tp5  = [2];\t\t\t% single cell connection radius \n% \tp6  = [36];\t\t\t% clustersize (iff conntype='cluster')\n% \tp7  = [1];\t\t\t% intraclusterP (iff conntype='cluster')\n% \tp8  = [0];\t\t\t% extraclusterP (iff conntype='cluster')\n% \tp9  = [8];\t\t\t% mean number of connections\n% \tp10 = [6];\t\t\t% N, size of N x N network\n% \tp11 = [2];\t\t\t% depth in Z\t\t\n% \tp12 = [1];\t\t\t% whether using gap compensation in cells\n% \tp13 = [.6];\t    % variability of noise injected (sig) - 1Hz when noise_amplitude = 0, gap = 0.04 and n = 8;\n\n% \tconntype = 'iso';\n\tdt = 0.01;\n% \tsimtime = ",
+			"save2png",
+			"HEAD",
+			"animate_",
+			"seed ",
+			"onset_of_stim",
+			"seed",
+			"HEAD",
+			"colors",
+			"OliveTree",
+			"tslice",
+			"period",
+			"IOn",
+			"HPC",
+			"periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17",
 			"bridge_conductance_pspace",
 			"two_maskstimulation",
 			"conduc",
@@ -362,7 +476,7 @@
 	"groups":
 	[
 		{
-			"selected": 12,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -378,8 +492,8 @@
 						"selection":
 						[
 							[
-								3360,
-								3360
+								2846,
+								2846
 							]
 						],
 						"settings":
@@ -391,7 +505,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 20,
 					"type": "text"
 				},
 				{
@@ -420,7 +534,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 23,
 					"type": "text"
 				},
 				{
@@ -436,8 +550,8 @@
 						"selection":
 						[
 							[
-								12437,
-								12437
+								17266,
+								17266
 							]
 						],
 						"settings":
@@ -446,27 +560,374 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 10494.0,
+						"translation.y": 13224.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "functions/simulation/IOcell_devel.m",
+					"file": "scripts/simulation/Jochen_figure_gap_alignment.m",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9686,
+						"buffer_size": 8598,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2442,
-								2442
+								1133,
+								1133
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 812.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "scripts/analysis/analyze_clusters_bridges.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 30518,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								22581,
+								22581
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 21924.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 19,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "functions/analysis/plot_volume.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2021,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								742,
+								742
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "functions/simulation/createDefaultNeurons.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12174,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								144,
+								144
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 22,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "functions/simulation/OUnoise.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2385,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1239,
+								1239
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 522.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 21,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "functions/analysis/stim_trig_phase_dist.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4085,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1977,
+								1977
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1653.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "tests/stepwise_increase_correlation.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4180,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								219,
+								219
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "scripts/analysis/analysis_NetPspace_Warnaar.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9770,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								263,
+								263
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "scripts/simulation/HPCGPU_periodic_ampa.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7702,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "scripts/simulation/the_origin_of_synchrony.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5462,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3621,
+								3621
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2845.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "tests/cells_pspace.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8564,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6368,
+								6368
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4002.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "functions/analysis/profile_sim.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4314,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								234,
+								234
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "functions/simulation/IOcell.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8630,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5354,
+								5354
 							]
 						],
 						"settings":
@@ -476,56 +937,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 3886.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "tests/sanity_check.m",
+					"buffer": 16,
+					"file": "functions/simulation/IOnet.m",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8647,
+						"buffer_size": 17890,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6111,
-								6111
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 6765.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "functions/simulation/IOcell_wrapper.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3395,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1257,
-								1257
+								653,
+								653
 							]
 						],
 						"settings":
@@ -542,20 +974,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
-					"file": "functions/analysis/replayResults.m",
+					"buffer": 17,
+					"file": "scripts/simulation/HPCGPU_scripts.m",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10021,
+						"buffer_size": 18815,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6965,
-								6965
+								5343,
+								5343
 							]
 						],
 						"settings":
@@ -564,150 +996,91 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 7922.0,
+						"translation.y": 2294.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "scripts/analysis/xcorr_feature_analysis.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9379,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								499,
+								499
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "scripts/analysis/analyze_clusters_bridges.m",
+					"buffer": 19,
+					"file": "scripts/analysis/Warnaar_README.txt",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 30518,
+						"buffer_size": 1812,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								15971,
-								15971
+								499,
+								499
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 16137.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
-					"file": "functions/simulation/createDefaultNeurons.m",
+					"buffer": 20,
+					"file": "/home/titanuser1/oliveML/iclamp_three_cells.net.nml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12154,
+						"buffer_size": 1156,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								11400,
-								11400
+								38,
+								38
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 8385.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "functions/simulation/IOnet.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 17657,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6553,
-								6553
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"tab_size": 4,
+							"syntax": "Packages/XML/XML.sublime-syntax",
+							"tab_size": 2,
 							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3465.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "scripts/simulation/HPCGPU_scripts.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 18691,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								15044,
-								15044
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 6832.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "functions/analysis/xcorr_boot.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 419,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								383,
-								383
-							]
-						],
-						"settings":
-						{
-							"auto_name": "xcorr_boot.m",
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -717,20 +1090,50 @@
 					"type": "text"
 				},
 				{
-					"buffer": 12,
-					"file": "functions/analysis/xcorr_summa.m",
+					"buffer": 21,
+					"file": "/home/titanuser1/oliveML/olive.cell.nml",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9314,
+						"buffer_size": 5555,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1994,
-								1994
+								2042,
+								2042
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2610.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 22,
+					"file": "scripts/simulation/NetPspace.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9848,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7817,
+								7817
 							]
 						],
 						"settings":
@@ -739,27 +1142,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2574.0,
+						"translation.y": 6438.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
-					"file": "functions/analysis/joinsim.m",
+					"buffer": 23,
+					"file": "scripts/analysis/analysis_NetPspace.m",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1460,
+						"buffer_size": 11662,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								511,
-								511
+								2127,
+								2127
 							]
 						],
 						"settings":
@@ -771,37 +1174,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
-					"type": "text"
-				},
-				{
-					"buffer": 14,
-					"file": "functions/analysis/spikedetect.m",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2853,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2692,
-								2692
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1528.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 13,
+					"stack_index": 15,
 					"type": "text"
 				}
 			]
@@ -809,7 +1182,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 42.0
+		"height": 38.0
 	},
 	"input":
 	{
@@ -850,7 +1223,7 @@
 	"project": "Olive-Titan.sublime-project",
 	"replace":
 	{
-		"height": 80.0
+		"height": 72.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -860,20 +1233,140 @@
 		"selected_items":
 		[
 			[
-				"xcorr",
-				"functions/analysis/xcorr_summa.m"
+				"joche",
+				"scripts/simulation/Jochen_figure_gap_alignment.m"
+			],
+			[
+				"prof",
+				"functions/analysis/profile_sim.m"
+			],
+			[
+				"profil",
+				"functions/analysis/profile_sim.m"
+			],
+			[
+				"origin",
+				"scripts/simulation/the_origin_of_synchrony.m"
+			],
+			[
+				"perio",
+				"scripts/simulation/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"gpu",
+				"scripts/simulation/HPCGPU_scripts.m"
+			],
+			[
+				"ioce",
+				"functions/simulation/IOcell.m"
+			],
+			[
+				"ione",
+				"functions/simulation/IOnet.m"
+			],
+			[
+				"hpc",
+				"scripts/simulation/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"ion",
+				"functions/simulation/IOcell_vanilla.m"
+			],
+			[
+				"netp",
+				"scripts/analysis/analysis_NetPspace.m"
+			],
+			[
+				"repla",
+				"functions/analysis/replayResults_3.m"
+			],
+			[
+				"ste",
+				"tests/stepwise_increase_correlation.m"
+			],
+			[
+				"step",
+				"tests/stepwise_increase_correlation.m"
+			],
+			[
+				"hpg",
+				"scripts/simulation/HPCGPU_scripts.m"
+			],
+			[
+				"join",
+				"functions/analysis/joinsim.m"
+			],
+			[
+				"plot",
+				"functions/analysis/plot_volume.m"
+			],
+			[
+				"anal",
+				"scripts/analysis/analyze_clusters_bridges.m"
+			],
+			[
+				"recontr",
+				"scripts/simulation/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"animate",
+				"functions/analysis/animate_volume.m"
+			],
+			[
+				"create",
+				"functions/simulation/create_input_mask.m"
 			],
 			[
 				"reconstr",
 				"scripts/simulation/reconstruction_clusters_and_bridges.m"
 			],
 			[
-				"hpc",
-				"scripts/simulation/HPCGPU_scripts.m"
+				"appl",
+				"functions/simulation/apply_perturbation.m"
 			],
 			[
-				"ione",
+				"io",
 				"functions/simulation/IOnet.m"
+			],
+			[
+				"app",
+				"functions/simulation/apply_perturbation.m"
+			],
+			[
+				"replay",
+				"functions/analysis/replayResults_3.m"
+			],
+			[
+				"",
+				"tests/stepwise_increase_correlation.m"
+			],
+			[
+				"stim",
+				"functions/analysis/stim_trig_phase_dist.m"
+			],
+			[
+				"stim_",
+				"scripts/analysis/stim_trig_spikes.m"
+			],
+			[
+				"ou",
+				"functions/simulation/OUnoise.m"
+			],
+			[
+				"createW",
+				"functions/simulation/createW.m"
+			],
+			[
+				"brid",
+				"scripts/simulation/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"joi",
+				"functions/analysis/joinsim.m"
+			],
+			[
+				"xcorr",
+				"functions/analysis/xcorr_summa.m"
 			],
 			[
 				"analy",
@@ -888,10 +1381,6 @@
 				"tests/sanity_check.m"
 			],
 			[
-				"replay",
-				"functions/analysis/replayResults.m"
-			],
-			[
 				"sani",
 				"tests/sanity_check_onecell.m"
 			],
@@ -904,20 +1393,12 @@
 				"functions/simulation/IOnet.m"
 			],
 			[
-				"brid",
-				"scripts/simulation/reconstruction_clusters_and_bridges.m"
-			],
-			[
 				"xcor",
 				"functions/analysis/xcorr_summa.m"
 			],
 			[
 				"detect",
 				"functions/analysis/spikedetect.m"
-			],
-			[
-				"join",
-				"functions/analysis/joinsim.m"
 			],
 			[
 				"jochen",
@@ -944,20 +1425,12 @@
 				"scripts/simulation/reconstruction_clusters_and_bridges.m"
 			],
 			[
-				"repla",
-				"functions/analysis/replayResults.m"
-			],
-			[
 				"simulate",
 				"scripts/simulation/simulate_3d_layer_perturbation_images.m"
 			],
 			[
 				"profi",
 				"functions/analysis/profile_sim.m"
-			],
-			[
-				"ioce",
-				"functions/simulation/IOcell.m"
 			],
 			[
 				"cells",
@@ -992,10 +1465,6 @@
 				"scripts/reconstruction_clusters_and_bridges.m"
 			],
 			[
-				"",
-				"scripts/HPCGPU_scripts.m"
-			],
-			[
 				"savea",
 				"analysis/saveallfigs.m"
 			],
@@ -1024,16 +1493,8 @@
 				"scripts/HPCGPU_periodic_ampa.m"
 			],
 			[
-				"create",
-				"functions/createDefaultNeurons.m"
-			],
-			[
 				"cellsp",
 				"tests/cells_pspace.m"
-			],
-			[
-				"netp",
-				"scripts/NetPspace.m"
 			],
 			[
 				"kura",
@@ -1042,10 +1503,6 @@
 			[
 				"pascal",
 				"analysis/Pascal_figures_with_without_gaps.m"
-			],
-			[
-				"plot",
-				"functions/plotnetstruct.m"
 			],
 			[
 				"period",
@@ -1066,10 +1523,6 @@
 			[
 				"netps",
 				"analysis/analysis_NetPspace.m"
-			],
-			[
-				"ion",
-				"functions/IOnet.m"
 			],
 			[
 				"scripts",
@@ -1096,28 +1549,12 @@
 				"scripts/Jochen_figure_gap_alignment.m"
 			],
 			[
-				"profil",
-				"analysis/profile_sim.m"
-			],
-			[
-				"stim",
-				"analysis/stim_trig_spikes.m"
-			],
-			[
-				"perio",
-				"scripts/HPCGPU_periodic_ampa_test.m"
-			],
-			[
 				"ana",
 				"analysis/analysis_NetPspace.m"
 			],
 			[
 				"ampatest",
 				"scripts/HPCGPU_periodic_ampa_test.m"
-			],
-			[
-				"joche",
-				"scripts/Jochen_figure_gap_alignment.m"
 			],
 			[
 				"h",
@@ -1184,7 +1621,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 315.0,
+	"side_bar_width": 480.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

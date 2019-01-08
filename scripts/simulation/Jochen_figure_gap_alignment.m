@@ -78,13 +78,13 @@ delta = .01;
 currentstep = -9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
 % 8 Dimensional GRID: parameter ranges
-p1 = [0 1.5]; 	% Ca v3.1 CalciumL - conductance range
+p1 = [1.5]; 	% Ca v3.1 CalciumL - conductance range
 p2 = [.0];     	    % g_h_s
 p3 = [.13]; 		% g_int
-p4 = [0 1.2];      	% g_h
+p4 = [0.12];      	% g_h
 p5 = [-38];       	% V_h
 p6 = [45];			% Ca act Potassium: not voltage dependent 
-p7 = [0 4.5];		% Ca v2.1 P/Q type (High Threshold)
+p7 = [0 4.5 9];		% Ca v2.1 P/Q type (High Threshold)
 p8 = [0.013];    	% leak
 [p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8);
 

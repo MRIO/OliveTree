@@ -1,33 +1,46 @@
 % Warnaar et al.
 % 
 % this script reproduces multiple figures in Warnaar et al.
+%
+% set variable 
 % 
 %
 clear;
 
-produce_data = 0;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% CHOOSE BELOW what analysis to REPRODUCE
+%
+% --- RECOMMENDATION to AVOID WORKSPACE MESS:
+% on a clear workspace set onlye 
+% one of the following variables to ONE AT A TIME!
+% 
+% also: uncomment lines in 'load_data' code block 
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	% to produce figures with stimulation, uncomment:
-	F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat';
-	% to produce figures for spontaneous, uncomment:
-	% F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017.mat';
+produce_data = 0; % one of these 
+load_data  = 1; % must be set to 1
 
-profile_simulations = 1;
+profile_simulations = 0;
 onesec_vs_30s = 1; % compare network behavior for different simulation durations
-plotcellscatters_gap_gapless  = 1; % compare cell scatters in nets
-joinedcellscatter = 1; % scatter of cell properties for joined simulations (200s)
-triggeredphase = 1; % calculate triggered phase for 1Hz stimulation with and without gaps
-hist_sto_freq_amp_w_wo_gaps = 1;
-frequency_drift_singlesim_prc = 1; % demonstration of frequency drifts 
-calculatesynchrony = 1;
-sto_and_propfiring_histograms = 1;
+plotcellscatters_gap_gapless  = 0; % compare cell scatters in nets
+joinedcellscatter = 0; % scatter of cell properties for joined simulations (200s)
+triggeredphase = 0; % calculate triggered phase for 1Hz stimulation with and without gaps
+hist_sto_freq_amp_w_wo_gaps = 0;
+frequency_drift_singlesim_prc = 0; % demonstration of frequency drifts 
+calculatesynchrony = 0;
+sto_and_propfiring_histograms = 0;
 interperiodintervals = 0;
 sortedsampletraces = 0;
+sampletraces = 0;
 noisesnippets = 0; 
+comparison_boundarycells = 0;
+comparison_resonance_cav31 = 0;
+
 
 
 if produce_data
-	disp('To produce data, uncomment the lines below (this runs HPCGPU_periodic_ampa with appropriate parameters);')
+	disp('To produce original data, uncomment the lines below (this runs HPCGPU_periodic_ampa with appropriate parameters);')
 
 % 	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = 'gallop'; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa	 	
 % 	seed = 0; tau = 20; noisesig = .6; noisemu = -.6; sametoall = 0.2; simtype = '1Hz'   ; conntype = 'iso' ; numruns = 4;  HPCGPU_periodic_ampa		 
@@ -35,44 +48,55 @@ if produce_data
 
 end
 
-
+% assume this folder has the data
 pathtodata = '.';
 addpath(pathtodata)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %% load data and join  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-load(F1)
-disp('loaded.')
-
-tslice = 1:50000;
-
-runs_with   = [5:8];
-runs_without = [1:4];
-
-Joinedsim{1}  = joinsim(simresults,runs_without); 
-Joinedsim{2}  = joinsim(simresults,runs_with); 
-
-statevar{1} = Joinedsim{1}.networkHistory.V_soma(:,tslice);
-statevar{2} = Joinedsim{2}.networkHistory.V_soma(:,tslice);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%% profile simulations 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% profile simulations for this interval
+if load_data
 
 
-% replayResults_clusters(sim{1});
-% replayResults_clusters(sim{1});
-disp('profiling...without gaps')
-R{1} = profile_sim(Joinedsim{1},'tslice',tslice);
-disp('profiling...with gaps')
-R{2} = profile_sim(Joinedsim{2},'tslice',tslice);
+	% to produce figures with stimulation, uncomment:
+		% F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat';
+	% to produce figures for spontaneous, uncomment:
+		% F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017.mat';
 
-set(0,'defaultaxescolororder', linspecer(10))
-set(0,'defaultfigurecolormap', linspecer(10))
+
+	load(F1)
+	disp('loaded.')
+
+	tslice = 1:50000;
+
+	runs_with   = [5:8];
+	runs_without = [1:4];
+
+	Joinedsim{1}  = joinsim(simresults,runs_without); 
+	Joinedsim{2}  = joinsim(simresults,runs_with); 
+
+	statevar{1} = Joinedsim{1}.networkHistory.V_soma(:,tslice);
+	statevar{2} = Joinedsim{2}.networkHistory.V_soma(:,tslice);
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+	%% profile simulations 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	% profile simulations for this interval
+
+
+	% replayResults_clusters(sim{1});
+	% replayResults_clusters(sim{1});
+	disp('profiling...without gaps')
+	R{1} = profile_sim(Joinedsim{1},'tslice',tslice);
+	disp('profiling...with gaps')
+	R{2} = profile_sim(Joinedsim{2},'tslice',tslice);
+
+	set(0,'defaultaxescolororder', linspecer(10))
+	set(0,'defaultfigurecolormap', linspecer(10))
+
+
+end
 
 
 
@@ -330,7 +354,6 @@ if plotcellscatters_gap_gapless
 
 end
 
-sampletraces = 1;
 if sampletraces
 	t_slice = [9750:11350];
 	t_slice = [11750:13350];
@@ -417,3 +440,35 @@ if noisesnippets
 	end
 	saveallfigs('prefix',  'noisesnips', 'style', '4x4');
 end
+
+
+
+if comparison_boundarycells
+
+
+end
+
+
+if comparison_resonance_cav31
+
+	clear
+		load periodic_ampa_CaH_bump_1_iso_1Hz_50000_1_1_14-Dec-2018.mat
+		X_1 = xcorr_summa(simresults{1});
+		save tmp X_1
+
+	clear
+ 		load periodic_ampa_Control_1_iso_1Hz_50000_1_1_13-Dec-2018.mat
+		X_2 = xcorr_summa(simresults{1})
+		load tmp
+		save tmp X_1 X_2
+
+	close all
+
+	plot(X_1.XcorrNoAc,'b')
+ 	hold on
+	plot(X_2.XcorrNoAc,'r')
+	legend({'bump' 'control'})
+
+end
+
+

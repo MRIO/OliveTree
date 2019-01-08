@@ -1,14 +1,6 @@
 % stim_triggered_spikes.m
 
 
-% periodic_ampa_8_cluster_gallop_1000_4_03-Jun-2016.mat
-% periodic_ampa_8_iso_gallop_50000_4_31-May-2016.mat
-% periodic_ampa_8_iso_spont_50000_4_01-Jun-2016
-% periodic_ampa_8_cluster_1Hz_50000_4_03-Jun-2016.mat
-% periodic_ampa_8_cluster_gallop_50000_4_03-Jun-2016.mat
-% periodic_ampa_8_cluster_spont_50000_4_04-Jun-2016.mat
-% F = 'periodic_ampa_8_iso_1Hz_50000_4_02-Jun-2016.mat';
-
 % F1 = 'periodic_ampa_2_iso_0.04_1Hz_50000_2_12-Jun-2016.mat';
 % F2 = 'periodic_ampa_2_iso_0.04_spont_50000_2_12-Jun-2016.mat';
 % F3 = 'periodic_ampa_2_iso_0.04_gallop_50000_2_12-Jun-2016.mat';
@@ -20,6 +12,7 @@
 % F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_gallop_50000_4_25-Sep-2016.mat';
 % F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_1Hz_50000_4_25-Sep-2016.mat'; % seemingly wrong gap junction neighborhood
 % F1 = 'periodic_ampa_replay_06_12_16_4_iso_0_1Hz_50000_4_25-Sep-2016.mat';
+% F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat'; runs = [5:8];
 
 addpath('/Users/M/Synced/Titan/Bench2/periodic_ampa/')
 addpath('/Users/M/Synced/Titan/Bench2/')
@@ -28,10 +21,12 @@ addpath('/Users/M/Synced/Titan/Bench/')
 addpath('/Users/M/Projects/Experiments/Olive/model/simresults/periodic_ampa')
 addpath('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/periodic_ampa')
 
-F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat'; runs = [5:8];
+addpath('/mnt/4dfd6e83-7790-4c18-8106-51a47ca5b41f/titanuser1Bulk/Synced/Titan/Bench2')
 
 
-
+% F1 = 'periodic_ampa_CaH_bump_1_iso_1Hz_50000_1_1_14-Dec-2018.mat'; runs = 1;
+F1 = 'periodic_ampa_Control_1_iso_1Hz_50000_1_1_13-Dec-2018.mat'; runs = 1;
+% F1 = 'periodic_ampa_CaL_KO_1_iso_1Hz_50000_1_1_13-Dec-2018.mat'; runs = 1;
 
 
 % [=================================================================]
@@ -48,12 +43,12 @@ plot_selected_neurons = 0;
 computerasters = 1;
 	partialcorrelations_and_responsescatters = 1;
 calculate_xcorrs = 0;
-stimtrigwaves = 1;
+stimtrigwaves = 0;
 
 
 trigger = 1; % perturbation (according to 'pert')
 cellselection = [105];
-cellselection = [];
+% cellselection = [];
 % cellselection = [105 115] ;  %[7 35 55 115]
 % cellselection = [1:200];
 
@@ -147,6 +142,9 @@ if computerasters
 				% trigrast = ETR(triggers, allspikes{i} , 'waves', sim.networkHistory.V_soma(i,:),'bin', 10, 'span', 3000,'plotQ',ismember(i, cellselection) ,'markertype', 'none');
 			% catch
 				trigrast = ETR(triggers, allspikes{i} ,'bin', 1, 'span', 1000,'plotQ',ismember(i, cellselection) );
+				if isempty(trigrast.eventTriggeredRaster)
+					continue
+				end
 			% end
 			spksininterval = @(tr) length(find(trigrast.eventTriggeredRaster{tr}>0 & trigrast.eventTriggeredRaster{tr}<30 ));
 
@@ -183,7 +181,10 @@ if computerasters
 				% axis off;
 
 			
-			end			
+			end
+
+		else
+			resp(i,1) = 0;
 
 		end
 

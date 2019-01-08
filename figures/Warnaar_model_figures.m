@@ -19,6 +19,9 @@ symmetrize = 1;
 
 seed = 90005;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% create network structure 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 W  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [0 0 0 0], normleak,'seed',seed);
 
@@ -43,7 +46,9 @@ create_input_mask(netsize, 'dist_to_point', 'radius', 3,'cell_coordinates', W.co
 % [================================================]
 %  datafiles
 % [================================================]
-
+	addpath('/Users/M/Synced/Titan/Bench2/periodic_ampa/')
+	addpath('/Users/M/Synced/Titan/Bench2/')
+	addpath('/Users/M/Synced/Titan/Bench/')
 
 % F1 = 'periodic_ampa_replay_06_12_16_4_iso_0.04_1Hz_50000_4_25-Sep-2016.mat';
 F2 = 'periodic_ampa_nonoise.mat';
@@ -51,12 +56,11 @@ F2 = 'periodic_ampa_nonoise.mat';
 F1 = 'periodic_ampa_replay_06_12_16_with_spont1_iso_0.04_spont_50000_1_.mat'
 
 
-addpath('/Users/M/Synced/Titan/Bench2/periodic_ampa/')
-addpath('/Users/M/Synced/Titan/Bench2/')
-addpath('/Users/M/Synced/Titan/Bench/')
-
-
 %=============================gather data==============================%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% sample activity in response to noise 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 load (F1)
 s1 = simresults{1};

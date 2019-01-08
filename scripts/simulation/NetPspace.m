@@ -37,11 +37,11 @@ if ~exist('p13','var')
 	conntype = 'iso'
 	% 8 Dimensional GRID: parameter ranges
 	p1  = [20];			% time constant of ornstein uhlenbeck process (tau)
-	p2  = [0];		% sametoall (noise correlation) of ornstein uhlenbeck process
+	p2  = [0];			% sametoall (noise correlation) of ornstein uhlenbeck process
 	p3  = [0];			% noiseamp of ornstein uhlenbeck process
 	p4  = [0.04 eps]; % average gap leak per cell
 	p5  = [2];			% single cell connection radius 
-	p6  = [20];	% clustersize (iff conntype='cluster')
+	p6  = [20];			% clustersize (iff conntype='cluster')
 	p7  = [.9];			% intraclusterP (iff conntype='cluster')
 	p8  = [.1];			% extraclusterP (iff conntype='cluster')
 	p9  = [8];			% mean number of connections
