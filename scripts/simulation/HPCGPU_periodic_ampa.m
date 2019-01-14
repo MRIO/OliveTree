@@ -212,7 +212,7 @@ for g = gaps
 	end
 
 	if CaL_KO == 1
-		neurons.g_CaL = neurons.g_CaL.*0;
+		neurons.g_CaL = 0.3*ones(noneurons,1) + 0.6*rand(noneurons,1);
 	end
 
 	
