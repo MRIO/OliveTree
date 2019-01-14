@@ -28,14 +28,14 @@ debugging = 0;
 % [=================================================================]
 delta = .02;
 
-cell_function = 'devel';
-% cell_function = 'vanilla'; % 'devel'
-nconn = 3;
+% cell_function = 'devel';
+cell_function = 'vanilla'; % 'devel'
+nconn = 0;
 
 steadystate_time = 1000;
 simtime  = 1000;
 
-% currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
+currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
 % [=================================================================]
 %  state variables to report
@@ -55,8 +55,8 @@ to_report = currents;
 % gaps = [];
 gaps = [0];
 
-% pspace_type = 'pgrid';
-pspace_type = 'randomized';%
+pspace_type = 'pgrid';
+% pspace_type = 'randomized';%
  % pspace_type = '2p_sweep';
 switch pspace_type
 
@@ -83,13 +83,13 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [.2 1.1 2. ]; 		% CalciumL - conductance range
+	p1 = [.2: .2: 1.5 ]; 		% CalciumL - conductance range
 	p2 = [0];      	    % g_h_s
 	p3 = [.15]; 	% g_int
 	p4 = [0.1];      	% g_h
 	p5 = [.2 ]; % ratio soma dendrite
 	p6 = [45];	% Ca act Potassium: not voltage dependent 
-	p7 = [0 4.5 45]; % Ca High threshold
+	p7 = [.5:4:18]; % Ca High threshold
 	p8 = [0.013];    % leak
 	p9 = [0.013];; % leak
 	p10 = [0];; % arbitrary
@@ -134,8 +134,8 @@ ounoise = [0 0 0 0];
 
 % apply some current to check the behavior of the cells
 I_app = [];
-% I_app = ones(noneurons, simtime*1/delta)*2;
-% I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
+I_app = zeros(noneurons, simtime*1/delta);
+I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 
@@ -209,7 +209,7 @@ for gap = gaps
 end
 % [===========================================================================================================]
 R = profile_sim(simresults{1},'tslice', [1:1000], 'plotme',1);
-sel_fields = {'g_CaL', 'g_int', 'g_h', 'g_ld' ,'g_ls', 'ampl', 'freq_each', 'meanVm'};
+sel_fields = {'g_CaL', 'g_CaH', 'spks', 'ampl', 'freq_each', 'meanVm'};
 NDscatter(R.allneurons(:,sel_fields),1)
 
 
@@ -227,6 +227,7 @@ if prunecells
 	sel_cel_idx = ampl & freq & maxV & meanVm;
 
 	waterfall(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
+	figure
 	plot(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
 
 	sel_fields = {'g_CaL', 'g_K_Ca', 'g_int', 'p1',  'ampl', 'freq_each', 'maxV', 'meanVm'}
@@ -236,8 +237,8 @@ if prunecells
 
 
 	save cellset_devel_3 sel_cel_idx simresults resultstable
+
 else
-		sel_fields = {'g_CaL', 'g_int', 'p1',  'ampl', 'freq_each', 'meanVm'}
 		sel_table = R.allneurons(:,sel_fields);
 		% sel_table = R.allneurons(:,sel_fields);
 		NDscatter(sel_table, 1)
