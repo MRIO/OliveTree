@@ -1,10 +1,11 @@
-% Warnaar et al.
+% this script reproduces multiple simulations / figures and analysis for Warnaar et al.
 % 
-% this script reproduces multiple figures in Warnaar et al.
-%
-% set variable 
-% 
-%
+
+% SET THE PATH TO FILES HERE:
+pathtodata = '/Users/M/Synced/Projects/Experiments/Olive/model/simresults/periodic_ampa/'
+% pathtodata = '.';
+addpath(pathtodata)
+
 clear;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,11 +19,11 @@ clear;
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-produce_data = 0; % one of these 
+produce_data = 0; % one of these two lines
 load_data  = 1; % must be set to 1
 
 profile_simulations = 0;
-onesec_vs_30s = 1; % compare network behavior for different simulation durations
+onesec_vs_30s = 0; % compare network behavior for different simulation durations
 plotcellscatters_gap_gapless  = 0; % compare cell scatters in nets
 joinedcellscatter = 0; % scatter of cell properties for joined simulations (200s)
 triggeredphase = 0; % calculate triggered phase for 1Hz stimulation with and without gaps
@@ -48,10 +49,6 @@ if produce_data
 
 end
 
-% assume this folder has the data
-pathtodata = '.';
-addpath(pathtodata)
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %% load data and join  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,7 +58,7 @@ if load_data
 	% to produce figures with stimulation, uncomment:
 		% F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_1Hz_50000_4_17-Jan-2017.mat';
 	% to produce figures for spontaneous, uncomment:
-		% F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017.mat';
+		F1 = 'periodic_ampa_replay_06_12_16_with_spont_gaptest8_iso_spont_50000_4_17-Jan-2017.mat';
 
 
 	load(F1)
@@ -446,6 +443,79 @@ end
 if comparison_boundarycells
 
 
+
+	netsize = [2 10 10];
+		noneurons = prod(netsize);
+
+	plotthis  = 0;
+	rd = 2;
+	meannoconn = 8;
+	normleak  = 1;
+	randomize = 1;
+	scaling   = 0.04;
+	maxiter	  = 1;
+	somatapositions = [];
+	randomize = 1;
+	symmetrize = 1;
+
+	W  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [0 0 0 0], normleak);
+
+
+	plotnetstruct(W.W,W.coords(:,1),W.coords(:,2),W.coords(:,3),W.stats.clustercoeff.bu)
+
+	borders = W.coords(:,2)==1 | W.coords(:,2)==10 | W.coords(:,3)==1 | W.coords(:,3)==10 
+
+	figure
+	BU = W.stats.clustercoeff.bu;
+	[h1 x] = hist(BU(borders));
+	h2 = hist(BU(~borders),x);
+	bar(x,[h1 ; h2]','stacked')
+	xlabel('cluster coefficient')
+	legend({'border' 'center'})
+	[sig p] = kstest2(BU(borders), BU(~borders))
+	title({'cluster coefficient (binary undirected)' ;  ['sig: ' num2str(sig) ' ; p-val: ' num2str(p)]})
+
+	figure
+	gapleaks = sum(W.W);
+	[h1 x] = hist(gapleaks(borders));
+	h2 = hist(gapleaks(~borders),x);
+	bar(x,[h1 ; h2]','stacked')
+	xlabel('gap leaks')
+	legend({'border' 'center'})
+	[sig p] = kstest2(gapleaks(borders), gapleaks(~borders))
+	title({'gap leaks'; ['sig: ', num2str(sig) ' ; p-val: ' num2str(p)]})
+	
+	figure
+	conns = sum(W.W>0);
+	[h1 x] = hist(conns(borders));
+	h2 = hist(conns(~borders),x);
+	bar(x,[h1 ; h2]','stacked')
+	xlabel('number of connections')
+	[sig p] = kstest2(conns(borders), conns(~borders))
+	legend({'border' 'center' })
+	title({'connections'; ['sig: ', num2str(sig) ' ; p-val: ' num2str(p)]})
+	
+	figure
+	medfr = simresults{1}.spikes.medfreq;
+	[h1 x] = hist(medfr(borders));
+	h2 = hist(medfr(~borders),x);
+	bar(x,[h1 ; h2]','stacked')
+	xlabel('median frequency')
+	[sig p] = kstest2(medfr(borders), medfr(~borders))
+	legend({'border' 'center' })
+	title({'median frequency (Hz)'; ['sig: ', num2str(sig) ' ; p-val: ' num2str(p)]})
+
+	figure
+	firingrate = simresults{1}.spikes.spikespercell/(50*4); % (4 runs of 50s each )
+	[h1 x] = hist(firingrate(borders));
+	h2 = hist(firingrate(~borders),x);
+	bar(x,[h1 ; h2]','stacked')
+	xlabel('Firing rate (Hz)')
+	[sig p] = kstest2(firingrate(borders), firingrate(~borders))
+	legend({'border' 'center' })
+	title({'firing rate (Hz)'; ['sig: ', num2str(sig) ' ; p-val: ' num2str(p)]})
+
+
 end
 
 
@@ -472,30 +542,3 @@ if comparison_resonance_cav31
 end
 
 
-
-if 0
-
-
-	load 'periodic_ampa_MT_1_iso_1Hz_5000_1_1_16-Jan-2019.mat'
-	S{1} = simresults{1};
-	res{1} = profile_sim(S{1},'plotme', 1);
-
-	load 'periodic_ampa_WT_1_iso_1Hz_5000_1_1_16-Jan-2019.mat'
-	S{2} = simresults{1};
-	res{2} = profile_sim(S{2},'plotme', 1);
-
-	r = vertcat(res{1}.allneurons , res{2}.allneurons)
-
-	res{1} = profile_sim(S{1},'plotme', 1,'tslice',[1000:5000]);
-	res{2} = profile_sim(S{2},'plotme', 1,'tslice',[1000:5000]);
-	r = vertcat(res{1}.allneurons , res{2}.allneurons)
-	close all, NDscatter(r(:,{'ampl', 'freq_each', 'g_CaL'}),[ones(1,200) ones(1,200)+1]')
-	legend({'MT', 'WT'})
-
-
-
-
-
-
-
-end
