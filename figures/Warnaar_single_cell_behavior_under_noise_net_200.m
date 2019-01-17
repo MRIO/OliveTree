@@ -20,8 +20,8 @@
 	res{1} = profile_sim(S{1},'plotme', 1,'tslice',[1000:5000]);
 	res{2} = profile_sim(S{2},'plotme', 1,'tslice',[1000:5000]);
 	r = vertcat(res{1}.allneurons , res{2}.allneurons)
-	close all, NDscatter(r(:,{'ampl', 'freq_each', 'spks',  'g_ls'}),[ones(1,200) ones(1,200)+1]')
-	legend({'MT', 'WT'})
+	close all, NDscatter(r(:,{'ampl', 'freq_each', 'spks',  'g_ls' , 'g_ld'}),[ones(1,200)+1 ones(1,200)]')
+	legend({'WT', 'MT'})
 
 
 
