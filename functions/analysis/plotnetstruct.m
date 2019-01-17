@@ -6,7 +6,7 @@ function plotnetstruct(W,X,Y,Z,idx, varargin)
 if isempty(varargin)
     plotconnections = 1;
     plotneurons = 1;
-    onlynetstruct = 1;
+    onlynetstruct = 0;
     plotsingleneuronconnections = 1;
     plotsecondorderneighbors = 0;
     plotconnweights = 1;
@@ -41,11 +41,11 @@ conncolor = [ .6 .6 .6];
 
 
 try
-    % cmap = cbrewer('qual', 'Set1', max(ncols,3));
+    cmap = cbrewer('qual', 'Set1', max(ncols,3));
     % cmap = flipud(cbrewer('seq', 'YlOrRd', max(ncols,3)));
     % cmap = cbrewer('seq', 'Purples', 15);
     % cmap = cbrewer('div', 'Spectral', length(unique(idx)));
-    cmap = [.2 .8 .2];
+    % cmap = [.2 .8 .2];
     
 catch
     disp('did not find color brewer')
