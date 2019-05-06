@@ -527,8 +527,9 @@ if comparison_resonance_cav31
 		save tmp X_1
 
 	clear
+		load tmp X_1
  		load periodic_ampa_Control_1_iso_1Hz_50000_1_1_13-Dec-2018.mat
-		X_2 = xcorr_summa(simresults{1})
+		X_2 = xcorr_summa(simresults{1}, 'selectedneurons', X_1.selectedneurons)
 		load tmp
 		save tmp X_1 X_2
 
@@ -537,7 +538,19 @@ if comparison_resonance_cav31
 	plot(X_1.XcorrNoAc,'b')
  	hold on
 	plot(X_2.XcorrNoAc,'r')
-	legend({'bump' 'control'})
+	legend({'CaH bump' 'control'})
+
+	figure
+	subplot(1,2,1)
+	imagesc([-400,400], [1:190, X_1.XC{1})
+	title('CaH bump')
+	colorbar
+
+	subplot(1,2,2)
+	imagesc(X_2.XC{1})
+	title('control')
+	colorbar
+
 
 end
 
