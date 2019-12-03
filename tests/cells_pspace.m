@@ -32,10 +32,10 @@ delta = .02;
 cell_function = 'vanilla'; % 'devel'
 nconn = 0;
 
-steadystate_time = 1000;
+steadystate_time = 200;
 simtime  = 1000;
 
-currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
+currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
 % [=================================================================]
 %  state variables to report
@@ -83,13 +83,13 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [.2: .2: 1.5 ]; 		% CalciumL - conductance range
+	p1 = [1.1: .2: 3 ]; 		% CalciumL - conductance range
 	p2 = [0];      	    % g_h_s
-	p3 = [.15]; 	% g_int
+	p3 = [.15 .2 .25 .3 .4]; 	% g_int
 	p4 = [0.1];      	% g_h
 	p5 = [.2 ]; % ratio soma dendrite
 	p6 = [45];	% Ca act Potassium: not voltage dependent 
-	p7 = [.5:4:18]; % Ca High threshold
+	p7 = [4.5]; % Ca High threshold
 	p8 = [0.013];    % leak
 	p9 = [0.013];; % leak
 	p10 = [0];; % arbitrary
@@ -209,7 +209,7 @@ for gap = gaps
 end
 % [===========================================================================================================]
 R = profile_sim(simresults{1},'tslice', [1:1000], 'plotme',1);
-sel_fields = {'g_CaL', 'g_CaH', 'spks', 'ampl', 'freq_each', 'meanVm'};
+sel_fields = {'g_CaL', 'g_int', 'spks', 'ampl', 'freq_each', 'meanVm'};
 NDscatter(R.allneurons(:,sel_fields),1)
 
 

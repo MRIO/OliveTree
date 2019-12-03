@@ -112,6 +112,7 @@ scale_to_intrinsic_freq = 0;
 switch connectivity
 	case 'all to all'
 		connectivity = ones(N*M) - eye(N*M);
+		size(connectivity)
 
 	case 'chebychev'
         
@@ -128,7 +129,7 @@ switch connectivity
 
         % # compute adjacency matrix
 		connectivity = squareform( pdist([X Y], 'euclidean') <= radius );
-
+		size(connectivity)
 
 	case 'inverse dist'
 		depth   = [1:N];
@@ -262,8 +263,12 @@ end
 %  simulate
 % [=================================================================]
 
-if plotme; f = figure(100); a(1) = subplot(121);a(2) = subplot(122); end
+if plotme; 
+	f = figure(100); a(1) = subplot(121);a(2) = subplot(122); 
+end
+
 for t = 2:simtime/dt
+
 
 	phasedifferences = bsxfun(@minus, theta_t(:,t-1)',theta_t(:,t-1));
 
@@ -334,7 +339,7 @@ if plotme
 
 
 		title('kuramoto parameter')
-		xlabel('time (ms)')
+		xlabel('time (s)')
 		ylim([0 1])
 	
 	[XX YY] = meshgrid([1:M],[1:N]);
@@ -404,7 +409,7 @@ out.connectivity = connectivity;
 
 
 
-
+end
 
 
 
@@ -468,3 +473,4 @@ if nargout > 1
   ll = mu - t;
 end
 
+end
