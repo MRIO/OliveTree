@@ -41,7 +41,7 @@ if ~exist('seed')  			; seed = 0		      ; end
 if ~exist('rd')  			; rd = 2		      ; end % radius
 if ~exist('CaH_bump')  		; CaH_bump = 0		  ; end % radius
 if ~exist('CaL_KO')  		; CaL_KO = 0		  ; end % radius
-
+if ~exist('Cm_bump')  		; Cm_bump = 0		  ; end % radius
  
 displaytext = [simtype '_' conntype '_' num2str(numruns) '_' num2str(sametoall)];
 
@@ -207,14 +207,17 @@ for g = gaps
 		neurons.g_CaL = neurons.g_CaL+.05;
 	end
 
-	if CaH_bump == 1
+	if CaH_bump
 		neurons.g_CaH = neurons.g_CaH + 2;
 	end
 
-	if CaL_KO == 1
+	if CaL_KO 
 		neurons.g_CaL = 0.3*ones(noneurons,1) + 0.6*rand(noneurons,1);
 	end
 
+	if Cm_bump
+		neruons.C_m = ones(noneurons,1) + 0.1*rand(noneurons,1);
+	end
 	
 	thisseed = seed;
 	for n = 1:numruns

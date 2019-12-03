@@ -51,7 +51,7 @@ end
 	if ngroups ==2
 		% groupcolors = [.9 0 .2 ; .2 .7 .2];
 		% groupcolors = [.9 0 .2 ; .2 .7 .2];
-		groupcolors = [.2 .7 .2 ; .2 .2 .7];
+		groupcolors = [.7 .2 .2 ; .2 .2 .7];
 	end
 
 	if not(isempty(colors))

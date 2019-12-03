@@ -91,16 +91,13 @@
 
 
 % if strcmp(pwd,'/home/titanuser1/Sync/Titan/Bench3')
-	X_README = 'calcium KO tests _ replay_06_12_16 '
-	nameprefix = 'CaKOtests_replay_06_12_16_'
-
+	
 	val = .6;
  	
  	nameprefix = 'Control' ; seed = 0; CaL_KO = 0; CaH_bump = 0; simtime = 50000; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
 	nameprefix = 'CaL_KO'  ; seed = 0; CaL_KO = 1; CaH_bump = 0; simtime = 50000; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
 	nameprefix = 'CaH_bump'; seed = 0; CaL_KO = 0; CaH_bump = 1; simtime = 50000; tau = 20; noisesig = val; noisemu = -val; sametoall = 0.2; simtype = '1Hz'; conntype = 'iso' ; numruns = 1;  HPCGPU_periodic_ampa	
 		
-
 % end
 
 

@@ -7,7 +7,7 @@
 % [=================================================================]
 % models = {'reconstruction' '3dbrick'  '3drandom' 'random' '2d_euclidean' 'reconstruction_clusterized'};
 % models = {'reconstruction' '3dbrick' '3drandom' '2d_chebychev' '2d_euclidean' 'random'};
-models = {'reconstruction'  '2d_euclidean' '2d_chebychev' '3dbrick' '3dcube' 'random'};
+models = {'reconstruction'  '2d_euclidean' '2d_chebychev' '3dcube' 'random'};
 % models = {'reconstruction' };
 
 
@@ -15,7 +15,7 @@ models = {'reconstruction'  '2d_euclidean' '2d_chebychev' '3dbrick' '3dcube' 'ra
 % [=================================================================]
 %  parameters
 % [=================================================================]
-n_connections = [5:25 ];
+n_connections = [5:5:25 ];
 radiuses = [1:2:10];
 
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions)
@@ -49,7 +49,7 @@ addpath('/Users/M/Synced/Projects/Experiments/Olive/experiments/Anatomy/Somata')
 % addpath('/Users/M/Synced/Projects/Experiments/Olive/Experiments/Anatomy/Somata/')
 
 % MAO slice
-reconstruction_data = 'MAO';
+reconstruction_data = 'all';
 % reconstruction_data = 'all';
 
 switch reconstruction_data
@@ -107,7 +107,7 @@ span = max(somatapositions)-min(somatapositions);
 
 
 % [=================================================================]
-%  compute connectivity models
+%  create connectivity models
 % [=================================================================]
 
  % n_connections = [5:5:40];
