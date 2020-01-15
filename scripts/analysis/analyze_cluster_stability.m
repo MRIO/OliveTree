@@ -1,10 +1,15 @@
 % analyze_cluster_stability.m
 
+max_no_clusters = 50;
+
 % Load the data
+load('/Users/M/Synced/Titan/Bench4/brick_to_clusters_06-May-2019.mat')
 
-z = sim{5}.networkHistory.V_soma;
 
-tt = 1:1000;
+
+z = sims{1}.networkHistory.V_soma;
+
+tt = 2001:10000;
 
 % Remove the beginning for better processing
 z1 = double(z(:, tt)');
@@ -25,7 +30,7 @@ igood = find(logamp>=-5.4);
 ibad = find(logamp<-5.4);
 
 z4 = z2(:,igood);
-%plot(z2(:,ibad))
+plot(z2(:,ibad))
 
 
 % Now we compute the normalized data and (partial) correlation matrix.
@@ -60,7 +65,7 @@ vs = cellfun(@spctcldata, zn2, 'UniformOutput', false);
 % Now, we evaluate the distance of clustering results between each pair of random sample, with changing the number of clusters from 2 to 120.
 
  
-ngrid = 10 - 1;
+ngrid = max_no_clusters - 1;
 met = zeros(ngrid, Nshuffle*(Nshuffle-1)/2);
 rmet = zeros(ngrid, Nshuffle*(Nshuffle-1)/2);
 fprintf('i, Ncl\n');
@@ -84,7 +89,7 @@ end
    % It turned out that maximizes when .
 
 figure 
-tcl = 2:10;
+tcl = 2:max_no_clusters;
 % nothing
 mmet = 1-mean(met'./rmet');
 sdmet = std(met'./rmet');
@@ -99,10 +104,10 @@ xlabel('Clusters')
 ylabel('Stability')
 
 
-% The correlation matrix looks nice when .
+% The correlation matrix looks nice when ncl = ?.
 
 figure
-ncl = 2;
+ncl = 12;
 idx = spctcl(v, ncl, 20); %Recluster the data
 [~, sidx] = sort(idx);
 imagesc(zn(sidx, sidx))
@@ -114,46 +119,25 @@ ylabel('Cell (sorted)')
 
  
 %plot inline -s 800,600
-figure
-subplot(411)
-plot(tt, z4(tt, idx==1),'color',[.7 .7 .7])
-axis tight
-box off
-axis off
-title('Cluster 1')
-subplot(412)
-plot(tt, z4(tt, idx==2),'color',[1 .7 .7])
-axis tight
-box off
-axis off
-title('Cluster 2')
+
+z5 = [];
+for nf = 1:5
+    figure
+    % plot(tt, z4(:, idx==nf),'color',[.7 .7 .7])
+    plot(tt, z2(:, idx==nf))
+    axis tight
+    box off
+    axis off
+    title(['Cluster' num2str(nf)])
+end
 
 
-subplot(412)
-plot(tt, z4(tt, idx==12))
-axis tight
-box off
-axis off
-title('Cluster 12')
-subplot(413)
-plot(tt, z4(tt, idx==19))
-axis tight
-box off
-axis off
-title('Cluster 19')
-subplot(414)
-plot(tt, z4(tt, idx==28))
-axis tight
-box off
-title('Cluster 28')
-ylabel('Membrane potential (normalized)')
-xlabel('Time (ms)')
 
 
 figure
 %plot inline -s 1000,800
 subplot(121)
-imagesc(z4(tt, sidx)')
+imagesc(z4(:, sidx)')
 xlabel('Time (ms)')
 ylabel('Cell (sorted)')
 caxis([-2 2])

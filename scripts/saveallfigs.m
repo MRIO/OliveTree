@@ -9,7 +9,7 @@ function saveallfigs(varargin)
 	p.addParameter('prefix', []) 
 	p.addParameter('path', []) 
 	p.addParameter('format', 'pdf')
-	p.addParameter('style', '6x6')
+	p.addParameter('style', '12x12')
 	p.addParameter('savefig', 1)
 	p.addParameter('exportfig', 1)
 

@@ -55,9 +55,10 @@ to_report = currents;
 % gaps = [];
 gaps = [0];
 
-pspace_type = 'pgrid';
+% pspace_type = 'pgrid';
 % pspace_type = 'randomized';%
- % pspace_type = '2p_sweep';
+ pspace_type = '2p_sweep';
+ 
 switch pspace_type
 
 
@@ -72,7 +73,8 @@ switch pspace_type
 	case '2p_sweep'
 	
 	% def_neurons = createDefaultNeurons(1,'celltypes','param_sweep','Pnames',{'g_CaL' ; 'g_int'});
-	def_neurons = createDefaultNeurons(1,'celltypes','psweep_gh_gcal');
+	% def_neurons = createDefaultNeurons(1,'celltypes','psweep_gh_gcal');
+	def_neurons = createDefaultNeurons(1,'celltypes','psweep_gk_gcal');
 	
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
@@ -209,7 +211,8 @@ for gap = gaps
 end
 % [===========================================================================================================]
 R = profile_sim(simresults{1},'tslice', [1:1000], 'plotme',1);
-sel_fields = {'g_CaL', 'g_int', 'spks', 'ampl', 'freq_each', 'meanVm'};
+sel_fields = {'g_CaL', 'g_K_s','ampl', 'freq_each', 'meanVm'};
+% sel_fields = def_neurons.Pnames;
 NDscatter(R.allneurons(:,sel_fields),1)
 
 

@@ -227,7 +227,23 @@ switch celltypes
 		cell_parameters.g_K_Ca   = p{3}(:);       
 		cell_parameters.g_CaH    = p{4}(:);     % High-threshold calcium
 	
+	case 'psweep_gk_gcal'
 
+		% parameter ranges
+		p1 = [.5:.1:3]; 		% CalciumL - conductance range
+		p2 = [0:.5:10];      	% g_k
+		
+
+		[p{1} p{2} ] = ndgrid(p1,p2);
+
+		Plist = [p{1}(:) p{2}(:) ]; 
+
+		psweepnoneurons = length(p{1}(:));
+
+		cell_parameters = defneurons(psweepnoneurons);
+		
+		cell_parameters.g_CaL    = p{1}(:);
+		cell_parameters.g_K_s 	 = p{2}(:);
 
 	otherwise
 

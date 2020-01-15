@@ -10,7 +10,7 @@ plotreconstruction = 0;
 plotselectedclusters = 0;
 	makevideo = 0
 plotconnectivityhistogram  = 0; % comparison of degree between clusters and bridges
-cluster_bridges_netstructs = 0;
+cluster_bridges_netstructs = 1;
 
 
 distance_histogram = 0;

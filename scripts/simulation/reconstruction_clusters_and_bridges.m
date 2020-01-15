@@ -31,7 +31,7 @@ conjuctive_stimulation = 0;
 	cluster1 = 41; cluster2 = 34;
 bridges_and_curlies_with_gaba = 0;
 maskstimulation = 0;
-two_maskstimulation = 1;
+two_maskstimulation = 0;
 nostimulation = 0;
 
 % [================================================]
@@ -44,7 +44,7 @@ vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36'};
 
 % variables to store
-to_report = vsoma;
+to_report = gapcur;
 
 
 % [================================================]
@@ -312,7 +312,7 @@ end
 
 if bridge_conductance_pspace
 	s = 0;
-	for bridge_conductance = [eps 0.01:0.01:0.1]
+	for bridge_conductance = [eps:0.01:0.1]
 		s = s +1;
 
 		bridg_conduct.W = curlies_bu.W*gap_curlies + bridges_bu.W*bridge_conductance;
