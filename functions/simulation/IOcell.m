@@ -149,7 +149,7 @@ q_s = 0;   % no h current in the soma
             s = delta * ds_dt + Potassium_s;
         
        % update Calcium concentration
-         dCa_dt = -3 * I_CaH - 0.075 * Ca2Plus;
+         dCa_dt = -3 * I_CaH - 0.075 * Ca2Plus * arbitrary ;
         Ca2Plus = delta * dCa_dt + Ca2Plus;
 
        

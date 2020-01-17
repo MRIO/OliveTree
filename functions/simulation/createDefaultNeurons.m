@@ -230,7 +230,7 @@ switch celltypes
 	case 'psweep_gk_gcal'
 
 		% parameter ranges
-		p1 = [.5:.1:3]; 		% CalciumL - conductance range
+		p1 = [.5:.1:1.1]; 		% CalciumL - conductance range
 		p2 = [0:.5:10];      	% g_k
 		
 
@@ -245,9 +245,24 @@ switch celltypes
 		cell_parameters.g_CaL    = p{1}(:);
 		cell_parameters.g_K_s 	 = p{2}(:);
 
+	case 'ca_extrusion'
+
+		% parameter ranges
+		p1 = [.3 :.1: 1.8]'; 		% Calcium extrusion parameter
+		
+		Plist = p1;
+
+		psweepnoneurons = length(p1);
+		cell_parameters = defneurons(psweepnoneurons);
+		cell_parameters.arbitrary    = p1;
+		
+		Pnames = {'arbitrary'}
+
 	otherwise
 
 		disp('Legacy parameter or celltypes case not found.')
+		disp('press a key to continue')
+		pause
 
 
 end

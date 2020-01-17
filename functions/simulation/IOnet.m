@@ -359,7 +359,9 @@ for t = 1:simSteps
                 
                 state
                 cell_parameters
-                E.stack
+                E.stack.file
+                E.stack.name
+                E.stack.line
                 disp('problem computing the selected cell function!') 
                 keyboard
                     

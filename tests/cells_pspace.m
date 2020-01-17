@@ -29,7 +29,8 @@ debugging = 0;
 delta = .02;
 
 % cell_function = 'devel';
-cell_function = 'vanilla'; % 'devel'
+% cell_function = 'vanilla'; % 'devel'
+cell_function = 'original'; % 'devel'
 nconn = 0;
 
 steadystate_time = 200;
@@ -46,19 +47,22 @@ currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls
 vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36' 'curr_noise_pert'};
 vs = {'V_soma' ,'V_dend','V_axon' };
-to_report = currents;
+calciumconc = {'V_soma', 'Ca2Plus'}
+to_report = calciumconc;
+
 
 
 % [=================================================================]
 %  parameter grid
 % [=================================================================]
 % gaps = [];
-gaps = [0];
+gaps = [0 0.05];
 
 % pspace_type = 'pgrid';
 % pspace_type = 'randomized';%
- pspace_type = '2p_sweep';
- 
+ % pspace_type = '2p_sweep';
+pspace_type = 'ca_extrusion';
+
 switch pspace_type
 
 
@@ -81,6 +85,19 @@ switch pspace_type
 	noneurons = length(Plist);
 	netsize = [noneurons 1 1];
 	
+
+	case 'ca_extrusion'
+	
+	% def_neurons = createDefaultNeurons(1,'celltypes','param_sweep','Pnames',{'g_CaL' ; 'g_int'});
+	% def_neurons = createDefaultNeurons(1,'celltypes','psweep_gh_gcal');
+	def_neurons = createDefaultNeurons(1,'celltypes','ca_extrusion');
+	
+	Plist = def_neurons.Plist;
+	Pnames = def_neurons.Pnames;
+	noneurons = length(Plist);
+	netsize = [noneurons 1 1];
+
+	sel_fields = {'arbitrary','ampl', 'freq_each', 'meanVm'};
 
 	case 'pgrid'
 
@@ -211,7 +228,8 @@ for gap = gaps
 end
 % [===========================================================================================================]
 R = profile_sim(simresults{1},'tslice', [1:1000], 'plotme',1);
-sel_fields = {'g_CaL', 'g_K_s','ampl', 'freq_each', 'meanVm'};
+% sel_fields = {'g_CaL', 'g_K_s','ampl', 'freq_each', 'meanVm'};
+sel_fields = {'arbitrary','ampl', 'freq_each', 'meanVm'};
 % sel_fields = def_neurons.Pnames;
 NDscatter(R.allneurons(:,sel_fields),1)
 
