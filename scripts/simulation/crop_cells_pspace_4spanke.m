@@ -70,7 +70,7 @@ def_neurons.g_la = p{8}(:);
  W = zeros(noneurons);
  % W = createW(noneurons);
 
-gap = 0.05;
+gap = 0.0;
 W = createW('all to all', [1 noneurons 1], [], gap, 0, 0, 0, 10, []);
 
 %%================================================]

@@ -63,7 +63,7 @@ to_report = gapcur;
 
 nconns_curlies = 5;
 nconns_bridges = 5;
-cells_in_cluster = 20;
+cells_in_cluster = 20;  % upperbound estimate from: % Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
 gap_curlies = .05;
 gap_bridges = .05;
 plotconn = 1;
@@ -80,11 +80,24 @@ if not(exist('curlies'))
 	% curlies:
 	% create a network with distance based connectivity for close by connections
 	% this network is clusterized with about 20cells per cluster, according to a k-means algo.
-	curlies = createW('3d_reconstruction', [], 4*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 cells_in_cluster 1 0]);
+
+	% Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
+
+	% radius within which we allow connections
+	% between curlies:
+	median_soma_distance = 20;
+	rad_cur = median_soma_distance * 6;
+	% between bridges:
+	rad_bri = median_soma_distance * 12;
+
+
+	
+
+	curlies = createW('3d_reconstruction', [], rad_cur, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 cells_in_cluster 1 0]);
 
 	% create a network with distance based connectivity for further apart cells: bridges
 	% these cells are not bound to specific clusters.
-	bridges = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_bridges, somatapositions,1,[1 cells_in_cluster 0 1]);
+	bridges = createW('3d_reconstruction', [], rad_bri, 1, 0, plotconn, [], nconns_bridges, somatapositions,1,[1 cells_in_cluster 0 1]);
 
 
 	% define the indices of 10% of the cells, these will be bridges
@@ -125,7 +138,7 @@ if not(exist('curlies'))
 	clusteridx(logical(bc)) = 70;
 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusteridx)
 
-	brick = createW('3d_reconstruction', [], 8*40, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
+	brick = createW('3d_reconstruction', [], rad_bri, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
 	brick_bu = brick;
 	brick.W = brick.W*gap_curlies;
 

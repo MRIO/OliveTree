@@ -363,7 +363,7 @@ for t = 1:simSteps
                 E.stack.name
                 E.stack.line
                 disp('problem computing the selected cell function!') 
-                keyboard
+                dbkeyboard
                     
             end
 

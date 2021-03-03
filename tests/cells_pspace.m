@@ -5,13 +5,14 @@
 % cm2), soma: g 􏰅 70, g 􏰅 18, g 􏰅 1.0, and g 􏰅 1.5; Na K_dr CA_l h
 % dendrite: gCa_h 􏰅 4.0 and gK_Ca 􏰅 35; leak: gls 􏰅 gld 􏰅 0.015 and vl 􏰅 􏰄10 mV; cell morphology:
 % gint 􏰅 0.13 and p 􏰅 0.20, data from our standard cell model were consistent with many reported experimental findings from actual IO neurons.
+
 % STEADY-STATE PROPERTIES. The membrane potential with no
-% input current (I 􏰅 0 􏰈A/cm2) was 􏰄57 mV, whereas the app
+% input current (I = 0 mA/cm2) was -57 mV, whereas the app
 % input resistance derived from the voltage-current curve was 36 Mohm􏰐. When I 􏰅= -􏰄5 􏰈A/cm2, the potential was 􏰄80.3 mV app
 % and the input resistance was 14 M􏰐ohm, reflecting the effect of the h current.
 % When Iapp 􏰅 􏰃5 􏰈A/cm2, the membrane potential was 􏰄46 mV and the input resistance was only 10 M􏰐 because of the effect of the delayed rectifier current.
 % These steady-state values are in agreement with published experimental data (see for instance Table 1 in Llinas and Yarom 1981a;
-% Fig. 1A in Yarom and Llina ́s 1987; Manor 1995). Note that 1 􏰈A/cm2 corresponds to 0.1 nA for a total cell surface of 10,000 u􏰈m2.
+% Fig. 1A in Yarom and Llina ́s 1987; Manor 1995). Note that 1 uA/cm2 corresponds to 0.1 nA for a total cell surface of 10,000 um2.
 
 
 % [=================================================================]

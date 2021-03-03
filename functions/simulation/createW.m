@@ -67,7 +67,7 @@ debugging = 1;
     p.addOptional('maxiter', 3)   % this property only applies if connection type is 'rndwalk' 
     p.addOptional('meanconn', 0)  % mean number of connections per cell (enforced)
     p.addOptional('somatapositions', []) % 
-    p.addOptional('symmetrize',1)        % symmetrize connections (also used in the case of randomized)
+    p.addOptional('symmetrize',0)        % symmetrize connections (also used in the case of randomized)
     p.addOptional('clusterize', [0 0 0 1]); % four values, [0/1 groupsize clusterconn otherconn]
     p.addOptional('normleak', 0);           % [0/1 groupsize clusterconn otherconn]
     p.addOptional('seed', 0);
@@ -355,7 +355,7 @@ if randomize
 end
 Wsteps{6} = W;
 
-% scale single gaps such that average leak per cell is according to scale
+% scale single gaps such that average leak per cell is according to number of connections
 if scaling
     W = W / (sum(sum(W))/sum(sum(W~=0)))*scaling;
 end

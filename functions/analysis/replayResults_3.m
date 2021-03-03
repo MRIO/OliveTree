@@ -238,8 +238,11 @@ if isfield(sim.perturbation, 'type')
 			[i_ spkbag] = find(spks.binaryspikes(pert.mask{i},:));
 
 			spks_in_slice = spkbag(spkbag>=time_slice(1) & spkbag<=time_slice(end));
-			ksd = ksdensity(spks_in_slice,time_slice,'width', 5,'kernel', 'epanechnikov')*length(spks_in_slice) / sum(pert.mask{i});
-			ksdaccum = [ksdaccum; ksd]
+			
+			if not(isempty(spks_in_slice))
+				ksd = ksdensity(spks_in_slice,time_slice,'width', 5,'kernel', 'epanechnikov')*length(spks_in_slice) / sum(pert.mask{i});
+				ksdaccum = [ksdaccum; ksd]
+			end
 
 			end
 		end
@@ -403,12 +406,15 @@ if plotclusterneurons
 end
 
 figure
-a(6) = axes;
-area(ksdaccum');
-alpha(.3)
-xlabel('ms');
-ylabel('spike density (spks/ms/neuron)')
-linkaxes(a,'x')
+
+if not(isempty(spks_in_slice))
+	a(6) = axes;
+	area(ksdaccum');
+	alpha(.3)
+	xlabel('ms');
+	ylabel('spike density (spks/ms/neuron)')
+	linkaxes(a,'x')
+end
 
 
 if plotallfields

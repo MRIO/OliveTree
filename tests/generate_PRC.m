@@ -44,10 +44,12 @@
 %  script parameters
 % [=================================================================]
 
-
+% synapse_type = 'gaba_dend';
 synapse_type = 'gaba_soma';
-synapse_type = 'ampa_soma';
+% synapse_type = 'ampa_soma';
 
+
+PRC_intervals = 20;
 
 prep_conditions    = 1;
 compute_transients = 1; transienttime = 500;
@@ -64,7 +66,7 @@ rng(rseed, 'twister')
 to_report = {'V_soma'};
 
 % global 
-	dt =0.02;
+	dt =0.01;
 	fs = 1/dt;
 	simtime  = 450;
 
@@ -114,7 +116,7 @@ phases = phaseResults.hilbert.hilbert;
 [PKS LOCS] = findpeaks(mean(phases), 'minpeakdistance',50);
 meanT = mean(diff(LOCS));
 
-pertphases = round(linspace(LOCS(1),LOCS(2),10));
+pertphases = round(linspace(LOCS(1),LOCS(2),PRC_intervals));
 
 
 % add perturbation at different phases
@@ -125,7 +127,7 @@ for pertphase = pertphases
 	pert.triggers {1} = pertphase;
 
 	simPert{k} = IOnet( 'networksize', netsize , 'time',simtime,'delta',dt, ...
-		'cell_parameters', def_neurons ,'W',W_3d.W,'ou_noise', noise_parameters,...
+		'cell_parameters', def_neurons ,'W',W_3d.W*gap,'ou_noise', noise_parameters,...
 		'sametoall',sametoall, 'perturbation', pert, 'tempState', steady_state.lastState);
 
 	replayResults_3(simPert{k})
@@ -137,7 +139,7 @@ for pertphase = pertphases
 end
 VV = unperturbed_state.networkHistory.V_soma;
 
-for i =1:10
+for i =1:k
 	VV = [VV ; simPert{i}.networkHistory.V_soma];
 end
 

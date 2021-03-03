@@ -10,7 +10,7 @@
 % cell: 658 - 8H
 
 % gap = 0.02;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
-gap = 0.0;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
+gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
 spot = 1;
 interstimT = 1000;
 
@@ -29,17 +29,17 @@ cmap=diverging_map(s,rgb1,rgb2);
 %  % create network
 % [=================================================================]
 
-if ~exist('conntype');  conntype  = 'iso'; end
-if ~exist('spont'); 	spont  = 0; end
-if ~exist('saveappliednoise');saveappliednoise = 1; end
-if ~exist('sametoall');  sametoall = 0; end
-if ~exist('rd'); 		 rd = 3        ; end
-if ~exist('meannoconn'); meannoconn = 4;end
-if ~exist('gap');	     gap = 0.02    ;end
-if ~exist('tau'); 		 tau = 20      ;end
-if ~exist('noiseamp'); 	 noiseamp = 0 ;end
-if ~exist('noisesig'); 	 noisesig = 0.1  ;end
-
+if ~exist('conntype')  ; conntype  = 'iso'		   ; end
+if ~exist('spont')     ; spont  = 0		 		   ; end
+if ~exist('saveappliednoise');saveappliednoise = 1 ; end
+if ~exist('sametoall') ; sametoall = 0	 		   ; end
+if ~exist('rd')        ; rd = 3        	 		   ; end
+if ~exist('meannoconn'); meannoconn = 4	 		   ; end
+if ~exist('gap')	   ; gap = eps    	 		   ; end
+if ~exist('tau')       ; tau = 20      	 		   ; end
+if ~exist('noiseamp')  ; noiseamp = 0 	 		   ; end
+if ~exist('noisesig')  ; noisesig = 0.1  		   ; end
+	
 noneurons = 22;
 
 netsize = [1 noneurons 1];
@@ -96,11 +96,12 @@ end
 
 rng(0,'twister')
 cellset = 'cellset_vanilla'
-neurons = createDefaultNeurons(noneurons, 'celltypes' , cellset , 'addrand', 1);
+neurons = createDefaultNeurons(noneurons, 'celltypes' , 'param_sweep');
+noneurons = length(neurons.C_m);
 
 neurons.gbar_ampa_dend = .1*ones(noneurons,1);
 neurons.gbar_ampa_soma = .2*ones(noneurons,1);
-neurons.gbar_gaba_dend = 1*ones(noneurons,1);
+neurons.gbar_gaba_dend =  1*ones(noneurons,1);
 
 
 % neurons.g_h = linspace(.1,3,noneurons);
@@ -111,17 +112,17 @@ neurons.gbar_gaba_dend = 1*ones(noneurons,1);
 
 % noise_level = [1/tau noisesig noiseamp 0];
 noise_level = [0 0 0 0];
-
+laststim = 100000;
 
 if not(spont)
 	
 	% inhibitory - 20ms (gaba)
 	% excitatory - 
 
-	pulsesI	 = [1000:interstimT:50000];
+	pulsesI	 = [1000:interstimT:laststim];
 	% pulsesI	 = [500:700:2000];
-	pulsesI = pulsesI + round(rand(size(pulsesI))*50);
-	pulsesE	 = pulsesI + round(linspace(-100, 100  , length(pulsesI)));
+	pulsesI = pulsesI + round(rand(size(pulsesI))*(interstimT/4));
+	pulsesE	 = pulsesI + round(linspace(-150, 150  , length(pulsesI)));
 	
 	% train = cumsum(ones(1,npulses)*bT)
 	% pert.mask{1}  	  = [0 0 0 0 1 0 0 0 0]';

@@ -100,12 +100,12 @@ switch celltypes
 
 	case 'permuted'
 
-		p1 = [.5:.1:1.1]; 		% CalciumL - conductance range
+		p1 = [.5:.1:1.3]; 		% CalciumL - conductance range
 		p2 = [.0];      	    % g_h_s
-		p3 = [.11 3]; 		% g_int
-		p4 = [.12:.12:.48];      	% g_h
+		p3 = [.15]; 		% g_int
+		p4 = [.12];      	% g_h
 		p5 = [-38];       	% V_h
-		p6 = [45 55];		% Ca act Potassium: not voltage dependent 
+		p6 = [45];		% Ca act Potassium: not voltage dependent 
 		p7 = [4.5];
 		p8 = [.013];    % leak
 		[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8);
@@ -116,14 +116,14 @@ switch celltypes
 
 		cell_parameters = defneurons(psweepnoneurons);
 		
-		cell_parameters.g_CaL    = p{1}(randi(noneurons,noneurons,1));
-		cell_parameters.g_h_s    = p{2}(randi(noneurons,noneurons,1));
-		cell_parameters.g_int 	 = p{3}(randi(noneurons,noneurons,1));
-		cell_parameters.g_h 	 = p{4}(randi(noneurons,noneurons,1));
-		cell_parameters.V_h 	 = p{5}(randi(noneurons,noneurons,1));
-		cell_parameters.g_K_Ca   = p{6}(randi(noneurons,noneurons,1));       
-		cell_parameters.g_CaH    = p{7}(randi(noneurons,noneurons,1));     % High-threshold calcium
-		cell_parameters.g_ld     = p{8}(randi(noneurons,noneurons,1));
+		cell_parameters.g_CaL    = p{1}(randi(psweepnoneurons,psweepnoneurons,1));
+		cell_parameters.g_h_s    = p{2}(randi(psweepnoneurons,psweepnoneurons,1));
+		cell_parameters.g_int 	 = p{3}(randi(psweepnoneurons,psweepnoneurons,1));
+		cell_parameters.g_h 	 = p{4}(randi(psweepnoneurons,psweepnoneurons,1));
+		cell_parameters.V_h 	 = p{5}(randi(psweepnoneurons,psweepnoneurons,1));
+		cell_parameters.g_K_Ca   = p{6}(randi(psweepnoneurons,psweepnoneurons,1));       
+		cell_parameters.g_CaH    = p{7}(randi(psweepnoneurons,psweepnoneurons,1));     % High-threshold calcium
+		cell_parameters.g_ld     = p{8}(randi(psweepnoneurons,psweepnoneurons,1));
 		
 
 
@@ -193,9 +193,9 @@ switch celltypes
 		
 
 		p1 = [.5:.1:1.5]; 		% CalciumL - conductance range
-		p2 = [.1:.1:3]; 		% g_int
+		p2 = [.12 2.4]; 		% g_int
 		
-		[p{1} p{2}  ] = ndgrid(p1,p2);
+		[p{1} p{2} ] = ndgrid(p1,p2);
 
 		Plist = [p{1}(:) p{2}(:) ]; 
 
@@ -204,7 +204,7 @@ switch celltypes
 		cell_parameters = defneurons(psweepnoneurons);
 		
 		cell_parameters.g_CaL    = p{1}(:);
-		cell_parameters.g_int 	 = p{2}(:);
+		cell_parameters.g_h 	 = p{2}(:);
 
 	case 'psweep_gh_gcal'
 
@@ -260,7 +260,7 @@ switch celltypes
 
 	otherwise
 
-		disp('Legacy parameter or celltypes case not found.')
+		disp('Legacy parameter or celltypes case not found. Using default.')
 		disp('press a key to continue')
 		pause
 
@@ -345,22 +345,22 @@ cell_parameters.g_K_s    =  5     .* O;      % Potassium
 cell_parameters.g_ls     =  0.016 .* O;      % Leaks
     
 % Dendritic conductances (mS/cm2)
-cell_parameters.g_K_Ca   =  35      .* O;       % Potassium: not voltage dependent 
+cell_parameters.g_K_Ca   =  35      .* O;     % Potassium: not voltage dependent  (SK)
 cell_parameters.g_CaH    =  4.5     .* O;     % High-threshold calcium
-cell_parameters.g_ld     =  0.016   .* O;   % Leak
-cell_parameters.g_h      =  .12     .* O;    % H current .12
-cell_parameters.g_h_s    =  .12     .* O;    % H current, somatic
+cell_parameters.g_ld     =  0.016   .* O;     % Leak
+cell_parameters.g_h      =  .12     .* O;     % H current .12
+cell_parameters.g_h_s    =  .12     .* O;     % H current, somatic
 
 
 % Axon hillock conductances (mS/cm2)
-cell_parameters.g_Na_a   =  240		.* O;      % Sodium
-cell_parameters.g_K_a    =  240		.* O;      % Potassium
-cell_parameters.g_la     =  0.016	.* O;      % Leak
+cell_parameters.g_Na_a   =  240		.* O;     % Sodium
+cell_parameters.g_K_a    =  240		.* O;     % Potassium
+cell_parameters.g_la     =  0.016	.* O;     % Leak
     
 % Cell morphology
-cell_parameters.p1     = 0.25		.* O;        % Cell surface ratio soma/dendrite
-cell_parameters.p2     = 0.15 		.* O;        % Cell surface ratio axon(hillock)/soma
-cell_parameters.g_int  = 0.13		.* O;        % Cell internal conductance 
+cell_parameters.p1     = 0.25		.* O;     % Cell surface ratio soma/dendrite
+cell_parameters.p2     = 0.15 		.* O;     % Cell surface ratio axon(hillock)/soma
+cell_parameters.g_int  = 0.13		.* O;     % Cell internal conductance (dendrite-axon leak)
 
 
 % synaptic conductances

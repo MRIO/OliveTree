@@ -42,7 +42,7 @@ q_s = 0;   % no h current in the soma
 % g_CaL    = 0-3        % Calcium T - (CaV 3.1)
     
 % Dendritic conductances (mS/cm2)
-% g_K_Ca   =  35;       % Potassium  (KCa v1.1 - BK)
+% g_K_Ca   =   35;      % Potassium  (KCa v1.1 - BK)
 % g_CaH    =   4.5;     % High-threshold calcium -- Ca V2.1
 % g_ld     =   0.016;   % Leak dendrite
 % g_h      =   0.12;    % H current (HCN)
@@ -139,7 +139,7 @@ q_s = 0;   % no h current in the soma
       % Update dendritic Ca-dependent K current component
       % alpha_s = min([0.00002 * Ca2Plus, 0.01]);
       
-      alpha_s = (0.00002 * Ca2Plus) * (0.00002 * Ca2Plus < 0.01) + 0.01*((0.00002 * Ca2Plus)> 0.01); % nefarious calcium creates instabilities?
+      alpha_s = (0.00002 * Ca2Plus) * (0.00002 * Ca2Plus < 0.01) + 0.01*((0.00002 * Ca2Plus)> 0.01);
        beta_s = 0.015;
         s_inf = alpha_s / (alpha_s + beta_s);
         tau_s = 1 / (alpha_s + beta_s);

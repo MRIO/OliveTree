@@ -10,7 +10,7 @@ function saveallfigs(varargin)
 	p.addParameter('path', []) 
 	p.addParameter('format', 'pdf')
 	p.addParameter('style', '12x12')
-	p.addParameter('savefig', 1)
+	p.addParameter('savefig', 0)
 	p.addParameter('exportfig', 1)
 
 	

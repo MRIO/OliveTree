@@ -14,14 +14,15 @@ gamma = 0.00192493295896767;
 Beta_offset = 37e-3;
 Beta_range = 32e-3;
 Ca_0 = 2e-3;%mMolar;
-Opening= (3*1e-3 )^-1;%channel opening rate \alpha = 2msec^-1
+% TO REMOVE FREQUENCY DEPENDENCE (fast gaba) we UNCOMMENT THE FOLLOWING.
+Opening = (3*1e-3 )^-1;%channel opening rate \alpha = 2msec^-1
 Closing = (Beta_offset + Beta_range * (1 / (1 + exp( -  alpha^-1 * (Ca - mu) ) ) )  )^-1; %channel closing rate \beta = 10msec^-1
 dgGABA_dt = stim * Opening * ( 1 - g ) - Closing * g;
 % dCa2_dt = -( Ca - 50e-9) /tau + gamma*log(Ca_0/Ca)* stim;
 dCa2_dt = -( Ca - 50e-9) /tau + gamma*log(Ca_0/Ca)* stim;
 
 
-% TO REMOVE FREQUENCY DEPENDENCE (fast gaba) we UNCOMMENT THE FOLLOWING.
+
 % Opening= (3*1e-3 )^-1;%channel opening rate \alpha = 2msec^-1
 % Closing = (Beta_offset + Beta_range * (1 / (1 + exp( -  alpha^-1 * (Ca - mu) ) ) )  )^-1; %channel closing rate \beta = 10msec^-1
 % dgGABA_dt = stim * Opening*( 1 - g ) - Closing * g;

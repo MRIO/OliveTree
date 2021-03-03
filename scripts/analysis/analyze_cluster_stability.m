@@ -3,13 +3,14 @@
 max_no_clusters = 50;
 
 % Load the data
-load('/Users/M/Synced/Titan/Bench4/brick_to_clusters_06-May-2019.mat')
+% load('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/brick_to_clusters_06-May-2019.mat')
+load('/Users/M/Synced/Projects/Experiments/Olive/model/simresults/clusters_bridges/brick_to_clusters_01-Mar-2017.mat')
 
 
 
 z = sims{1}.networkHistory.V_soma;
 
-tt = 2001:10000;
+tt = 2501:3000;
 
 % Remove the beginning for better processing
 z1 = double(z(:, tt)');
@@ -107,7 +108,7 @@ ylabel('Stability')
 % The correlation matrix looks nice when ncl = ?.
 
 figure
-ncl = 12;
+ncl = 11;
 idx = spctcl(v, ncl, 20); %Recluster the data
 [~, sidx] = sort(idx);
 imagesc(zn(sidx, sidx))

@@ -116,7 +116,6 @@ switch inputmasktype
 
 			center = [mean(X) mean(Y) mean(Z)];
 			
-        	keyboard
 
         	distmat = squareform( pdist([center ; [X Y Z]], 'euclidean') );
 
