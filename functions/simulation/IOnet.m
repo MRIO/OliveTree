@@ -90,8 +90,8 @@ p.addParamValue('W',             [])
 p.addParamValue('connections',   [])   % 'nearest4'...'yosi'
 p.addParamValue('tempState',     [])
 p.addParamValue('appCurrent',    [])     %uA/cm^2 -> .1 nA for a cell with 10000um^2
-p.addParamValue('appVoltage',    [])  % legacy
-p.addParamValue('gpu',          true)  
+p.addParamValue('appVoltage',    [])  
+p.addParamValue('gpu',          true)  % as default if cuda present
 p.addParamValue('ou_noise',    [0 0 0 0]);  %  ohrstein-uhlenbeck current noise applied to soma [ theta, sigma, mu, seed  ]
 p.addParamValue('perturbation',  []);  % [ amplitude, shift, seed  ]
 p.addParamValue('cell_parameters', [])
@@ -337,8 +337,10 @@ for t = 1:simSteps
 
 
 
-    if numel(V_app) == noNeurons*simSteps  % if we received a V_app for every t
+    if numel(vclamp) == noNeurons*simSteps  % if we received a V_app for every t
             state.vclamp = V_app(:,t);
+    else
+            state.vclamp = vclamp;
     end
 
     % [================================================]

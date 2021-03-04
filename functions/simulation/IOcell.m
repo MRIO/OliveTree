@@ -239,8 +239,8 @@ q_s = 0;   % no h current in the soma
     dVd_dt = (-(I_CaH   + I_sd  + I_ld + I_K_Ca + I_cx36 + I_h     + I_gab_dend + I_amp_dend) + I_app  ) / C_m;
     dVa_dt = (-(I_K_a   + I_sa  + I_la + I_Na_a)                                   ) / C_m;
         
-
-    V_soma = (delta * dVs_dt + V_soma)*(V_app==0) + V_app;
+    
+    V_soma = (delta * dVs_dt + V_soma)*(V_app==0) + V_app; 
     % V_soma = delta * dVs_dt + V_soma;
     V_dend = delta * dVd_dt + V_dend;
     V_axon = delta * dVa_dt + V_axon;

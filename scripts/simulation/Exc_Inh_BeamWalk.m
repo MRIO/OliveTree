@@ -13,6 +13,7 @@
 gap = 0.0;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
 spot = 1;
 interstimT = 1000;
+laststim = 3000;
 
 dt = 0.02;
 gpu = 0;
@@ -23,7 +24,9 @@ blue = [0 0.4 0.8];
 red = [0.91 0.07 0.63];
 rgb1 =[0.230, 0.299, 0.754];
 rgb2=[0.706, 0.016, 0.150];
-cmap=diverging_map(s,rgb1,rgb2);
+% cmap=diverging_map(s,rgb1,rgb2);
+cmap=colormap(jet);
+
 
 % [=================================================================]
 %  % create network
@@ -42,9 +45,22 @@ if ~exist('noisesig'); 	 noisesig = 0.1  ;end
 
 noneurons = 22;
 
-netsize = [1 noneurons 1];
-% netsize = [1 20 1];
-	noneurons = prod(netsize);
+% [=================================================================]
+%  % create neurons
+% [=================================================================]
+
+rng(0,'twister')
+cellset = 'cellset_vanilla'; noneurons = 20;
+cellset = 'param_sweep'; noneurons = 4;
+
+neurons = createDefaultNeurons(noneurons, 'celltypes' , cellset , 'addrand', 1);
+
+neurons.gbar_ampa_dend = .1*ones(noneurons,1);
+neurons.gbar_ampa_soma = .5*ones(noneurons,1);
+neurons.gbar_gaba_dend = 5*ones(noneurons,1);
+% neurons.gbar_gaba_soma = 5*ones(noneurons,1);
+neurons.V_gaba_dend = -75*ones(noneurons,1);
+
 
 cell_function = 'vanilla';
 
@@ -64,12 +80,20 @@ symmetrize = 1;
 activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
 activations =  {'V_soma','V_dend' ,'Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Potassium_n', 'Potassium_x_s', 'Hcurrent_q', 'Hcurrent_q','g_gaba_dend', 'g_ampa_soma'};
 currents = {'V_soma','V_dend','I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_h', 'I_h_s'};
-soma = {'V_soma'};
+soma = {'V_soma', 'V_dend', 'g_gaba_dend', 'g_gaba_soma'};
 % to_report = activations;
 to_report = soma;
 
+% [=================================================================]
+%  % create network
+% [=================================================================]
+
+netsize = [1 noneurons 1];
+    noneurons = prod(netsize);
+
 
 if noneurons>1
+ 
 	switch conntype
 		case 'iso'
 			W  = createW('3d_chebychev', netsize, rd, scaling, randomize, plotthis, maxiter, meannoconn, somatapositions, symmetrize, [0 0 0 0], normleak);
@@ -90,24 +114,8 @@ end
 % 	   0 0 0 0 0 0 0 0 0;
 % 	   0 0 1 0 1 1 0 0 0]*gap/3;
 
-% [=================================================================]
-%  % create neurons
-% [=================================================================]
-
-rng(0,'twister')
-cellset = 'cellset_vanilla'
-neurons = createDefaultNeurons(noneurons, 'celltypes' , cellset , 'addrand', 1);
-
-neurons.gbar_ampa_dend = .1*ones(noneurons,1);
-neurons.gbar_ampa_soma = .2*ones(noneurons,1);
-neurons.gbar_gaba_dend = 1*ones(noneurons,1);
-
-
-% neurons.g_h = linspace(.1,3,noneurons);
 
 %============================= perturbation ==============================%
-
-
 
 % noise_level = [1/tau noisesig noiseamp 0];
 noise_level = [0 0 0 0];
@@ -118,7 +126,7 @@ if not(spont)
 	% inhibitory - 20ms (gaba)
 	% excitatory - 
 
-	pulsesI	 = [1000:interstimT:50000];
+	pulsesI	 = [1000:interstimT:laststim];
 	% pulsesI	 = [500:700:2000];
 	pulsesI = pulsesI + round(rand(size(pulsesI))*50);
 	pulsesE	 = pulsesI + round(linspace(-100, 100  , length(pulsesI)));
@@ -143,7 +151,7 @@ if not(spont)
 	% pert.mask{2}  	  = create_input_mask(netsize, 'dist_to_point', 'radius', 2, ...
 	% 				'cell_coordinates', W.coords,'projection_center', netsize/2,'synapseprobability',1,'plotme',0);
 	% pert.amplitude{2} = 2;
-	% pert.type{2}	  = 'gaba_dend';
+    pert.type{2}	  = 'gaba_dend';
 	pert.type{2}	  = 'gaba_soma';
 	pert.duration{2}  = 1;
 	pert.triggers{2} = pulsesI;
@@ -152,7 +160,6 @@ else
 end
 
 simtime = max([pulsesI pulsesE])+w;
-% simtime = 320;
 
 %          _                 __      __     
 %    _____(_)___ ___  __  __/ /___ _/ /____ 

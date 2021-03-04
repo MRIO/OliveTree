@@ -18,15 +18,7 @@ Ca_0 = 2e-3;%mMolar;
 Opening = (3*1e-3 )^-1;%channel opening rate \alpha = 2msec^-1
 Closing = (Beta_offset + Beta_range * (1 / (1 + exp( -  alpha^-1 * (Ca - mu) ) ) )  )^-1; %channel closing rate \beta = 10msec^-1
 dgGABA_dt = stim * Opening * ( 1 - g ) - Closing * g;
-% dCa2_dt = -( Ca - 50e-9) /tau + gamma*log(Ca_0/Ca)* stim;
 dCa2_dt = -( Ca - 50e-9) /tau + gamma*log(Ca_0/Ca)* stim;
 
-
-
-% Opening= (3*1e-3 )^-1;%channel opening rate \alpha = 2msec^-1
-% Closing = (Beta_offset + Beta_range * (1 / (1 + exp( -  alpha^-1 * (Ca - mu) ) ) )  )^-1; %channel closing rate \beta = 10msec^-1
-% dgGABA_dt = stim * Opening*( 1 - g ) - Closing * g;
-% % dCa2_dt = -( Ca - 50e-9) /tau + gamma*log(Ca_0/Ca)* stim;
-% dCa2_dt = 0;
 
 end

@@ -1,7 +1,6 @@
-% createDefaultNeurons.m
 function cell_parameters = createDefaultNeurons(varargin)
 % createDefaultNeurons(noneurons, celltypes, gapcompensation)
-
+%%
 %TODO: Check for correlations in the random draws - if there are, shuffle/redraw
 
 	ip = inputParser;
@@ -31,7 +30,7 @@ function cell_parameters = createDefaultNeurons(varargin)
 	
 cell_parameters = defneurons(noneurons); % create parameter base-set (subfunction)
 cell_parameters.rng = randngen;
-
+%%
 
 switch celltypes
 	case 'clones'
@@ -186,14 +185,32 @@ switch celltypes
 		for ff = fields(simresults{1}.cellParameters)'
 			str = ['cell_parameters.' ff{1} ' = simresults{1}.cellParameters.' ff{1} '(sel_cel_idx);'];
 			eval(str)
-		end
+        end
 
+	case 'canonicals'
+		
 
+		p1 = [.4 .8 1.3]; 		% CalciumL - conductance range
+		p2 = [.12 2.4]; 		% g_h
+		
+		[p{1} p{2} ] = ndgrid(p1,p2);
+
+		Plist = [p{1}(:) p{2}(:) ]; 
+
+		psweepnoneurons = length(p{1}(:));
+
+		cell_parameters = defneurons(psweepnoneurons);
+		
+		cell_parameters.g_CaL    = p{1}(:);
+		cell_parameters.g_h 	 = p{2}(:);
+
+        
+        
 	case 'param_sweep'
 		
 
-		p1 = [.5:.1:1.5]; 		% CalciumL - conductance range
-		p2 = [.12 2.4]; 		% g_int
+		p1 = [.8 1.3]; 		% CalciumL - conductance range
+		p2 = [.12 2.4]; 		% g_h
 		
 		[p{1} p{2} ] = ndgrid(p1,p2);
 
@@ -378,7 +395,7 @@ cell_parameters.V_Ca = 120 .* O;       % Calcium
 cell_parameters.V_h  = -43 .* O;       % H current
 cell_parameters.V_l  =  10 .* O;       % Leak
 
-cell_parameters.V_gaba_dend = -70 .*O; % from Devor and Yarom, 2002
+cell_parameters.V_gaba_dend = -75 .*O; % -70 from Devor and Yarom, 2002 // -75 from Loyola et al (2021?) with 625m opto in CN 
 cell_parameters.V_gaba_soma = -63 .*O; % from Devor and Yarom, 2002
 cell_parameters.V_ampa_soma = 0 	  .*O; % from Cian McDonnel et al 2012
 cell_parameters.V_ampa_dend = 0 	  .*O; % from Cian McDonnel et al 2012

@@ -40,11 +40,9 @@ if ~exist('tau')       ; tau = 20      	 		   ; end
 if ~exist('noiseamp')  ; noiseamp = 0 	 		   ; end
 if ~exist('noisesig')  ; noisesig = 0.1  		   ; end
 	
-noneurons = 22;
-
+noneurons = 4;
 netsize = [1 noneurons 1];
-% netsize = [1 20 1];
-	noneurons = prod(netsize);
+noneurons = prod(netsize);
 
 cell_function = 'vanilla';
 
@@ -99,9 +97,12 @@ cellset = 'cellset_vanilla'
 neurons = createDefaultNeurons(noneurons, 'celltypes' , 'param_sweep');
 noneurons = length(neurons.C_m);
 
-neurons.gbar_ampa_dend =  1*ones(noneurons,1);
+neurons.gbar_ampa_dend =  0*ones(noneurons,1);
 neurons.gbar_ampa_soma = .2*ones(noneurons,1);
-neurons.gbar_gaba_dend =  2*ones(noneurons,1);
+neurons.gbar_gaba_dend =  4*ones(noneurons,1);
+neurons.gbar_gaba_dend =  [1 2 3 4];
+% neurons.gbar_gaba_soma =  [0 0 1 4];
+
 
 
 % neurons.g_h = linspace(.1,3,noneurons);
