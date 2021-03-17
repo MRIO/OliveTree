@@ -79,7 +79,8 @@ to_report = {'V_soma','V_dend'};
     noneurons = length(def_neurons.g_CaL);
     netsize = [1 noneurons 1];
     
-		def_neurons.gbar_gaba_dend = ones(noneurons,1);
+		def_neurons.gbar_gaba_dend = ones(noneurons,1); % subthreshold
+        def_neurons.gbar_gaba_dend = 5*ones(noneurons,1); % suprathreshold
 		def_neurons.gbar_ampa_soma = ones(noneurons,1)*.1;
 		
 
@@ -118,6 +119,7 @@ phaseResults = measureGlobalSync(unperturbed_state, 'duration', [1:simtime],'plo
 phases = phaseResults.hilbert.hilbert;
 
 % find original peaks
+
 [PKS LOCS] = findpeaks(mean(phases,1), 'minpeakdistance',50);
 LOCS(1) = [];
 meanT = LOCS(2) - LOCS(1);
