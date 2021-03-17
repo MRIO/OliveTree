@@ -14,7 +14,7 @@ function mask = create_input_mask(varargin)
 
 
 p = inputParser;
-p.addRequired ('netsize')       % a matrix with two columns or a cell array with two cells;
+p.addRequired ('netsize')       % a matrix with two or three columns (for reconstructions).
 p.addRequired ('inputmasktype') % stdandard deviation criterion for offset threshold
 p.addParamValue('synapseprobability', 1)
 p.addParamValue('radius', 2)

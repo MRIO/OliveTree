@@ -1,0 +1,1393 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"pause",
+				"pauseinterval"
+			],
+			[
+				"highli",
+				"highlighted_cells"
+			],
+			[
+				"no",
+				"noneurons"
+			],
+			[
+				"sel",
+				"sel_table_1"
+			],
+			[
+				"g_K",
+				"g_Kdr_s"
+			],
+			[
+				"p",
+				"parser\targparse"
+			],
+			[
+				"curl",
+				"bridg_curlies"
+			],
+			[
+				"clus",
+				"clusterize"
+			],
+			[
+				"ins",
+				"interstimT"
+			],
+			[
+				"slow",
+				"slowfreq"
+			],
+			[
+				"oscil",
+				"oscillator_frequencies"
+			],
+			[
+				"line",
+				"linewidth"
+			],
+			[
+				"oscila",
+				"oscillators"
+			],
+			[
+				"omega",
+				"omega_i"
+			],
+			[
+				"syp",
+				"synapse_type"
+			],
+			[
+				"cluster",
+				"clusters"
+			],
+			[
+				"netwo",
+				"networkHistory"
+			],
+			[
+				"V_s",
+				"V_soma_unwrapped"
+			],
+			[
+				"prop",
+				"propspkneurons"
+			],
+			[
+				"meanc",
+				"meannoconn"
+			],
+			[
+				"gb",
+				"gbar_ampa_soma"
+			],
+			[
+				"mean",
+				"meannoconn"
+			],
+			[
+				"sp",
+				"spikespercell"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "functions/leak_compensation.m",
+			"settings":
+			{
+				"buffer_size": 1030,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "leak_compensation.m"
+			}
+		},
+		{
+			"file": "tests/two_cells_singlesim.m",
+			"settings":
+			{
+				"buffer_size": 3250,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/script_Dynamic_Clustering_IO.m",
+			"settings":
+			{
+				"buffer_size": 8799,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "extras/Spectral_Clustering/example.m",
+			"settings":
+			{
+				"buffer_size": 1050,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "extras/Spectral_Clustering/spect_clust.m",
+			"settings":
+			{
+				"buffer_size": 1459,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/LabelMatchers/cosineMatcher.m",
+			"settings":
+			{
+				"buffer_size": 1247,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "notebooks/cij2.m",
+			"settings":
+			{
+				"buffer_size": 1217,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/Measures/pairwiseCosDis.m",
+			"settings":
+			{
+				"buffer_size": 1551,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 49.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"ASCII Decorator: Font Selector"
+			],
+			[
+				"asci",
+				"ASCII Decorator: Font Selector"
+			],
+			[
+				"pacak",
+				"Package Control: List Packages"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Package Control: Enable Package"
+			],
+			[
+				"brow",
+				"Preferences: Browse Packages"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 378.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/notebooks",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/Clustering and Windows",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/LabelMatchers",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/Measures"
+	],
+	"file_history":
+	[
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/createW.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/analyze_cluster_stability.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/script_Dynamic_Clustering_IO_cosine.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/createDefaultNeurons.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/crop_cells_pspace_4spanke.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/Streamlined DA/Analysis/Original Data Analysis.ipynb",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/conductance_contribution_to_firingrates.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/script_Dynamic_Clustering_IO.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/Clustering and Windows/timeClusters.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/IOcell_wrapper.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/notebooks/spctcl.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/cells_pspace.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/IOnet.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/IOcell.m",
+		"/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreLocation.framework/Versions/A/Headers/CLPlacemark.h",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/IOcell_vanilla.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/IOcell_devel.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/connectivity_comparisons.m",
+		"/Users/M/Synced/Projects/Experiments/Up_Down/UpDownPatterns.py",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/oliveML/olive_tree/morphologies/Pre_processed_cells/C11A_scaled_exp.swc",
+		"/Users/M/Synced/Projects/Code/DynamicalSystems/NBDynSys/unittests/session_4/average_orbit_step.m",
+		"/Users/M/Synced/Projects/Code/DynamicalSystems/NBDynSys/unittests/session_4/juliaset.m",
+		"/Users/M/Synced/Projects/Code/DynamicalSystems/NBDynSys/unittests/session_4/mandelbrot.m",
+		"/Users/M/Synced/Projects/Code/DynamicalSystems/NBDynSys/unittests/session_4/nd_orbit.m",
+		"/Users/M/Synced/Projects/Code/DynamicalSystems/NBDynSys/unittests/session_4/nd_orbit_after_transients.m",
+		"/Users/M/Synced/Projects/Code/DynamicalSystems/NBDynSys/unittests/session_4/test_session4.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/analyze_clusters_bridges.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/cluster_bridges_phaseanalysis_groupstim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/figures/Warnaar_all_simulations_analyses_and_figures.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/net_edge_analysis.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/Warnaar_all_simulations_analyses_and_figures.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/HPCGPU_periodic_ampa.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/plotnetstruct.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/saveallfigs.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/HPCGPU_scripts.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/extras/spectral_clustering/spect_clust.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/IOcell_onecomp.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/cellpspace_asymmetryCoefficient.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/stepwise_increase_correlation.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/sanity_check_onecell.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/2Cells_singlesim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/script_kuramoto.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/kuramotoSheet.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/figures/Warnaar_all_figures.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/sync_triggered_X.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/apply_perturbation.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/Pascal_figures_with_without_gaps.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/xcorr_feature_analysis.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/xcorr_summa.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/the_origin_of_synchrony_ex.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/reconstruction_clusters_and_bridges.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/create_input_mask.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/test_ounoise_masks.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/Jochen_Xcorr_comparisons.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/analysis_NetPspace.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/animate_volume.m",
+		"/Users/M/Synced/Projects/Courses/NB2181_CompSci/2018/P1-Solutions - Numerical function analysis 2018/cs2rootsolving.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/replayResults_3.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/twoCells_singlesim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/profile_sim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/stim_trig_phase_dist.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/generate_PRC_Pascal.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/periodic_sims_4_Pascal.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/figures/figure_model_Pascal.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/HPCGPU_CaT_Ih_devel.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/oliveODE(VecCL)/comparison_betweenmodels_RK_OLD",
+		"/Users/M/Synced/Projects/Experiments/Whisker/_scripts/video/findFirstValidFrame.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/figures/Jochen_stats.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/extras/spectral_clustering/example.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/extras/spectral_clustering/baic.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/figures/Jochen_sims.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/Jochen_figure_gap_alignment.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/simulate_3d_layer_perturbation_images.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/figures/Jochen_Figures.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/spikedetect.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/simulation/Exc_Inh_BeamWalk_Tycho.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/analysis/stim_trig_spikes.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/simulation/hilbert_of_membranepotential.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/plot_mean_and_std.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/analysis/NDscatter.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/two_cells_singlesim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/figures/addScalebar.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/reconstruction_clusters_and_bridges.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/replayResults_clusters.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/plot_volume.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/animate_volume_hilbert.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/ampa_soma_dend_comparison.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/IOcell_devel.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/IOcell.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/IOnet.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/analyze_clusters_bridges.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/animate_volume_2.m",
+		"/Users/M/Synced/Titan/Bench4/clusters_and_bridges/curlies_bridges_randmaskstim22-Mar-2017.mat",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/kuramotoSheet.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/HPCGPU_scripts.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/Jochen_figure_gap_alignment.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/xcorr_summa.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/Jochen_Xcorr_comparisons.m",
+		"/Volumes/GZDoom-2.5pre-364-g2d0da4fcf/Docs/README.asm",
+		"/Volumes/GZDoom-2.5pre-364-g2d0da4fcf/Docs/README.gl",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/extras/Spectral_Clustering/example.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/singlesim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/retrieveNeuronsByClass.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/batch_xcorr_summas.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/extras/Spectral_Clustering/spect_clust.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/extras/Spectral_Clustering/baic.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/extras/Spectral_Clustering/show_cells.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/xcorr_feature_analysis.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/createW.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/phase_distribution_over_time.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/saveallfigs.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/plotnetstruct.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/HPCGPU_periodic_ampa.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/hilbert_of_membranepotential.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/tests/singlesim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/Pascal_figures_with_without_gaps.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/stim_trig_spikes.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/scripts/singlesim_noise.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/replayResults_3.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/measureGlobalSync.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/stim_trig_phase_dist.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/NDscatter.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/cluster_bridges_phaseanalysis_groupstim.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analyze_clusters_bridges.m",
+		"/Users/M/Downloads/fitlog2.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/compare_simulations.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/functions/jitter_cell_parameters.m",
+		"/Users/M/Synced/Projects/Experiments/Olive/model/OliveTree/analysis/analysis_NetPspace.m"
+	],
+	"find":
+	{
+		"height": 37.0
+	},
+	"find_in_files":
+	{
+		"height": 124.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"cluster",
+			"nogapcompensation",
+			"baic",
+			"akaike",
+			"cluster",
+			"kmeans",
+			"noSamples",
+			"rep",
+			"noSamples",
+			"maxNCl",
+			"clustersNcl",
+			"windowStep",
+			"noSamples",
+			"figure",
+			"cosi",
+			"cosine",
+			"stability",
+			"clusters",
+			"gaps",
+			"ca_extrusion",
+			"arbitrary",
+			"arbitra",
+			"Pnames",
+			"param",
+			"string",
+			"arbitrary",
+			"cell_parameters",
+			"arbitrary",
+			"ca_extrusion",
+			"arbi",
+			"def_neurons.Pnames",
+			"pnames",
+			"pswee",
+			"pgrid",
+			"arbitrary",
+			"trees",
+			"n_connections",
+			"reconstruction_clusterized",
+			"cluster_vs_iso",
+			"STOhistograms",
+			"styl",
+			"color",
+			"comparison_boundarycells",
+			"g_int",
+			"p1",
+			"I_app",
+			"CaPlus",
+			"CaP",
+			"current",
+			"pico",
+			"alph",
+			"init_cond",
+			"plot_graph",
+			"sync_triggered_X",
+			"sync_triggered",
+			"sync triggered",
+			"sync_triggered_noise",
+			"sameto",
+			"ou_noise(4)",
+			"seed",
+			"gaps",
+			"def_neurons",
+			"GABAGAUGE_SOMA",
+			"synapseprobability",
+			"gpu",
+			"HEAD",
+			"ounoise_params",
+			"trigg",
+			"thisseed",
+			"maskstimulation",
+			"mix",
+			"xcorr",
+			"Ca_set",
+			"coupling coefficient",
+			"create",
+			"scalin",
+			"inputrad",
+			"takeall",
+			"selected",
+			"eta",
+			"init_cond",
+			"m",
+			"Sodium_h",
+			"cell_function",
+			"spont",
+			"Potassium_x_s",
+			"x_s",
+			"disp",
+			"Pnames",
+			"conntype",
+			"two_ma",
+			"eigenvalue ",
+			"spect_clust",
+			"spec_clust",
+			"twomaskstim",
+			"spectral_clustering",
+			"spectral",
+			"clustering",
+			"spectral ",
+			"thisseed",
+			"fgap",
+			"netsize",
+			"connset",
+			"noneurons",
+			"from \"bvf@erasmusmc.nl\" ",
+			"noneurons",
+			"distance_histogram",
+			"histo",
+			"histograms",
+			"brick",
+			"pert",
+			"circ_",
+			"circ",
+			"colormap",
+			"spect_clust",
+			"spec_clust",
+			"periodic_ampa_test_WT_1_iso_spont_50000_1_",
+			"fill_between_lines",
+			"psw",
+			"hist",
+			"gapcomp",
+			"mask",
+			"radius",
+			"raidus",
+			"plotdiffact",
+			"imerode",
+			"coarseness",
+			"figure"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"Ca2Plus",
+			"Sodium_h",
+			"plotstyle",
+			"6x6",
+			"IOnet(",
+			"",
+			"NO",
+			"group",
+			"triggers",
+			"spikedetect(simresults);",
+			"spikedetect(transients);",
+			"spikedetect(simresults{1});",
+			"spikedetect(sim)",
+			"'ou_noise'",
+			"ou_noise"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": false
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "functions/leak_compensation.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1030,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								306,
+								306
+							]
+						],
+						"settings":
+						{
+							"auto_name": "leak_compensation.m",
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "tests/two_cells_singlesim.m",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3250,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								740,
+								740
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 1.0,
+						"translation.y": 1088.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/script_Dynamic_Clustering_IO.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8799,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1797,
+								1862
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 431.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "extras/Spectral_Clustering/example.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1050,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								560,
+								560
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 48.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "extras/Spectral_Clustering/spect_clust.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1459,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1243,
+								1243
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 99.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/LabelMatchers/cosineMatcher.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1247,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								767,
+								767
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "notebooks/cij2.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1217,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/Users/M/Synced/Projects/Experiments/Olive/model/ClusterAnalysis/Measures/pairwiseCosDis.m",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1551,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								705,
+								705
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Matlab/Matlab.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 41.0
+	},
+	"input":
+	{
+		"height": 44.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "Olive_pico.sublime-project",
+	"replace":
+	{
+		"height": 70.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"createW",
+				"OliveTree/functions/simulation/createW.m"
+			],
+			[
+				"create",
+				"OliveTree/functions/simulation/createDefaultNeurons.m"
+			],
+			[
+				"time",
+				"ClusterAnalysis/Clustering and Windows/timeClusters.m"
+			],
+			[
+				"scp",
+				"OliveTree/notebooks/spctcl.m"
+			],
+			[
+				"cij",
+				"OliveTree/notebooks/cij2.m"
+			],
+			[
+				"ionet",
+				"functions/simulation/IOnet.m"
+			],
+			[
+				"iocell_war",
+				"functions/simulation/IOcell_wrapper.m"
+			],
+			[
+				"cells",
+				"tests/cells_pspace.m"
+			],
+			[
+				"iocell",
+				"functions/simulation/IOcell_wrapper.m"
+			],
+			[
+				"io",
+				"functions/simulation/IOcell_devel.m"
+			],
+			[
+				"def",
+				"functions/simulation/createDefaultNeurons.m"
+			],
+			[
+				"pspa",
+				"tests/cells_pspace.m"
+			],
+			[
+				"analyz",
+				"scripts/analysis/analyze_clusters_bridges.m"
+			],
+			[
+				"saveall",
+				"scripts/saveallfigs.m"
+			],
+			[
+				"plotnet",
+				"functions/analysis/plotnetstruct.m"
+			],
+			[
+				"perio",
+				"scripts/simulation/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"warnaa",
+				"scripts/analysis/Warnaar_all_simulations_analyses_and_figures.m"
+			],
+			[
+				"iocel",
+				"functions/simulation/IOcell.m"
+			],
+			[
+				"ion",
+				"functions/simulation/IOnet.m"
+			],
+			[
+				"hpc",
+				"scripts/simulation/HPCGPU_scripts.m"
+			],
+			[
+				"ioce",
+				"functions/simulation/IOcell.m"
+			],
+			[
+				"",
+				"~/Synced/Projects/Experiments/Olive/model/OliveTree/extras/spectral_clustering/spect_clust.m"
+			],
+			[
+				"sanity",
+				"tests/sanity_check_onecell.m"
+			],
+			[
+				"cell",
+				"tests/sanity_check_onecell.m"
+			],
+			[
+				"single",
+				"tests/2Cells_singlesim.m"
+			],
+			[
+				"kuramoto",
+				"functions/simulation/kuramotoSheet.m"
+			],
+			[
+				"kuramo",
+				"scripts/simulation/script_kuramoto.m"
+			],
+			[
+				"step",
+				"tests/stepwise_increase_correlation.m"
+			],
+			[
+				"sync",
+				"scripts/analysis/cluster_bridges_phaseanalysis_groupstim.m"
+			],
+			[
+				"ione",
+				"functions/simulation/IOnet.m"
+			],
+			[
+				"appl",
+				"functions/simulation/apply_perturbation.m"
+			],
+			[
+				"ou",
+				"tests/test_ounoise_masks.m"
+			],
+			[
+				"mask",
+				"functions/simulation/create_input_mask.m"
+			],
+			[
+				"pert",
+				"functions/simulation/apply_perturbation.m"
+			],
+			[
+				"masks",
+				"tests/test_ounoise_masks.m"
+			],
+			[
+				"ioc",
+				"functions/simulation/IOcell.m"
+			],
+			[
+				"xcorr",
+				"functions/analysis/xcorr_summa.m"
+			],
+			[
+				"anim",
+				"functions/analysis/animate_volume.m"
+			],
+			[
+				"scripts",
+				"scripts/simulation/HPCGPU_scripts.m"
+			],
+			[
+				"xcorr_",
+				"functions/analysis/xcorr_summa.m"
+			],
+			[
+				"xco",
+				"scripts/analysis/Jochen_Xcorr_comparisons.m"
+			],
+			[
+				"pascal",
+				"scripts/analysis/Pascal_figures_with_without_gaps.m"
+			],
+			[
+				"pasca",
+				"scripts/simulation/generate_PRC_Pascal.m"
+			],
+			[
+				"stim_",
+				"functions/analysis/stim_trig_phase_dist.m"
+			],
+			[
+				"hpcgp",
+				"scripts/simulation/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"replay",
+				"functions/analysis/replayResults_3.m"
+			],
+			[
+				"kuram",
+				"functions/simulation/kuramotoSheet.m"
+			],
+			[
+				"spec",
+				"extras/spectral_clustering/spect_clust.m"
+			],
+			[
+				"profi",
+				"functions/analysis/profile_sim.m"
+			],
+			[
+				"createde",
+				"functions/simulation/createDefaultNeurons.m"
+			],
+			[
+				"kur",
+				"functions/simulation/kuramotoSheet.m"
+			],
+			[
+				"createw",
+				"functions/simulation/createW.m"
+			],
+			[
+				"stats",
+				"figures/Jochen_stats.m"
+			],
+			[
+				"recon",
+				"scripts/simulation/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"reconstr",
+				"scripts/simulation/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"baic",
+				"extras/spectral_clustering/baic.m"
+			],
+			[
+				"profil",
+				"functions/analysis/profile_sim.m"
+			],
+			[
+				"spect",
+				"extras/spectral_clustering/spect_clust.m"
+			],
+			[
+				"ana",
+				"scripts/analysis/analyze_clusters_bridges.m"
+			],
+			[
+				"analy",
+				"scripts/analysis/analyze_clusters_bridges.m"
+			],
+			[
+				"periodi",
+				"scripts/simulation/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"crea",
+				"functions/simulation/createDefaultNeurons.m"
+			],
+			[
+				"recons",
+				"scripts/simulation/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"joceh",
+				"figures/Jochen_Figures.m"
+			],
+			[
+				"spike",
+				"functions/analysis/spikedetect.m"
+			],
+			[
+				"joche",
+				"figures/Jochen_sims.m"
+			],
+			[
+				"jocehn",
+				"scripts/simulation/Jochen_figure_gap_alignment.m"
+			],
+			[
+				"sierpi",
+				"scripts/simulation/simulate_3d_layer_perturbation_images.m"
+			],
+			[
+				"x",
+				"functions/analysis/xcorr_summa.m"
+			],
+			[
+				"hilber",
+				"functions/simulation/hilbert_of_membranepotential.m"
+			],
+			[
+				"plot_mean",
+				"functions/analysis/plot_mean_and_std.m"
+			],
+			[
+				"beam",
+				"scripts/simulation/Exc_Inh_BeamWalk_Tycho.m"
+			],
+			[
+				"sync_",
+				"functions/analysis/sync_triggered_X.m"
+			],
+			[
+				"clusters",
+				"scripts/simulation/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"nds",
+				"functions/analysis/NDscatter.m"
+			],
+			[
+				"stim",
+				"scripts/analysis/stim_trig_spikes.m"
+			],
+			[
+				"sims",
+				"scripts/simulation/periodic_sims_4_Pascal.m"
+			],
+			[
+				"bea",
+				"scripts/simulation/Exc_Inh_BeamWalk.m"
+			],
+			[
+				"exampl",
+				"extras/spectral_clustering/example.m"
+			],
+			[
+				"crteatre",
+				"functions/simulation/createDefaultNeurons.m"
+			],
+			[
+				"cellsp",
+				"tests/cells_pspace.m"
+			],
+			[
+				"two",
+				"tests/two_cells_singlesim.m"
+			],
+			[
+				"anima",
+				"functions/animate_volume_hilbert.m"
+			],
+			[
+				"ampa",
+				"scripts/ampa_soma_dend_comparison.m"
+			],
+			[
+				"animate",
+				"analysis/animate_volume_2.m"
+			],
+			[
+				"jochen",
+				"scripts/Jochen_figure_gap_alignment.m"
+			],
+			[
+				"xcor",
+				"analysis/xcorr_summa.m"
+			],
+			[
+				"joch",
+				"scripts/Jochen_Xcorr_comparisons.m"
+			],
+			[
+				"spe",
+				"extras/spectral_clustering/spect_clust.m"
+			],
+			[
+				"sinlg",
+				"scripts/singlesim.m"
+			],
+			[
+				"hp",
+				"scripts/HPCGPU_scripts.m"
+			],
+			[
+				"spec_",
+				"extras/Spectral_Clustering/spect_clust.m"
+			],
+			[
+				"spectr",
+				"extras/Spectral_Clustering/example.m"
+			],
+			[
+				"spectral",
+				"extras/Spectral_Clustering/show_cells.m"
+			],
+			[
+				"periodic_",
+				"scripts/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"retrieve",
+				"analysis/retrieveNeuronsByClass.m"
+			],
+			[
+				"bach",
+				"analysis/batch_xcorr_summas.m"
+			],
+			[
+				"reconstru",
+				"scripts/reconstruction_clusters_and_bridges.m"
+			],
+			[
+				"phase",
+				"analysis/phase_distribution_over_time.m"
+			],
+			[
+				"singl",
+				"tests/singlesim.m"
+			],
+			[
+				"singlesim",
+				"scripts/singlesim_noise.m"
+			],
+			[
+				"hilbo",
+				"analysis/hilbert_of_membranepotential.m"
+			],
+			[
+				"measure",
+				"analysis/measureGlobalSync.m"
+			],
+			[
+				"repa",
+				"analysis/replayResults_3.m"
+			],
+			[
+				"bridge",
+				"analyze_clusters_bridges.m"
+			],
+			[
+				"compare",
+				"analysis/compare_simulations.m"
+			],
+			[
+				"created",
+				"functions/createDefaultNeurons.m"
+			],
+			[
+				"netp",
+				"scripts/NetPspace.m"
+			],
+			[
+				"jitter",
+				"functions/jitter_cell_parameters.m"
+			],
+			[
+				"netps",
+				"analysis/analysis_NetPspace.m"
+			],
+			[
+				"hpcscr",
+				"scripts/HPCGPU_scripts.m"
+			],
+			[
+				"ndsca",
+				"analysis/NDscatter.m"
+			],
+			[
+				"hpg",
+				"scripts/HPCGPU_scripts.m"
+			],
+			[
+				"hpcg",
+				"scripts/HPCGPU_periodic_ampa.m"
+			],
+			[
+				"profile",
+				"analysis/profile_sim.m"
+			],
+			[
+				"sanit",
+				"tests/sanity_check.m"
+			],
+			[
+				"creat",
+				"functions/createDefaultNeurons.m"
+			],
+			[
+				"crete",
+				"functions/createDefaultNeurons.m"
+			],
+			[
+				"net",
+				"scripts/NetPspace.m"
+			],
+			[
+				"conne",
+				"functions/connectivity_statistics.m"
+			],
+			[
+				"circ_pl",
+				"extras/circ_plot.m"
+			],
+			[
+				"any",
+				"analyze_clusters_bridges.m"
+			],
+			[
+				"clock",
+				"analysis/clocks_over_time.m"
+			],
+			[
+				"pspace",
+				"scripts/NetPspace.m"
+			],
+			[
+				"analysis_c",
+				"analysis/analyze_clusters_bridges.m"
+			],
+			[
+				"gaba",
+				"functions/computeslowGABA_state.m"
+			],
+			[
+				"creatte",
+				"functions/createDefaultNeurons.m"
+			],
+			[
+				"pr",
+				"analysis/profile_sim.m"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Cabinet/SyncBox/Projects/Experiments/Olive/model/OliveTree/Olive_pico.sublime-workspace"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 375.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 378.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 326.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

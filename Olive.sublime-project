@@ -1,0 +1,20 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".*",
+				"Icon*",
+				"*sublime*"
+			],
+			"folder_exclude_patterns":
+			[
+				".*"
+			],
+			"path": "/Users/M/Cabinet/SyncBox/OliveTree"
+			// "path": "/Users/M/Projects/Experiments/Olive/model/OliveTree/"
+		
+		}
+	]
+}

@@ -1,0 +1,19 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".*",
+				"Icon*",
+				"*sublime*"
+			],
+			"folder_exclude_patterns":
+			[
+				".*"
+			],
+			"path": "."
+		}
+	],
+	"ignore_vcs_packages": true
+}
