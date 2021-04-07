@@ -66,7 +66,7 @@ VS = sim.networkHistory.V_soma;
 
 if frames2file; animate = 1; end
 
-	groupcolors = [.7 .7 .7 ; 1 0 0];
+	groupcolors = [.7 .7 .7 ; .3 0 .3];
 
 % [=================================================================]
 %  slice to plot
@@ -88,12 +88,12 @@ fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], co
 
 if savemovie
 	if isempty(fname);
-		% fname = ['volume' datestr(now)];
-		fname = 'volume';
+		fname = ['volume' datestr(now, 'yyyy-mm-dd_HH-MM')];
+% 		fname = 'volume';
 	end
 
 		try
-			vidObj = VideoWriter('volume','MPEG-4');
+			vidObj = VideoWriter(fname,'MPEG-4');
 		catch
 			warning('No MPEG-4 encoder in this crappy OS.')
 			vidObj = VideoWriter(['phase' ]);
@@ -367,7 +367,7 @@ if savemovie
 end
 
 
-out.phases.mean = [M1 ; M2];
+out.phases.mean = [M1 ; M2 ; MA];
 out.phases.var  = [circ_var(G1) ; circ_var(G2)];
 out.phases.groups = {group1 ; group2};
 out.phases.pop = {G1 ; G2};
@@ -391,57 +391,57 @@ out.spikes.spks2 = spks2;
 
 function out = spikedetect(vsoma) 
 
-% Detect spikes with threshold
-noneurons = size(vsoma,1);
+    % Detect spikes with threshold
+    noneurons = size(vsoma,1);
 
-transient_to_exclude = 1;
+    transient_to_exclude = 1;
 
-A = zeros(noneurons,21);
+    A = zeros(noneurons,21);
 
-for i = 1:noneurons
-   abovethreshold{i} = find(vsoma(i,transient_to_exclude:end)>-30);
-   b{i} = diff([-2 abovethreshold{i}]);
-   spikeonset = find(b{i}>1);
-   d{i} = abovethreshold{i}(spikeonset);
-   ISI{i} = diff(d{i});
-   freq{i} = 1./ISI{i}*1000;
-   med{i} = median(freq{i});
-     
-        
-    if ~isempty(freq{i})
-        B = histc(freq{i},[0:.5:10]);  
-        A(i,:) = B;
-        
+    for i = 1:noneurons
+       abovethreshold{i} = find(vsoma(i,transient_to_exclude:end)>-30);
+       b{i} = diff([-2 abovethreshold{i}]);
+       spikeonset = find(b{i}>1);
+       d{i} = abovethreshold{i}(spikeonset);
+       ISI{i} = diff(d{i});
+       freq{i} = 1./ISI{i}*1000;
+       med{i} = median(freq{i});
+
+
+        if ~isempty(freq{i})
+            B = histc(freq{i},[0:.5:10]);  
+            A(i,:) = B;
+
+        end
+
+        if isempty(freq{i})
+            freq{i} = [0];
+            med{i} = [0];
+        end
+
     end
-    
-    if isempty(freq{i})
-        freq{i} = [0];
-        med{i} = [0];
+
+    popmedian = cell2mat(med);
+
+    popfreq = median(popmedian);
+
+    % Find proportion of spiking cells
+    spkneurons = [find(~cellfun(@isempty,d))];
+    propspkneurons = numel(spkneurons)/(noneurons);
+
+
+    for i = 1:noneurons;
+        spkspercell(i) = numel(d{i});
     end
-    
-end
-
-popmedian = cell2mat(med);
-
-popfreq = median(popmedian);
-
-% Find proportion of spiking cells
-spkneurons = [find(~cellfun(@isempty,d))];
-propspkneurons = numel(spkneurons)/(noneurons);
-
- 
-for i = 1:noneurons;
-	spkspercell(i) = numel(d{i});
-end
 
 
 
 
-out.spikespercell = spkspercell;
-out.medfreq = popmedian;
-out.popfrequency = popfreq;
-out.propspkneurons = propspkneurons;
-out.cellISI = ISI;
+    out.spikespercell = spkspercell;
+    out.medfreq = popmedian;
+    out.popfrequency = popfreq;
+    out.propspkneurons = propspkneurons;
+    out.cellISI = ISI;
 
 
 

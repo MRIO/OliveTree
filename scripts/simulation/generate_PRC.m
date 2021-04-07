@@ -46,8 +46,8 @@
 
 
 cell_function = 'vanilla';
-synapse_type = 'gaba_dend';
-% synapse_type = 'ampa_dend';
+synapse_type_1 = 'gaba_dend';
+synapse_type_2 = 'ampa_dend';
 phase_partitions  = 15;
 
 prep_conditions    = 1;
@@ -67,7 +67,7 @@ to_report = {'V_soma','V_dend'};
 % global 
 	dt =0.02;
 	fs = 1/dt;
-	simtime  = 450;
+	simtime  = 600;
 
 % network parameters
 	gap = eps; % mS/cm^2
@@ -93,8 +93,17 @@ to_report = {'V_soma','V_dend'};
 	pert.mask  	  {1} = create_input_mask(netsize, 'dist_to_center','radius',3, 'synapseprobability', 1,'plotme',1);
 	pert.amplitude{1} = 1;
 	pert.duration {1} = 1;
-	pert.type	  {1} = synapse_type;
+	pert.type	  {1} = synapse_type_1;
 	pert.triggers{1} = [100];
+    
+ % perturbation
+	pert.mask  	  {2} = create_input_mask(netsize, 'dist_to_center','radius',3, 'synapseprobability', 1,'plotme',1);
+	pert.amplitude{2} = 1;
+	pert.duration {2} = 1;
+	pert.type	  {2} = synapse_type_2;
+	pert.triggers{2} = [100];
+    
+    
 
 % noise
 	sametoall = 0.0;

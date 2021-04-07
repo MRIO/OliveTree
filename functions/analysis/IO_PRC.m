@@ -1,4 +1,4 @@
-function out =  IO_PRC(neuron, pert)
+function out =  IO_PRC(neuron, pert, phase_partitions)
 
 % given a single neuron, generate it's PRC for the specified synapse type.
 
@@ -11,7 +11,7 @@ function out =  IO_PRC(neuron, pert)
 % 1.5. Measure phases of stimulated population
 % 1.6. For every stimulated phase, find next peak
 
-phase_partitions  = 15;
+
 
 
 cell_function = 'vanilla';
@@ -19,8 +19,8 @@ cell_function = 'vanilla';
 prep_conditions    = 1;
 
 simtime  = 800;
-compute_transients = 1; transienttime = 600;
-simtime = 500
+compute_transients = 1; transienttime = 1500;
+simtime = 700
 stimulate    = 1;
 volumetric_activity = 0; % slow
 
@@ -39,14 +39,15 @@ to_report = {'V_soma','V_dend'};
 % network parameters
 	gap = eps; % mS/cm^2
 	
-	
 % network
 
     netsize = [1 1 1];
 
 % perturbation parameters
-      
-	
+
+cell_function = 'vanilla';
+
+
 % noise
 	sametoall = 0.0;
 	noise_parameters = [0 0 0 rseed]; % pA/ms per cell - 3.5 3 1
@@ -54,9 +55,9 @@ to_report = {'V_soma','V_dend'};
 
 % calc steady state
 
-    description = 'steady_state with Vclamp';
+    description = 'steady_state';
 % 	  Vclamp = -60; [steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',0.02,'cell_parameters', neuron , 'cell_function', cell_function, 'W',0,'ou_noise', noise_parameters, 'sametoall',sametoall, 'appVoltage', Vclamp, 'displaytext', description);
-    [steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',0.02,'cell_parameters', neuron , 'cell_function', cell_function, 'W',0,'ou_noise', noise_parameters, 'sametoall',sametoall, 'displaytext', description);
+    [steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',0.05,'cell_parameters', neuron , 'cell_function', cell_function, 'W',0,'ou_noise', noise_parameters, 'sametoall',sametoall, 'displaytext', description);
 
 
 	description = 'unperturbed_state';
@@ -64,7 +65,7 @@ to_report = {'V_soma','V_dend'};
 								'delta',dt,'cell_parameters', neuron,'W',0,'ou_noise', noise_parameters, ...
 	 							'sametoall',sametoall, 'tempState', steady_state.lastState, 'displaytext', description);
 
-vs_amplitude = max(unperturbed_state.networkHistory.V_soma) - min(unperturbed_state.networkHistory.V_soma);
+    vs_amplitude = max(unperturbed_state.networkHistory.V_soma) - min(unperturbed_state.networkHistory.V_soma);
 
 
 
@@ -78,6 +79,7 @@ LOCS(1) = [];
 
 
 if isempty(LOCS)
+    disp('IO_PRC found no peaks')
     keyboard
 else
     periods=diff(LOCS)
@@ -85,15 +87,11 @@ else
 end
 
 
-
-
 pertphases = round(linspace(LOCS(1),LOCS(2),phase_partitions));
 
 
 
-%%
-
-% add perturbation at different phases and compute
+%% add perturbation at different phases and compute
 
 VV = unperturbed_state.networkHistory.V_soma;
 
@@ -110,11 +108,8 @@ parfor k = 1:length(pertphases)
 
 end
 
-%%
-
-% compute phases and check
+%% compute phases and check
 k = 0; t = [LOCS(2)-50:LOCS(2)+50]; PP = phases;
-
 
 for pertphase = pertphases
 	k = k+1;
@@ -146,7 +141,7 @@ out.peaktimes = LOCS;
 out.peakamps  = newPKS;
 out.newPeaks  = newLOCS;
 out.VS = VV;
-
+out.steadystate = steady_state;
 
 % k = 0; t = [LOCS(2)-50:LOCS(2)+50];
 % for pertphase = pertphases
@@ -175,6 +170,12 @@ function VS = perturb_net(pertphase, netsize ,simtime, dt, ...
 		sametoall, pert , steady_state)
 
     pert.triggers{1} = pertphase;
+    
+    if length(pert.triggers) == 1
+        pert.triggers{2} = [];
+    else
+        pert.triggers{2} = pert.triggers{2} + pertphase;
+    end
     
 	VS = IOnet( 'networksize', netsize , 'time',simtime,'delta',dt, ...
 		'cell_parameters', neuron , 'cell_function', cell_function, 'W',0 ,'ou_noise', noise_parameters,...

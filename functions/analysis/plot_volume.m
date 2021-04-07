@@ -1,7 +1,7 @@
 function plot_volume(V_soma_unwrapped, coords, ttt)
 
-fname = ['volume_' num2str(now)];
-savemovie = 0;
+fname = ['volume_' datestr(now,'YYMMDD_hh-mm')];
+savemovie = 1;
 frames2file = 0;
 plotdiffact = 0;
 if plotdiffact
@@ -43,7 +43,7 @@ fig_volume = figure('color', [1 1 1]);
 ax_volume = axes;
 colormap(ax_volume, jet(128));
 colorbar
-for tt = 1:size(V_soma_unwrapped,2)
+for tt = ttt
 	VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), V_soma_unwrapped(:,tt));
 	NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), 1);
 	NNNN(NNNN==0)=1;
@@ -82,12 +82,13 @@ for tt = 1:size(V_soma_unwrapped,2)
 	vol3d('cdata',CCCC, 'Alpha', AAA , 'texture','3D');
 
 
-	if tt==1;view(3) ; view(-22,-56.4);; axis tight;  daspect([1 1 1]); end %axis off; end
+	if tt==ttt(1);view(3) ; view(-22,-56.4);; axis tight;  daspect([1 1 1]); end %axis off; end
 
-	title([num2str(ttt(tt)) 'ms'])
+	title([num2str(tt) 'ms'])
 	drawnow
 
 	if savemovie
+        axis off
 		writeVideo(vidObj, getframe(fig_volume))
 	end
 
