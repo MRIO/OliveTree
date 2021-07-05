@@ -150,13 +150,14 @@ end
 % [=================================================================]
 %  create cells
 % [=================================================================]
+cal_boost = 0.0;
 
 cell_function = 'vanilla'; % 'devel'
 
 def_neurons = createDefaultNeurons(noneurons,'celltypes','random_norm', 'rng', thisseed) 
 
 def_neurons.gbar_gaba_dend = def_neurons.gbar_gaba_dend + 0.75; % subthreshold
-def_neurons.g_CaL = def_neurons.g_CaL + .1;
+def_neurons.g_CaL = def_neurons.g_CaL + cal_boost;
 
 % [================================================]
 % 		 input
@@ -172,7 +173,6 @@ sametoall = 0.05;
 %  Distribute Ampa Perturbation over time and masks
 % [================================================]
 
-
 pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-50, -50, 0], 'synapseprobability', 1,'plotme',0)
 pert.amplitude{1} = 1;
 pert.duration {1} = 1;
@@ -183,73 +183,15 @@ pert.amplitude{2} = 1
 pert.duration {2} = 1;
 pert.type	  {2} = 'gaba_dend';
 
-
-
 scatter3(somatapositions(:,1), somatapositions(:,2), somatapositions(:,3), 200, pert.mask{1} + pert.mask{2}*2 -1,'filled'), axis equal
-
 
 cm = [150 147 130 ; 250 35 29 ; 60 35 250 ; 200 35 190]/255;
 colormap(cm)
 
-
-
-
 % apply some current to check the behavior of the cells
 I_app = [];
 
-
-
-
-% [===========================================================================================================]
- 
 %%
-
-%%================================================]
-% 		 compute transients/steadystate
-%=================================================]
-s = 0;
-neurons = def_neurons;
-calfactors = [-.1 0 .1];
-for calfact = calfactors
-    s = s+1;
-	neurons.g_CaL = def_neurons.g_CaL + calfact;
-    
-	 cal_sim{s} = IOnet( 'cell_parameters', neurons, ...
-	 		'perturbation', [], ...
-		   	'networksize', [1 1 noneurons] ,'time',steadystate_time ,'W', brick.W ,'ou_noise', ounoise_params , ...
-		   	'to_report', to_report ,'gpu', gpu , ...
-		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
-	 cal_sim{s}.note = 'calciumL factors';
-end
-
-%
-%% oscillating cells in network
-
-figure
-for i = 1:length(calfactors)
-
-subplot(3,1,i)
-osc_cells{i} = count_oscillating_cells(cal_sim{i},[500:1000], -1)
-osc_cells{i}.CaL_factor  = calfactors(i);
-title({['Ca L factor: ' num2str(calfactors(i))] ; ['prop osc:' num2str(osc_cells{i}.proportion)]})
-ylabel('cells')
-end
-xlabel('log amplitude (log(mV))')
-
-figure
-cmap = flipud(cbrewer('div', 'Spectral',30));
-for i = 1:length(calfactors)
-
-subplot(3,1,i)
-imagesc(cal_sim{i}.networkHistory.V_soma, [-65 -38]); colorbar; colormap(cmap)
-title({['Ca L factor: ' num2str(calfactors(i))] ; ['prop osc:' num2str(osc_cells{i}.proportion)]})
-ylabel('cells')
-end
-xlabel('log amplitude (log(mV))')
-
-
-%%
-
 
 %%================================================]
 % 		 compute transients/steadystate
@@ -275,9 +217,9 @@ if conjuctive_stimulation
     for interval = [-150:25:150]
         i = i + 1;
         
-        onset_of_exc = 1000;
-        onset_of_inh = onset_of_exc + interval;
-
+        onset_of_inh = 1000;
+        onset_of_exc = onset_of_inh + interval;
+    
         pert.triggers {1} = onset_of_exc;
         pert.triggers {2} = onset_of_inh;
 
@@ -299,11 +241,15 @@ if conjuctive_stimulation
 ff = figure
 savemovie = 0;
 animate = 0;
-for f = 1:5
+for f = 1:length(interval)
     combgroup = find(pert.mask{1}&pert.mask{2});
     ph_dist{f} = phase_distribution_over_time(sim{f},'duration', [500:1500],'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup')
     ph_dist{f}.pert = sim{f}.perturbation;
 end
+
+%%
+		eval(['save exc_inh_net' num2str(seed) '_'  date ' -v7.3'])
+
 
 %%
 for f = 1:5
@@ -312,9 +258,6 @@ for f = 1:5
 end
 
 
-%%
-
-		eval(['save exc_inh_net' num2str(seed) '_'  date ' -v7.3'])
 
 end
 %%
@@ -332,7 +275,7 @@ for f = 1:5
     plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},:),'color', [0 1 0])
     title(sim{f}.note)
     legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
-    alpha(.5)
+    alpha(.2)
 
 end
 
@@ -344,6 +287,7 @@ for f=1:5
     plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500),'color', cmap(f,:)), hold on
     title(num2str(sim{f}.perturbation.triggers{1}-sim{f}.perturbation.triggers{2}))
     ylim([-75,-40])
+    alpha(.3)
 end
 
 

@@ -278,11 +278,11 @@ fig1 = figure('color',[1 1 1])
 
 
 
-
+tim = tt;
 fig2 = figure('color',[1 1 1])
-	[phasedist1 tim] = hist(G1, length(tt));
-	[phasedist2 tim] = hist(G2, length(tt));
-	[phasedistA tim] = hist(GA, length(tt));
+	[phasedist1 tim] = hist(G1, length(tim));
+	[phasedist2 tim] = hist(G2, length(tim));
+	[phasedistA tim] = hist(GA, length(tim));
 
 	ax_ph(1) = subplot(3,1,1)
 	imagesc(1:length(G1),tim, phasedist1), axis xy
@@ -290,16 +290,19 @@ fig2 = figure('color',[1 1 1])
 	title('phase distribution over time (group1)')
 	xlabel('time (ms)')
 	ylabel('Prob(phase)')
+	xlim([tt(1),tt(end)])
 
 	ax_ph(2) = subplot(3,1,2)
 	imagesc(1:length(G2),tim, phasedist2), axis xy
 	colorbar
 	title('phase distribution over time (group2)')
+    xlim([tt(1),tt(end)])
 	
 	ax_ph(3) = subplot(3,1,3)
 	imagesc(1:length(GA),tim, phasedistA), axis xy
 	colorbar
 	title('phase distribution over time (all neurons)')
+    xlim([tt(1),tt(end)])
 
 	linkaxes(ax_ph, 'x')
 	xlim()

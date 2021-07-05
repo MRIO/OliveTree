@@ -1,6 +1,7 @@
 function out =  IO_PRC(neuron, pert, phase_partitions)
 
-% given a single neuron, generate it's PRC for the specified synapse type.
+% given a single InfOli neuron, generate it's PRC for the specified synapse type.
+
 
 % 0. generate steady_state
 % 1.   Generate unperturbed network
@@ -109,7 +110,7 @@ parfor k = 1:length(pertphases)
 end
 
 %% compute phases and check
-k = 0; t = [LOCS(2)-50:LOCS(2)+50]; PP = phases;
+k = 0;  PP = phases;
 
 for pertphase = pertphases
 	k = k+1;
@@ -120,8 +121,15 @@ for pertphase = pertphases
 		PP = [PP; perturbedPhases{k}];
 
 	% find new peaks
+        t = [pertphase+10:LOCS(2)+meanT];
 
-        [newPKS{k} newLOCS{k}] = findpeaks(perturbedPhases{k}(t), 'minpeakdistance',40);
+        try
+            [newPKS{k} newLOCS{k}] = findpeaks(perturbedPhases{k}(t), 'minpeakdistance',40);
+        catch
+            newPKS{k} = NaN;
+            newLOCS{k} = [];
+
+        end
 
 if isempty(newLOCS{k})
     peakDelta(k) = NaN;

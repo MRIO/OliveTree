@@ -34,7 +34,7 @@ delta = .02;
 cell_function = 'original'; % 'devel'
 nconn = 0;
 
-steadystate_time = 200;
+steadystate_time = 1000;
 simtime  = 1000;
 
 currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
@@ -43,13 +43,13 @@ currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 %  state variables to report
 % [=================================================================]
 
-activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
+activations =  {'V_soma','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
 currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};
 vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36' 'curr_noise_pert'};
 vs = {'V_soma' ,'V_dend','V_axon' };
-calciumconc = {'V_soma', 'Ca2Plus'}
-to_report = calciumconc;
+calciumconc = {'V_soma', 'Ca2Plus'};
+to_report = activations;
 
 
 
@@ -57,21 +57,21 @@ to_report = calciumconc;
 %  parameter grid
 % [=================================================================]
 % gaps = [];
-gaps = [0 0.05];
+gaps = [0];
 
-% pspace_type = 'pgrid';
+pspace_type = 'pgrid';
 % pspace_type = 'randomized';%
  % pspace_type = '2p_sweep';
-pspace_type = 'ca_extrusion';
+% pspace_type = 'ca_extrusion';
 
 switch pspace_type
 
 
 	case 'randomized'
 
-	noneurons = 10;
+	noneurons = 1000;
 	netsize = [noneurons 1 1];
-	def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+	def_neurons = createDefaultNeurons(noneurons,'celltypes','random_norm');
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
 
@@ -103,13 +103,13 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [1.1: .2: 3 ]; 		% CalciumL - conductance range
-	p2 = [0];      	    % g_h_s
-	p3 = [.15 .2 .25 .3 .4]; 	% g_int
+	p1 = [.6 .8 1.1]; 		% CalciumL - conductance range
+	p2 = [.12 1.2];      	    % g_h_s
+	p3 = [.15]; 	% g_int
 	p4 = [0.1];      	% g_h
-	p5 = [.2 ]; % ratio soma dendrite
-	p6 = [45];	% Ca act Potassium: not voltage dependent 
-	p7 = [4.5]; % Ca High threshold
+	p5 = [.15 ]; % ratio soma dendrite
+	p6 = [5:10:90];	% Ca act K: not voltage dependent (SK)
+	p7 = [.5:.5:8]; % Ca High threshold
 	p8 = [0.013];    % leak
 	p9 = [0.013];; % leak
 	p10 = [0];; % arbitrary
@@ -159,29 +159,6 @@ I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 
-% mask = create_input_mask(...)
-
-% perturbation_onsets{2} = 100;
-% perturbation_mask{2} 	= glu_mask; % selection of stimulated neurons
-% perturbation_type{2} = 'ampa';
-% perturbation_pulse_duration{2} = exc_pulse_dur;
-
-% perturbation_onsets{3} = gaba_onsets_dend;
-% perturbation_mask{3} 	= gaba_mask_dend; % selection of stimulated neurons
-% perturbation_type{3} = 'gaba_dend';
-% perturbation_pulse_duration{3} =  gaba_pulse_dur;
-
-% perturbation_onsets{4} = gaba_onsets_soma;
-% perturbation_mask{4} 	= gaba_mask_soma; % selection of stimulated neurons
-% perturbation_type{4} = 'gaba_soma';
-% perturbation_pulse_duration{4} =  gaba_pulse_dur;					
-
-% pert.triggers{1} = .001; % proportion of neurons receiveing ampa per bin
-% pert.mask{1} 	= create_input_mask(netsize,'all'); % selection of stimulated neurons
-% pert.type{1} = 'ampa_noise';
-% pert.duration{1} =  1;					
-
-
 pert = [];
 
 
@@ -229,8 +206,8 @@ for gap = gaps
 end
 % [===========================================================================================================]
 R = profile_sim(simresults{1},'tslice', [1:1000], 'plotme',1);
-% sel_fields = {'g_CaL', 'g_K_s','ampl', 'freq_each', 'meanVm'};
-sel_fields = {'arbitrary','ampl', 'freq_each', 'meanVm'};
+sel_fields = {'g_CaL' ,'g_CaH', 'g_K_Ca', 'ampl', 'freq_each', 'meanVm'};
+% sel_fields = {'arbitrary','ampl', 'freq_each', 'meanVm'};
 % sel_fields = def_neurons.Pnames;
 NDscatter(R.allneurons(:,sel_fields),1)
 

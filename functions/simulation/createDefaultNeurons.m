@@ -101,14 +101,15 @@ switch celltypes
 		cell_parameters = defneurons(noneurons);
 		
 		cell_parameters.g_CaL    = cell_parameters.g_CaL  .*(.5 + .2*randn(noneurons,1));
+        cell_parameters.g_CaH    = cell_parameters.g_CaH  .*(.5 + .2*randn(noneurons,1));
 		cell_parameters.g_int 	 = cell_parameters.g_int  .*(1  + .2*randn(noneurons,1));
-		cell_parameters.g_h 	 = cell_parameters.g_h 	  .*(1  + .1*randn(noneurons,1));
-		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca .*(1  + .1*randn(noneurons,1));
-		cell_parameters.g_ld     = cell_parameters.g_ld   .*(1  + .1*randn(noneurons,1));
-		cell_parameters.g_la     = cell_parameters.g_la   .*(1  + .1*randn(noneurons,1));
-		cell_parameters.g_ls     = cell_parameters.g_ls   .*(1  + .1*randn(noneurons,1));
+		cell_parameters.g_h 	 = cell_parameters.g_h 	  .*(1  + .2*randn(noneurons,1));
+		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca .*(1  + .2*randn(noneurons,1));
+		cell_parameters.g_ld     = cell_parameters.g_ld   .*(1  + .2*randn(noneurons,1));
+		cell_parameters.g_la     = cell_parameters.g_la   .*(1  + .2*randn(noneurons,1));
+		cell_parameters.g_ls     = cell_parameters.g_ls   .*(1  + .2*randn(noneurons,1));
 		cell_parameters.p1       = cell_parameters.p1     .*(1  + .2*randn(noneurons,1));
-		cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s.*(1  + .1*randn(noneurons,1));
+        cell_parameters.g_Kdr_d  = cell_parameters.g_Kdr_s.*(1  + .2*randn(noneurons,1));
         
         
 	case 'permuted'
@@ -376,7 +377,7 @@ cell_parameters.g_K_s    =  5     .* O;      % Potassium
 cell_parameters.g_ls     =  0.016 .* O;      % Leaks
     
 % Dendritic conductances (mS/cm2)
-cell_parameters.g_K_Ca   =  35      .* O;     % Potassium: not voltage dependent  (SK)
+cell_parameters.g_K_Ca   =  35      .* O;     % Ca act K: not voltage dependent  (SK)
 cell_parameters.g_CaH    =  4.5     .* O;     % High-threshold calcium
 cell_parameters.g_ld     =  0.016   .* O;     % Leak
 cell_parameters.g_h      =  .12     .* O;     % H current .12
