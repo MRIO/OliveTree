@@ -75,15 +75,15 @@ phaseResults = measureGlobalSync(unperturbed_state, 'duration', [1:simtime],'plo
 phases = phaseResults.hilbert.hilbert;
 
 % find original peaks
-[PKS LOCS] = findpeaks(phases, 'minpeakdistance',50);
-LOCS(1) = [];
+[PKS LOCS] = findpeaks(phases, 'minpeakdistance',50, 'minpeakheight', 5);
+LOCS(1) = []; % use second period to perturb (safer)
 
 
 if isempty(LOCS)
     disp('IO_PRC found no peaks')
     keyboard
 else
-    periods=diff(LOCS)
+    periods=diff(LOCS);
     meanT = mean(periods);
 end
 
@@ -112,39 +112,46 @@ end
 %% compute phases and check
 k = 0;  PP = phases;
 
+% Only search for peaks after this. Factor to account for causality
+% violation in estimation of phase.
+pec = 10;
+
 for pertphase = pertphases
 	k = k+1;
 
-	perturberdPhaseResults = measureGlobalSync(VS{k},'duration', [1:simtime], 'plotme', 0);
-		perturbedPhases{k} = perturberdPhaseResults.hilbert.hilbert;
+        perturbedPhaseResults = measureGlobalSync(VS{k},'duration', [1:simtime], 'plotme', 0);
+		perturbedPhases{k} = perturbedPhaseResults.hilbert.hilbert;
 
 		PP = [PP; perturbedPhases{k}];
 
 	% find new peaks
-        t = [pertphase+10:LOCS(2)+meanT];
+
+        
+        t = [pertphase+pec:LOCS(3)+meanT];
 
         try
-            [newPKS{k} newLOCS{k}] = findpeaks(perturbedPhases{k}(t), 'minpeakdistance',40);
+            [newPKS{k} newLOCS{k}] = findpeaks(perturbedPhases{k}(t), 'minpeakdistance',40,  'npeaks', 1, 'minpeakheight', 5.5);
         catch
             newPKS{k} = NaN;
             newLOCS{k} = [];
-
         end
 
-if isempty(newLOCS{k})
-    peakDelta(k) = NaN;
-	PRC(k) = NaN;
-else
-    peakDelta(k) = LOCS(2) - (t(1) + newLOCS{k}(1));
-	PRC(k) = peakDelta(k)/meanT;
+        if isempty(newLOCS{k})
+            peakDelta(k) = NaN;
+            PRC(k) = NaN;
+        else
+            peakDelta(k) = LOCS(2) - (t(1) + newLOCS{k}(1));
+            PRC(k) = peakDelta(k)/meanT;
+        end
+
+
+            
+        
 end
-
-
-end
-
+%%
 PRC = peakDelta/meanT;
 
-out.PRC = PRC;
+out.PRC = [(pertphases - LOCS(1))/meanT*2*pi ; PRC];
 out.peaktimes = LOCS;
 out.peakamps  = newPKS;
 out.newPeaks  = newLOCS;

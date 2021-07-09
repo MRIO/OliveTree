@@ -34,10 +34,10 @@ delta = .02;
 cell_function = 'original'; % 'devel'
 nconn = 0;
 
-steadystate_time = 1000;
-simtime  = 1000;
+steadystate_time = 10;
+simtime  = 500;
 
-currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
+currentstep = 10; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
 % [=================================================================]
 %  state variables to report

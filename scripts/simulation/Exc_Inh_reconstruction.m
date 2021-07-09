@@ -6,7 +6,7 @@ set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
 % [================================================]
 % 		 simulation parameters
 % [================================================]
-% clear
+%% clear
 
 steadystate_time = 1000; %ms
 simtime  = 3000; %ms
@@ -17,7 +17,7 @@ if exist('seed') ; seed = seed +1 ; else ; seed = 0; end
 thisseed = rng(int8(seed),'twister') % random seed only for simulations (not for network cells)
 thisseed.Seed
 
-% [================================================]
+%% [================================================]
 % simulations to perform
 % [================================================]
 
@@ -33,8 +33,11 @@ currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls
 vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36'};
 
+selection = {'V_soma', 'I_cx36', 'Hcurrent_q' ,'Calcium_l', 'Calcium_r'};
+
+
 % variables to store
-to_report = vsoma;
+to_report = selection;
 
 
 % [================================================]
@@ -56,7 +59,7 @@ nconns_bridges = 5;
 cells_in_cluster = 20;  % upperbound estimate from: % Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
 gap_curlies = .05;
 gap_bridges = .05;
-plotconn = 1;
+plotconn = 0;
 normalize = 1;
 
 
@@ -150,11 +153,11 @@ end
 % [=================================================================]
 %  create cells
 % [=================================================================]
-cal_boost = 0.0;
+cal_boost = -0.28;
 
 cell_function = 'vanilla'; % 'devel'
 
-def_neurons = createDefaultNeurons(noneurons,'celltypes','random_norm', 'rng', thisseed) 
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', thisseed) 
 
 def_neurons.gbar_gaba_dend = def_neurons.gbar_gaba_dend + 0.75; % subthreshold
 def_neurons.g_CaL = def_neurons.g_CaL + cal_boost;
@@ -173,12 +176,12 @@ sametoall = 0.05;
 %  Distribute Ampa Perturbation over time and masks
 % [================================================]
 
-pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-50, -50, 0], 'synapseprobability', 1,'plotme',0)
+pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-50, 0, 0], 'synapseprobability', 1,'plotme',0)
 pert.amplitude{1} = 1;
 pert.duration {1} = 1;
 pert.type	  {1} = 'ampa_dend';
 
-pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-50, 50, 0], 'synapseprobability', .85,'plotme',0) % probability adjusted to make number of cells in cluster match
+pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-50, 0, 0], 'synapseprobability', .85,'plotme',0) % probability adjusted to make number of cells in cluster match
 pert.amplitude{2} = 1
 pert.duration {2} = 1;
 pert.type	  {2} = 'gaba_dend';
@@ -214,7 +217,8 @@ end
 if conjuctive_stimulation
 
     i = 0;
-    for interval = [-150:25:150]
+    intervals = [-150:10:150];
+    for interval = intervals
         i = i + 1;
         
         onset_of_inh = 1000;
@@ -230,7 +234,9 @@ if conjuctive_stimulation
                 'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
 
         sim{i}.networkHistory.V_soma = single(sim{i}.networkHistory.V_soma);
-        sim{i}.networkHistory.I_cx36 = [];
+        sim{i}.networkHistory.Cal_r = single(sim{i}.networkHistory.Calcium_r);
+        sim{i}.networkHistory.Cal_l = single(sim{i}.networkHistory.Calcium_l);
+        sim{i}.networkHistory.h = single(sim{i}.networkHistory.Hcurrent_q);
         sim{i}.networkHistory.backgroundnoise = [];
         sim{i}.note = ['exc vs inh ' num2str(interval)]
 
@@ -241,7 +247,7 @@ if conjuctive_stimulation
 ff = figure
 savemovie = 0;
 animate = 0;
-for f = 1:length(interval)
+for f = 1:length(intervals)
     combgroup = find(pert.mask{1}&pert.mask{2});
     ph_dist{f} = phase_distribution_over_time(sim{f},'duration', [500:1500],'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup')
     ph_dist{f}.pert = sim{f}.perturbation;
@@ -252,17 +258,19 @@ end
 
 
 %%
-for f = 1:5
-    plot_volume(sim{f}.networkHistory.V_soma,somatapositions,[500:2000])
+plotvolume = 0;
+if plotvolume
+for f = 1:length(intervals)
+    plot_volume(sim{f}.networkHistory.V_soma,somatapositions,[500:1500])
     close all 
 end
-
+end
 
 
 end
 %%
     
-for f = 1:5
+for  f = 1:length(intervals)
     figure
     subplot(2,1,1)
     m = pert.mask{1}+pert.mask{2}*2;
@@ -282,7 +290,7 @@ end
 %% TRIGGERED RESPONSES
 figure
 cmap = jet(5)
-for f=1:5
+for f=1:length(intervals)
     subplot(1,5,f)
     plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500),'color', cmap(f,:)), hold on
     title(num2str(sim{f}.perturbation.triggers{1}-sim{f}.perturbation.triggers{2}))
@@ -293,7 +301,7 @@ end
 
 %%
 figure
-for f = 1:5
+for f=1:length(intervals)
     collected(f,:) = mean(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},:));
 end
 waterfall(collected)
@@ -305,7 +313,7 @@ imagesc(collected)
 
 %% 
 combmask = pert.mask{1}&pert.mask{2};
-for f = 1:5
+for f = f=1:length(intervals)
     
     last_stim  = max([sim{f}.perturbation.triggers{1},sim{f}.perturbation.triggers{2}]);
     

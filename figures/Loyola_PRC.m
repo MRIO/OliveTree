@@ -1,9 +1,10 @@
-npert = 12;
+npert = 16;
 
 %% Make neurons
 
 p1 = [.8 1.1]; 		% CalciumL - conductance range
 p2 = [4.5 9];  		% g_CaK (does not impact PRC without CaH.)
+% p2 = [1.2 2.4];  		% g_CaK (does not impact PRC without CaH.)
 
 [p{1} p{2} ] = ndgrid(p1,p2);
 
@@ -13,6 +14,7 @@ nneurons = prod(size(p{1}));
         neuron{n} = createDefaultNeurons(1, 'celltypes',  'clones');
         neuron{n}.g_CaL     = p{1}(n);
         neuron{n}.g_CaH 	= p{2}(n);
+%         neuron{n}.g_h 	= p{2}(n);
     end
 
 %% template for perturbation
@@ -61,11 +63,10 @@ nneurons = prod(size(p{1}));
 	pert.type	  {1} = 'gaba_dend';
 	
     gabavals = 10;
-    pertphases = 16;
      
     for n = 1:gabavals
         neuron{1}.gbar_gaba_dend =(n-1)*.4;
-        prc_gaba_pspace{n} = IO_PRC(neuron{1},pert, pertphases);
+        prc_gaba_pspace{n} = IO_PRC(neuron{1},pert, npert);
     end
 %%
 
@@ -103,10 +104,11 @@ title({['gaba sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['Ih: 
 end
 
 %%
+nneurons = 3
 f2 = figure;
-f1.Color = [1 1 1];
+f2.Color = [1 1 1];
 for n = 1:nneurons
-plot(1/(npert-1)*2*pi*[0:npert-1],prc_gaba_sub{n}.PRC); hold on;
+plot(prc_gaba_sub{n}.PRC(1,:), prc_gaba_sub{n}.PRC(2,:)); hold on;
 set(gca,'Colormap', cbrewer('qual', 'Set2', 11))
 title({['gaba sub PRC']})
 end
@@ -132,7 +134,7 @@ end
 f4 = figure;
 f4.Color = [1 1 1];
 for n = 1:nneurons
-plot(1/(npert-1)*2*pi*[0:npert-1],prc_gaba_supra{n}.PRC); hold on;
+plot(prc_gaba_supra{n}.PRC(1,:), prc_gaba_supra{n}.PRC(2,:)); hold on;
 set(gca,'Colormap', cbrewer('qual', 'Set2', 11))
 title('PRC gaba supra')
 end
@@ -154,7 +156,7 @@ end
 f6 = figure; clf;
 f6.Color = [1 1 1];
 for n = 1:nneurons
-plot(1/(npert-1)*2*pi*[0:npert-1],prc_ampa_sub{n}.PRC); hold on;
+plot(prc_ampa_sub{n}.PRC(1,:), prc_ampa_sub{n}.PRC(2,:)); hold on;
 end
 title('PRC ampa sub')
 legend({num2str([1:4]')})
@@ -175,7 +177,7 @@ end
 f8 = figure; clf;
 f8.Color = [1 1 1];
 for n = 1:nneurons
-plot(1/(npert-1)*2*pi*[0:npert-1],prc_ampa_supra{n}.PRC); hold on;
+plot(prc_ampa_supra{n}.PRC(1,:), prc_ampa_supra{n}.PRC(2,:)); hold on;
 end
 title('PRC ampa supra')
 legend({num2str([1:4]')})
@@ -200,7 +202,7 @@ end
 f10 = figure;
 f10.Color = [1 1 1];
 for n = 1:gabavals
-plot(1/(npert-1)*2*pi*[0:npert],prc_gaba_pspace{n}.PRC); hold on;
+plot(prc_gaba_pspace{n}.PRC(1,:),prc_gaba_pspace{n}.PRC(2,:)); hold on;
 end
 legend(num2str(([1:gabavals]'-1)*.4))
 title('gaba prc pspace (stim=2ms)')
@@ -219,7 +221,7 @@ title('gaba prc pspace (stim=2ms)')
 f12 = figure;
 f12.Color = [1 1 1];
 for n = 1:gabavals
-plot(1/(npert-1)*2*pi*[0:npert-1],prc_gaba_pspace_d4{n}.PRC); hold on;
+plot(prc_gaba_pspace{n}.PRC(1,:),prc_gaba_pspace{n}.PRC(2,:)); hold on;
 end
 title('gaba prc pspace (stim=2ms)')
 legend(num2str(([1:gabavals]'-1)*.4))
