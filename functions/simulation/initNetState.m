@@ -49,6 +49,10 @@ if ~randomize
         % Calcium-dependent potassium
         state.Potassium_s = 0.0049291*ones(noNeurons,1);
 
+        % Calcium-activated Chloride
+        state.CaCC_cc = 0*ones(noNeurons,1);
+
+
         % H current
         state.Hcurrent_q = 0.0337836*ones(noNeurons,1);
         state.Hcurrent_q_s = 0.0337836*ones(noNeurons,1);

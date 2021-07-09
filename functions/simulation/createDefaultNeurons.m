@@ -382,6 +382,7 @@ cell_parameters.g_CaH    =  4.5     .* O;     % High-threshold calcium
 cell_parameters.g_ld     =  0.016   .* O;     % Leak
 cell_parameters.g_h      =  .12     .* O;     % H current .12
 cell_parameters.g_h_s    =  .12     .* O;     % H current, somatic
+cell_parameters.g_CaCC    =  .12     .* O;     % H current, somatic
 
 
 % Axon hillock conductances (mS/cm2)
@@ -404,11 +405,12 @@ cell_parameters.gbar_ampa_dend 	= O*.1;
 
 
 %% Reversal potentials
-cell_parameters.V_Na =  55 .* O;       % Sodium
-cell_parameters.V_K  = -75 .* O;       % Potassium
-cell_parameters.V_Ca = 120 .* O;       % Calcium
-cell_parameters.V_h  = -43 .* O;       % H current
-cell_parameters.V_l  =  10 .* O;       % Leak
+cell_parameters.V_Na    =  55 .* O;       % Sodium
+cell_parameters.V_K     = -75 .* O;       % Potassium
+cell_parameters.V_Ca    = 120 .* O;       % Calcium
+cell_parameters.V_h     = -43 .* O;       % H current
+cell_parameters.V_l     =  10 .* O;       % Leak
+cell_parameters.V_CaCC  = -40 .* O;       % Ca act Cl
 
 cell_parameters.V_gaba_dend = -75 .*O; % -70 from Devor and Yarom, 2002 // -75 from Loyola et al (2021?) with 625m opto in CN 
 cell_parameters.V_gaba_soma = -63 .*O; % from Devor and Yarom, 2002

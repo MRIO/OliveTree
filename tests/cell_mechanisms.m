@@ -4,6 +4,7 @@
 % mechanism = 'somatic components';
 % mechanism = 'amarillo_Ttype'
 mechanism = 'Ca activated K';
+mechanism = 'Ca activated Cl';
 % mechanism = 'high_thresh_vanilla';
 % mechanism = 'h_current_tests';
 % mechanism = 'high_thresh_gerstner';

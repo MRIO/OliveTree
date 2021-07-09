@@ -26,14 +26,16 @@ debugging = 1;
 % [=================================================================]
 %  simulation parameters
 % [=================================================================]
-delta = .02;
-
+delta = .025;
+	
 cell_function = 'devel';
 % cell_function = 'vanilla'; % 'devel'
 nconn = 3;
 
-steadystate_time = 1000;
-simtime  = 2000;
+currentstep = 10;
+
+steadystate_time = 200;
+simtime  = 1000;
 
 % currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
@@ -53,19 +55,21 @@ to_report = currents;
 %  parameter grid
 % [=================================================================]
 % gaps = [];
-gaps = [0 0.04];
+% gaps = [0 0.04];
+gaps = [0 ];
 
 
 % 9 Dimensional GRID: parameter ranges
-p1 = [4 5 6]; 		% CalciumL - conductance range
+p1 = [.8 1.1 1.5]; 		% CalciumL - conductance range
 p2 = [0];      	    % g_h_s
-p3 = [.05 .1 .15]; 	% g_int
-p4 = [.12 .6 1.2];      	% g_h
-p5 = [.1 .2]; % ratio soma dendrite
-p6 = [40 45];	% Ca act Potassium: not voltage dependent 
-p7 = [5.5]; % Ca High threshold
-p8 = [.01 .015];    % leak
-p9 = [1 .5]; % arbitrary
+p3 = [.15]; 	% g_int
+p4 = [1.2];      	% g_h
+p5 = [.15 ]; % ratio soma dendrite
+p6 = [35];	% Ca act Potassium: not voltage dependent 
+p7 = [5.5 8.5]; % Ca High threshold
+p8 = [.015];    % leak
+p9 = [1]; % arbitrary
+p10 = [0 1 5 10];
 
 
 % % 8 Dimensional GRID: parameter ranges
@@ -80,10 +84,10 @@ p9 = [1 .5]; % arbitrary
 % p9 = [0 .5 1 1.5]; % arbitrary
 
 
-[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9);
+[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9} p{10}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10);
 
-Pnames = {'CaL' 'ghs' 'gint' 'gh' 's/d' 'CaK' 'CaH' 'gL' 'arb'};
-Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:) p{9}(:)]; 
+Pnames = {'CaL' 'ghs' 'gint' 'gh' 's/d' 'CaK' 'CaH' 'gL' 'arb' 'gCaCC'};
+Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:) p{9}(:) p{10}(:)]; 
 
 noneurons = length(p{1}(:));
 netsize = [1 noneurons 1];noneurons = prod(netsize);
@@ -100,8 +104,8 @@ ounoise = [0 0 0 0];
 
 % apply some current to check the behavior of the cells
 I_app = [];
-% I_app = ones(noneurons, simtime*1/delta)*2;
-% I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
+I_app = ones(noneurons, simtime*1/delta)*2;
+I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 
@@ -145,6 +149,7 @@ def_neurons.g_ld = p{8}(:);
 def_neurons.g_ls = p{8}(:);
 def_neurons.g_la = p{8}(:);
 def_neurons.arbitrary = p{9}(:);
+def_neurons.g_CaCC = p{10}(:);
 
 def_neurons = jitter_cell_parameters(def_neurons,0.05);
 
@@ -160,8 +165,8 @@ if ~exist('st_st','var')
 	st_st.Plist = Plist;
 
 	% replayResults_3(st_st, 'plotallfields',1)
-	resultstable = profile_sim(st_st);
-	drawnow
+	% resultstable = profile_sim(st_st);
+	% drawnow
 
 end
 
@@ -192,7 +197,7 @@ for gap = gaps
 
 end
 % [===========================================================================================================]
-resultstable = profile_sim(simresults{1});
+R = profile_sim(simresults{1});
 
 
 
@@ -208,7 +213,7 @@ sel_cel_idx = ampl & freq & maxV & meanVm;
 waterfall(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
 plot(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
 
-sel_fields = {'g_CaL', 'g_K_Ca', 'g_int', 'p1', 'p2', 'ampl', 'freq_each', 'maxV', 'meanVm'}
+sel_fields = {'g_CaL', 'g_K_Ca', 'g_CaCC', 'minV', 'maxV', 'ampl', 'freq_each', 'maxV', 'meanVm'}
 sel_table = R.allneurons(sel_cel_idx,sel_fields);
 NDscatter(sel_table, 1)
 
