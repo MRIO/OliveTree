@@ -44,7 +44,7 @@ to_report = vsoma;
 
 nconns = 6;
 gap = .05;
-plotconn = 1;
+plotconn = 0;
 normalize = 1;
 
 load('JM394_horizontal_coordinates-MAO.mat')
@@ -71,7 +71,7 @@ cell_function = 'vanilla'; % 'devel'
 %=================================================]
 
 nets= 2;
-calfactors = [-.1:0.02 :.1];
+calfactors = [-.3:0.01 :-.2];
 cal_sim = cell(length(calfactors),nets)
 for n = 1:nets
     
@@ -81,7 +81,7 @@ for n = 1:nets
     parfor s = 1:length(calfactors)
         neurons = struct();
         thisseed = rng(int8(seed),'twister') % random seed only for simulations (not for network cells)
-        neurons = createDefaultNeurons(noneurons,'celltypes','random_norm', 'rng', thisseed);
+        neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', thisseed);
         neurons.g_CaL = neurons.g_CaL + calfactors(s);
         neurons.seed = thisseed;
 
@@ -90,7 +90,7 @@ for n = 1:nets
                 'networksize', [1 1 noneurons] ,'time',simtime ,'W', W  , ...
                 'to_report', to_report ,'gpu', gpu , ...
                 'cell_function', cell_function ,'delta',delta,'sametoall', 0);
-         cal_sim{s,n}.note = ['calciumL factor:' num2str(calfact) , ' net:' num2str(n)] ;
+         cal_sim{s,n}.note = ['calciumL factor:' num2str(calfactors) , ' net:' num2str(n)] ;
     end
     seed = seed +1;
 end
@@ -129,3 +129,21 @@ xlabel('log amplitude (log(mV))')
 end
 ylabel('cells')
     
+
+%%
+figure
+for n = 1:nets
+for i = 1:length(calfactors)
+
+     osc_pspace(i,n) = osc_cells{i,n}.proportion;
+     xtick(i) = osc_cells{i,n}.CaL_factor;
+     
+    
+end
+end
+
+plot(xtick, osc_pspace,'o-')
+title('prop osc cells')
+xlabel('Ca L')
+ylabel('proportion')
+legend({'net 1' ; 'net 2'})

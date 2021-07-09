@@ -100,16 +100,16 @@ switch celltypes
 
 		cell_parameters = defneurons(noneurons);
 		
-		cell_parameters.g_CaL    = cell_parameters.g_CaL  .*(.5 + .2*randn(noneurons,1));
-        cell_parameters.g_CaH    = cell_parameters.g_CaH  .*(.5 + .2*randn(noneurons,1));
-		cell_parameters.g_int 	 = cell_parameters.g_int  .*(1  + .2*randn(noneurons,1));
-		cell_parameters.g_h 	 = cell_parameters.g_h 	  .*(1  + .2*randn(noneurons,1));
-		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca .*(1  + .2*randn(noneurons,1));
-		cell_parameters.g_ld     = cell_parameters.g_ld   .*(1  + .2*randn(noneurons,1));
-		cell_parameters.g_la     = cell_parameters.g_la   .*(1  + .2*randn(noneurons,1));
-		cell_parameters.g_ls     = cell_parameters.g_ls   .*(1  + .2*randn(noneurons,1));
-		cell_parameters.p1       = cell_parameters.p1     .*(1  + .2*randn(noneurons,1));
-        cell_parameters.g_Kdr_d  = cell_parameters.g_Kdr_s.*(1  + .2*randn(noneurons,1));
+		cell_parameters.g_CaL    = cell_parameters.g_CaL  .*subplus((.5 + .2*randn(noneurons,1)));
+        cell_parameters.g_CaH    = cell_parameters.g_CaH  .*subplus((.5 + .1*randn(noneurons,1)));
+		cell_parameters.g_int 	 = cell_parameters.g_int  .*subplus((1  + .1*randn(noneurons,1)));
+		cell_parameters.g_h 	 = cell_parameters.g_h 	  .*subplus((1  + .1*randn(noneurons,1)));
+		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca .*subplus((1  + .1*randn(noneurons,1)));
+		cell_parameters.g_ld     = cell_parameters.g_ld   .*subplus((1  + .1*randn(noneurons,1)));
+		cell_parameters.g_la     = cell_parameters.g_la   .*subplus((1  + .1*randn(noneurons,1)));
+		cell_parameters.g_ls     = cell_parameters.g_ls   .*subplus((1  + .1*randn(noneurons,1)));
+		cell_parameters.p1       = cell_parameters.p1     .*subplus((1  + .1*randn(noneurons,1)));
+        cell_parameters.g_Kdr_d  = cell_parameters.g_Kdr_s.*subplus((1  + .1*randn(noneurons,1)));
         
         
 	case 'permuted'
