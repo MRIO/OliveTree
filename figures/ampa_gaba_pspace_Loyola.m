@@ -5,24 +5,27 @@
 
 
 gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 30; sametoall = 0.0; spont = 1; conntype = 'iso' ;  gapcomp = 0;
-simtime = 1500;
+simtime = 500;
 netsize = [1 1 1]
 
 M1 = zeros(prod(netsize),1); M1(1) = 1;
 M2 = zeros(prod(netsize),1); M2(3) = 1;
 
 
-% singlesim
+ % singlesim
 
-
+dt = 0.25
 
 gaba_conds = [.1:.5:4.1];
 ampa_conds = [.1:.1:.8];
+
 
 i = 0;
 for gcal = [.5 1.1];
 
 	neurons.g_CaL = gcal;
+	neurons.g_CaH = 1.5;
+
 
 	for gbg = gaba_conds
 		i = i+1;
@@ -67,13 +70,13 @@ for gcal = [.5 1.1];
 end
 
 
-
+neurons.g_CaL = 1.5;
 
 
 i = 0;
-for gcal = [.5 1.1];
+for param = [0 2];
 
-	neurons.g_CaL = gcal;
+	neurons.g_CaCC = param;
 
 	for gba = [.1:.1:.8]
 		i = i+1;
@@ -83,7 +86,7 @@ for gcal = [.5 1.1];
 		pert.mask{1}  	= M1;
 		pert.type{1}	  = 'ampa_dend';
 		pert.duration{1}  = 2;
-		pert.triggers{1} = [1000];
+		pert.triggers{1} = [200];
 
 		simresults = IOnet('networksize', netsize,'time',simtime,'delta',dt,...
 		'cell_parameters',neurons,'W',W.W*gap ,...

@@ -10,9 +10,9 @@
 % input current (I 􏰅 0 􏰈A/cm2) was 􏰄57 mV, whereas the app
 % input resistance derived from the voltage-current curve was 36 Mohm􏰐. When I 􏰅= -􏰄5 􏰈A/cm2, the potential was 􏰄80.3 mV app
 % and the input resistance was 14 M􏰐ohm, reflecting the effect of the h current.
-% When Iapp 􏰅 􏰃5 􏰈A/cm2, the membrane potential was 􏰄46 mV and the input resistance was only 10 M􏰐 because of the effect of the delayed rectifier current.
+% When Iapp = 5 uA/cm2, the membrane potential was -46 mV and the input resistance was only 10 Mohm because of the effect of the delayed rectifier current.
 % These steady-state values are in agreement with published experimental data (see for instance Table 1 in Llinas and Yarom 1981a;
-% Fig. 1A in Yarom and Llina ́s 1987; Manor 1995). Note that 1 􏰈A/cm2 corresponds to 0.1 nA for a total cell surface of 10,000 u􏰈m2.
+% Fig. 1A in Yarom and Llina ́s 1987; Manor 1995). Note that 1 uA/cm2 corresponds to 0.1 nA for a total cell surface of 10,000 um2.
 
 
 % [=================================================================]
@@ -22,7 +22,7 @@ clear
 rng(0,'twister')
 gpu = 1;
 
-debugging = 1;
+debugging = 0;
 % [=================================================================]
 %  simulation parameters
 % [=================================================================]
@@ -35,7 +35,7 @@ nconn = 3;
 currentstep = 10;
 
 steadystate_time = 200;
-simtime  = 1000;
+simtime  = 2000;
 
 % currentstep = 5; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
@@ -43,12 +43,12 @@ simtime  = 1000;
 %  state variables to report
 % [=================================================================]
 
-activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
-currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};
+activations =  {'V_soma','V_dend','V_axon','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a', 'CaCC_cc'};
+currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_CaCC', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};
 vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36' 'curr_noise_pert'};
 vs = {'V_soma' ,'V_dend','V_axon' };
-to_report = currents;
+to_report = activations;
 
 
 % [=================================================================]
@@ -60,21 +60,21 @@ gaps = [0 ];
 
 
 % 9 Dimensional GRID: parameter ranges
-p1 = [.8 1.1 1.5]; 		% CalciumL - conductance range
-p2 = [0];      	    % g_h_s
+p1 = [1 3]; 		% CalciumL - conductance range
+p2 = [0 ];      	    % g_h_s
 p3 = [.15]; 	% g_int
 p4 = [1.2];      	% g_h
 p5 = [.15 ]; % ratio soma dendrite
-p6 = [35];	% Ca act Potassium: not voltage dependent 
-p7 = [5.5 8.5]; % Ca High threshold
-p8 = [.015];    % leak
-p9 = [1]; % arbitrary
-p10 = [0 1 5 10];
+p6 = [35 55];	% Ca act Potassium: not voltage dependent 
+p7 = [2.5 4.5]; % Ca High threshold
+p8 = [.016];    % leak
+p9 = [ 1 2]; % arbitrary
+p10 = [.1 1 ];
 
 
 % % 8 Dimensional GRID: parameter ranges
 % p1 = [.6:.2:1.5]; 		% CalciumL - conductance range
-% p2 = [.0];      	    % g_h_s
+% p2 = [.0 1];      	    % g_h_s
 % p3 = [.13 .17]; 		% g_int
 % p4 = [.12 :.24: 1.2];      	% g_h
 % p5 = [.15];       	% ratio soma dendrite
@@ -104,9 +104,9 @@ ounoise = [0 0 0 0];
 
 % apply some current to check the behavior of the cells
 I_app = [];
-I_app = ones(noneurons, simtime*1/delta)*2;
-I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
-% I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
+I_app = zeros(noneurons, simtime*1/delta);
+I_app(:,(200*(1/delta):210*(1/delta))) = currentstep*delta; % nAmpere 20/dt [nA/s.cm^2] 
+% I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep/dt;  % nAmpere 20/dt [nA/s.cm^2] 
 
 
 % mask = create_input_mask(...)
@@ -207,15 +207,16 @@ freq   = table2array(R.allneurons(:,'freq_each'))  >2 | table2array(R.allneurons
 maxV   = table2array(R.allneurons(:,'maxV'))  <-30;
 meanVm = table2array(R.allneurons(:,'meanVm'))<-55;
 
-
+%%
 sel_cel_idx = ampl & freq & maxV & meanVm;
+sel_cel_idx = [1:noneurons];
 
-waterfall(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
-plot(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
+waterfall(simresults{1}.networkHistory.V_soma')
+% plot(simresults{1}.networkHistory.V_soma(sel_cel_idx,:)')
 
-sel_fields = {'g_CaL', 'g_K_Ca', 'g_CaCC', 'minV', 'maxV', 'ampl', 'freq_each', 'maxV', 'meanVm'}
+sel_fields = {'g_CaL', 'g_K_Ca', 'g_CaCC', 'minV', 'maxV', 'ampl', 'freq_each', 'maxV', 'meanVm', 'minV'}
 sel_table = R.allneurons(sel_cel_idx,sel_fields);
 NDscatter(sel_table, 1)
 
 
-save cellset_devel_3 sel_cel_idx simresults resultstable
+% save cellset_devel_3 sel_cel_idx simresults R

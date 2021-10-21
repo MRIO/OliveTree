@@ -8,7 +8,7 @@ set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
 % [================================================]
 %% clear
 
-steadystate_time = 1000; %ms
+steadystate_time = 500; %ms
 simtime  = 3000; %ms
 delta = .025;
 gpu = 1;
@@ -41,6 +41,16 @@ to_report = selection;
 
 
 % [================================================]
+% 		 input
+% [================================================]
+
+% currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
+% ounoise_params = [.2 .3 0 5];
+% ounoise_params = [1/50 .1 0 double(thisseed.Seed)];
+ounoise_params = [0 0 0 double(thisseed.Seed)];
+sametoall = 0.05;
+
+% [================================================]
 % 		connectivity
 % [================================================]
  
@@ -57,8 +67,8 @@ to_report = selection;
 nconns_curlies = 5;
 nconns_bridges = 5;
 cells_in_cluster = 20;  % upperbound estimate from: % Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
-gap_curlies = .05;
-gap_bridges = .05;
+gap_curlies = .03;
+gap_bridges = .03;
 plotconn = 0;
 normalize = 1;
 
@@ -153,7 +163,9 @@ end
 % [=================================================================]
 %  create cells
 % [=================================================================]
-cal_boost = -0.28;
+cal_boost = -0.28; %30% oscillating cells without noise g=0.05
+
+cal_boost = -0.4; %30% oscillating cells without noise g=0.05
 
 cell_function = 'vanilla'; % 'devel'
 
@@ -162,34 +174,29 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', th
 def_neurons.gbar_gaba_dend = def_neurons.gbar_gaba_dend + 0.75; % subthreshold
 def_neurons.g_CaL = def_neurons.g_CaL + cal_boost;
 
-% [================================================]
-% 		 input
-% [================================================]
-
-% currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
-% ounoise_params = [.2 .3 0 5];
-ounoise_params = [0 0 0 double(thisseed.Seed)];
-sametoall = 0.05;
 
 
+%%
 % [================================================]
 %  Distribute Ampa Perturbation over time and masks
 % [================================================]
 
-pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-50, 0, 0], 'synapseprobability', 1,'plotme',0)
+pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-60, 0, 0], 'synapseprobability', .85,'plotme',0)
 pert.amplitude{1} = 1;
 pert.duration {1} = 1;
 pert.type	  {1} = 'ampa_dend';
 
-pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-50, 0, 0], 'synapseprobability', .85,'plotme',0) % probability adjusted to make number of cells in cluster match
+pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-40, 0, 0], 'synapseprobability', .85,'plotme',0) % probability adjusted to make number of cells in cluster match
 pert.amplitude{2} = 1
 pert.duration {2} = 1;
 pert.type	  {2} = 'gaba_dend';
 
+figure
 scatter3(somatapositions(:,1), somatapositions(:,2), somatapositions(:,3), 200, pert.mask{1} + pert.mask{2}*2 -1,'filled'), axis equal
 
-cm = [150 147 130 ; 250 35 29 ; 60 35 250 ; 200 35 190]/255;
+cm = [150 147 130 ; 60 35 250  ; 250 35 29 ; 200 35 190]/255;
 colormap(cm)
+alpha(.3)
 
 % apply some current to check the behavior of the cells
 I_app = [];
@@ -240,27 +247,25 @@ if conjuctive_stimulation
         sim{i}.networkHistory.backgroundnoise = [];
         sim{i}.note = ['exc vs inh ' num2str(interval)]
 
+        
     end
-   
+   		eval(['save exc_inh_net' num2str(seed) '_'  date ' -v7.3'])
 %%
     
 ff = figure
 savemovie = 0;
 animate = 0;
-for f = 1:length(intervals)
+for f = [1 17 22]
     combgroup = find(pert.mask{1}&pert.mask{2});
     ph_dist{f} = phase_distribution_over_time(sim{f},'duration', [500:1500],'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup')
     ph_dist{f}.pert = sim{f}.perturbation;
 end
 
-%%
-		eval(['save exc_inh_net' num2str(seed) '_'  date ' -v7.3'])
+close all
 
-
-%%
-plotvolume = 0;
+plotvolume = 1;
 if plotvolume
-for f = 1:length(intervals)
+for f = [17 22]
     plot_volume(sim{f}.networkHistory.V_soma,somatapositions,[500:1500])
     close all 
 end
@@ -289,11 +294,12 @@ end
 
 %% TRIGGERED RESPONSES
 figure
-cmap = jet(5)
+cmap = jet(length(intervals))
 for f=1:length(intervals)
-    subplot(1,5,f)
+    subplot(1,length(intervals),f)
     plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500),'color', cmap(f,:)), hold on
     title(num2str(sim{f}.perturbation.triggers{1}-sim{f}.perturbation.triggers{2}))
+    axis off
     ylim([-75,-40])
     alpha(.3)
 end
@@ -312,14 +318,15 @@ imagesc(collected)
 
 
 %% 
-combmask = pert.mask{1}&pert.mask{2};
-for f = f=1:length(intervals)
+combmask = pert.mask{1} & pert.mask{2};
+
+for f = 1:length(intervals)
     
     last_stim  = max([sim{f}.perturbation.triggers{1},sim{f}.perturbation.triggers{2}]);
     
-    osc_cells_pre_stim = count_oscillating_cells(sim{f}, [500:600], -1);
-    osc_cells_pos_stim = count_oscillating_cells(sim{f}, [last_stim+50:last_stim+150], -1);
-    osc_cells_late_stim = count_oscillating_cells(sim{f}, [last_stim+700:last_stim+900], -1);
+    osc_cells_pre_stim = count_oscillating_cells(sim{f}, [500:600], 0);
+    osc_cells_pos_stim = count_oscillating_cells(sim{f}, [last_stim+50:last_stim+150], 0);
+    osc_cells_late_stim = count_oscillating_cells(sim{f}, [last_stim+700:last_stim+900], 0);
     
     pre_stim(f)  = osc_cells_pre_stim.proportion;
     post_stim(f) = osc_cells_pos_stim.proportion;
@@ -337,11 +344,11 @@ ax = axes;
 
 data = [pre_stim', post_stim', late_stim']';
 plot(ax,[pre_stim', post_stim', late_stim']', '-o')
-legend(num2str([-125 -68 0 68 125]'))
+legend(num2str(intervals'))
 title('proportion of oscillating cells')
 ax.XTick= [1 2 3];
 ax.XTickLabel = {'Pre', 'Post', 'Late'}
-ax.ColorOrder = cbrewer('qual', 'Set1', 5);
+ax.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
 
 %%
 
@@ -350,21 +357,21 @@ ax2 = subplot(1,2,1);
 
 amplitudes = [mean(pre_stim_amp,2), mean(post_stim_amp,2), mean(late_stim_amp,2)]';
 plot(ax2,amplitudes, '-o')
-legend(num2str([-125 -68 0 68 125]'))
+legend(num2str(intervals'))
 title('amplitude of rebound')
 ax2.XTick= [1 2 3];
 ax2.XTickLabel = {'Pre', 'Post', 'Late'}
-ax2.ColorOrder = cbrewer('qual', 'Set1', 5);
+ax2.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
 ax2.YLim = [-60 -40];
 
 ax3 = subplot(1,2,2);
 amplitudes = [mean(pre_stim_amp(:,combmask),2), mean(post_stim_amp(:,combmask),2), mean(late_stim_amp(:,combmask),2)]';
 plot(ax3,amplitudes, '-o')
-legend(num2str([-125 -68 0 68 125]'))
+legend(num2str(intervals'))
 title('amplitude of rebound (stimulated cells)')
 ax3.XTick= [1 2 3];
 ax3.XTickLabel = {'Pre', 'Post', 'Late'}
-ax3.ColorOrder = cbrewer('qual', 'Set1', 5);
+ax3.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
 ax3.YLim = [-60 -40];
 
     

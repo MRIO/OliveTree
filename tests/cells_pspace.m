@@ -35,7 +35,7 @@ cell_function = 'original'; % 'devel'
 nconn = 0;
 
 steadystate_time = 10;
-simtime  = 500;
+simtime  = 700;
 
 currentstep = 10; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
@@ -103,24 +103,24 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [.6 .8 1.1]; 		% CalciumL - conductance range
-	p2 = [.12 1.2];      	    % g_h_s
+	p1 = [1.1]; 		% CalciumL - conductance range
+	p2 = [0];      	    % g_h_s
 	p3 = [.15]; 	% g_int
-	p4 = [0.1];      	% g_h
+	p4 = [.12];      	% g_h
 	p5 = [.15 ]; % ratio soma dendrite
-	p6 = [5:10:90];	% Ca act K: not voltage dependent (SK)
-	p7 = [.5:.5:8]; % Ca High threshold
-	p8 = [0.013];    % leak
-	p9 = [0.013];; % leak
-	p10 = [0];; % arbitrary
+	p6 = [15];	% Ca act K: not voltage dependent (SK)
+	p7 = [1.5]; % Ca High threshold
+	p8 = [0.016];    % leak
+	p9 = [0.016];; % leak
+	p10 = [1 5];; % arbitrary
 
 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9} p{10}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10);
 
-	Pnames = {'g_CaL' 'g_h_s' 'g_int' 'g_h' 'p1' 'g_K_Ca' 'g_CaH' 'g_ld' 'g_ls' 'gbar_ampa_soma'}';
+	Pnames = {'g_CaL' 'g_h_s' 'g_int' 'g_h' 'p1' 'g_K_Ca' 'g_CaH' 'g_ld' 'g_ls' 'arbitrary'}';
 	Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:) p{9}(:) p{10}(:)]; 
 
 	noneurons = length(p{1}(:));
-	netsize = [1 noneurons 1];noneurons = prod(netsize);
+	netsize = [1 noneurons 1]; noneurons = prod(netsize);
 
 	def_neurons = createDefaultNeurons(noneurons);
 	def_neurons.g_CaL    = p{1}(:);
@@ -130,10 +130,10 @@ switch pspace_type
 	def_neurons.p1  	 = p{5}(:);
 	def_neurons.g_K_Ca   = p{6}(:);       
 	def_neurons.g_CaH    = p{7}(:);     % High-threshold calcium
-	% def_neurons.arbitrary= p{8}(:);
 	def_neurons.g_ld = p{8}(:);
 	def_neurons.g_ls = p{9}(:);
-	def_neurons.gbar_ampa_soma = p{10}(:);
+    def_neurons.arbitrary= p{10}(:);
+% 	def_neurons.gbar_ampa_soma = p{10}(:);
 
 
 end
@@ -155,7 +155,7 @@ ounoise = [0 0 0 0];
 % apply some current to check the behavior of the cells
 I_app = [];
 I_app = zeros(noneurons, simtime*1/delta);
-I_app(:,(100*(1/delta):110*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
+I_app(:,(300*(1/delta):310*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 

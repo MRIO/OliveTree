@@ -71,7 +71,7 @@ cell_function = 'vanilla'; % 'devel'
 %=================================================]
 
 nets= 2;
-calfactors = [-.3:0.01 :-.2];
+calfactors = [-.3:0.1 :-.2];
 cal_sim = cell(length(calfactors),nets)
 for n = 1:nets
     

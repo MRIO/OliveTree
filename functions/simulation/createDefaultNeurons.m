@@ -6,7 +6,7 @@ function cell_parameters = createDefaultNeurons(varargin)
 	ip = inputParser;
 	ip.addOptional('noneurons',0)
 	
-	ip.addParameter('celltypes', 'none') 
+	ip.addParameter('celltypes', 'clones') 
 	ip.addParameter('Pnames', {'g_CaL' ;'g_int'; 'g_h'; 'g_K_Ca'; 'g_ld' ;'p1'} )
 	ip.addParameter('gapcompensation', 0) 
 	ip.addParameter('nogapcompensation', 0);

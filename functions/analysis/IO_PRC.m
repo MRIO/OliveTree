@@ -6,9 +6,9 @@ function out =  IO_PRC(neuron, pert, phase_partitions)
 % 0. generate steady_state
 % 1.   Generate unperturbed network
 % 1.2. Measure phase
-% 1.3. Partition one phase in 9 intervals from 0 to 1
+% 1.3. Partition one phase in N intervals from 0 to 1
 
-% 1.4. Stimulate network 9 times
+% 1.4. Stimulate network N times
 % 1.5. Measure phases of stimulated population
 % 1.6. For every stimulated phase, find next peak
 
@@ -20,7 +20,7 @@ cell_function = 'vanilla';
 prep_conditions    = 1;
 
 simtime  = 800;
-compute_transients = 1; transienttime = 1500;
+compute_transients = 1; transienttime = 500;
 simtime = 700
 stimulate    = 1;
 volumetric_activity = 0; % slow
@@ -58,7 +58,7 @@ cell_function = 'vanilla';
 
     description = 'steady_state';
 % 	  Vclamp = -60; [steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',0.02,'cell_parameters', neuron , 'cell_function', cell_function, 'W',0,'ou_noise', noise_parameters, 'sametoall',sametoall, 'appVoltage', Vclamp, 'displaytext', description);
-    [steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',0.05,'cell_parameters', neuron , 'cell_function', cell_function, 'W',0,'ou_noise', noise_parameters, 'sametoall',sametoall, 'displaytext', description);
+    [steady_state] = IOnet( 'networksize', netsize ,'time',transienttime,'delta',dt,'cell_parameters', neuron , 'cell_function', cell_function, 'W',0,'ou_noise', noise_parameters, 'sametoall',sametoall, 'displaytext', description);
 
 
 	description = 'unperturbed_state';
@@ -157,6 +157,7 @@ out.peakamps  = newPKS;
 out.newPeaks  = newLOCS;
 out.VS = VV;
 out.steadystate = steady_state;
+out.neuron = neuron;
 
 % k = 0; t = [LOCS(2)-50:LOCS(2)+50];
 % for pertphase = pertphases
