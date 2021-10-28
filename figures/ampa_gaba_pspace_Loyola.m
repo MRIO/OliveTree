@@ -8,7 +8,7 @@ gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 30; sametoall = 0.0; spont = 1; c
 simtime = 1000;
 netsize = [1 1 1];
 W.W = 0;
-noise_level = [1/50 .01 0 0];
+noise_level = [1/tau .005 0 0];
 saveappliednoise = 0;
 displaytext = ['ampa gaba pspace loyola']
 to_report = {'V_soma', 'V_dend'}
@@ -22,9 +22,9 @@ M2 = zeros(prod(netsize),1); M2(3) = 1;
 
 neurons = createDefaultNeurons(1);
 
-dt = 0.25
+dt = 0.1
 
-gaba_conds = linspace(.1,4.1,9);
+gaba_conds = linspace(.1,2.1,9);
 ampa_conds = linspace(.1,1.1,9);
 
 
@@ -76,6 +76,17 @@ for gcal = [.5 1.1];
 
 
 
+end
+
+
+
+i = 0;
+for gcal = [.5 1.1];
+
+	neurons.g_CaL = gcal;
+	neurons.g_CaK = 1.5;
+
+
 	for gbg = ampa_conds
 		i = i+1;
 		neurons.gbar_ampa_soma = gbg;
@@ -95,10 +106,6 @@ for gcal = [.5 1.1];
 		vsoma_ampa(i,:) = simresults.networkHistory.V_soma;
 
 
-		
-
-		
-
 		[ampa_loc{i} ampa_val{i}] = findpeaks(vsoma_ampa(i,:), 'minpeakdistance', 80);
 
 	end
@@ -108,52 +115,25 @@ end
 
 
 
-figure
-subplot(2,2,3)
-title('dampened oscillator')
-plot(vdend_ampa(1:9,:)', 'color', [223 121 94]./255)
-subplot(2,2,4)
-title('intrinsic oscillator')
-plot(vsoma_ampa(10:18,:)', 'color', [223 121 94]./255)
-legend(num2str(ampa_conds'))
-
-
-
-
-
-subplot(2,2,1)
-title('dampened oscillator')
-plot(vsoma_ampa(1:i/2,:)', 'color', [67 127 206]./255)
-subplot(2,2,2)
-title('intrinsic oscillator')
-plot(vsoma_ampa(i/2+1:i,:)', 'color', [67 127 206]./255)
-legend(num2str(ampa_conds'))
-
-
-
-% ==
-
-
-
 f = figure;
 
 a(1) = subplot(2,2,3)
-plot(dend_vsoma(1:9,:)', 'linewidth',1)
+plot(soma_vsoma_gaba(1:9,:)', 'linewidth',1)
 title('dendGABA @ dampened oscillator')
 
 a(2) = subplot(2,2,4)
-plot(dend_vsoma(10:18,:)', 'linewidth',1)
+plot(soma_vsoma_gaba(10:18,:)', 'linewidth',1)
 title('GABA @ intrinsic oscillator')
 legend(num2str(gaba_conds'))
 
 
 
 a(3) = subplot(2,2,1)
-plot(dend_vsoma_dendampa(1:i/2,:)', 'linewidth',1)
+plot(vsoma_ampa(1:i/2,:)', 'linewidth',1)
 title('AMPA @ dampened oscillator')
 
 a(4) = subplot(2,2,2)
-plot(dend_vsoma_dendampa(i/2+1:i,:)', 'linewidth',1)
+plot(vsoma_ampa(i/2+1:i,:)', 'linewidth',1)
 title('AMPA @ intrinsic oscillator')
 
 legend(num2str(ampa_conds'))
