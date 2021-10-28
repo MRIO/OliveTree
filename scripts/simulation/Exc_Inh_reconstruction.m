@@ -18,11 +18,12 @@ thisseed = rng(int8(seed),'twister') % random seed only for simulations (not for
 thisseed.Seed
 
 %% [================================================]
-% simulations to perform
+% steps to perform
 % [================================================]
 
-conjuctive_stimulation = 1;
+conjuctive_stimulation = 0;
 
+produce_plots = 1;
 
 % [================================================]
 % variables to report
@@ -165,7 +166,7 @@ end
 % [=================================================================]
 cal_boost = -0.28; %30% oscillating cells without noise g=0.05
 
-cal_boost = -0.4; %30% oscillating cells without noise g=0.05
+cal_boost = -0.4; %nothing oscillates
 
 cell_function = 'vanilla'; % 'devel'
 
@@ -206,6 +207,8 @@ I_app = [];
 %%================================================]
 % 		 compute transients/steadystate
 %=================================================]
+
+if conjuctive_stimulation
  if ~exist('st_st','var')
 	disp('calculating transients')
 
@@ -221,7 +224,7 @@ end
 % end
 
 %%
-if conjuctive_stimulation
+
 
     i = 0;
     intervals = [-150:10:150];
@@ -250,128 +253,133 @@ if conjuctive_stimulation
         
     end
    		eval(['save exc_inh_net' num2str(seed) '_'  date ' -v7.3'])
-%%
-    
-ff = figure
-savemovie = 0;
-animate = 0;
-for f = [1 17 22]
-    combgroup = find(pert.mask{1}&pert.mask{2});
-    ph_dist{f} = phase_distribution_over_time(sim{f},'duration', [500:1500],'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup')
-    ph_dist{f}.pert = sim{f}.perturbation;
-end
-
-close all
-
-plotvolume = 1;
-if plotvolume
-for f = [17 22]
-    plot_volume(sim{f}.networkHistory.V_soma,somatapositions,[500:1500])
-    close all 
-end
 end
 
 
-end
-%%
-    
-for  f = 1:length(intervals)
+if produce_plots
+
+    ff = figure
+    savemovie = 0;
+    animate = 0;
+    for f = [1 17 22]
+        combgroup = find(pert.mask{1}&pert.mask{2});
+        ph_dist{f} = phase_distribution_over_time(sim{f},'duration', [700:1300],'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup')
+        ph_dist{f}.pert = sim{f}.perturbation;
+    end
+
+
+    plotvolume = 1;
+    if plotvolume
+        for f = [17 22]
+            plot_volume(sim{f}.networkHistory.V_soma,somatapositions,[905:50:1255])
+            % plot_volume(ph_dist{f}.networkHistory.V_soma,somatapositions,[905:50:1255])
+
+        end
+    end
+
+
+    %%
+        
+    for  f = [17 22]% 1:length(intervals)
+        figure
+        subplot(2,1,1)
+        m = pert.mask{1}+pert.mask{2}*2;
+        [v s] = sort(m)
+        imagesc(sim{f}.networkHistory.V_soma(s,:),[-70 -40])
+
+        subplot(2,1,2)
+        % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1},:)), hold on
+        % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{2},:),'color', [0 0 1])
+        plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},:),'color', [0 1 0])
+        title(sim{f}.note)
+        legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
+        alpha(.2)
+
+    end
+
+    %% TRIGGERED RESPONSES
     figure
-    subplot(2,1,1)
-    m = pert.mask{1}+pert.mask{2}*2;
-    [v s] = sort(m)
-    imagesc(sim{f}.networkHistory.V_soma(s,:),[-70 -40])
 
-    subplot(2,1,2)
-    plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1},:)), hold on
-    plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{2},:),'color', [0 0 1])
-    plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},:),'color', [0 1 0])
-    title(sim{f}.note)
-    legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
-    alpha(.2)
+    % cmap = jet(length(intervals))
+    cmap = cbrewer('div', 'RdYlBu', length(intervals))
+    cmap = flipud(cmap)
+    for f=1:length(intervals)
+        subplot(1,length(intervals),f)
+        plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500),'color', cmap(f,:)), hold on
+        title(num2str(sim{f}.perturbation.triggers{1}-sim{f}.perturbation.triggers{2}))
+        axis off
+        ylim([-75,-40])
+        alpha(.3)
+    end
+
+
+    %%
+    figure
+    for f=1:length(intervals)
+        collected(f,:) = mean(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},:));
+    end
+    waterfall(collected)
+
+    %%
+
+    imagesc(collected)
+
+
+    %% 
+    combmask = pert.mask{1} & pert.mask{2};
+
+    for f = 1:length(intervals)
+        
+        last_stim  = max([sim{f}.perturbation.triggers{1},sim{f}.perturbation.triggers{2}]);
+        
+        osc_cells_pre_stim  = count_oscillating_cells(sim{f}, [500:600], 0);
+        osc_cells_pos_stim  = count_oscillating_cells(sim{f}, [last_stim+50:last_stim+150], 0);
+        osc_cells_late_stim = count_oscillating_cells(sim{f}, [last_stim+700:last_stim+900], 0);
+        
+        pre_stim(f)  = osc_cells_pre_stim.proportion;
+        post_stim(f) = osc_cells_pos_stim.proportion;
+        late_stim(f) = osc_cells_late_stim.proportion;
+        
+        pre_stim_amp(f,:)  = max(sim{f}.networkHistory.V_soma(:,200:300),[],2);
+        post_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,last_stim:last_stim+100),[],2);
+        late_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,1800:1900),[], 2);
+        
+     
+    end
+
+    f_prepost = figure;
+    ax = axes;
+
+    data = [pre_stim', post_stim', late_stim']';
+    plot(ax,[pre_stim', post_stim', late_stim']', '-o')
+    legend(num2str(intervals'))
+    title('proportion of oscillating cells')
+    ax.XTick= [1 2 3];
+    ax.XTickLabel = {'Pre', 'Post', 'Late'}
+    ax.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
+
+    %%
+
+    f_prepost_amp = figure;
+    ax2 = subplot(1,2,1);
+
+    amplitudes = [mean(pre_stim_amp,2), mean(post_stim_amp,2), mean(late_stim_amp,2)]';
+    plot(ax2,amplitudes, '-o')
+    legend(num2str(intervals'))
+    title('amplitude of rebound')
+    ax2.XTick= [1 2 3];
+    ax2.XTickLabel = {'Pre', 'Post', 'Late'}
+    ax2.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
+    ax2.YLim = [-60 -40];
+
+    ax3 = subplot(1,2,2);
+    amplitudes = [mean(pre_stim_amp(:,combmask),2), mean(post_stim_amp(:,combmask),2), mean(late_stim_amp(:,combmask),2)]';
+    plot(ax3,amplitudes, '-o')
+    legend(num2str(intervals'))
+    title('amplitude of rebound (stimulated cells)')
+    ax3.XTick= [1 2 3];
+    ax3.XTickLabel = {'Pre', 'Post', 'Late'}
+    ax3.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
+    ax3.YLim = [-60 -40];
 
 end
-
-%% TRIGGERED RESPONSES
-figure
-cmap = jet(length(intervals))
-for f=1:length(intervals)
-    subplot(1,length(intervals),f)
-    plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500),'color', cmap(f,:)), hold on
-    title(num2str(sim{f}.perturbation.triggers{1}-sim{f}.perturbation.triggers{2}))
-    axis off
-    ylim([-75,-40])
-    alpha(.3)
-end
-
-
-%%
-figure
-for f=1:length(intervals)
-    collected(f,:) = mean(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},:));
-end
-waterfall(collected)
-
-%%
-
-imagesc(collected)
-
-
-%% 
-combmask = pert.mask{1} & pert.mask{2};
-
-for f = 1:length(intervals)
-    
-    last_stim  = max([sim{f}.perturbation.triggers{1},sim{f}.perturbation.triggers{2}]);
-    
-    osc_cells_pre_stim = count_oscillating_cells(sim{f}, [500:600], 0);
-    osc_cells_pos_stim = count_oscillating_cells(sim{f}, [last_stim+50:last_stim+150], 0);
-    osc_cells_late_stim = count_oscillating_cells(sim{f}, [last_stim+700:last_stim+900], 0);
-    
-    pre_stim(f)  = osc_cells_pre_stim.proportion;
-    post_stim(f) = osc_cells_pos_stim.proportion;
-    late_stim(f) = osc_cells_late_stim.proportion;
-    
-    pre_stim_amp(f,:)  = max(sim{f}.networkHistory.V_soma(:,200:300),[],2);
-    post_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,last_stim:last_stim+100),[],2);
-    late_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,1800:1900),[], 2);
-    
- 
-end
-
-f_prepost = figure;
-ax = axes;
-
-data = [pre_stim', post_stim', late_stim']';
-plot(ax,[pre_stim', post_stim', late_stim']', '-o')
-legend(num2str(intervals'))
-title('proportion of oscillating cells')
-ax.XTick= [1 2 3];
-ax.XTickLabel = {'Pre', 'Post', 'Late'}
-ax.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
-
-%%
-
-f_prepost_amp = figure;
-ax2 = subplot(1,2,1);
-
-amplitudes = [mean(pre_stim_amp,2), mean(post_stim_amp,2), mean(late_stim_amp,2)]';
-plot(ax2,amplitudes, '-o')
-legend(num2str(intervals'))
-title('amplitude of rebound')
-ax2.XTick= [1 2 3];
-ax2.XTickLabel = {'Pre', 'Post', 'Late'}
-ax2.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
-ax2.YLim = [-60 -40];
-
-ax3 = subplot(1,2,2);
-amplitudes = [mean(pre_stim_amp(:,combmask),2), mean(post_stim_amp(:,combmask),2), mean(late_stim_amp(:,combmask),2)]';
-plot(ax3,amplitudes, '-o')
-legend(num2str(intervals'))
-title('amplitude of rebound (stimulated cells)')
-ax3.XTick= [1 2 3];
-ax3.XTickLabel = {'Pre', 'Post', 'Late'}
-ax3.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
-ax3.YLim = [-60 -40];
-
-    

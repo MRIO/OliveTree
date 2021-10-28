@@ -1,9 +1,10 @@
 function plot_volume(V_soma_unwrapped, coords, ttt)
 
 fname = ['volume_' datestr(now,'YYMMDD_hh-mm')];
-savemovie = 1;
+savemovie = 0;
 frames2file = 0;
 plotdiffact = 0;
+plotcolorbar =0;
 if plotdiffact
 	 clims = [0 2*pi];
 else
@@ -42,7 +43,9 @@ end
 fig_volume = figure('color', [1 1 1]);
 ax_volume = axes;
 colormap(ax_volume, jet(128));
-colorbar
+
+if plotcolorbar; colorbar ; end
+
 for tt = ttt
 	VVVV = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), V_soma_unwrapped(:,tt));
 	NNNN = accumarray( round([coords(:,1), coords(:,2), coords(:,3)]/coarseness+1), 1);

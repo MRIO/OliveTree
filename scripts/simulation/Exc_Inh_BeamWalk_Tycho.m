@@ -23,7 +23,9 @@ blue = [0 0.4 0.8];
 red = [0.91 0.07 0.63];
 rgb1 =[0.230, 0.299, 0.754];
 rgb2=[0.706, 0.016, 0.150];
-cmap=diverging_map(s,rgb1,rgb2);
+% diverging_map(s,rgb1,rgb2);
+cmap=cbrewer('div', 'RdBu');
+
 
 % [=================================================================]
 %  % create network
@@ -111,8 +113,8 @@ neurons.gbar_gaba_dend =  1*ones(noneurons,1);
 
 
 % noise_level = [1/tau noisesig noiseamp 0];
-noise_level = [0 0 0 0];
-laststim = 100000;
+noise_level = [1/50 .03 0 0];
+laststim = 20000;
 
 if not(spont)
 	

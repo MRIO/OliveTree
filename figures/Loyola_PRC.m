@@ -4,9 +4,9 @@ npert = 16;
     
     %% Make neurons
 
-p1 = [.9 1.2]; 		% CalciumL - conductance range
-p2 = [1.5 3.5];  		% g_CaK (does not impact PRC without CaH.)
-% p2 = [1.2 2.4];  		% g_CaK (does not impact PRC without CaH.)
+p1 = [.9 1.2]; 		% Calcium v3.1 - conductance range
+p2 = [1.5 3.5];  		% g_CaH (does not impact PRC without CaH.)
+
 
 [p{1} p{2} ] = ndgrid(p1,p2);
 
@@ -16,7 +16,6 @@ nneurons = prod(size(p{1}));
         neuron{n} = createDefaultNeurons(1, 'celltypes',  'clones');
         neuron{n}.g_CaL     = p{1}(n);
         neuron{n}.g_CaH 	= p{2}(n);
-%         neuron{n}.g_h 	= p{2}(n);
     end
 
     
