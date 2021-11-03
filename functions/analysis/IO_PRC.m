@@ -17,7 +17,6 @@ function out =  IO_PRC(neuron, pert, phase_partitions)
 
 cell_function = 'vanilla';
 
-prep_conditions    = 1;
 
 simtime  = 800;
 compute_transients = 1; transienttime = 500;
@@ -112,7 +111,7 @@ end
 %% compute phases and check
 k = 0;  PP = phases;
 
-% Only search for peaks after this. Factor to account for causality
+% Only search for peaks after this interval (ms).  Factor to account for causality
 % violation in estimation of phase.
 pec = 10;
 
@@ -155,6 +154,7 @@ out.PRC = [(pertphases - LOCS(1))/meanT*2*pi ; PRC];
 out.peaktimes = LOCS;
 out.peakamps  = newPKS;
 out.newPeaks  = newLOCS;
+out.pertphases = pertphases;
 out.VS = VV;
 out.steadystate = steady_state;
 out.neuron = neuron;

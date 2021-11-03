@@ -1,4 +1,4 @@
-% Exc Inh Duel.m
+% Sweep cal factor brick
 % 
 % set(0,'DefaultFigureColor', [1 1 1])
 set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
@@ -109,22 +109,30 @@ for n = 1:nets
     osc_cells{i,n}.CaL_factor  = calfactors(i);
     title({['Ca L factor: ' num2str(calfactors(i))] ; ['prop osc:' num2str(osc_cells{i,n}.proportion)]})
     
+    
+    collected_histograms(c,:) = osc_cells{i,n}.histogram.Values;
     end
 end
 ylabel('cells')
-xlabel('log amplitude (log(mV))')    
+xlabel('log amplitude (log(mV))')
+
+figure
+waterfall(osc_cells{i,n}.histogram.BinEdges(1:end-1), calfactors, collected_histograms(1:11,:))
+
+
+
 
 figure
 cmap = flipud(cbrewer('div', 'Spectral',30));
 c = 0;
 for n = 1:nets
-for i = 1:length(calfactors)
+    for i = 1:length(calfactors)
     c = c+1;
     subplot(nets,length(calfactors), c)
     imagesc(cal_sim{i,n}.networkHistory.V_soma, [-65 -38]); colormap(cmap)
     title({['Ca L factor: ' num2str(calfactors(i))] ; ['prop osc:' num2str(osc_cells{i,n}.proportion)]})
     
-end
+    end
 xlabel('log amplitude (log(mV))')
 end
 ylabel('cells')
@@ -138,7 +146,6 @@ for i = 1:length(calfactors)
      osc_pspace(i,n) = osc_cells{i,n}.proportion;
      xtick(i) = osc_cells{i,n}.CaL_factor;
      
-    
 end
 end
 

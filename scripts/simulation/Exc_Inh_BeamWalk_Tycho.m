@@ -10,7 +10,7 @@
 % cell: 658 - 8H
 
 % gap = 0.02;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
-gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
+gap = eps;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso'I ;  gapcomp = 0;
 spot = 1;
 interstimT = 1000;
 
@@ -23,7 +23,7 @@ blue = [0 0.4 0.8];
 red = [0.91 0.07 0.63];
 rgb1 =[0.230, 0.299, 0.754];
 rgb2=[0.706, 0.016, 0.150];
-% diverging_map(s,rgb1,rgb2);
+% §;
 cmap=cbrewer('div', 'RdBu');
 
 

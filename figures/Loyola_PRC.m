@@ -1,101 +1,103 @@
 
-if 1
-npert = 16;
-    
-    %% Make neurons
-
-p1 = [.9 1.2]; 		% Calcium v3.1 - conductance range
-p2 = [1.5 3.5];  		% g_CaH (does not impact PRC without CaH.)
-
-
-[p{1} p{2} ] = ndgrid(p1,p2);
-
-nneurons = prod(size(p{1}));
-        
-    for n = 1:nneurons
-        neuron{n} = createDefaultNeurons(1, 'celltypes',  'clones');
-        neuron{n}.g_CaL     = p{1}(n);
-        neuron{n}.g_CaH 	= p{2}(n);
-    end
-
-    
-    
-    
-%% template for perturbation
-    pert.mask  	  {1} = 1;
-	pert.amplitude{1} = 1;
-	pert.duration {1} = 1;
-	pert.triggers{1} = [100];   
-%%
-    
-end
-
 if 0
-%% perturbation AMPA SUB
-	pert.type	  {1} = 'ampa_dend';
-	
-    for n = 1:nneurons 
-        neuron{n}.gbar_ampa_dend = .1;
-        prc_ampa_sub{n} = IO_PRC(neuron{n},pert, npert);
-    end
-    
-%% perturbation AMPA SUPRA
-	pert.type	  {1} = 'ampa_dend';
+    npert = 16;
+        
+        %% Make neurons
 
-    for n = 1:nneurons 
-        neuron{n}.gbar_ampa_dend = .5;
-        prc_ampa_supra{n} = IO_PRC(neuron{n},pert, npert);
-    end
-    
-%% GABA SUPRATHRESHOLD
-	pert.duration {1} = 4;
-	pert.type	  {1} = 'gaba_dend';
+    p1 = [.8 1.1]; 		% Calcium v - conductance range
+    p2 = [1.5 4.5];  		% g_CaH (does not impact PRC without CaH.)
+    p2 = [.12 1.2];         % g_h (does not impact PRC without CaH.)
 
-    for n = 1:nneurons
-        neuron{n}.gbar_gaba_dend = 2;
-        prc_gaba_supra{n} = IO_PRC(neuron{n},pert, npert);
+
+    [p{1} p{2} ] = ndgrid(p1,p2);
+
+    nneurons = prod(size(p{1}));
+            
+        for n = 1:nneurons
+            neuron{n} = createDefaultNeurons(1, 'celltypes',  'clones');
+            neuron{n}.g_CaL     = p{1}(n);
+            neuron{n}.g_CaH 	= 1.5;
+            neuron{n}.g_Ih      = p{2}(n);
+        end
+
+        
+        
+        
+    %% template for perturbation
+        pert.mask  	  {1} = 1;
+    	pert.amplitude{1} = 1;
+    	pert.duration {1} = 1;
+    	pert.triggers{1} = [100];   
+    %%
+        
     end
-    
-%% GABA SUBTHRESHOLD
+
+    if 0
+    %% perturbation AMPA SUB
+    	pert.type	  {1} = 'ampa_dend';
+    	
+        for n = 1:nneurons 
+            neuron{n}.gbar_ampa_dend = .1;
+            prc_ampa_sub{n} = IO_PRC(neuron{n},pert, npert);
+        end
+        
+    %% perturbation AMPA SUPRA
+    	pert.type	  {1} = 'ampa_dend';
+
+        for n = 1:nneurons 
+            neuron{n}.gbar_ampa_dend = .5;
+            prc_ampa_supra{n} = IO_PRC(neuron{n},pert, npert);
+        end
+        
+    %% GABA SUPRATHRESHOLD
+    	pert.duration {1} = 4;
+    	pert.type	  {1} = 'gaba_dend';
+
+        for n = 1:nneurons
+            neuron{n}.gbar_gaba_dend = 2;
+            prc_gaba_supra{n} = IO_PRC(neuron{n},pert, npert);
+        end
+        
+    %% GABA SUBTHRESHOLD
+        pert.duration {1} = 1;
+    	pert.type	  {1} = 'gaba_dend';
+    	
+        for n = 1:nneurons
+            neuron{n}.gbar_gaba_dend = 1;
+            prc_gaba_sub{n} = IO_PRC(neuron{n},pert, npert);
+        end
+
+
+    %% perturbation GABA DENDRITE PSPACE
+    	pert.duration {1} = 2;
+    	pert.type	  {1} = 'gaba_dend';
+    	
+        gabavals = 10;
+         
+        for n = 1:gabavals
+            neuron{1}.gbar_gaba_dend =(n-1)*.4;
+            prc_gaba_pspace{n} = IO_PRC(neuron{1},pert, npert);
+        end
+    %%
+
+    %% perturbation GABA vs AMPA
+    pert.mask  	  {1} = 1;
+    pert.amplitude{1} = 1;
     pert.duration {1} = 1;
-	pert.type	  {1} = 'gaba_dend';
-	
+    pert.type	  {1} = 'ampa_dend';
+    pert.triggers{1} = [0];   
+
+    pert.mask  	  {2} = 1;
+    pert.amplitude{2} = 1;
+    pert.duration {2} = 4;
+    pert.type	  {2} = 'gaba_dend';
+    pert.triggers{2} = [30];   
+
+
     for n = 1:nneurons
         neuron{n}.gbar_gaba_dend = 1;
-        prc_gaba_sub{n} = IO_PRC(neuron{n},pert, npert);
+        prc_comb_sub{n} = IO_PRC(neuron{n},pert, npert);
     end
-
-
-%% perturbation GABA DENDRITE PSPACE
-	pert.duration {1} = 2;
-	pert.type	  {1} = 'gaba_dend';
-	
-    gabavals = 10;
-     
-    for n = 1:gabavals
-        neuron{1}.gbar_gaba_dend =(n-1)*.4;
-        prc_gaba_pspace{n} = IO_PRC(neuron{1},pert, npert);
-    end
-%%
-
-%% perturbation GABA vs AMPA
-pert.mask  	  {1} = 1;
-pert.amplitude{1} = 1;
-pert.duration {1} = 1;
-pert.type	  {1} = 'ampa_dend';
-pert.triggers{1} = [0];   
-
-pert.mask  	  {2} = 1;
-pert.amplitude{2} = 1;
-pert.duration {2} = 4;
-pert.type	  {2} = 'gaba_dend';
-pert.triggers{2} = [30];   
-
-
-for n = 1:nneurons
-    neuron{n}.gbar_gaba_dend = 1;
-    prc_comb_sub{n} = IO_PRC(neuron{n},pert, npert);
-end
 
 end
 
@@ -103,19 +105,20 @@ end
 
 %%
 if 1
-
+    nneurons = 4
 
     f1 = figure;
     f1.Color = [1 1 1];
     for n = 1:nneurons
-        ax(n) = subplot(2,2,n)
+        ax1(n) = subplot(2,2,n)
         ttt = [1:500]- prc_gaba_sub{n}.peaktimes(1);
-        waterfall(prc_gaba_sub{n}.VS)
-        title({['gaba sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['Ih: ' num2str(p{2}(n))]})
+        % waterfall(prc_gaba_sub{n}.VS)
+        imagesc(prc_gaba_sub{n}.VS, [-80 -30])
+        title({['gaba sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
     end
 
     %%
-    nneurons = 4
+    
     f2 = figure;
     f2.Color = [1 1 1];
     for n = 1:nneurons
@@ -135,7 +138,8 @@ if 1
 
         ax3(n) = subplot(2,2,n)
         ttt = [1:500]- prc_gaba_supra{n}.peaktimes(1);
-        waterfall(prc_gaba_supra{n}.VS)
+        imagesc(prc_gaba_supra{n}.VS, [-80 -30])
+        % waterfall(prc_gaba_supra{n}.VS)
         title({['gaba supra']; num2str(p{1}(n)) ; num2str(p{2}(n))})
 
     end
@@ -159,7 +163,8 @@ if 1
 
         ax5(n) = subplot(2,2,n)
         ttt = [1:500]- prc_ampa_sub{n}.peaktimes(1);
-        waterfall(prc_ampa_sub{n}.VS)
+        imagesc(prc_ampa_sub{n}.VS, [-80 -30])
+        % waterfall(prc_ampa_sub{n}.VS)
         title({['ampa sub' ] ; num2str(p{1}(n)) ; num2str(p{2}(n))})
     end
 
@@ -180,7 +185,8 @@ if 1
 
         ax7(n) = subplot(2,2,n)
         ttt = [1:500]- prc_ampa_supra{n}.peaktimes(1);
-        waterfall(prc_ampa_supra{n}.VS)
+        imagesc(prc_ampa_supra{n}.VS , [-80, -30])
+        % waterfall(prc_ampa_supra{n}.VS)
         title({['ampa supra' ] ; num2str(p{1}(n)) ; num2str(p{2}(n))})
 
     end
@@ -202,7 +208,8 @@ if 1
 
         ax9(n) = subplot(2,2,n)
         ttt = [1:500]- prc_comb_sub{n}.peaktimes(1);
-        waterfall(prc_comb_sub{n}.VS)
+        % waterfall(prc_comb_sub{n}.VS)
+        imagesc(prc_comb_sub{n}.VS , [-80 -30])
         title({['PRC combined'] ; num2str(p{1}(n)) ; num2str(p{2}(n))})
 
     end
@@ -224,7 +231,7 @@ if 1
     f11.Color = [1 1 1];
     for n = 1:gabavals
         subplot(1,10,n)
-        imagesc(prc_gaba_pspace{n}.VS', [-70 -40]); hold on
+        imagesc(prc_gaba_pspace{n}.VS', [-80 -30]); hold on
     end
     title('gaba prc pspace (stim=2ms)')
 

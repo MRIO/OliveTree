@@ -22,10 +22,10 @@ M2 = zeros(prod(netsize),1); M2(3) = 1;
 
 neurons = createDefaultNeurons(1);
 
-dt = 0.1
+dt = 0.01
 
-gaba_conds = linspace(.1,2.1,9);
-ampa_conds = linspace(.1,1.1,9);
+gaba_conds = linspace(.1,4.1,9);
+ampa_conds = linspace(.1,.6,9);
 
 
 i = 0;
@@ -59,7 +59,7 @@ for gcal = [.5 1.1];
 		pert.mask{2}  	  = M1;
 		% pert.amplitude{2} = 2;
 		pert.type{2}	  = 'gaba_soma';
-		pert.duration{2}  = 5;
+		pert.duration{2}  = 4;
 		pert.triggers{2} = [500];
 
 		simresults = IOnet('networksize', netsize,'time',simtime,'delta',dt,...
@@ -94,8 +94,8 @@ for gcal = [.5 1.1];
 
 		pert.mask{1}  	= M1;
 		pert.type{1}	  = 'ampa';
-		pert.duration{1}  = 4;
-		pert.triggers{1} = [500];
+		pert.duration{1}  = 1;
+		pert.triggers{1} = [550];
 
 		simresults = IOnet('networksize', netsize,'time',simtime,'delta',dt,...
 		'cell_parameters',neurons,'W',W.W*gap ,...
@@ -117,31 +117,31 @@ end
 
 f = figure;
 
-a(1) = subplot(2,2,3)
+a(1) = subplot(2,2,1)
 plot(soma_vsoma_gaba(1:9,:)', 'linewidth',1)
-title('dendGABA @ dampened oscillator')
+title('GABA @ dendrite: dampened oscillator')
 
-a(2) = subplot(2,2,4)
+a(2) = subplot(2,2,2)
 plot(soma_vsoma_gaba(10:18,:)', 'linewidth',1)
-title('GABA @ intrinsic oscillator')
+title('GABA @ dendrite: intrinsic oscillator')
 legend(num2str(gaba_conds'))
 
 
 
-a(3) = subplot(2,2,1)
+a(3) = subplot(2,2,3)
 plot(vsoma_ampa(1:i/2,:)', 'linewidth',1)
-title('AMPA @ dampened oscillator')
+title('AMPA @ soma: dampened oscillator')
 
-a(4) = subplot(2,2,2)
+a(4) = subplot(2,2,4)
 plot(vsoma_ampa(i/2+1:i,:)', 'linewidth',1)
-title('AMPA @ intrinsic oscillator')
+title('AMPA @ soma: intrinsic oscillator')
 
 legend(num2str(ampa_conds'))
 f.Color = [1 1 1];;
-a(1).ColorOrder = cbrewer('seq', 'Blues', length(gaba_conds));
-a(2).ColorOrder = cbrewer('seq', 'Purples',length(gaba_conds));
-a(3).ColorOrder = cbrewer('seq', 'Greens', length(ampa_conds));
-a(4).ColorOrder = cbrewer('seq', 'Oranges', length(ampa_conds));
+a(1).ColorOrder = cbrewer('seq', 'Reds', length(gaba_conds));
+a(2).ColorOrder = cbrewer('seq', 'Reds',length(gaba_conds));
+a(3).ColorOrder = cbrewer('seq', 'Blues', length(ampa_conds));
+a(4).ColorOrder = cbrewer('seq', 'Blues', length(ampa_conds));
 a(1).XLabel.String = 'ms';
 a(2).XLabel.String = 'ms';
 a(3).XLabel.String = 'ms';
@@ -157,7 +157,11 @@ a(3).LineWidth = 2
 a(4).LineWidth = 2
 
 
-a(1).XLim = [500 1500]
-a(2).LineWidth = 2
-a(3).LineWidth = 2
-a(4).LineWidth = 2
+a(1).XLim = [300 600]
+a(2).XLim = [300 600]
+a(3).XLim = [350 650]
+
+
+
+
+
