@@ -2,8 +2,8 @@
 
 if [ -n "$1" ]; then
 	echo $1
-	git add .; git commit -m "$1"; git push
+	git add .; git commit -m "$1"; git push https://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@github.com/MRIO/OliveTree.git
 else
-	git add .; git commit -m "small changes"; git push
+	git add .; git commit -m "small changes"; git push https://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@github.com/MRIO/OliveTree.git
 fi
 
