@@ -81,11 +81,12 @@ somatapositions(1,:) = [];
 noneurons = length(somatapositions);
 
 
-%     __    __
-%    / /_  / /___ _
-%   / __ \/ / __ `/
-%  / /_/ / / /_/ /
-% /_.___/_/\__,_/
+%    __________  _   ___   _________________________    ______________  __
+%   / ____/ __ \/ | / / | / / ____/ ____/_  __/  _/ |  / /  _/_  __/\ \/ /
+%  / /   / / / /  |/ /  |/ / __/ / /     / /  / / | | / // /  / /    \  /
+% / /___/ /_/ / /|  / /|  / /___/ /___  / / _/ /  | |/ // /  / /     / /
+% \____/\____/_/ |_/_/ |_/_____/\____/ /_/ /___/  |___/___/ /_/     /_/
+
 
 
 if not(exist('curlies'))
@@ -103,7 +104,7 @@ if not(exist('curlies'))
 	rad_bri = median_soma_distance * 12;
 
 
-% 	
+% 	THE CODE BELOW IS TO CREATE CLUSTERIZED NETWORKS. NOT REQUIRED.
 % 
 % 	curlies = createW('3d_reconstruction', [], rad_cur, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 cells_in_cluster 1 0]);
 % 
@@ -162,11 +163,10 @@ end
 
 
 % [=================================================================]
-%  create cells
+%  create cells and set conductance parameters
 % [=================================================================]
 cal_boost = -0.28; %30% oscillating cells without noise g=0.05
-
-cal_boost = -0.4; %nothing oscillates
+% cal_boost = -0.4; %nothing oscillates
 
 cell_function = 'vanilla'; % 'devel'
 
@@ -179,7 +179,7 @@ def_neurons.g_CaL = def_neurons.g_CaL + cal_boost;
 
 %%
 % [================================================]
-%  Distribute Ampa Perturbation over time and masks
+%  Projection Fields of AMPA and GABA
 % [================================================]
 
 pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-60, 0, 0], 'synapseprobability', .85,'plotme',0)
@@ -189,7 +189,7 @@ pert.type	  {1} = 'ampa_dend';
 
 pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-40, 0, 0], 'synapseprobability', .85,'plotme',0) % probability adjusted to make number of cells in cluster match
 pert.amplitude{2} = 1
-pert.duration {2} = 1;
+pert.duration {2} = 5; %ms was the duration of the stimulus in Tycho's paper.
 pert.type	  {2} = 'gaba_dend';
 
 figure
@@ -202,6 +202,8 @@ alpha(.3)
 % apply some current to check the behavior of the cells
 I_app = [];
 
+
+return
 %%
 
 %%================================================]
@@ -261,17 +263,35 @@ if produce_plots
     ff = figure
     savemovie = 0;
     animate = 0;
+
     for f = [1 17 22]
         combgroup = find(pert.mask{1}&pert.mask{2});
         ph_dist{f} = phase_distribution_over_time(sim{f},'duration', [700:1300],'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup')
         ph_dist{f}.pert = sim{f}.perturbation;
     end
 
+    for f = 1:length(intervals)
+        trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
+
+        sync_estimate_g(f,1) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(1)-220:trig(1)-20)));
+        sync_estimate_g(f,2) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(1):trig(2)+20)));
+        sync_estimate_g(f,3) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(2)+20:trig(2)+220)));
+        sync_estimate_g(f,4) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(2)+500:trig(2)+700)));
+
+        sync_estimate(f,1) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(1)-220:trig(1)-20)));
+        sync_estimate(f,2) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(1):trig(2)+20)));
+        sync_estimate(f,3) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(2)+20:trig(2)+220)));
+        sync_estimate(f,4) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(2)+500:trig(2)+700)));
+    end
+
 
     plotvolume = 1;
     if plotvolume
-        for f = [17 22]
-            plot_volume(sim{f}.networkHistory.V_soma,somatapositions,[905:50:1255])
+        for f = [1 17 22]
+            V = sim{f}.networkHistory.V_soma;
+            % H = P.hilbert;
+            % plot_volume(V,somatapositions,[755:1:1555])
+            animate_volume_hilbert(V,somatapositions,[755:1:1555])
             % plot_volume(ph_dist{f}.networkHistory.V_soma,somatapositions,[905:50:1255])
 
         end
@@ -285,7 +305,7 @@ if produce_plots
         subplot(2,1,1)
         m = pert.mask{1}+pert.mask{2}*2;
         [v s] = sort(m)
-        imagesc(sim{f}.networkHistory.V_soma(s,:),[-70 -40])
+        imagesc(sim{f}.networkHistory.V_soma(s,:),[-65 -50])
 
         subplot(2,1,2)
         % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1},:)), hold on
@@ -302,10 +322,11 @@ if produce_plots
 
     % cmap = jet(length(intervals))
     cmap = cbrewer('div', 'RdYlBu', length(intervals))
-    cmap = flipud(cmap)
+    % cmap = flipud(cmap)
+
     for f=1:length(intervals)
         subplot(1,length(intervals),f)
-        plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500),'color', cmap(f,:)), hold on
+        plot(mean(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500)),'color', cmap(f,:),'linewidth',2), hold on
         title(num2str(sim{f}.perturbation.triggers{1}-sim{f}.perturbation.triggers{2}))
         axis off
         ylim([-75,-40])
@@ -348,17 +369,40 @@ if produce_plots
     end
 
     f_prepost = figure;
-    ax = axes;
+    ax0 = axes;
 
-    data = [pre_stim', post_stim', late_stim']';
-    plot(ax,[pre_stim', post_stim', late_stim']', '-o')
+    plot(ax0,[pre_stim', post_stim', late_stim']', '-o')
     legend(num2str(intervals'))
     title('proportion of oscillating cells')
-    ax.XTick= [1 2 3];
-    ax.XTickLabel = {'Pre', 'Post', 'Late'}
-    ax.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
+    ax0.XTick= [1 2 3];
+    ax0.XTickLabel = {'Pre', 'Post', 'Late'}
+    ax0.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
 
-    %%
+
+    f_prepost_sync = figure;
+    ax1 = axes;
+
+    plot(ax1,sync_estimate', '-o')
+    legend(num2str(intervals'))
+    title('sync')
+    ax1.XTick= [1 2 3];
+    ax1.XTickLabel = {'Pre', 'During', 'Post', 'Late'}
+    ax1.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
+
+
+    f_prepost_sync = figure;
+    ax11 = axes;
+
+    plot(ax11,sync_estimate_g', '-o')
+    legend(num2str(intervals'))
+    title('sync')
+    ax11.XTick= [1 2 3];
+    ax11.XTickLabel = {'Pre', 'During', 'Post', 'Late'}
+    ax11.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
+
+
+
+
 
     f_prepost_amp = figure;
     ax2 = subplot(1,2,1);

@@ -8,9 +8,9 @@
 
 % STEADY-STATE PROPERTIES. The membrane potential with no
 % input current (I = 0 mA/cm2) was -57 mV, whereas the app
-% input resistance derived from the voltage-current curve was 36 Mohm􏰐. When I 􏰅= -􏰄5 􏰈A/cm2, the potential was 􏰄80.3 mV app
-% and the input resistance was 14 M􏰐ohm, reflecting the effect of the h current.
-% When Iapp 􏰅 􏰃5 􏰈A/cm2, the membrane potential was 􏰄46 mV and the input resistance was only 10 M􏰐 because of the effect of the delayed rectifier current.
+% input resistance derived from the voltage-current curve was 36 Mohm􏰐. When I = -5 pA/cm2, the potential was -80.3 mV app
+% and the input resistance was 14 Mohm, reflecting the effect of the h current.
+% When Iapp  􏰃5 􏰈A/cm2, the membrane potential was 􏰄46 mV and the input resistance was only 10 M􏰐 because of the effect of the delayed rectifier current.
 % These steady-state values are in agreement with published experimental data (see for instance Table 1 in Llinas and Yarom 1981a;
 % Fig. 1A in Yarom and Llina ́s 1987; Manor 1995). Note that 1 uA/cm2 corresponds to 0.1 nA for a total cell surface of 10,000 um2.
 
@@ -34,10 +34,10 @@ delta = .02;
 cell_function = 'original'; % 'devel'
 nconn = 0;
 
-steadystate_time = 10;
-simtime  = 700;
+steadystate_time = 1000;
+simtime  = 500;
 
-currentstep = 10; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
+currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
 % [=================================================================]
 %  state variables to report
@@ -59,8 +59,8 @@ to_report = activations;
 % gaps = [];
 gaps = [0];
 
-pspace_type = 'pgrid';
-% pspace_type = 'randomized';%
+% pspace_type = 'pgrid';
+pspace_type = 'randomized';%
  % pspace_type = '2p_sweep';
 % pspace_type = 'ca_extrusion';
 
@@ -69,7 +69,7 @@ switch pspace_type
 
 	case 'randomized'
 
-	noneurons = 1000;
+	noneurons = 100;
 	netsize = [noneurons 1 1];
 	def_neurons = createDefaultNeurons(noneurons,'celltypes','random_norm');
 	Plist = def_neurons.Plist;
@@ -103,16 +103,16 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [1.1]; 		% CalciumL - conductance range
+	p1 = [1.1 1.3]; 		% CalciumL - conductance range
 	p2 = [0];      	    % g_h_s
 	p3 = [.15]; 	% g_int
 	p4 = [.12];      	% g_h
 	p5 = [.15 ]; % ratio soma dendrite
-	p6 = [15];	% Ca act K: not voltage dependent (SK)
-	p7 = [1.5]; % Ca High threshold
+	p6 = [ 15 25];	% Ca act K: not voltage dependent (SK)
+	p7 = [1.5 2.5 3.5]; % Ca High threshold
 	p8 = [0.016];    % leak
 	p9 = [0.016];; % leak
-	p10 = [1 5];; % arbitrary
+	p10 = [1]; % arbitrary
 
 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9} p{10}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10);
 
@@ -205,7 +205,7 @@ for gap = gaps
 
 end
 % [===========================================================================================================]
-R = profile_sim(simresults{1},'tslice', [1:1000], 'plotme',1);
+R = profile_sim(simresults{1},'tslice', [1:min(simtime, 1000)], 'plotme',1);
 sel_fields = {'g_CaL' ,'g_CaH', 'g_K_Ca', 'ampl', 'freq_each', 'meanVm'};
 % sel_fields = {'arbitrary','ampl', 'freq_each', 'meanVm'};
 % sel_fields = def_neurons.Pnames;

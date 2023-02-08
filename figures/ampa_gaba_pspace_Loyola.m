@@ -29,10 +29,10 @@ ampa_conds = linspace(.1,.6,9);
 
 
 i = 0;
-for gcal = [.5 1.1];
+for gcal = [1.1];
 
 	neurons.g_CaL = gcal;
-	neurons.g_CaK = 1.5;
+	neurons.g_CaK = 4.5;
 
 
 	for gbg = gaba_conds
@@ -84,7 +84,7 @@ i = 0;
 for gcal = [.5 1.1];
 
 	neurons.g_CaL = gcal;
-	neurons.g_CaK = 1.5;
+	neurons.g_CaK = 3.5;
 
 
 	for gbg = ampa_conds

@@ -121,6 +121,12 @@ waterfall(osc_cells{i,n}.histogram.BinEdges(1:end-1), calfactors, collected_hist
 
 
 
+figure 
+ subplot(3,1,1); histogram(cal_sim{1}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{1}.cellParameters.g_CaL)])
+ subplot(3,1,2); histogram(cal_sim{6}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{6,1}.cellParameters.g_CaL)])
+ subplot(3,1,3); histogram(cal_sim{11}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{11,1}.cellParameters.g_CaL)])
+
+
 
 figure
 cmap = flipud(cbrewer('div', 'Spectral',30));

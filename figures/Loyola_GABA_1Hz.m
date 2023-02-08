@@ -10,9 +10,10 @@
 % cell: 658 - 8H
 
 % gap = 0.02;  noisesig = 0; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
-gap = eps;  noisesig = 0.03; noiseamp = 0 ; tau = 50; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
+gap = eps;  noisesig = 0.01; noiseamp = 0 ; tau = 20; sametoall = 0.0; simtype = 'burst'; conntype = 'iso' ;  gapcomp = 0;
 spot = 1;
-interstimT = 1000;
+interstimT = 1300;
+rseed = 1;
 
 dt = 0.02;
 gpu = 0;
@@ -23,9 +24,16 @@ blue = [0 0.4 0.8];
 red = [0.91 0.07 0.63];
 rgb1 =[0.230, 0.299, 0.754];
 rgb2=[0.706, 0.016, 0.150];
-% §;
-cmap=cbrewer('div', 'RdBu',25);
 
+rgb1 =[0 0 1];
+rgb2=[1 0 0];
+
+% % cmap=cbrewer('div', 'RdYlBu',25);
+% cmap = diverging_map([0:.05:1] , red, blue)
+% cmap = diverging_map([0:.05:1] , rgb1, blue)
+
+cmap = gen_divergent_colormap;
+cmap = flipud(cmap);
 
 % [=================================================================]
 %  % create network
@@ -82,28 +90,20 @@ else
 	W.W = 0;
 end
 
-% W.W = [0 0 0 1 1 0 1 0 0;
-% 	   0 0 0 0 0 0 0 0 0;
-% 	   0 0 0 0 1 1 0 0 1;
-% 	   1 0 0 0 1 0 1 0 0;
-% 	   1 0 1 1 0 1 1 0 1;
-% 	   0 0 1 0 1 0 0 0 1;
-% 	   1 0 0 1 1 0 0 0 0;
-% 	   0 0 0 0 0 0 0 0 0;
-% 	   0 0 1 0 1 1 0 0 0]*gap/3;
 
 % [=================================================================]
 %  % create neurons
 % [=================================================================]
 
-rng(0,'twister')
+rng(rseed,'twister')
 cellset = 'cellset_vanilla'
 neurons = createDefaultNeurons(noneurons);%, 'celltypes' , 'param_sweep');
 noneurons = length(neurons.C_m);
 
-neurons.gbar_ampa_dend = .1*ones(noneurons,1)*0;
-neurons.gbar_ampa_soma = .2*ones(noneurons,1);
-neurons.gbar_gaba_dend =  2*ones(noneurons,1);
+neurons.g_CaL          =  .8*ones(noneurons,1);
+neurons.gbar_ampa_dend =  0*ones(noneurons,1); % .1 for sub, .3 for supra
+neurons.gbar_ampa_soma =  0*ones(noneurons,1);
+neurons.gbar_gaba_dend =  .5*ones(noneurons,1);
 
 
 % neurons.g_h = linspace(.1,3,noneurons);
@@ -112,8 +112,8 @@ neurons.gbar_gaba_dend =  2*ones(noneurons,1);
 
 
 
-noise_level = [1/tau noisesig noiseamp 0];
-laststim = 30000;
+noise_level = [1/tau noisesig noiseamp rseed];
+laststim = 35000; %ms
 
 if not(spont)
 	
@@ -179,35 +179,44 @@ end
 % [=================================================================]
 %   plot
 % [=================================================================]
-	V = simresults.networkHistory.V_soma;
+	
+V = simresults.networkHistory.V_soma;
+	H = hilbert_of_membranepotential(V); 
+	P = H.hilbert;
 
-	trig1 = simresults.perturbation.triggers{1}(1:end-1);
-	trig2 = simresults.perturbation.triggers{2}(1:end-1);
+	trig1 = simresults.perturbation.triggers{1}(2:end-1);
+	trig2 = simresults.perturbation.triggers{2}(2:end-1);
 
 	for c = 1:noneurons
-		snip = @(t) V(c,t-w:t+w);
-		trigVonE{c} = cell2mat(arrayfun(snip, trig1, 'uniformoutput',0)');
-		trigVonI{c} = cell2mat(arrayfun(snip, trig2, 'uniformoutput',0)');
+		snip_V = @(t) V(c,t-w:t+w);
+		snip_P = @(t) P(c,t-w:t+w);
+		trigVonE_P{c} = cell2mat(arrayfun(snip_P, trig1, 'uniformoutput',0)');
+		trigVonI_P{c} = cell2mat(arrayfun(snip_P, trig2, 'uniformoutput',0)');
+
+		trigVonE_V{c} = cell2mat(arrayfun(snip_V, trig1, 'uniformoutput',0)');
+		trigVonI_V{c} = cell2mat(arrayfun(snip_V, trig2, 'uniformoutput',0)');
+
 
 		EbefI = find(trig2-trig1<0);
 		IbefE = find(trig2-trig1>0);
 
 		figure
 		subplot(311)
-		imagesc(trigVonE{c})
-		line( fliplr([(pulsesE(1:end-1)-pulsesI(1:end-1))]+w) , [1:size(trigVonE{c},1)],'marker', 'o', 'color', blue, 'linestyle','none')
-		line([w w],[1 size(trigVonE{c},1)],'color', red,'linewidth',2)
+		imagesc(trigVonI_P{c})
 		colormap(cmap)
+		line( fliplr([(pulsesE(2:end-1)-pulsesI(2:end-1))]+w) , [1:size(trigVonE_P{c},1)],'marker', 'o', 'color', blue, 'linestyle','none')
+		line([w w],[1 size(trigVonE_P{c},1)],'color', red,'linewidth',2)
+		
 		subplot(312)
-		plot(trigVonI{c}(IbefE,:)','color', rgb2)
+		plot(trigVonI_V{c}(IbefE,:)','color', rgb2); axis tight
 		title(num2str(c))
 		subplot(313)
-		plot(trigVonE{c}(EbefI,:)', 'color', blue)
+		plot(trigVonE_V{c}(EbefI,:)', 'color', blue); axis tight
 		title(num2str(c))
 
 	end
 
-saveallfigs('prefix', 'beamwalk', 'style', '12x12')
+saveallfigs('prefix', 'Loyola_GABA_1Hz', 'style', '12x12')
 
 resultstable = profile_sim(simresults);
 R = resultstable;

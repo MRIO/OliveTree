@@ -1,13 +1,19 @@
+% Figure 7 of Loyola et al. 2023
 
-if 0
+% What to do
+prepare = 1;
+simulate = 1;
+plots = 1;
+
+
+if prepare
     npert = 16;
         
         %% Make neurons
 
-    p1 = [.8 1.1]; 		% Calcium v - conductance range
-    p2 = [1.5 4.5];  		% g_CaH (does not impact PRC without CaH.)
-    p2 = [.12 1.2];         % g_h (does not impact PRC without CaH.)
-
+    p1 = [1.2]; 		% Calcium v - conductance range
+    p2 = [4.5];  		% g_CaH (does not impact PRC without CaH.)
+    
 
     [p{1} p{2} ] = ndgrid(p1,p2);
 
@@ -16,12 +22,10 @@ if 0
         for n = 1:nneurons
             neuron{n} = createDefaultNeurons(1, 'celltypes',  'clones');
             neuron{n}.g_CaL     = p{1}(n);
-            neuron{n}.g_CaH 	= 1.5;
-            neuron{n}.g_Ih      = p{2}(n);
+            neuron{n}.g_CaH      = p{2}(n);
         end
 
-        
-        
+
         
     %% template for perturbation
         pert.mask  	  {1} = 1;
@@ -32,7 +36,7 @@ if 0
         
     end
 
-    if 0
+    if simulate
     %% perturbation AMPA SUB
     	pert.type	  {1} = 'ampa_dend';
     	
@@ -42,20 +46,24 @@ if 0
         end
         
     %% perturbation AMPA SUPRA
-    	pert.type	  {1} = 'ampa_dend';
+        if 0
+        	pert.type	  {1} = 'ampa_dend';
 
-        for n = 1:nneurons 
-            neuron{n}.gbar_ampa_dend = .5;
-            prc_ampa_supra{n} = IO_PRC(neuron{n},pert, npert);
+            for n = 1:nneurons 
+                neuron{n}.gbar_ampa_dend = .5;
+                prc_ampa_supra{n} = IO_PRC(neuron{n},pert, npert);
+            end
         end
         
-    %% GABA SUPRATHRESHOLD
-    	pert.duration {1} = 4;
-    	pert.type	  {1} = 'gaba_dend';
+    %% GABA SUPRATHRESHOLD REBOUND
+        if 0
+        	pert.duration {1} = 4;
+        	pert.type	  {1} = 'gaba_dend';
 
-        for n = 1:nneurons
-            neuron{n}.gbar_gaba_dend = 2;
-            prc_gaba_supra{n} = IO_PRC(neuron{n},pert, npert);
+            for n = 1:nneurons
+                neuron{n}.gbar_gaba_dend = 2;
+                prc_gaba_supra{n} = IO_PRC(neuron{n},pert, npert);
+            end
         end
         
     %% GABA SUBTHRESHOLD
@@ -67,7 +75,7 @@ if 0
             prc_gaba_sub{n} = IO_PRC(neuron{n},pert, npert);
         end
 
-
+    if 0
     %% perturbation GABA DENDRITE PSPACE
     	pert.duration {1} = 2;
     	pert.type	  {1} = 'gaba_dend';
@@ -78,20 +86,21 @@ if 0
             neuron{1}.gbar_gaba_dend =(n-1)*.4;
             prc_gaba_pspace{n} = IO_PRC(neuron{1},pert, npert);
         end
-    %%
+    end
+
 
     %% perturbation GABA vs AMPA
     pert.mask  	  {1} = 1;
     pert.amplitude{1} = 1;
     pert.duration {1} = 1;
     pert.type	  {1} = 'ampa_dend';
-    pert.triggers{1} = [0];   
+    pert.triggers{1} = [60];   
 
     pert.mask  	  {2} = 1;
     pert.amplitude{2} = 1;
     pert.duration {2} = 4;
     pert.type	  {2} = 'gaba_dend';
-    pert.triggers{2} = [30];   
+    pert.triggers{2} = [0];   
 
 
     for n = 1:nneurons
@@ -104,155 +113,127 @@ end
 %% PLOTS
 
 %%
-if 1
-    nneurons = 4
+if plots
 
-    f1 = figure;
-    f1.Color = [1 1 1];
+
+
+nneurons = 1;
+    % cmap = cbrewer('div', 'RdYlBu', 64);
+    cmap = colormap(parula)
+    colorlim = [-70 -40];
+
+
     for n = 1:nneurons
-        ax1(n) = subplot(2,2,n)
-        ttt = [1:500]- prc_gaba_sub{n}.peaktimes(1);
-        % waterfall(prc_gaba_sub{n}.VS)
-        imagesc(prc_gaba_sub{n}.VS, [-80 -30])
-        title({['gaba sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
-    end
+        f1 = figure;
+        f1.Color = [1 1 1];            
+        subplot(2,1,1)
 
-    %%
+        pph = prc_gaba_sub{n}.pertphases; %: [229 237 245 253 261 269 277 285 292 300 308 316 324 332 340 348]
+        pph = -[pph(1) pph];
+
+        stst = prc_gaba_sub{1}.steady_state.networkHistory.V_soma;
+        VS = prc_gaba_sub{n}.VS;
+        stst = repmat(stst, 17,1);
+        whole_traces = [stst VS];
+        whole_traces_shifted = cell2mat(arrayfun(@(row) circshift(whole_traces(row, :), [0 pph(row)-pph(1) ]) , [1:17], 'uniformoutput', 0)');
+        whole_traces_shifted_cropped = whole_traces_shifted(:,300:end-300);
     
-    f2 = figure;
-    f2.Color = [1 1 1];
+        imagesc(whole_traces_shifted_cropped,colorlim)
+        colormap(cmap)
+        colorbar
+
+        title({['gaba sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
+
+        ab = subplot(2,1,2)
+        plot(whole_traces_shifted_cropped')
+        % colororder = flipud(cbrewer('seq', 'Reds', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+
+    end
+
+    %%
+
+
+    
     for n = 1:nneurons
-    plot(prc_gaba_sub{n}.PRC(1,:), prc_gaba_sub{n}.PRC(2,:)); hold on;
-    set(gca,'Colormap', cbrewer('qual', 'Set2', 11))
-    title({['gaba sub PRC']})
+        f1 = figure;
+        f1.Color = [1 1 1];            
+        subplot(2,1,1)
+
+        pph = prc_ampa_sub{n}.pertphases; %: [229 237 245 253 261 269 277 285 292 300 308 316 324 332 340 348]
+        pph = -[pph(1) pph];
+
+        stst = prc_ampa_sub{1}.steady_state.networkHistory.V_soma;
+        VS = prc_ampa_sub{n}.VS;
+        stst = repmat(stst, 17,1);
+        whole_traces = [stst VS];
+        whole_traces_shifted = cell2mat(arrayfun(@(row) circshift(whole_traces(row, :), [0 pph(row)-pph(1) ]) , [1:17], 'uniformoutput', 0)');
+        whole_traces_shifted_cropped = whole_traces_shifted(:,300:end-300);
+    
+        imagesc(whole_traces_shifted_cropped,colorlim)
+        colormap(cmap)
+        colorbar
+
+        title({['ampa sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
+
+        ab = subplot(2,1,2)
+        plot(whole_traces_shifted_cropped')
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+
     end
-    axis tight
-    xlabel('rad')
 
-    legend({num2str([1:4]')})
 
-    %%
-    f3 = figure;
-    f3.Color = [1 1 1];
+
+
+
+
+
+
+    
     for n = 1:nneurons
+        f1 = figure;
+        f1.Color = [1 1 1];            
+        subplot(2,1,1)
 
-        ax3(n) = subplot(2,2,n)
-        ttt = [1:500]- prc_gaba_supra{n}.peaktimes(1);
-        imagesc(prc_gaba_supra{n}.VS, [-80 -30])
-        % waterfall(prc_gaba_supra{n}.VS)
-        title({['gaba supra']; num2str(p{1}(n)) ; num2str(p{2}(n))})
+        pph = prc_comb_sub{n}.pertphases; %: [229 237 245 253 261 269 277 285 292 300 308 316 324 332 340 348]
+        pph = -[pph(1) pph];
 
-    end
+        stst = prc_comb_sub{1}.steady_state.networkHistory.V_soma;
+        VS = prc_comb_sub{n}.VS;
+        stst = repmat(stst, 17,1);
+        whole_traces = [stst VS];
+        whole_traces_shifted = cell2mat(arrayfun(@(row) circshift(whole_traces(row, :), [0 pph(row)-pph(1) ]) , [1:17], 'uniformoutput', 0)');
+        whole_traces_shifted_cropped = whole_traces_shifted(:,300:end-300);
+    
+        imagesc(whole_traces_shifted_cropped,colorlim)
+        colormap(cmap)
+        
+        colorbar
 
-    %%
+        title({['combined sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
 
-    f4 = figure;
-    f4.Color = [1 1 1];
-    for n = 1:nneurons
-    plot(prc_gaba_supra{n}.PRC(1,:), prc_gaba_supra{n}.PRC(2,:)); hold on;
-    set(gca,'Colormap', cbrewer('qual', 'Set2', 11))
-    title('PRC gaba supra')
-    end
-    legend({num2str([1:4]')})
-    axis tight
-
-    %%
-    f5 = figure;
-    f5.Color = [1 1 1];
-    for n = 1:nneurons
-
-        ax5(n) = subplot(2,2,n)
-        ttt = [1:500]- prc_ampa_sub{n}.peaktimes(1);
-        imagesc(prc_ampa_sub{n}.VS, [-80 -30])
-        % waterfall(prc_ampa_sub{n}.VS)
-        title({['ampa sub' ] ; num2str(p{1}(n)) ; num2str(p{2}(n))})
-    end
-
-    %%
-    f6 = figure; clf;
-    f6.Color = [1 1 1];
-    for n = 1:nneurons
-        plot(prc_ampa_sub{n}.PRC(1,:), prc_ampa_sub{n}.PRC(2,:)); hold on;
-    end
-    title('PRC ampa sub')
-    legend({num2str([1:4]')})
-    axis tight
-
-    %%
-    f7 = figure;
-    f7.Color = [1 1 1];
-    for n = 1:nneurons
-
-        ax7(n) = subplot(2,2,n)
-        ttt = [1:500]- prc_ampa_supra{n}.peaktimes(1);
-        imagesc(prc_ampa_supra{n}.VS , [-80, -30])
-        % waterfall(prc_ampa_supra{n}.VS)
-        title({['ampa supra' ] ; num2str(p{1}(n)) ; num2str(p{2}(n))})
+        ab = subplot(2,1,2)
+        plot(whole_traces_shifted_cropped')
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
 
     end
-    %%
-    f8 = figure; clf;
-    f8.Color = [1 1 1];
-    for n = 1:nneurons
-        plot(prc_ampa_supra{n}.PRC(1,:), prc_ampa_supra{n}.PRC(2,:)); hold on;
-    end
-    title('PRC ampa supra')
-    legend({num2str([1:4]')})
-    axis tight
-
-    %%
-
-    f9 = figure;
-    f9.Color = [1 1 1];
-    for n = 1:nneurons
-
-        ax9(n) = subplot(2,2,n)
-        ttt = [1:500]- prc_comb_sub{n}.peaktimes(1);
-        % waterfall(prc_comb_sub{n}.VS)
-        imagesc(prc_comb_sub{n}.VS , [-80 -30])
-        title({['PRC combined'] ; num2str(p{1}(n)) ; num2str(p{2}(n))})
-
-    end
-
-    %%
-
-    %%
-    f10 = figure;
-    f10.Color = [1 1 1];
-    for n = 1:gabavals
-    plot(prc_gaba_pspace{n}.PRC(1,:),prc_gaba_pspace{n}.PRC(2,:)); hold on;
-    end
-    legend(num2str(([1:gabavals]'-1)*.4))
-    title('gaba prc pspace (stim=2ms)')
-    axis tight
-    %%
-
-    f11 = figure;
-    f11.Color = [1 1 1];
-    for n = 1:gabavals
-        subplot(1,10,n)
-        imagesc(prc_gaba_pspace{n}.VS', [-80 -30]); hold on
-    end
-    title('gaba prc pspace (stim=2ms)')
-
-    %%
-    f12 = figure;
-    f12.Color = [1 1 1];
-    for n = 1:gabavals
-        plot(prc_gaba_pspace{n}.PRC(1,:),prc_gaba_pspace{n}.PRC(2,:)); hold on;
-    end
-    title('gaba prc pspace (stim=2ms)')
-    legend(num2str(([1:gabavals]'-1)*.4))
-    axis tight
+    
+    figure
+    subplot(1,2,1)
+    plot(prc_ampa_sub{1}.PRC(1,:)', prc_ampa_sub{1}.PRC(2,:)');
+    subplot(1,2,2)
+    plot(prc_gaba_sub{1}.PRC(1,:)', prc_gaba_sub{1}.PRC(2,:)');
+    figure
+    plot(prc_comb_sub{1}.PRC(1,:)', prc_comb_sub{1}.PRC(2,:)');
 
 
-%     %%
-%     f13 = figure;
-%     f13.Color = [1 1 1];
-%     for n = 1:gabavals
-%     subplot(1,10,n)
-%     imagesc(prc_gaba_pspace_d4{n}.VS', [-70 -40]); hold on
-%     end
-%     title('gaba prc pspace (stim=4ms)')
 
 end

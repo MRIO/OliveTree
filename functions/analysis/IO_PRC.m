@@ -18,9 +18,8 @@ function out =  IO_PRC(neuron, pert, phase_partitions)
 cell_function = 'vanilla';
 
 
-simtime  = 800;
-compute_transients = 1; transienttime = 500;
-simtime = 700
+simtime  = 1400;
+compute_transients = 1; transienttime = 1200;
 stimulate    = 1;
 volumetric_activity = 0; % slow
 
@@ -129,11 +128,16 @@ for pertphase = pertphases
         t = [pertphase+pec:LOCS(3)+meanT];
 
         try
-            [newPKS{k} newLOCS{k}] = findpeaks(perturbedPhases{k}(t), 'minpeakdistance',40,  'npeaks', 1, 'minpeakheight', 5.5);
+            [newPKS{k} newLOCS{k}] = findpeaks(perturbedPhases{k}(t), 'minpeakdistance',40,  'npeaks', 1, 'minpeakheight', 3.5);
+            newPKS{k} = newPKS{k}+pec;
         catch
             newPKS{k} = NaN;
             newLOCS{k} = [];
         end
+
+        % if k == 15 
+        %     keyboard
+        % end
 
         if isempty(newLOCS{k})
             peakDelta(k) = NaN;
@@ -158,6 +162,7 @@ out.pertphases = pertphases;
 out.VS = VV;
 out.steadystate = steady_state;
 out.neuron = neuron;
+out.steady_state = steady_state;
 
 % k = 0; t = [LOCS(2)-50:LOCS(2)+50];
 % for pertphase = pertphases

@@ -23,6 +23,8 @@ p.addOptional('savemovie',[])
 p.addOptional('animate',0)
 p.addOptional('print2file',0)
 p.addOptional('trigger',1)
+p.addOptional('frames2print',[])
+
 
 p.addParameter('fhandle', gcf)
 p.addParameter('group', [])
@@ -66,7 +68,7 @@ VS = sim.networkHistory.V_soma;
 
 if frames2file; animate = 1; end
 
-	groupcolors = [.7 .7 .7 ; .3 0 .3];
+	groupcolors = [157 157 157 ; 111 228 111]./255;
 
 % [=================================================================]
 %  slice to plot
@@ -222,8 +224,8 @@ fig0 = figure('color',[1 1 1])
 	% circular phase plot
 	a(1) = axes;
 
-		circ_plot(G1(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',7,'marker','o');
-		circ_plot(G2(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',10,'marker','.');
+		circ_plot(G1(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',3,'marker','o');
+		circ_plot(G2(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','.');
 		hold on
 
 		axis off
@@ -315,8 +317,6 @@ spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 
 if animate
 	for t = duration 
-		% R1 = rose(U(group1,t));
-		% R2 = rose(U(group2,t));
 
 		axes(a(1))
 		cla
@@ -330,7 +330,7 @@ if animate
 		
 		axis off
 
-		alpha(.3)
+		alpha(.7)
 		drawnow
 		
 		title({num2str(t);[' ']; [' ']})
@@ -349,25 +349,75 @@ if animate
 			% keyboard
 		end
 
-		if frames2file
-			name = ['phase_dist@' num2str(t) ];
-
-			frm=hgexport('readstyle','12x12');
-		    frm.Format = 'pdf';
-		    hgexport(fig0,name,frm);
-
-
-			
-		end
 	end
-end
-
-
-
-if savemovie
+	
+	if savemovie
 	% Close the file.
     close(vidObj);
+	end
+
+
 end
+
+
+
+
+frames2print = [953 1013 1073 1123];
+if not(isempty(frames2print))
+
+
+
+	f100 = figure;
+	
+	for t = frames2print
+
+		axes(a(1))
+		cla
+		circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',20,'marker','.');
+		hold on
+		circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','o');
+		
+		% hold on
+		% circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
+
+		
+		axis off
+
+		alpha(.7)
+		drawnow
+		
+		title({num2str(t);[' ']; [' ']})
+
+
+		name = ['phase_dist@' num2str(t) ];
+
+		frm=hgexport('readstyle','6x6');
+	    frm.Format = 'pdf';
+	    hgexport(fig0,name,frm);
+
+	end
+	close(f100)
+end
+	
+
+
+frames2test = [953 1013 1073 1123];
+if not(isempty(frames2test))
+
+	kuiper_stat = [];
+	for t = frames2test
+	
+		[pval k K] = circ_kuipertest(G2(:,t), G1(:,t),35);
+
+		kuiper_stat = [kuiper_stat; t pval k];
+		
+		% keyboard
+	end
+
+end
+
+
+
 
 
 out.phases.mean = [M1 ; M2 ; MA];
@@ -377,18 +427,8 @@ out.phases.pop = {G1 ; G2};
 out.phases.orderparameter = {order_parameter_G1 ; order_parameter_G2};
 out.spikes.spks1 = spks1;
 out.spikes.spks2 = spks2;
+out.stats.kuiper_stat = kuiper_stat;
 
-
-% for i = 1:1000;
-
-% X(i,:) = hist(scaled(:,i),72)
-% fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], color ,'edgecolor','none');
-
-
-% end
-
-% % out.kurtosis = 
-% % out.skew = 
 
 
 

@@ -1,14 +1,17 @@
 function plot_volume(V_soma_unwrapped, coords, ttt)
 
 fname = ['volume_' datestr(now,'YYMMDD_hh-mm')];
-savemovie = 0;
+savemovie = 1;
 frames2file = 0;
-plotdiffact = 0;
+plotphase = 0;
 plotcolorbar =0;
-if plotdiffact
+if plotphase
 	 clims = [0 2*pi];
+	 cmap = gen_divergent_colormap;
+	 cmap = flipud(cmap);
 else
 	clims = [-68 -40];
+	cmap = jet(128)
 end
 
 if isempty(ttt)
@@ -42,7 +45,7 @@ end
 
 fig_volume = figure('color', [1 1 1]);
 ax_volume = axes;
-colormap(ax_volume, jet(128));
+colormap(ax_volume, cmap);
 
 if plotcolorbar; colorbar ; end
 
@@ -61,7 +64,7 @@ for tt = ttt
 	set(0,'CurrentFigure',fig_volume);
     % set(fig1,'CurrentAxes',a(3));
 
-    if plotdiffact
+    if plotphase
     	AAA = abs(CCCC);
 		AAA(AAA<0)  = 0;
 		AAA(AAA==0) = 0;
