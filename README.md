@@ -1,12 +1,35 @@
 # OliveTree
 
-A biophysically detailed neuronal network model of the inferior olivary nucleusof the cerebellar complex in MATLAB with gpu support via CUDA.
+A biophysically detailed neuronal network model of the inferior olivary nucleusof the cerebellar complex in parallel MATLAB with gpu support via CUDA.
 
 ## Model Features:
-- Multiple possible connectivity schemes including clusterization.
-- A cell property randomizer
+
+- Multiple possible connectivity schemes including clusterization and based on reconstruction data
+- A cell property randomizer (conductances and any other parameter)
 - An analysis suite including spectral clustering, cross correlations, raster plots, etc.
 
-# Reference: 
+# Reproducing Manuscripts
+
+- Negrello et al (Plos Comp Bio, 2019)
+
+  - Warnaar_
+
+- Loyola et al (eLife 2023)
+
+  - Figure 7:
+
+    - Run "Loyola_PRC.m"
+
+  - Figure 8:
+
+    - Exc_Inh_Reconstruction.m
+
+    
+
+    
+
+
+
+# Reference:
 
 [1]	M. Negrello, P. Warnaar, V. Romano, C. B. Owens, S. Lindeman, E. Iavarone, J. K. Spanke, L. W. J. Bosman, and C. I. De Zeeuw, “Quasiperiodic rhythms of the inferior olive.,” PLoS Computational Biololgy, vol. 15, no. 5, p. e1006475, May 2019.

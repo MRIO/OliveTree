@@ -28,6 +28,10 @@ gaba_conds = linspace(.1,4.1,9);
 ampa_conds = linspace(.1,.6,9);
 
 
+
+%%
+
+
 i = 0;
 for gcal = [1.1];
 
@@ -42,7 +46,7 @@ for gcal = [1.1];
 
 		pert.mask{1}  	= M1;
 		pert.type{1}	  = 'gaba_dend';
-		pert.duration{1}  = 4;
+		pert.duration{1}  = 5;
 		pert.triggers{1} = [500];
 
 		simresults = IOnet('networksize', netsize,'time',simtime,'delta',dt,...
@@ -59,7 +63,7 @@ for gcal = [1.1];
 		pert.mask{2}  	  = M1;
 		% pert.amplitude{2} = 2;
 		pert.type{2}	  = 'gaba_soma';
-		pert.duration{2}  = 4;
+		pert.duration{2}  = 5;
 		pert.triggers{2} = [500];
 
 		simresults = IOnet('networksize', netsize,'time',simtime,'delta',dt,...
@@ -78,7 +82,7 @@ for gcal = [1.1];
 
 end
 
-
+%%
 
 i = 0;
 for gcal = [.5 1.1];
@@ -113,6 +117,14 @@ for gcal = [.5 1.1];
 
 end
 
+%%
+
+
+
+
+
+%%
+
 
 
 f = figure;
@@ -139,7 +151,7 @@ title('AMPA @ soma: intrinsic oscillator')
 legend(num2str(ampa_conds'))
 f.Color = [1 1 1];;
 a(1).ColorOrder = cbrewer('seq', 'Reds', length(gaba_conds));
-a(2).ColorOrder = cbrewer('seq', 'Reds',length(gaba_conds));
+a(2).ColorOrder = cbrewer('seq', 'Reds', length(gaba_conds));
 a(3).ColorOrder = cbrewer('seq', 'Blues', length(ampa_conds));
 a(4).ColorOrder = cbrewer('seq', 'Blues', length(ampa_conds));
 a(1).XLabel.String = 'ms';

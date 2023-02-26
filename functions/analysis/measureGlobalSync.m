@@ -32,8 +32,14 @@ function results = measureGlobalSync(varargin)
 	
 
 
-
+try
 VS = sim.networkHistory.V_soma;
+catch
+VS = sim
+warning('using sim as array.')
+end
+
+
 t = size(VS,2);
 
 noneurons = prod(sim.networksize);

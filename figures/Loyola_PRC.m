@@ -1,9 +1,17 @@
 % Figure 7 of Loyola et al. 2023
 
 % What to do
-prepare = 1;
-simulate = 1;
+prepare = 0;
+simulate = 0;
 plots = 1;
+
+
+try
+    cmap = gen_divergent_colormap;
+    cmap = flipud(cmap);
+catch
+    disp('missing user colormaps')
+end
 
 
 if prepare
@@ -11,7 +19,7 @@ if prepare
         
         %% Make neurons
 
-    p1 = [1.2]; 		% Calcium v - conductance range
+    p1 = [1.1]; 		% Calcium v - conductance range
     p2 = [4.5];  		% g_CaH (does not impact PRC without CaH.)
     
 
@@ -94,11 +102,11 @@ if prepare
     pert.amplitude{1} = 1;
     pert.duration {1} = 1;
     pert.type	  {1} = 'ampa_dend';
-    pert.triggers{1} = [60];   
+    pert.triggers{1} = [60];  
 
     pert.mask  	  {2} = 1;
     pert.amplitude{2} = 1;
-    pert.duration {2} = 4;
+    pert.duration {2} = 3;
     pert.type	  {2} = 'gaba_dend';
     pert.triggers{2} = [0];   
 
@@ -119,7 +127,6 @@ if plots
 
 nneurons = 1;
     % cmap = cbrewer('div', 'RdYlBu', 64);
-    cmap = colormap(parula)
     colorlim = [-70 -40];
 
 
@@ -133,23 +140,82 @@ nneurons = 1;
 
         stst = prc_gaba_sub{1}.steady_state.networkHistory.V_soma;
         VS = prc_gaba_sub{n}.VS;
+        
+
+
         stst = repmat(stst, 17,1);
         whole_traces = [stst VS];
+        whole_traces_cropped = whole_traces(:,300:end-300);
         whole_traces_shifted = cell2mat(arrayfun(@(row) circshift(whole_traces(row, :), [0 pph(row)-pph(1) ]) , [1:17], 'uniformoutput', 0)');
         whole_traces_shifted_cropped = whole_traces_shifted(:,300:end-300);
     
-        imagesc(whole_traces_shifted_cropped,colorlim)
-        colormap(cmap)
-        colorbar
+
+        hilb_vs = hilbert_of_membranepotential(whole_traces_shifted_cropped(2:end,:))
+
+
+        sp(1) = subplot(5,1,1)
+        % plot(whole_traces_shifted_cropped(1,:),'k-')
+        % hold on
+        % plot(whole_traces_shifted_cropped(7,:),'k--')
+        plot(whole_traces_cropped(1,:),'k-')
+        hold on
+        plot(whole_traces_cropped(9,:),'k--')
+        axis tight
+        axis off
+        ylim([-80,0])
 
         title({['gaba sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
-
-        ab = subplot(2,1,2)
-        plot(whole_traces_shifted_cropped')
-        % colororder = flipud(cbrewer('seq', 'Reds', 18));
+        
+        sp(2) = subplot(5,1,2)
+        
+        imagesc(whole_traces_shifted_cropped(2:end,:),colorlim)
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
         % colororder(1:2,:)=[];
         % ab.ColorOrder = colororder;
         xlim([0 2000])
+
+        colormap(sp(2), parula)
+        axis tight
+        axis off
+        
+
+        sp(3) = subplot(5,1,3)
+
+        plot(whole_traces_shifted_cropped(2:end-1,:)','k')
+        hold on
+        plot(mean(whole_traces_shifted_cropped(2:end-1,:)), 'r', 'linewidth',2)
+        % plot_mean_and_std(whole_traces_shifted_cropped(2:end-1,:))
+        axis tight
+        axis off
+
+        
+        % colormap(sp(3), parula)
+
+        
+
+
+        sp(4) = subplot(5,1,4)
+
+        imagesc(hilb_vs.hilbert)
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+        colormap(sp(4), cmap)
+        axis off
+
+        
+
+        sp(5) = subplot(5,1,5)
+        
+        plot_mean_and_std(hilb_vs.hilbert(1:end-1,:))
+        % plot_mean_and_std(whole_traces_shifted_cropped(2:end,:))
+
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+
 
     end
 
@@ -160,7 +226,6 @@ nneurons = 1;
     for n = 1:nneurons
         f1 = figure;
         f1.Color = [1 1 1];            
-        subplot(2,1,1)
 
         pph = prc_ampa_sub{n}.pertphases; %: [229 237 245 253 261 269 277 285 292 300 308 316 324 332 340 348]
         pph = -[pph(1) pph];
@@ -169,21 +234,78 @@ nneurons = 1;
         VS = prc_ampa_sub{n}.VS;
         stst = repmat(stst, 17,1);
         whole_traces = [stst VS];
+        whole_traces_cropped = whole_traces(:,300:end-300);
         whole_traces_shifted = cell2mat(arrayfun(@(row) circshift(whole_traces(row, :), [0 pph(row)-pph(1) ]) , [1:17], 'uniformoutput', 0)');
         whole_traces_shifted_cropped = whole_traces_shifted(:,300:end-300);
     
-        imagesc(whole_traces_shifted_cropped,colorlim)
-        colormap(cmap)
-        colorbar
+
+        hilb_vs = hilbert_of_membranepotential(whole_traces_shifted_cropped(2:end,:))
+
+
+        sp(1) = subplot(5,1,1)
+        % plot(whole_traces_shifted_cropped(1,:),'k-')
+        % hold on
+        % plot(whole_traces_shifted_cropped(7,:),'k--')
+        plot(whole_traces_cropped(1,:),'k-')
+        hold on
+        plot(whole_traces_cropped(9,:),'k--')
+        axis tight
+        axis off
+        ylim([-80,0])
 
         title({['ampa sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
-
-        ab = subplot(2,1,2)
-        plot(whole_traces_shifted_cropped')
+        
+        sp(2) = subplot(5,1,2)
+        
+        imagesc(whole_traces_shifted_cropped(2:end,:),colorlim)
         % colororder = flipud(cbrewer('seq', 'Blues', 18));
         % colororder(1:2,:)=[];
         % ab.ColorOrder = colororder;
         xlim([0 2000])
+
+        colormap(sp(2), parula)
+        axis tight
+        axis off
+        
+
+        sp(3) = subplot(5,1,3)
+  plot(whole_traces_shifted_cropped(2:end-1,:)','k')
+        hold on
+        plot(mean(whole_traces_shifted_cropped(2:end-1,:)), 'r', 'linewidth',2)
+        % plot_mean_and_std(whole_traces_shifted_cropped(2:end-1,:))
+        axis tight
+        axis off
+
+        
+
+
+        sp(4) = subplot(5,1,4)
+
+        imagesc(hilb_vs.hilbert)
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+        colormap(sp(4), cmap)
+        axis off
+
+        
+
+        sp(5) = subplot(5,1,5)
+        
+        plot_mean_and_std(hilb_vs.hilbert(1:end-1,:))
+        % plot_mean_and_std(whole_traces_shifted_cropped(2:end,:))
+
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+
+
+    
+
+
+
 
     end
 
@@ -206,34 +328,84 @@ nneurons = 1;
         stst = prc_comb_sub{1}.steady_state.networkHistory.V_soma;
         VS = prc_comb_sub{n}.VS;
         stst = repmat(stst, 17,1);
+        
+
         whole_traces = [stst VS];
+        whole_traces_cropped = whole_traces(:,300:end-300);
         whole_traces_shifted = cell2mat(arrayfun(@(row) circshift(whole_traces(row, :), [0 pph(row)-pph(1) ]) , [1:17], 'uniformoutput', 0)');
         whole_traces_shifted_cropped = whole_traces_shifted(:,300:end-300);
     
-        imagesc(whole_traces_shifted_cropped,colorlim)
-        colormap(cmap)
+
+        hilb_vs = hilbert_of_membranepotential(whole_traces_shifted_cropped)
+
+
+        sp(1) = subplot(5,1,1)
+        % plot(whole_traces_shifted_cropped(1,:),'k-')
+        % hold on
+        % plot(whole_traces_shifted_cropped(7,:),'k--')
+        plot(whole_traces_cropped(1,:),'k-')
+        hold on
+        plot(whole_traces_cropped(9,:),'k--')
         
-        colorbar
+        axis tight
+        axis off
+        ylim([-80,0])
 
-        title({['combined sub']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
-
-        ab = subplot(2,1,2)
-        plot(whole_traces_shifted_cropped')
+        title({['combined']; ['neuron' num2str(n)] ; ['CaL: ' num2str(p{1}(n)) ]; ['CaH: ' num2str(p{2}(n))]})
+        
+        sp(2) = subplot(5,1,2)
+        
+        imagesc(whole_traces_shifted_cropped(2:end,:),colorlim)
         % colororder = flipud(cbrewer('seq', 'Blues', 18));
         % colororder(1:2,:)=[];
         % ab.ColorOrder = colororder;
         xlim([0 2000])
 
+        colormap(sp(2), parula)
+        axis tight
+        axis off
+        
+
+        sp(3) = subplot(5,1,3)
+        
+        plot(whole_traces_shifted_cropped(2:end-1,:)','k')
+        hold on
+        plot(mean(whole_traces_shifted_cropped(2:end-1,:)), 'r', 'linewidth',2)
+        % plot_mean_and_std(whole_traces_shifted_cropped(2:end-1,:))
+        axis tight
+        axis off
+
+        
+        
+
+
+        sp(4) = subplot(5,1,4)
+
+        imagesc(hilb_vs.hilbert(2:end,:))
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+        colormap(sp(4), cmap)
+        axis off
+
+        
+
+        sp(5) = subplot(5,1,5)
+        
+        plot_mean_and_std(hilb_vs.hilbert(2:end-1,:))
+        % plot_mean_and_std(whole_traces_shifted_cropped(2:end,:))
+
+        % colororder = flipud(cbrewer('seq', 'Blues', 18));
+        % colororder(1:2,:)=[];
+        % ab.ColorOrder = colororder;
+        xlim([0 2000])
+
+
+    
     end
     
-    figure
-    subplot(1,2,1)
-    plot(prc_ampa_sub{1}.PRC(1,:)', prc_ampa_sub{1}.PRC(2,:)');
-    subplot(1,2,2)
-    plot(prc_gaba_sub{1}.PRC(1,:)', prc_gaba_sub{1}.PRC(2,:)');
-    figure
-    plot(prc_comb_sub{1}.PRC(1,:)', prc_comb_sub{1}.PRC(2,:)');
-
+    
 
 
 end

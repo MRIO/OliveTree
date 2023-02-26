@@ -21,7 +21,7 @@ thisseed.Seed
 % steps to perform
 % [================================================]
 
-conjuctive_stimulation = 1;
+conjuctive_stimulation = 0;
 
 produce_plots = 1;
 
@@ -176,10 +176,6 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', th
 def_neurons.gbar_gaba_dend = def_neurons.gbar_gaba_dend + 0.75; % subthreshold
 def_neurons.g_CaL = def_neurons.g_CaL + cal_boost;
 
-def_neurons.gbar_gaba_dend = ones(1,noneurons)*2;
-def_neurons.gbar_gaba_soma = ones(1,noneurons)*1;
-def_neurons.V_gaba_soma    = ones(1,noneurons)*-70;
-
 
 % def_neurons.gbar_gaba_soma = def_neurons.gbar_gaba_dend + 0.75; % subthreshold
 
@@ -199,11 +195,12 @@ pert.amplitude{2} = 1
 pert.duration {2} = 5; %ms was the duration of the stimulus in Tycho's paper.
 pert.type	  {2} = 'gaba_dend';
 
+
 % adding somatic gaba for longer hyperpolarization effect
-pert.mask     {3} = pert.mask{2};
-pert.amplitude{3} = 1
-pert.duration {3} = 5; %ms was the duration of the stimulus in Tycho's paper.
-pert.type     {3} = 'gaba_soma';
+% pert.mask     {3} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-40, 0, 0], 'synapseprobability', .85,'plotme',0) % probability adjusted to make number of cells in cluster match
+% pert.amplitude{3} = 1
+% pert.duration {3} = 5; %ms was the duration of the stimulus in Tycho's paper.
+% pert.type     {3} = 'gaba_dend';
 
 
 
@@ -219,6 +216,9 @@ alpha(.3)
 % apply some current to check the behavior of the cells
 I_app = [];
 
+
+return
+%%
 
 %%================================================]
 % 		 compute transients/steadystate
