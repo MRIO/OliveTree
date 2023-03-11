@@ -15,7 +15,7 @@
 % Fig. 1A in Yarom and Llina ́s 1987; Manor 1995). Note that 1 uA/cm2 corresponds to 0.1 nA for a total cell surface of 10,000 um2.
 
 
-% [=================================================================]
+%% [=================================================================]
 %  global parameters
 % [=================================================================]
 clear
@@ -24,7 +24,7 @@ gpu = 1;
 verbose = 1;
 
 debugging = 0;
-% [=================================================================]
+%% [=================================================================]
 %  simulation parameters
 % [=================================================================]
 delta = .02;
@@ -32,16 +32,16 @@ delta = .02;
 % cell_function = 'devel';
 % cell_function = 'vanilla'; % 'devel'
 cell_function = 'original'; % 'devel'
-nconn = 0;
+nconn = 10;
 
-steadystate_time = 1000;
+steadystate_time = 300;
 simtime  = 500;
 
 currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
-% [=================================================================]
+%% [=================================================================]
 %  state variables to report
-% [=================================================================]
+%  [=================================================================]
 
 activations =  {'V_soma','Calcium_l', 'Calcium_r', 'Ca2Plus', 'Potassium_s', 'Hcurrent_q', 'Hcurrent_q','Sodium_m_a', 'Sodium_h_a','Potassium_x_a'};
 currents = {'V_soma','V_dend','V_axon', 'I_CaL', 'I_ds', 'I_as', 'I_Na_s', 'I_ls', 'I_Kdr_s', 'I_K_s', 'I_CaH', 'I_sd', 'I_ld', 'I_K_Ca', 'I_cx36', 'I_h', 'I_h_s', 'I_K_a', 'I_sa', 'I_la', 'I_Na_a'};
@@ -49,19 +49,20 @@ vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36' 'curr_noise_pert'};
 vs = {'V_soma' ,'V_dend','V_axon' };
 calciumconc = {'V_soma', 'Ca2Plus'};
-to_report = activations;
+to_report = vsoma;
 
 
 
-% [=================================================================]
+%% [=================================================================]
 %  parameter grid
-% [=================================================================]
+%  [=================================================================]
 % gaps = [];
-gaps = [0];
+gaps = [0 0.03];
 
+% 
 % pspace_type = 'pgrid';
-pspace_type = 'randomized';%
- % pspace_type = '2p_sweep';
+pspace_type = 'randomized';
+% pspace_type = '2p_sweep';
 % pspace_type = 'ca_extrusion';
 
 switch pspace_type
@@ -71,7 +72,7 @@ switch pspace_type
 
 	noneurons = 100;
 	netsize = [noneurons 1 1];
-	def_neurons = createDefaultNeurons(noneurons,'celltypes','random_norm');
+	def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
 
@@ -103,12 +104,12 @@ switch pspace_type
 	case 'pgrid'
 
 	% 9 Dimensional GRID: parameter ranges
-	p1 = [1.1 1.3]; 		% CalciumL - conductance range
-	p2 = [0];      	    % g_h_s
+	p1 = [.9 1.1 1.3]; 		% CalciumL - conductance range
+	p2 = [.12 .36];      	    % g_h_s
 	p3 = [.15]; 	% g_int
-	p4 = [.12];      	% g_h
+	p4 = [0];      	% g_h_s
 	p5 = [.15 ]; % ratio soma dendrite
-	p6 = [ 15 25];	% Ca act K: not voltage dependent (SK)
+	p6 = [15 25 35];	% Ca act K: not voltage dependent (SK)
 	p7 = [1.5 2.5 3.5]; % Ca High threshold
 	p8 = [0.016];    % leak
 	p9 = [0.016];; % leak
@@ -116,7 +117,7 @@ switch pspace_type
 
 	[p{1} p{2} p{3} p{4} p{5} p{6} p{7} p{8} p{9} p{10}] = ndgrid(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10);
 
-	Pnames = {'g_CaL' 'g_h_s' 'g_int' 'g_h' 'p1' 'g_K_Ca' 'g_CaH' 'g_ld' 'g_ls' 'arbitrary'}';
+	Pnames = {'g_CaL' 'g_h' 'g_int' 'g_h' 'p1' 'g_K_Ca' 'g_CaH' 'g_ld' 'g_ls' 'arbitrary'}';
 	Plist = [p{1}(:) p{2}(:) p{3}(:) p{4}(:) p{5}(:) p{6}(:) p{7}(:) p{8}(:) p{9}(:) p{10}(:)]; 
 
 	noneurons = length(p{1}(:));
@@ -133,7 +134,8 @@ switch pspace_type
 	def_neurons.g_ld = p{8}(:);
 	def_neurons.g_ls = p{9}(:);
     def_neurons.arbitrary= p{10}(:);
-% 	def_neurons.gbar_ampa_soma = p{10}(:);
+
+
 
 
 end
@@ -142,7 +144,7 @@ end
 	W = createW('all to all', [1 noneurons 1], [], 1, 0, 0, 0, nconn, []);
 
 
-% [=================================================================]
+%% [=================================================================]
 %  perturbation
 % [=================================================================]
 
@@ -154,39 +156,71 @@ ounoise = [0 0 0 0];
 
 % apply some current to check the behavior of the cells
 I_app = [];
-I_app = zeros(noneurons, simtime*1/delta);
-I_app(:,(300*(1/delta):310*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
+% I_app = zeros(noneurons, simtime*1/delta);
+% I_app(:,(300*(1/delta):310*(1/delta))) = currentstep; % nAmpere 20/dt [nA/s.cm^2] 
 % I_app(:,(500*(1/delta):510*(1/delta))) = -currentstep;  % nAmpere 20/dt [nA/s.cm^2] 
 
 
 pert = [];
 
+        
+        
+  %%
+% [================================================]
+%  Projection Fields of AMPA and GABA
+% [================================================]
 
+pert.mask     {1} = ones(noneurons,1);
+pert.amplitude{1} = 1;
+pert.duration {1} = 1;
+pert.type	  {1} = 'ampa_dend';
+
+pert.mask     {2} =  ones(noneurons,1);
+pert.amplitude{2} = 1
+pert.duration {2} = 5; %ms was the duration of the stimulus in Tycho's paper.
+pert.type	  {2} = 'gaba_dend';
+
+% adding somatic gaba for longer hyperpolarization effect
+pert.mask     {3} = ones(noneurons,1);
+pert.amplitude{3} = 1
+pert.duration {3} = 5; %ms was the duration of the stimulus in Tycho's paper.
+pert.type     {3} = 'gaba_soma';
+
+      
+pert.triggers {1} = 300;
+pert.triggers {2} = 200:250;
+pert.triggers {3} = 200:270;
+
+def_neurons.gbar_gaba_soma = ones(noneurons,1)*1;
+def_neurons.gbar_gaba_dend = ones(noneurons,1)*1;
+
+
+%% 
 
 %%================================================]
 % 		 compute transients/steadystate
 %=================================================]
 if ~exist('st_st','var')
+    %%
 	disp('calculating transients')
-	st_st = IOnet('verbose', verbose, 'cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta,'ou_noise', [0 0 0 0],'debug',debugging);
+	st_st = IOnet('verbose', 1, 'cell_function', cell_function ,'networksize', netsize, 'cell_parameters', def_neurons, 'time', steadystate_time ,'gpu', gpu,'to_report', to_report ,'delta',delta,'ou_noise', [0 0 0 0],'debug',debugging);
 	st_st.Plist = Plist;
 	st_st.Pnames = Pnames;
-
-	% replayResults_3(st_st, 'plotallfields',1)
-	% resultstable = profile_sim(st_st);
-	drawnow
 
 end
 
 
 
-% [===========================================================================================================]
+%% [===========================================================================================================]
+sel_fields = {'g_CaL' ,'g_CaH', 'g_K_Ca', 'g_h', 'ampl', 'freq_each', 'meanVm'};
+
 s = 0;
 for gap = gaps
 	s = s+1;
+    
    [simresults{s}] = IOnet('verbose', verbose, 'tempState', st_st.lastState ,'cell_parameters', def_neurons, ...
    	'networksize', netsize,'time',simtime ,'W', W.W*gap ,'ou_noise', ounoise , ...
-   	'to_report', to_report ,'gpu', gpu , 'appCurrent', I_app, ...
+   	'to_report', to_report ,'gpu', gpu , 'appCurrent', I_app, 'perturbation', pert ,...
    	'cell_function', cell_function ,'delta',delta,'sametoall', 0 , 'displaytext', ['sim: ' num2str(s)]);
 
    simresults{s}.Plist = Plist;
@@ -201,15 +235,18 @@ for gap = gaps
 
 	% receiving = area(pos,'edgecolor','none'), hold on
 	% donating  = area(neg,'edgecolor','none')
-
-
+    
+    R1 = profile_sim(simresults{s},'tslice', [1:min(simtime, 1000)], 'plotme',1);
+    NDscatter(R.allneurons(:,sel_fields),1)
+    drawnow
 end
-% [===========================================================================================================]
-R = profile_sim(simresults{1},'tslice', [1:min(simtime, 1000)], 'plotme',1);
-sel_fields = {'g_CaL' ,'g_CaH', 'g_K_Ca', 'ampl', 'freq_each', 'meanVm'};
+
+
+%% [===========================================================================================================]
+
 % sel_fields = {'arbitrary','ampl', 'freq_each', 'meanVm'};
 % sel_fields = def_neurons.Pnames;
-NDscatter(R.allneurons(:,sel_fields),1)
+
 
 
 prunecells = 0;

@@ -8,8 +8,12 @@ set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
 % [================================================]
 %% clear
 
-steadystate_time = 500; %ms
-simtime  = 3000; %ms
+intervals = [-180:10:180];
+% intervals = [100 125 150];
+onset_of_inh = 500;
+
+steadystate_time = 200; %ms
+simtime  = 1000; %ms
 delta = .025;
 gpu = 1;
 
@@ -65,8 +69,8 @@ sametoall = 0.05;
 % plotconn = 1;
 % normalize = 1;
 
-nconns_curlies = 5;
-nconns_bridges = 5;
+nconns_curlies = 10;
+nconns_bridges = 10;
 cells_in_cluster = 20;  % upperbound estimate from: % Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
 gap_curlies = .03;
 gap_bridges = .03;
@@ -92,68 +96,16 @@ noneurons = length(somatapositions);
 if not(exist('curlies'))
 	% curlies:
 	% create a network with distance based connectivity for close by connections
-	% this network is clusterized with about 20cells per cluster, according to a k-means algo.
-
+	
 	% Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
 
 	% radius within which we allow connections
-	% between curlies:
 	median_soma_distance = 20;
-	rad_cur = median_soma_distance * 6;
-	% between bridges:
-	rad_bri = median_soma_distance * 12;
-
-
-% 	THE CODE BELOW IS TO CREATE CLUSTERIZED NETWORKS. NOT REQUIRED.
-% 
-% 	curlies = createW('3d_reconstruction', [], rad_cur, 1, 0, plotconn, [], nconns_curlies, somatapositions,1,[1 cells_in_cluster 1 0]);
-% 
-% 	% create a network with distance based connectivity for further apart cells: bridges
-% 	% these cells are not bound to specific clusters.
-% 	bridges = createW('3d_reconstruction', [], rad_bri, 1, 0, plotconn, [], nconns_bridges, somatapositions,1,[1 cells_in_cluster 0 1]);
-% 
-% 
-% 	% define the indices of 10% of the cells, these will be bridges
-% 	bc = randperm(noneurons); % randomly permute cell indices
-% 	z = zeros(noneurons,1) ; % initialize index vector
-% 	z(bc(1:round(.1*noneurons))) = 1; % make 10% of the cells == bridges
-% 	bc =z;
-% 	bridge_idx = find(bc);
-% 
-% 	% remove from curlie adjacency matrix all of those that will become bridges
-% 	curlies.W = bsxfun(@times, curlies.W, ~z);
-% 	curlies.W = bsxfun(@times, curlies.W, ~(z')); % multiply by the 'unitary' conductance
-% 	curlies_bu = curlies; %_bu -> binary undirected
-% 	curlies.W = curlies.W*gap_curlies;
-% 	% curlies.stats.clusters(bridge_idx) = 0;
-% 	
-% 	cstats = connectivity_statistics(bridges);
-% 	curlies.stats = cstats.stats ;
-% 
-% 	% remove connections from curlies to bridges from bridge adjacency matrix
-% 	bridges.W = bsxfun(@times, bridges.W, z);
-% 	% create bridge cells connectivity 
-% 	bridges.W = (bridges.W+bridges.W');
-% 	bridges_bu = bridges; % _bu -> binary undirected
-% 	bridges.W = bridges.W*gap_bridges;
-% 
-% 	bstats = connectivity_statistics(bridges);
-% 	bridges.stats = bstats.stats ;
-% 
-% 	bridg_curlies.coords = curlies.coords;
-% 
-% 	bridg_curlies.W = curlies.W + bridges.W;
-% 	bridg_curlies.stats = connectivity_statistics(bridg_curlies);
-% 	bridg_curlies.stats.clusters = curlies.stats.clusters;
-% 	% bridg_curlies.stats.clusters(bridge_idx) = 0;
-% 
-% 	clusteridx = bridg_curlies.stats.clusters;
-% 	clusteridx(logical(bc)) = 70;
-% 	plotnetstruct(bridg_curlies.W, bridg_curlies.coords(:,1), bridg_curlies.coords(:,2), bridg_curlies.coords(:,3), clusteridx)
+	rad_bri = median_soma_distance * 6;
 
 	brick = createW('3d_reconstruction', [], rad_bri, 1, 1, plotconn, [], nconns_curlies, somatapositions,1,[0 0 0 0]);
 	brick_bu = brick;
-	brick.W = brick.W*gap_curlies;
+	brick.W = brick.W*gap_bridges;
 
 end
 
@@ -162,26 +114,22 @@ end
 % Wcluster150 = createW('3d_chebychev', netsize, 3, 1, 1, 1, [], 8, [], plotconn, [1 150 .9 .01],1);
 
 
-% [=================================================================]
-%  create cells and set conductance parameters
-% [=================================================================]
-cal_boost = -0.28; %30% oscillating cells without noise g=0.05
-% cal_boost = -0.4; %nothing oscillates
+%% [================================================================]
+%            create cells and set conductance parameters
+%  [================================================================]
+cal_boost = -0.28; %30% intrinsically oscillating cells without noise g=0.03
+% cal_boost = 0; %nothing oscillates
 
 cell_function = 'vanilla'; % 'devel'
 
-def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', thisseed) 
+def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2', 'rng', thisseed); 
 
-% adjusting to reach 5mV amplitude of hyperpolarization
-def_neurons.gbar_gaba_dend = def_neurons.gbar_gaba_dend + 0.75; % subthreshold
-def_neurons.g_CaL = def_neurons.g_CaL + cal_boost;
-
-def_neurons.gbar_gaba_dend = ones(1,noneurons)*2;
-def_neurons.gbar_gaba_soma = ones(1,noneurons)*1;
-def_neurons.V_gaba_soma    = ones(1,noneurons)*-70;
+% AMPA adjusted to reach 5mV amplitude of hyperpolarization
 
 
-% def_neurons.gbar_gaba_soma = def_neurons.gbar_gaba_dend + 0.75; % subthreshold
+def_neurons.gbar_gaba_soma = ones(noneurons,1)*.1;
+def_neurons.gbar_gaba_dend = ones(noneurons,1)*1;
+
 
 
 %%
@@ -189,35 +137,35 @@ def_neurons.V_gaba_soma    = ones(1,noneurons)*-70;
 %  Projection Fields of AMPA and GABA
 % [================================================]
 
-pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-60, 0, 0], 'synapseprobability', .85,'plotme',0)
+pert.mask     {1} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-60, 0, 0], 'synapseprobability', .85,'plotme',0);
 pert.amplitude{1} = 1;
 pert.duration {1} = 1;
 pert.type	  {1} = 'ampa_dend';
 
-pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-40, 0, 0], 'synapseprobability', .85,'plotme',0) % probability adjusted to make number of cells in cluster match
-pert.amplitude{2} = 1
+pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-40, 0, 0], 'synapseprobability', .85,'plotme',0); % probability adjusted to make number of cells in cluster match
+pert.amplitude{2} = 1;
 pert.duration {2} = 5; %ms was the duration of the stimulus in Tycho's paper.
 pert.type	  {2} = 'gaba_dend';
 
 % adding somatic gaba for longer hyperpolarization effect
 pert.mask     {3} = pert.mask{2};
-pert.amplitude{3} = 1
+pert.amplitude{3} = 1;
 pert.duration {3} = 5; %ms was the duration of the stimulus in Tycho's paper.
 pert.type     {3} = 'gaba_soma';
 
 
 
-
-
-figure
-scatter3(somatapositions(:,1), somatapositions(:,2), somatapositions(:,3), 200, pert.mask{1} + pert.mask{2}*2 -1,'filled'), axis equal
-
-cm = [150 147 130 ; 60 35 250  ; 250 35 29 ; 200 35 190]/255;
-colormap(cm)
-alpha(.3)
-
-% apply some current to check the behavior of the cells
-I_app = [];
+% Plot the overlapping arborinzation masks
+% 
+% figure
+% scatter3(somatapositions(:,1), somatapositions(:,2), somatapositions(:,3), 200, pert.mask{1} + pert.mask{2}*2 -1,'filled'), axis equal
+% 
+% cm = [150 147 130 ; 60 35 250  ; 250 35 29 ; 200 35 190]/255;
+% colormap(cm)
+% alpha(.3)
+% 
+% % apply some current to check the behavior of the cells
+% I_app = [];
 
 
 %%================================================]
@@ -227,13 +175,14 @@ I_app = [];
 if conjuctive_stimulation
  if ~exist('st_st','var')
 	disp('calculating transients')
-
+%%   
+     st_st.note = 'brick steady state';
 	 st_st = IOnet( 'cell_parameters', def_neurons, ...
 	 		'perturbation', [], ...
 		   	'networksize', [1 1 noneurons] ,'time',steadystate_time ,'W', brick.W ,'ou_noise', ounoise_params , ...
 		   	'to_report', to_report ,'gpu', gpu , ...
-		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
-	 st_st.note = 'brick steady state' 
+		   	'cell_function', cell_function ,'delta',delta,'sametoall', sametoall, 'displaytext', st_st.note);
+	 
 end
 
 % 	% st_st.Plist = Plist;
@@ -243,21 +192,23 @@ end
 
 
     i = 0;
-    intervals = [-150:10:150];
     for interval = intervals
         i = i + 1;
         
-        onset_of_inh = 1000;
+
         onset_of_exc = onset_of_inh + interval;
     
         pert.triggers {1} = onset_of_exc;
-        pert.triggers {2} = onset_of_inh;
+        pert.triggers {2} = onset_of_inh:onset_of_inh+60;
+        pert.triggers {3} = onset_of_inh:onset_of_inh+60;
 
+        sim{i}.note = ['exc vs inh ' num2str(interval)];
         sim{i} = IOnet( 'cell_parameters', def_neurons, ...
                 'perturbation', pert, 'tempState', st_st.lastState, ...
                 'networksize', [1 1 noneurons] ,'time',simtime ,'W', brick.W ,'ou_noise', ounoise_params  ,...
                 'to_report', to_report ,'gpu', gpu , ...
-                'cell_function', cell_function ,'delta',delta,'sametoall', sametoall);
+                'cell_function', cell_function ,'delta',delta,'sametoall', sametoall, ...
+                'displaytext', sim{i}.note);
 
         sim{i}.networkHistory.V_soma = single(sim{i}.networkHistory.V_soma);
         sim{i}.networkHistory.Cal_r = single(sim{i}.networkHistory.Calcium_r);
@@ -275,14 +226,20 @@ end
 if produce_plots
 
     ff = figure
-    savemovie = 0;
-    animate = 0;
-
-    for f = [1 17 22]
+    savemovie = 1;
+    animate = 1;
+    IOI = onset_of_inh-400:onset_of_inh+400;
+    IOI = 200:800;
+    IOI = 1:1000;
+%%
+    for f = 1:length(intervals)
         combgroup = find(pert.mask{1}&pert.mask{2});
-        ph_dist{f} = phase_distribution_over_time(sim{f},'duration', [700:1300],'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup')
-        ph_dist{f}.pert = sim{f}.perturbation;
+        ph_dist{f} = phase_distribution_over_time(sim{f},'duration', IOI,...
+            'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup, ...
+            'frames2print', [450 550 650])
+        ph_dist{f}.pert = sim{f}.perturbation; 
     end
+%%
 
     for f = 1:length(intervals)
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
@@ -298,14 +255,18 @@ if produce_plots
         sync_estimate(f,4) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(2)+500:trig(2)+700)));
     end
 
-
+%%
     plotvolume = 1;
+    savemovie = 1;
+
     if plotvolume
-        for f = [1 17 22]
-            V = sim{f}.networkHistory.V_soma;
-            % H = P.hilbert;
+
+        for f = [19 31 ]
+            sim{f}.networkParameters.coords = somatapositions;
+
             % plot_volume(V,somatapositions,[755:1:1555])
-            animate_volume_hilbert(V,somatapositions,[755:1:1555])
+            % animate_volume_hilbert(V,somatapositions,IOI)
+            animate_volume_hilbert(sim{f},[1:1000], savemovie, somatapositions)
             % plot_volume(ph_dist{f}.networkHistory.V_soma,somatapositions,[905:50:1255])
 
         end
@@ -314,7 +275,7 @@ if produce_plots
 
     %%
         
-    for  f = [17 22]% 1:length(intervals)
+    for  f =  1:length(intervals)
         figure
         subplot(2,1,1)
         m = pert.mask{1}+pert.mask{2}*2;
@@ -324,7 +285,7 @@ if produce_plots
         subplot(2,1,2)
         % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1},:)), hold on
         % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{2},:),'color', [0 0 1])
-        plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},:),'color', [0 1 0])
+        plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI),'color', [0 1 0])
         title(sim{f}.note)
         legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
         alpha(.2)
@@ -340,7 +301,7 @@ if produce_plots
 
     for f=1:length(intervals)
         subplot(1,length(intervals),f)
-        plot(mean(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},800:1500)),'color', cmap(f,:),'linewidth',2), hold on
+        plot(mean(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI)),'color', cmap(f,:),'linewidth',2), hold on
         title(num2str(sim{f}.perturbation.triggers{1}-sim{f}.perturbation.triggers{2}))
         axis off
         ylim([-75,-40])
@@ -356,8 +317,8 @@ if produce_plots
     waterfall(collected)
 
     %%
-
-    imagesc(collected)
+figure
+    imagesc(sim{f}.networkHistory.V_soma)
 
 
     %% 
@@ -367,17 +328,17 @@ if produce_plots
         
         last_stim  = max([sim{f}.perturbation.triggers{1},sim{f}.perturbation.triggers{2}]);
         
-        osc_cells_pre_stim  = count_oscillating_cells(sim{f}, [500:600], 0);
-        osc_cells_pos_stim  = count_oscillating_cells(sim{f}, [last_stim+50:last_stim+150], 0);
-        osc_cells_late_stim = count_oscillating_cells(sim{f}, [last_stim+700:last_stim+900], 0);
+        osc_cells_pre_stim  = count_oscillating_cells(sim{f}, [100:200], .2);
+        osc_cells_pos_stim  = count_oscillating_cells(sim{f}, [last_stim+50:last_stim+150], .2);
+        osc_cells_late_stim = count_oscillating_cells(sim{f}, [last_stim+200:last_stim+300], .2);
         
         pre_stim(f)  = osc_cells_pre_stim.proportion;
         post_stim(f) = osc_cells_pos_stim.proportion;
         late_stim(f) = osc_cells_late_stim.proportion;
         
-        pre_stim_amp(f,:)  = max(sim{f}.networkHistory.V_soma(:,200:300),[],2);
+        pre_stim_amp(f,:)  = max(sim{f}.networkHistory.V_soma(:,1:200),[],2);
         post_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,last_stim:last_stim+100),[],2);
-        late_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,1800:1900),[], 2);
+        late_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,end-200:end),[], 2);
         
      
     end

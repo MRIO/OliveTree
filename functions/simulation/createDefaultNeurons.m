@@ -17,7 +17,9 @@ function cell_parameters = createDefaultNeurons(varargin)
 	ip.parse(varargin{:});
 
 	noneurons = ip.Results.noneurons;
-	celltypes = ip.Results.celltypes;
+
+    
+    celltypes = ip.Results.celltypes;
 	gapcompensation = ip.Results.gapcompensation;
 	shuffle = ip.Results.shuffle;
 	nogapcompensation = ip.Results.nogapcompensation;
@@ -54,17 +56,14 @@ switch celltypes
 
 		cell_parameters = defneurons(noneurons);
 		
-		cell_parameters.g_CaL    = cell_parameters.g_CaL   - .3  + rand(noneurons,1)*.6;
-		cell_parameters.g_int 	 = cell_parameters.g_int   + .07 + rand(noneurons,1)*.4;
-		cell_parameters.g_h 	 = cell_parameters.g_h 	   +  rand(noneurons,1)*(1);
-		cell_parameters.g_K_Ca   = cell_parameters.g_K_Ca  +  rand(noneurons,1)*10;     
-		cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(-0.003);
-		cell_parameters.p1       = cell_parameters.p1      - .15 +  rand(noneurons,1)*(0.2);
-		cell_parameters.g_Kdr_s  = cell_parameters.g_Kdr_s  -3 + rand(noneurons,1)*6;
-
-
+		cell_parameters.g_CaL    = .3 + rand(noneurons,1)*.6;
+		cell_parameters.g_h 	 = 0.12 + rand(noneurons,1)*.24;
+		cell_parameters.g_K_Ca   = 20 + rand(noneurons,1)*20;
+		cell_parameters.g_CaH    = 3 + rand(noneurons,1)*4;
+        
+		% cell_parameters.g_ld     = cell_parameters.g_ld    +  rand(noneurons,1)*(0.001);
+		% cell_parameters.g_la     = cell_parameters.g_la    +  rand(noneurons,1)*(0.001);
+		% cell_parameters.g_ls     = cell_parameters.g_ls    +  rand(noneurons,1)*(0.001);
 
 	case 'randomized3'
 
@@ -381,7 +380,7 @@ cell_parameters.g_K_Ca   =  35      .* O;     % Ca act K: not voltage dependent 
 cell_parameters.g_CaH    =  4.5     .* O;     % High-threshold calcium
 cell_parameters.g_ld     =  0.016   .* O;     % Leak
 cell_parameters.g_h      =  .12     .* O;     % H current .12
-cell_parameters.g_h_s    =  .12     .* O;     % H current, somatic
+cell_parameters.g_h_s    =  0     .* O;     % H current, somatic
 cell_parameters.g_CaCC    =  .12     .* O;     % H current, somatic
 
 

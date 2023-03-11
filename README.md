@@ -4,9 +4,9 @@ A biophysically detailed neuronal network model of the inferior olivary nucleuso
 
 ## Model Features:
 
-- Multiple possible connectivity schemes including clusterization and based on reconstruction data
-- A cell property randomizer (conductances and any other parameter)
-- An analysis suite including spectral clustering, cross correlations, raster plots, etc.
+- Multiple possible connectivity schemes including clusterization and based on reconstruction data. Particularly, a cluster bridge architecture is available.
+- A cell property randomizer (conductances and any other parameters).
+- An analysis suite including spike analysis, spectral clustering, cross correlations, raster plots, etc.
 
 # Reproducing Manuscripts
 
@@ -20,13 +20,31 @@ A biophysically detailed neuronal network model of the inferior olivary nucleuso
 
     - Run "Loyola_PRC.m"
 
-  - Figure 8:
+  - Figure 8: Supplementary Materials
 
     - Exc_Inh_Reconstruction.m
 
+  - Tuning: cells_pspace.m
+
+  - 
+  
+  - 
+  
     
 
-    
+
+
+# Functions
+
+IOcell.m
+
+IOnet.m
+
+CreateDefaultNeurons.m
+
+profile_sim.m
+
+
 
 
 

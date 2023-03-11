@@ -2,6 +2,9 @@
 
 function animate_volume_hilbert(sim,frames, savemovie, varargin)
 
+% Plots and saves animations or screenshots of the phase of oscillator
+% cells.
+
 backgroundcolor = 'dark';
 backgroundcolor = 'light';
 
@@ -9,7 +12,7 @@ plotvol = 1;
 trigger = 1;
 showcolorbar = 0;
 scatterit = 1;
-printframes = true;
+printframes = 0;
 
 if nargin==4
 	interpv = varargin{1};
@@ -30,7 +33,7 @@ end
 if ~isempty(sim.perturbation) % backward compatibility
 
 	try
-		pert_mask			= sim.perturbation.mask{trigger};
+		pert_mask = sim.perturbation.mask{trigger};
 		if iscell(sim.perturbation.triggers)
 			perturbation_triggers = cell2mat(sim.perturbation.triggers);
 		else
@@ -47,11 +50,13 @@ else
 end
 
 try
-	if isfield(sim.W, 'W')
-		coords = sim.W.coords;
+	if isfield(sim.networkParameters, 'coords')
+		coords = sim.networkParameters.coords;
 	end
 catch
-	disp('could not read W')
+	disp('could not read coordinates, check field.')
+    disp('sim.networkParameters.coords')
+    return
 end
 
 

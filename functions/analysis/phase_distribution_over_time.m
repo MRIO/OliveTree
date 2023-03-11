@@ -17,7 +17,7 @@ function [out] = phase_distribution_over_time(varargin)
 % [=================================================================]
 
 p = inputParser;
-p.addRequired('sim')  % a matrix with two columns or a cell array with two cells;
+p.addRequired('sim')  % resulting struct from IOsim (must not be a cell)
 p.addOptional('duration',[])
 p.addOptional('savemovie',[])
 p.addOptional('animate',0)
@@ -41,7 +41,7 @@ fhandle = p.Results.fhandle;
 group = p.Results.group;
 fname = p.Results.fname;
 animate = p.Results.animate;
-
+frames2print = p.Results.frames2print;
 
 
 % [=================================================================]
@@ -362,7 +362,7 @@ end
 
 
 
-frames2print = [953 1013 1073 1123];
+
 if not(isempty(frames2print))
 
 
@@ -391,9 +391,13 @@ if not(isempty(frames2print))
 
 		name = ['phase_dist@' num2str(t) ];
 
-		frm=hgexport('readstyle','6x6');
+    try
+        frm=hgexport('readstyle','6x6');
 	    frm.Format = 'pdf';
+    catch
+        frm.Format = 'pdf';
 	    hgexport(fig0,name,frm);
+    end
 
 	end
 	close(f100)
@@ -401,7 +405,7 @@ end
 	
 
 
-frames2test = [953 1013 1073 1123];
+frames2test = frames2print;
 if not(isempty(frames2test))
 
 	kuiper_stat = [];
