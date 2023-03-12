@@ -34,16 +34,9 @@ to_report = vsoma;
  
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
-% nconns_curlies = 8;
-% nconns_bridges = 6;
 
-% gap_curlies = .1;
-% gap_bridges = .1;
-% plotconn = 1;
-% normalize = 1;
-
-nconns = 6;
-gap = .05;
+nconns = 10;
+gap = .03;
 plotconn = 0;
 normalize = 1;
 
@@ -53,15 +46,8 @@ somatapositions(1,:) = [];
 noneurons = length(somatapositions);
 
 
-%     __    __
-%    / /_  / /___ _
-%   / __ \/ / __ `/
-%  / /_/ / / /_/ /
-% /_.___/_/\__,_/
-
-
-	median_soma_distance = 20;
-	rad_bri = median_soma_distance * 6;
+median_soma_distance = 20;
+rad_bri = median_soma_distance * 6;
 
 cell_function = 'vanilla'; % 'devel'
 
@@ -70,8 +56,8 @@ cell_function = 'vanilla'; % 'devel'
 % 		 compute transients/steadystate
 %=================================================]
 
-nets= 2;
-calfactors = [-.3:0.1 :-.2];
+nets= 3;
+calfactors = [-.1:0.01 :.1];
 cal_sim = cell(length(calfactors),nets)
 for n = 1:nets
     
@@ -81,7 +67,7 @@ for n = 1:nets
     parfor s = 1:length(calfactors)
         neurons = struct();
         thisseed = rng(int8(seed),'twister') % random seed only for simulations (not for network cells)
-        neurons = createDefaultNeurons(noneurons,'celltypes','randomized', 'rng', thisseed);
+        neurons = createDefaultNeurons(noneurons,'celltypes','randomized2', 'rng', thisseed);
         neurons.g_CaL = neurons.g_CaL + calfactors(s);
         neurons.seed = thisseed;
 
@@ -105,7 +91,7 @@ for n = 1:nets
     for i = 1:length(calfactors)
     c = c+1;
 	subplot(nets,length(calfactors), c)
-    osc_cells{i,n} = count_oscillating_cells(cal_sim{i,n},[500:1000], -1)
+    osc_cells{i,n} = count_oscillating_cells(cal_sim{i,n},simtime-200:simtime, -1)
     osc_cells{i,n}.CaL_factor  = calfactors(i);
     title({['Ca L factor: ' num2str(calfactors(i))] ; ['prop osc:' num2str(osc_cells{i,n}.proportion)]})
     
@@ -116,17 +102,18 @@ end
 ylabel('cells')
 xlabel('log amplitude (log(mV))')
 
+%%
 figure
-waterfall(osc_cells{i,n}.histogram.BinEdges(1:end-1), calfactors, collected_histograms(1:11,:))
+waterfall(osc_cells{i,n}.histogram.BinEdges(1:end-1), calfactors, collected_histograms(:,:))
 
 
+%%
+% figure 
+%  subplot(3,1,1); histogram(cal_sim{1}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{1}.cellParameters.g_CaL)])
+%  subplot(3,1,2); histogram(cal_sim{6}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{6,1}.cellParameters.g_CaL)])
+%  subplot(3,1,3); histogram(cal_sim{11}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{11,1}.cellParameters.g_CaL)])
 
-figure 
- subplot(3,1,1); histogram(cal_sim{1}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{1}.cellParameters.g_CaL)])
- subplot(3,1,2); histogram(cal_sim{6}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{6,1}.cellParameters.g_CaL)])
- subplot(3,1,3); histogram(cal_sim{11}.cellParameters.g_CaL,30); title(['mean:' mean(cal_sim{11,1}.cellParameters.g_CaL)])
-
-
+%%
 
 figure
 cmap = flipud(cbrewer('div', 'Spectral',30));
@@ -147,12 +134,12 @@ ylabel('cells')
 %%
 figure
 for n = 1:nets
-for i = 1:length(calfactors)
+    for i = 1:length(calfactors)
 
      osc_pspace(i,n) = osc_cells{i,n}.proportion;
      xtick(i) = osc_cells{i,n}.CaL_factor;
      
-end
+    end
 end
 
 plot(xtick, osc_pspace,'o-')

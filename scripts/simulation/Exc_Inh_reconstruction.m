@@ -1,4 +1,5 @@
-% Exc Inh Duel.m
+% Produces simulations and plots for figure 8 of Loyola et al.
+% Exc Inh reconstruction.m
 % 
 % set(0,'DefaultFigureColor', [1 1 1])
 set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
@@ -9,11 +10,11 @@ set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
 %% clear
 
 intervals = [-180:10:180];
-% intervals = [100 125 150];
+% intervals = [-180 100 120 180];
 onset_of_inh = 500;
 
-steadystate_time = 200; %ms
-simtime  = 1000; %ms
+steadystate_time = 1000; %ms
+simtime  = 1500; %ms
 delta = .025;
 gpu = 1;
 
@@ -40,9 +41,8 @@ gapcur= {'V_soma' 'I_cx36'};
 
 selection = {'V_soma', 'I_cx36', 'Hcurrent_q' ,'Calcium_l', 'Calcium_r'};
 
-
 % variables to store
-to_report = selection;
+to_report = vsoma;
 
 
 % [================================================]
@@ -61,22 +61,15 @@ sametoall = 0.05;
  
 % out = createW('type', netsize, radius, scaling, randomize, plotthis, maxiter, meanconn, somatapositions, symmetrize, clusterize,normalize)
 
-% nconns_curlies = 8;
-% nconns_bridges = 6;
 
-% gap_curlies = .1;
-% gap_bridges = .1;
-% plotconn = 1;
-% normalize = 1;
-
+% Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
 nconns_curlies = 10;
 nconns_bridges = 10;
-cells_in_cluster = 20;  % upperbound estimate from: % Parameters from: N. Vrieler, S. Loyola, Y. Yarden-Rabinowitz, J. Hoogendorp, N. Medvedev, T. M. Hoogland, C. I. D. Zeeuw, E. d. Schutter, Y. Yarom, M. Negrello, B. Torben-Nielsen, and M. Y. Uusisaari. Variability and directionality of inferior olive neuron dendrites revealed by detailed 3D characterization of an extensive morphological library. Brain structure & function, 92(4):e52068 – 19, 2019.
+% cells_in_cluster = 20;  % upperbound estimate from: 
 gap_curlies = .03;
 gap_bridges = .03;
 plotconn = 0;
 normalize = 1;
-
 
 
 load('JM394_horizontal_coordinates-MAO.mat')
@@ -110,14 +103,10 @@ if not(exist('curlies'))
 end
 
 
-
-% Wcluster150 = createW('3d_chebychev', netsize, 3, 1, 1, 1, [], 8, [], plotconn, [1 150 .9 .01],1);
-
-
 %% [================================================================]
 %            create cells and set conductance parameters
 %  [================================================================]
-cal_boost = -0.28; %30% intrinsically oscillating cells without noise g=0.03
+% cal_boost = -0.05; %30% intrinsically oscillating cells without noise g=0.03
 % cal_boost = 0; %nothing oscillates
 
 cell_function = 'vanilla'; % 'devel'
@@ -185,7 +174,7 @@ if conjuctive_stimulation
 	 
 end
 
-% 	% st_st.Plist = Plist;
+% st_st.Plist = Plist;
 % end
 
 %%
@@ -211,10 +200,6 @@ end
                 'displaytext', sim{i}.note);
 
         sim{i}.networkHistory.V_soma = single(sim{i}.networkHistory.V_soma);
-        sim{i}.networkHistory.Cal_r = single(sim{i}.networkHistory.Calcium_r);
-        sim{i}.networkHistory.Cal_l = single(sim{i}.networkHistory.Calcium_l);
-        sim{i}.networkHistory.h = single(sim{i}.networkHistory.Hcurrent_q);
-        sim{i}.networkHistory.backgroundnoise = [];
         sim{i}.note = ['exc vs inh ' num2str(interval)]
 
         
@@ -225,39 +210,78 @@ end
 
 if produce_plots
 
+
+   %% oscillation metrics
+
+    combmask = pert.mask{1} & pert.mask{2};
+    mean_ampl = @(x) mean(max(x,[],2)-min(x,[],2));
+
+
+
+    %% phase distributions
+
     ff = figure
-    savemovie = 1;
-    animate = 1;
+    savemovie = 0;
+    animate = 0;
     IOI = onset_of_inh-400:onset_of_inh+400;
     IOI = 200:800;
-    IOI = 1:1000;
+    IOI = 1:simtime;
 %%
+
     for f = 1:length(intervals)
         combgroup = find(pert.mask{1}&pert.mask{2});
         ph_dist{f} = phase_distribution_over_time(sim{f},'duration', IOI,...
             'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup, ...
-            'frames2print', [450 550 650])
+            'frames2print', [100 simtime])
         ph_dist{f}.pert = sim{f}.perturbation; 
     end
-%%
 
+    %%
     for f = 1:length(intervals)
+        
+
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
+        early  = [1:100];
+        after1 = [trig(1)+50:trig(1)+150];
+        after2 = [trig(2)+50:trig(2)+150];
+        late   = [simtime-200:simtime];
 
-        sync_estimate_g(f,1) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(1)-220:trig(1)-20)));
-        sync_estimate_g(f,2) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(1):trig(2)+20)));
-        sync_estimate_g(f,3) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(2)+20:trig(2)+220)));
-        sync_estimate_g(f,4) = mean(abs(ph_dist{f}.phases.orderparameter{1}(trig(2)+500:trig(2)+700)));
 
-        sync_estimate(f,1) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(1)-220:trig(1)-20)));
-        sync_estimate(f,2) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(1):trig(2)+20)));
-        sync_estimate(f,3) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(2)+20:trig(2)+220)));
-        sync_estimate(f,4) = mean(abs(ph_dist{f}.phases.orderparameter{2}(trig(2)+500:trig(2)+700)));
+        sync_estimate_g(f,1) = mean(abs(ph_dist{f}.phases.orderparameter{1}(early)));
+        sync_estimate_g(f,2) = mean(abs(ph_dist{f}.phases.orderparameter{1}(after1)));
+        sync_estimate_g(f,3) = mean(abs(ph_dist{f}.phases.orderparameter{1}(after2)));
+        sync_estimate_g(f,4) = mean(abs(ph_dist{f}.phases.orderparameter{1}(late)));
+
+        sync_estimate(f,1) = mean(abs(ph_dist{f}.phases.orderparameter{2}(early)));
+        sync_estimate(f,2) = mean(abs(ph_dist{f}.phases.orderparameter{2}(after1)));
+        sync_estimate(f,3) = mean(abs(ph_dist{f}.phases.orderparameter{2}(after2)));
+        sync_estimate(f,4) = mean(abs(ph_dist{f}.phases.orderparameter{2}(late)));
+        
+        
+        osc_cells{f,1} = count_oscillating_cells(sim{f}, early , .5);
+        osc_cells{f,2} = count_oscillating_cells(sim{f}, after1, .5);
+        osc_cells{f,3} = count_oscillating_cells(sim{f}, after2, .5);
+        osc_cells{f,4} = count_oscillating_cells(sim{f}, late,   .5);
+        
+        prop_osc_cells(f,1) = osc_cells{f,1}.proportion;
+        prop_osc_cells(f,2) = osc_cells{f,2}.proportion;
+        prop_osc_cells(f,3) = osc_cells{f,3}.proportion;
+        prop_osc_cells(f,4) = osc_cells{f,4}.proportion;
+        
+        amplitude_osc(f,1) = mean_ampl(sim{f}.networkHistory.V_soma(:,early));
+        amplitude_osc(f,2) = mean_ampl(sim{f}.networkHistory.V_soma(:,after1));
+        amplitude_osc(f,3) = mean_ampl(sim{f}.networkHistory.V_soma(:,after2));
+        amplitude_osc(f,4) = mean_ampl(sim{f}.networkHistory.V_soma(:,late));
+
+     
     end
 
-%%
-    plotvolume = 1;
-    savemovie = 1;
+
+    
+%%  activity of network
+   
+    plotvolume = 0;
+    savemovie = 0;
 
     if plotvolume
 
@@ -273,7 +297,7 @@ if produce_plots
     end
 
 
-    %%
+    %% responses to stimulation (detail)
         
     for  f =  1:length(intervals)
         figure
@@ -283,8 +307,6 @@ if produce_plots
         imagesc(sim{f}.networkHistory.V_soma(s,:),[-65 -50])
 
         subplot(2,1,2)
-        % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1},:)), hold on
-        % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{2},:),'color', [0 0 1])
         plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI),'color', [0 1 0])
         title(sim{f}.note)
         legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
@@ -317,71 +339,47 @@ if produce_plots
     waterfall(collected)
 
     %%
-figure
+    figure
     imagesc(sim{f}.networkHistory.V_soma)
 
 
-    %% 
-    combmask = pert.mask{1} & pert.mask{2};
-
-    for f = 1:length(intervals)
-        
-        last_stim  = max([sim{f}.perturbation.triggers{1},sim{f}.perturbation.triggers{2}]);
-        
-        osc_cells_pre_stim  = count_oscillating_cells(sim{f}, [100:200], .2);
-        osc_cells_pos_stim  = count_oscillating_cells(sim{f}, [last_stim+50:last_stim+150], .2);
-        osc_cells_late_stim = count_oscillating_cells(sim{f}, [last_stim+200:last_stim+300], .2);
-        
-        pre_stim(f)  = osc_cells_pre_stim.proportion;
-        post_stim(f) = osc_cells_pos_stim.proportion;
-        late_stim(f) = osc_cells_late_stim.proportion;
-        
-        pre_stim_amp(f,:)  = max(sim{f}.networkHistory.V_soma(:,1:200),[],2);
-        post_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,last_stim:last_stim+100),[],2);
-        late_stim_amp(f,:) = max(sim{f}.networkHistory.V_soma(:,end-200:end),[], 2);
-        
-     
-    end
-
+ 
+    %% plot metric summaries
     f_prepost = figure;
     ax0 = axes;
 
-    plot(ax0,[pre_stim', post_stim', late_stim']', '-o')
+    plot(ax0,prop_osc_cells', '-o')
     legend(num2str(intervals'))
     title('proportion of oscillating cells')
     ax0.XTick= [1 2 3];
-    ax0.XTickLabel = {'Pre', 'Post', 'Late'}
+    ax0.XTickLabel = {'Pre', 'after1', 'after2','late'};
     ax0.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
 
 
     f_prepost_sync = figure;
     ax1 = axes;
-
     plot(ax1,sync_estimate', '-o')
     legend(num2str(intervals'))
-    title('sync')
+    title('sync network')
     ax1.XTick= [1 2 3];
-    ax1.XTickLabel = {'Pre', 'During', 'Post', 'Late'}
+    ax1.XTickLabel = {'Pre', 'after1', 'after2','late'};
     ax1.ColorOrder = cbrewer('div', 'RdYlBu', length(intervals));
+    ylim([0.5,1])
 
 
     f_prepost_sync = figure;
     ax11 = axes;
-
     plot(ax11,sync_estimate_g', '-o')
     legend(num2str(intervals'))
-    title('sync')
+    title('Sync stimulated group')
     ax11.XTick= [1 2 3];
-    ax11.XTickLabel = {'Pre', 'During', 'Post', 'Late'}
+    ax11.XTickLabel = {'Pre', 'after1', 'after2','late'};
     ax11.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
-
-
 
 
 
     f_prepost_amp = figure;
     ax2 = subplot(1,2,1);
-
     amplitudes = [mean(pre_stim_amp,2), mean(post_stim_amp,2), mean(late_stim_amp,2)]';
     plot(ax2,amplitudes, '-o')
     legend(num2str(intervals'))
@@ -389,7 +387,7 @@ figure
     ax2.XTick= [1 2 3];
     ax2.XTickLabel = {'Pre', 'Post', 'Late'}
     ax2.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
-    ax2.YLim = [-60 -40];
+    ax2.YLim = [-60 -20];
 
     ax3 = subplot(1,2,2);
     amplitudes = [mean(pre_stim_amp(:,combmask),2), mean(post_stim_amp(:,combmask),2), mean(late_stim_amp(:,combmask),2)]';
@@ -399,6 +397,6 @@ figure
     ax3.XTick= [1 2 3];
     ax3.XTickLabel = {'Pre', 'Post', 'Late'}
     ax3.ColorOrder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
-    ax3.YLim = [-60 -40];
+    ax3.YLim = [-60 -20];
 
 end
