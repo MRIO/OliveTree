@@ -56,7 +56,7 @@ pert 				= sim.perturbation;
 loggedstatevars = fieldnames(sim.networkHistory)';
 
 % retrieve fields
-if ~isempty(sim.perturbation) % backward compatibility
+if isfield(sim.perturbation, 'mask')
 	pert_mask			= pert.mask{trigger};
 	perturbation_onsets = pert.triggers{trigger};	
 else	
@@ -263,7 +263,6 @@ if plotstuff
 		a(3) = subplot(2,1,2)
 
 		 % plot(sim.networkHistory.V_soma')
-		 
 		 
 
 			line(ttt1',sim.networkHistory.V_soma(group1,ttt)', ...

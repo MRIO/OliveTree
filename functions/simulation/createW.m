@@ -346,7 +346,7 @@ Wsteps{5} = W;
 % add a random multiplier
 
 if randomize 
-    R = .5*randn(size(W))*randomize; % jitter weights
+    R = subplus(.5*randn(size(W)))*randomize; % jitter weights
     R(find(eye(size(R)))) = 0; % no self connections, naturally.
     W = sparse(W .* R + W);
     if symmetrize

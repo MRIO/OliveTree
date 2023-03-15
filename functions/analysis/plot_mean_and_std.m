@@ -5,6 +5,7 @@ p = inputParser;
 	p.addRequired('data')
 	p.addParamValue('color', [1 0 0])
 	p.addParamValue('quantiles', [.1 .9])
+    p.addParamValue('plotmean',1)
 
 p.parse(varargin{:});
 
@@ -12,7 +13,7 @@ p.parse(varargin{:});
 	data 		= p.Results.data;
 	color 		= p.Results.color;
 	quantiles	= p.Results.quantiles;
-
+    plotmean    = p.Results.plotmean;
 
 if isempty(x)
 	x = [1:size(data,2)];
@@ -32,9 +33,9 @@ end
 	fill_between_lines(x,Q(1,:),Q(2,:), sigm([.8 .8 .8]+color)) 
 
 
-
+if plotmean
 	line(x, M,'color', color, 'linewidth',3)
-
+end
 
 out.mean 		= M; 
 out.std  		= S;
