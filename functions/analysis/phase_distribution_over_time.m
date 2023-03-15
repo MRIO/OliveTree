@@ -181,11 +181,11 @@ VA = circ_var(GA);
 
 
 % mean of exp( e^(i*(theta_k,p(t) - theta_syn(t)) ; p is group, k is neuron
-	% assuming G2 is the 'non stimulated group'
-	% KURAMOTO ORDER PARAMETER
-	order_parameter_G1 = mean( exp(i*(G1+pi)));
-	order_parameter_G2 = mean( exp(i*(G2+pi)));
-	order_parameter_GA = mean( exp(i*(GA+pi)));
+% assuming G2 is the 'non stimulated group'
+% KURAMOTO ORDER PARAMETER
+order_parameter_G1 = mean( exp(i*(G1+pi)));
+order_parameter_G2 = mean( exp(i*(G2+pi)));
+order_parameter_GA = mean( exp(i*(GA+pi)));
 
 
 
@@ -200,123 +200,128 @@ VA = circ_var(GA);
 fill_between_lines = @(X,Y1,Y2, color) fill( [X fliplr(X)],  [Y1 fliplr(Y2)], color ,'edgecolor','none');
 
 
-fig0 = figure('color',[1 1 1])
-	subplot(2,2,1:2)
-	plot(abs(order_parameter_G1),'r'),hold on
-	plot(abs(order_parameter_G2),'b')
-	plot(abs(order_parameter_GA),'g')
-	title('abs(Z)')
-	legend({'Group' 'Others' 'All'})
-	
-	subplot(2,2,3)
-	scatter(real(order_parameter_G1(tt)),imag(order_parameter_G1(tt)), 'filled', 'r' ); hold on
-	scatter(real(order_parameter_G2(tt)),imag(order_parameter_G2(tt)), 'filled', 'b' )
-	scatter(real(order_parameter_GA(tt)),imag(order_parameter_GA(tt)), 'filled', 'g' )
-	hold on
-	axis equal
-	axis([-1,1,-1,1])
-	title('')
-	legend({'Group' 'Others' 'All'})
-	
+plotstuff = 1
 
-
-fig0 = figure('color',[1 1 1])
-	% circular phase plot
-	a(1) = axes;
-
-		circ_plot(G1(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',3,'marker','o');
-		circ_plot(G2(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','.');
-		hold on
-
-		axis off
-
-		alpha(.3)
-		drawnow
+if plotstuff
+	fig0 = figure('color',[1 1 1])
+		subplot(2,2,1:2)
+		plot(abs(order_parameter_G1),'r'),hold on
+		plot(abs(order_parameter_G2),'b')
+		plot(abs(order_parameter_GA),'g')
+		title('abs(Z)')
+		legend({'Group' 'Others' 'All'})
 		
-		title({num2str(1);[' ']; [' ']})
-
-	%static phase plot over time
-fig1 = figure('color',[1 1 1])
-	ttt  = tt(1):tt(end);
-	 ttt1 = repmat(tt(1):tt(end), numel(group1), 1);  
-	 ttt2 = repmat(tt(1):tt(end), numel(group2), 1);
-	a(2) = subplot(2,1,1);
-
-	fill_between_lines(ttt, M1(ttt)+V1(ttt), M1(ttt)-V1(ttt),[1 .8 .8])
+		subplot(2,2,3)
+		scatter(real(order_parameter_G1(tt)),imag(order_parameter_G1(tt)), 'filled', 'r' ); hold on
+		scatter(real(order_parameter_G2(tt)),imag(order_parameter_G2(tt)), 'filled', 'b' )
+		scatter(real(order_parameter_GA(tt)),imag(order_parameter_GA(tt)), 'filled', 'g' )
 		hold on
-		fill_between_lines(ttt, M2(ttt)+V2(ttt), M2(ttt)-V2(ttt),[0 .8 1])
-		hold on
-		line(ttt1,M1(ttt1),'color', groupcolors(1,:)); 
-		hold on
-		line(ttt2,M2(ttt2),'color', groupcolors(2,:));
-
-		title('phase average')
-		xlabel('ms')
-		ylabel('phase (radians)')
-		axis tight
-
-
-
-	a(3) = subplot(2,1,2)
-
-	 % plot(sim.networkHistory.V_soma')
-	 
-	 
-
-		line(ttt1',sim.networkHistory.V_soma(group1,ttt)', ...
-			'color',groupcolors(1,:), 'linewidth', .5)
-
-		line(ttt2',sim.networkHistory.V_soma(group2,ttt)', ...
-			'color',groupcolors(2,:), 'linewidth', .5)
+		axis equal
+		axis([-1,1,-1,1])
+		title('')
+		legend({'Group' 'Others' 'All'})
 		
-	   line(ttt, mean(sim.networkHistory.V_soma(group1,ttt)),'color',groupcolors(1,:),'linewidth', 3)
-	   line(ttt, mean(sim.networkHistory.V_soma(group2,ttt)),'color',groupcolors(2,:),'linewidth', 3)
-	   
-	 
-		 xlabel('time')
-		 ylabel('Vm @ soma')
-		 axis tight
+
+
+	fig0 = figure('color',[1 1 1])
+		% circular phase plot
+		a(1) = axes;
+
+			circ_plot(G1(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',3,'marker','o');
+			circ_plot(G2(:,1),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','.');
+			hold on
+
+			axis off
+
+			alpha(.3)
+			drawnow
+			
+			title({num2str(1);[' ']; [' ']})
+
+		%static phase plot over time
+	fig1 = figure('color',[1 1 1])
+		ttt  = tt(1):tt(end);
+		 ttt1 = repmat(tt(1):tt(end), numel(group1), 1);  
+		 ttt2 = repmat(tt(1):tt(end), numel(group2), 1);
+		a(2) = subplot(2,1,1);
+
+		fill_between_lines(ttt, M1(ttt)+V1(ttt), M1(ttt)-V1(ttt),[1 .8 .8])
+			hold on
+			fill_between_lines(ttt, M2(ttt)+V2(ttt), M2(ttt)-V2(ttt),[0 .8 1])
+			hold on
+			line(ttt1,M1(ttt1),'color', groupcolors(1,:)); 
+			hold on
+			line(ttt2,M2(ttt2),'color', groupcolors(2,:));
+
+			title('phase average')
+			xlabel('ms')
+			ylabel('phase (radians)')
+			axis tight
+
+
+
+		a(3) = subplot(2,1,2)
+
+		 % plot(sim.networkHistory.V_soma')
+		 
+		 
+
+			line(ttt1',sim.networkHistory.V_soma(group1,ttt)', ...
+				'color',groupcolors(1,:), 'linewidth', .5)
+
+			line(ttt2',sim.networkHistory.V_soma(group2,ttt)', ...
+				'color',groupcolors(2,:), 'linewidth', .5)
+			
+		   line(ttt, mean(sim.networkHistory.V_soma(group1,ttt)),'color',groupcolors(1,:),'linewidth', 3)
+		   line(ttt, mean(sim.networkHistory.V_soma(group2,ttt)),'color',groupcolors(2,:),'linewidth', 3)
+		   
+		 
+			 xlabel('time')
+			 ylabel('Vm @ soma')
+			 axis tight
 
 
 
 
-tim = tt;
-fig2 = figure('color',[1 1 1])
-	[phasedist1 tim] = hist(G1, length(tim));
-	[phasedist2 tim] = hist(G2, length(tim));
-	[phasedistA tim] = hist(GA, length(tim));
+	tim = tt;
+	fig2 = figure('color',[1 1 1])
+		[phasedist1 tim] = hist(G1, length(tim));
+		[phasedist2 tim] = hist(G2, length(tim));
+		[phasedistA tim] = hist(GA, length(tim));
 
-	ax_ph(1) = subplot(3,1,1)
-	imagesc(1:length(G1),tim, phasedist1), axis xy
-	colorbar
-	title('phase distribution over time (group1)')
-	xlabel('time (ms)')
-	ylabel('Prob(phase)')
-	xlim([tt(1),tt(end)])
+		ax_ph(1) = subplot(3,1,1)
+		imagesc(1:length(G1),tim, phasedist1), axis xy
+		colorbar
+		title('phase distribution over time (group1)')
+		xlabel('time (ms)')
+		ylabel('Prob(phase)')
+		xlim([tt(1),tt(end)])
 
-	ax_ph(2) = subplot(3,1,2)
-	imagesc(1:length(G2),tim, phasedist2), axis xy
-	colorbar
-	title('phase distribution over time (group2)')
-    xlim([tt(1),tt(end)])
-	
-	ax_ph(3) = subplot(3,1,3)
-	imagesc(1:length(GA),tim, phasedistA), axis xy
-	colorbar
-	title('phase distribution over time (all neurons)')
-    xlim([tt(1),tt(end)])
+		ax_ph(2) = subplot(3,1,2)
+		imagesc(1:length(G2),tim, phasedist2), axis xy
+		colorbar
+		title('phase distribution over time (group2)')
+	    xlim([tt(1),tt(end)])
+		
+		ax_ph(3) = subplot(3,1,3)
+		imagesc(1:length(GA),tim, phasedistA), axis xy
+		colorbar
+		title('phase distribution over time (all neurons)')
+	    xlim([tt(1),tt(end)])
 
-	linkaxes(ax_ph, 'x')
-	xlim()
-
+		linkaxes(ax_ph, 'x')
+		xlim()
+end
 
 
 spks1 = spikedetect(sim.networkHistory.V_soma(group1,:));
 spks2 = spikedetect(sim.networkHistory.V_soma(group2,:));
 
 
+
 if animate
 	for t = duration 
+
 
 		axes(a(1))
 		cla
@@ -357,52 +362,56 @@ if animate
 	end
 
 
-end
 
 
 
-
-
-if not(isempty(frames2print))
+	if not(isempty(frames2print))
 
 
 
-	f100 = figure;
-	
-	for t = frames2print
-
-		axes(a(1))
-		cla
-		circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',20,'marker','.');
-		hold on
-		circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','o');
+		f100 = figure;
 		
-		% hold on
-		% circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
+		for t = frames2print
 
-		
-		axis off
+			axes(a(1))
+			cla
+			circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',20,'marker','.');
+			hold on
+			circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','o');
+			
+			% hold on
+			% circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
 
-		alpha(.7)
-		drawnow
-		
-		title({num2str(t);[' ']; [' ']})
+			
+			axis off
+
+			alpha(.7)
+			drawnow
+			
+			title({num2str(t);[' ']; [' ']})
 
 
-		name = ['phase_dist@' num2str(t) ];
+			name = ['phase_dist@' num2str(t) ];
 
-    try
-        frm=hgexport('readstyle','6x6');
-	    frm.Format = 'pdf';
-    catch
-        frm.Format = 'pdf';
-	    hgexport(fig0,name,frm);
-    end
+	    try
+	        frm=hgexport('readstyle','6x6');
+		    frm.Format = 'pdf';
+	    catch
+	        frm.Format = 'pdf';
+		    hgexport(fig0,name,frm);
+	    end
 
+		end
+		close(f100)
 	end
-	close(f100)
+		
+
+
 end
-	
+
+
+
+
 
 
 frames2test = frames2print;
@@ -417,6 +426,7 @@ if not(isempty(frames2test))
 		
 		% keyboard
 	end
+	out.stats.kuiper_stat = kuiper_stat;
 
 end
 
@@ -431,7 +441,7 @@ out.phases.pop = {G1 ; G2};
 out.phases.orderparameter = {order_parameter_G1 ; order_parameter_G2};
 out.spikes.spks1 = spks1;
 out.spikes.spks2 = spks2;
-out.stats.kuiper_stat = kuiper_stat;
+
 
 
 
