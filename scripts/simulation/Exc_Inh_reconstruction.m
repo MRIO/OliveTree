@@ -27,7 +27,7 @@ thisseed.Seed
 % steps to perform
 % [================================================]
 
-conjuctive_stimulation = 1;
+conjuctive_stimulation = 0;
 
 produce_plots = 1;
 
@@ -203,16 +203,22 @@ end
 
 
 if produce_plots
- 
+
+   %% oscillation metrics
+
     combmask = find(pert.mask{1} & pert.mask{2});
-   
-    %% phase distributions
+    mean_ampl = @(x) mean(max(x,[],2)-min(x,[],2));
+    mean_max_ampl = @(x) mean(max(x,[],2));
+
 
     savemovie = 0;
     animate = 0;
     IOI = 1:simtime;
 
     %% 
+    f2p = [215 343 470 869 1007];
+    f2p = [];
+
 
     for f = [1:length(intervals)]
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
@@ -224,9 +230,8 @@ if produce_plots
 
         
         ph_dist{f} = phase_distribution_over_time(sim{f},'duration', IOI,...
-            'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combmask, ...
-            'frames2print', [100 after2(1) late(end-50)]);
-        
+            'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup, ...
+            'frames2print', f2p);
         ph_dist{f}.pert = sim{f}.perturbation; 
 
         close all
@@ -238,6 +243,9 @@ if produce_plots
      mean_ampl = @(x) mean(max(x,[],2)-min(x,[],2));
      mean_max_ampl = @(x) mean(max(x,[],2));
 
+    
+
+    %% synchrony and proportion of oscillating cells for group and all cells
 
     for f = 1:length(intervals)
         
@@ -417,14 +425,16 @@ if produce_plots
 
     %% responses to stimulation (detail)
         
-    for  f =  1:length(intervals)
+    IOI = 1:simtime;
+
+    for  f =  27
         figure
         subplot(2,1,1)
         m = pert.mask{1}+pert.mask{2}*2;
         [v s] = sort(m)
         imagesc(sim{f}.networkHistory.V_soma(s,:),[-65 -50])
 
-        subplot(2,1,2)
+        figure
         plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI),'color', [0 1 0])
         title(sim{f}.note)
         legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})

@@ -68,7 +68,8 @@ VS = sim.networkHistory.V_soma;
 
 if frames2file; animate = 1; end
 
-	groupcolors = [157 157 157 ; 111 228 111]./255;
+	% groupcolors = [157 157 157 ; 111 228 111]./255;
+    groupcolors = [157 157 157 ; 170 50 200]./255;
 
 % [=================================================================]
 %  slice to plot
@@ -289,7 +290,7 @@ if plotstuff
 		[phasedistA tim] = hist(GA, length(tim));
 
 		ax_ph(1) = subplot(3,1,1)
-		imagesc(1:length(G1),tim, phasedist1), axis xy
+		imagesc(1:length(G1),tim, phasedist1/length(G1)), axis xy
 		colorbar
 		title('phase distribution over time (group1)')
 		xlabel('time (ms)')
@@ -297,13 +298,13 @@ if plotstuff
 		xlim([tt(1),tt(end)])
 
 		ax_ph(2) = subplot(3,1,2)
-		imagesc(1:length(G2),tim, phasedist2), axis xy
+		imagesc(1:length(G2),tim, phasedist2/length(G2)), axis xy
 		colorbar
 		title('phase distribution over time (group2)')
 	    xlim([tt(1),tt(end)])
 		
 		ax_ph(3) = subplot(3,1,3)
-		imagesc(1:length(GA),tim, phasedistA), axis xy
+		imagesc(1:length(GA),tim, phasedistA/length(GA)), axis xy
 		colorbar
 		title('phase distribution over time (all neurons)')
 	    xlim([tt(1),tt(end)])
@@ -362,47 +363,6 @@ if animate
 
 
 
-
-
-	if not(isempty(frames2print))
-
-
-
-		f100 = figure;
-		
-		for t = frames2print
-
-			axes(a(1))
-			cla
-			circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',20,'marker','.');
-			hold on
-			circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','o');
-			
-			% hold on
-			% circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color','b','markersize',10,'marker','.');
-
-			
-			axis off
-
-			alpha(.7)
-			drawnow
-			
-			title({num2str(t);[' ']; [' ']})
-
-
-			name = ['phase_dist@' num2str(t) ];
-
-	    try
-	        frm=hgexport('readstyle','6x6');
-		    frm.Format = 'pdf';
-	    catch
-	        frm.Format = 'pdf';
-		    hgexport(fig0,name,frm);
-	    end
-
-		end
-		close(f100)
-	end
 		
 
 
@@ -410,6 +370,46 @@ end
 
 
 
+if not(isempty(frames2print))
+
+
+
+	f100 = figure;
+	
+	for t = frames2print
+
+
+		circ_plot(G2(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(1,:),'markersize',20,'marker','.');
+		hold on
+		circ_plot(G1(:,t),'pretty','',true,'linewidth',1,'color',groupcolors(2,:),'markersize',7,'marker','o');
+		
+		
+		axis off
+
+		alpha(.7)
+		drawnow
+		
+		title({num2str(t);[' ']; [' ']})
+
+
+		name = [fname '_phase_dist@' num2str(t) ];
+    
+        try
+            f100.Units = 'centimeters';
+            f100.PaperUnits = 'centimeters';
+            f100.OuterPosition = [0 0 10 10];
+            f100.Children.FontSize = 6;
+	        exportgraphics(f100,[name '.pdf'],'Resolution',300)
+            
+        catch
+            keyboard
+            disp('exportgraphics only works after matlab 2023a')
+        end
+
+        clf
+    end
+	close(f100)
+end
 
 
 

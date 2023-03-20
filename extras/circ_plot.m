@@ -66,6 +66,7 @@ switch format
     % create unit circle
     zz = exp(1i*linspace(0, 2*pi, 101));
     line(real(z)*.7, imag(z)*.7, varargin{2:end},'linestyle','none')
+
     
     zzz = exp(1i*linspace(0, 2*pi, 37));
     [r, t] = hist(alpha,linspace(0,2*pi,37));
@@ -87,6 +88,14 @@ switch format
       YYouter = YYouter(1:end-1);
 
 
+    line( [-1 1], [0 0],'color', [.8 .8 .8])
+    line( [0 0], [-1 1],'color', [.8 .8 .8]);
+
+    line(real(zz), imag(zz),'color', [.8 .8 .8])
+    
+    set(gca, 'XLim', [-1.1 1.1], 'YLim', [-1.1 1.1])
+
+
  if exist('poly2cw')
 
   [XXouter YYouter] = poly2cw(XXouter, YYouter);
@@ -99,11 +108,7 @@ switch format
 
 
 end
-
-    line(real(zz), imag(zz))
-    line( [-2 2], [0 0])
-    line( [0 0], [-2 2]);
-    set(gca, 'XLim', [-1.1 1.1], 'YLim', [-1.1 1.1])
+   
 
     % plot mean directions with an overlaid arrow if desired
     if nargin > 2 && ~isempty(varargin{1})
@@ -117,7 +122,7 @@ end
       phi = circ_mean(alpha);
       hold on;
       zm = r*exp(1i*phi); 
-      line([0 real(zm)*1.1], [0, imag(zm)*1.1],varargin{2:end-2})
+      line([0 real(zm)], [0, imag(zm)],varargin{2:end-2})
       hold off;
     end
 
@@ -147,7 +152,7 @@ end
     line(real(z), imag(z), varargin{2:end},'linestyle','none')
   
 
-
+    
 
     line(real(zz), imag(zz))
     line( [-2 2], [0 0])
