@@ -135,53 +135,53 @@ end
     
 
      case 'oldpretty'
-    % plot in 'pretty style'
-    % draws unit circle and marks points around the circle
-    % adds optionally the mean resultant vector
+        % plot in 'pretty style'
+        % draws unit circle and marks points around the circle
+        % adds optionally the mean resultant vector
+        
+        if nargin < 3|| isempty(formats) 
+          formats = 'o';
+        end
+        
+        % convert angles to unit vectors
+        z = exp(1i*alpha);
     
-    if nargin < 3|| isempty(formats) 
-      formats = 'o';
-    end
+        % create unit circle
+        zz = exp(1i*linspace(0, 2*pi, 101));
     
-    % convert angles to unit vectors
-    z = exp(1i*alpha);
-
-    % create unit circle
-    zz = exp(1i*linspace(0, 2*pi, 101));
-
-    line(real(z), imag(z), varargin{2:end},'linestyle','none')
-  
-
+        line(real(z), imag(z), varargin{2:end},'linestyle','none')
+      
     
-
-    line(real(zz), imag(zz))
-    line( [-2 2], [0 0])
-    line( [0 0], [-2 2]);
-    set(gca, 'XLim', [-1.1 1.1], 'YLim', [-1.1 1.1])
-
-    % plot mean directions with an overlaid arrow if desired
-    if nargin > 2 && ~isempty(varargin{1})
-      s = varargin{1};
-    else
-      s = true;
-    end
+        
     
-    if s
-      r = circ_r(alpha);
-      phi = circ_mean(alpha);
-      hold on;
-      zm = r*exp(1i*phi); 
-      line([0 real(zm)], [0, imag(zm)],varargin{2:end-2})
-      hold off;
-    end
-
-    axis square;
-    set(gca,'box','off')
-    set(gca,'xtick',[])
-    set(gca,'ytick',[])
-    text(1.2, 0, '0'); text(-.05, 1.2, '\pi/2');  text(-1.35, 0, '±\pi');  text(-.075, -1.2, '-\pi/2');
-
+        line(real(zz), imag(zz))
+        line( [-2 2], [0 0])
+        line( [0 0], [-2 2]);
+        set(gca, 'XLim', [-1.1 1.1], 'YLim', [-1.1 1.1])
     
+        % plot mean directions with an overlaid arrow if desired
+        if nargin > 2 && ~isempty(varargin{1})
+          s = varargin{1};
+        else
+          s = true;
+        end
+        
+        if s
+          r = circ_r(alpha);
+          phi = circ_mean(alpha);
+          hold on;
+          zm = r*exp(1i*phi); 
+          line([0 real(zm)], [0, imag(zm)],varargin{2:end-2})
+          hold off;
+        end
+    
+        axis square;
+        set(gca,'box','off')
+        set(gca,'xtick',[])
+        set(gca,'ytick',[])
+        text(1.2, 0, '0'); text(-.05, 1.2, '\pi/2');  text(-1.35, 0, '±\pi');  text(-.075, -1.2, '-\pi/2');
+    
+        
 
 
   case 'hist'
