@@ -9,14 +9,13 @@ set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
 % [================================================]
 %% clear
 
-intervals = [-200:20:200];
-% intervals = [-200];
+% intervals = [-180:10:180];
 
-% intervals = [-180 100 120 180];
+intervals = [-180 100 180];
 onset_of_inh = 700;
 
-steadystate_time = 2000; %ms
-simtime  = 1400; %ms
+steadystate_time = 1000; %ms
+simtime  = 1500; %ms
 delta = .025;
 gpu = 1;
 
@@ -28,7 +27,7 @@ thisseed.Seed
 % steps to perform
 % [================================================]
 
-conjuctive_stimulation = 0;
+conjuctive_stimulation = 1;
 
 produce_plots = 1;
 
@@ -52,7 +51,7 @@ to_report = vsoma;
 % currentstep = 9; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
 
-ounoise_params = [0 0 0 double(thisseed.Seed)];
+ounoise_params = [ 1/20 .1 0 double(thisseed.Seed)];
 sametoall = 0;
 
 % [================================================]
@@ -102,7 +101,7 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2', 'rng', t
 
 % to change proportion of oscillators from 0% to 100%, take cal_Factor from -.1:.1
 % cal_factor = -0.05; %60% intrinsically oscillating cells without noise g=0.03
-cal_factor = 0.02;
+cal_factor = 0.03;
 def_neurons.g_CaL = def_neurons.g_CaL - cal_factor;
 
 
@@ -110,11 +109,8 @@ def_neurons.g_CaL = def_neurons.g_CaL - cal_factor;
 
 def_neurons.gbar_ampa_dend = ones(noneurons,1)*.1;
 def_neurons.gbar_gaba_soma = ones(noneurons,1)*.1;
+% def_neurons.gbar_gaba_dend = ones(noneurons,1)*.1;
 def_neurons.gbar_gaba_dend = ones(noneurons,1)*.5;
-
-def_neurons.gbar_ampa_dend = rand(noneurons,1)*.2;
-def_neurons.gbar_gaba_soma = rand(noneurons,1)*.2;
-def_neurons.gbar_gaba_dend = rand(noneurons,1)*.2;
 
 
 
@@ -130,13 +126,13 @@ pert.type	  {1} = 'ampa_dend';
 
 pert.mask     {2} =  create_input_mask(somatapositions, 'reconstruction','radius',100, 'offset', [-40, 0, 0], 'synapseprobability', .85,'plotme',0); % probability adjusted to make number of cells in cluster match
 pert.amplitude{2} = 1;
-pert.duration {2} = 1; % 5 ms was the duration of the stimulus in Loyola. We use longer to represent hypothesized trapping of GABA
+pert.duration {2} = 5; %ms was the duration of the stimulus in Tycho's paper.
 pert.type	  {2} = 'gaba_dend';
 
 % adding somatic gaba for longer hyperpolarization effect
 pert.mask     {3} = pert.mask{2};
 pert.amplitude{3} = 1;
-pert.duration {3} = 1; %ms was the duration of the stimulus in Tycho's paper.
+pert.duration {3} = 5; %ms was the duration of the stimulus in Tycho's paper.
 pert.type     {3} = 'gaba_soma';
 
 
@@ -208,22 +204,16 @@ end
 
 
 if produce_plots
-
-   %% oscillation metrics
-
+ 
     combmask = find(pert.mask{1} & pert.mask{2});
-    mean_ampl = @(x) mean(max(x,[],2)-min(x,[],2));
-    mean_max_ampl = @(x) mean(max(x,[],2));
+   
+    %% phase distributions
 
-
-    savemovie = 1;
-    animate = 1;
-    IOI = 200:simtime;
+    savemovie = 0;
+    animate = 0;
+    IOI = 1:simtime;
 
     %% 
-    f2p = [215 343 470 869 1007];
-    f2p = [];
-
 
     for f = [1:length(intervals)]
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
@@ -235,8 +225,9 @@ if produce_plots
 
         
         ph_dist{f} = phase_distribution_over_time(sim{f},'duration', IOI,...
-            'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup, ...
-            'frames2print', f2p);
+            'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combmask, ...
+            'frames2print', [100 after2(1) late(end-50)]);
+        
         ph_dist{f}.pert = sim{f}.perturbation; 
 
         close all
@@ -248,9 +239,6 @@ if produce_plots
      mean_ampl = @(x) mean(max(x,[],2)-min(x,[],2));
      mean_max_ampl = @(x) mean(max(x,[],2));
 
-    
-
-    %% synchrony and proportion of oscillating cells for group and all cells
 
     for f = 1:length(intervals)
         
@@ -309,14 +297,16 @@ if produce_plots
     end
 
 
-    
+%%
+
+    colororder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
 
 
     %% TRIGGERED RESPONSES OVERVIEW
     figure
 
     % cmap = jet(length(intervals))
-    colororder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
+    
     % cmap = flipud(cmap)
 
     IOI = onset_of_inh-400:onset_of_inh+400;
@@ -376,7 +366,7 @@ if produce_plots
     ylim([0.5,1])
 
 
-    f_prepost_sync = figure;
+    f_prepost_synGc = figure;
     ax11 = axes;
     plot(ax11,sync_estimate_g(:,[1 3 4])', '-o')
     legend(num2str(intervals'))
@@ -434,20 +424,17 @@ if produce_plots
     figure
     for  f =  1:N
         
-    IOI = 1:simtime;
-
-    for  f =  27
-        figure
-        subplot(2,1,1)
+        ax = axes('position', [.1 1/N*f .8 1/N]);
         m = pert.mask{1}+pert.mask{2}*2;
         [v s] = sort(m)
         imagesc(sim{f}.networkHistory.V_soma(s,:),[-65 -50])
+        % 
+        % subplot(2*N,1,N+f)
+        % plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI),'color', [0 1 0])
+        % title(sim{f}.note)
+        % legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
+        % alpha(.2)
 
-        figure
-        plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI),'color', [0 1 0])
-        title(sim{f}.note)
-        legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
-        alpha(.2)
     end
 
 

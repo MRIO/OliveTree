@@ -1,5 +1,9 @@
 % Sweep cal factor brick
 % 
+% measures the proportion of oscillating cells as a function of CaL
+% conductance
+% uses the last 200ms of a 2000ms simulation 
+%
 % set(0,'DefaultFigureColor', [1 1 1])
 set(0, 'DefaultAxesColormap', cbrewer('div', 'Spectral',30))
 
@@ -56,8 +60,8 @@ cell_function = 'vanilla'; % 'devel'
 % 		 compute transients/steadystate
 %=================================================]
 
-nets= 3;
-calfactors = [-.1:0.01 :.1];
+nets= 5;
+calfactors = [-.1:0.01 :0];
 cal_sim = cell(length(calfactors),nets)
 for n = 1:nets
     
@@ -103,8 +107,8 @@ ylabel('cells')
 xlabel('log amplitude (log(mV))')
 
 %%
-figure
-waterfall(osc_cells{i,n}.histogram.BinEdges(1:end-1), calfactors, collected_histograms(:,:))
+% figure
+% waterfall(osc_cells{i,n}.histogram.BinEdges(1:end-1), calfactors, collected_histograms(:,:))
 
 
 %%
@@ -146,4 +150,4 @@ plot(xtick, osc_pspace,'o-')
 title('prop osc cells')
 xlabel('Ca L')
 ylabel('proportion')
-legend({'net 1' ; 'net 2'})
+legend()
