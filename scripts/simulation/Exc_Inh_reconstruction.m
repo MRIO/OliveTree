@@ -211,16 +211,20 @@ if produce_plots
     mean_max_ampl = @(x) mean(max(x,[],2));
 
 
-    savemovie = 0;
+    savemovie = 1;
     animate = 0;
     IOI = 1:simtime;
 
+    N = length(intervals);
+
     %% 
     f2p = [215 343 470 869 1007];
-    f2p = [];
+    % f2p = [];
 
 
-    for f = [1:length(intervals)]
+    % for f = 1:5:N
+    for f = 10
+
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
         early  = [trig(1)-200:trig(1)];
         after1 = [trig(1):trig(1)+100];
@@ -230,12 +234,11 @@ if produce_plots
 
         
         ph_dist{f} = phase_distribution_over_time(sim{f},'duration', IOI,...
-            'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combgroup, ...
+            'animate',animate, 'fname', ['phasedist_' num2str(f)], 'savemovie',savemovie, 'group', combmask, ...
             'frames2print', f2p);
         ph_dist{f}.pert = sim{f}.perturbation; 
 
         close all
-
 
     end
   %% oscillation metrics
@@ -247,7 +250,7 @@ if produce_plots
 
     %% synchrony and proportion of oscillating cells for group and all cells
 
-    for f = 1:length(intervals)
+    for f = 1:N
         
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
         early  = [1:200];
@@ -310,14 +313,16 @@ if produce_plots
     %% TRIGGERED RESPONSES OVERVIEW
     figure
 
+    colororder = flipud(cbrewer('div', 'RdYlBu', N));
     % cmap = jet(length(intervals))
-    colororder = flipud(cbrewer('div', 'RdYlBu', length(intervals)));
+    
     % cmap = flipud(cmap)
 
     IOI = onset_of_inh-400:onset_of_inh+400;
 
-    for f=1:length(intervals)
-        subplot(1,length(intervals),f)
+    N = length(intervals);
+    for f=1:N
+        as(f) = axes('position', [(f-1)/N 0 1/N 1])
         plot(mean(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI)),'color', colororder(f,:),'linewidth',2), hold on
         title(num2str(sim{f}.perturbation.triggers{1}-onset_of_inh))
         axis off
@@ -347,11 +352,11 @@ if produce_plots
 
  
     %% statistics summaries
-    f_prepost = figure;
+    
+    
+    f_prepost_prop = figure;
+
     ax0 = axes;
-
-
-
     plot(ax0,prop_osc_cells(:,[1 3 4])', '-o')
     legend(num2str(intervals'))
     title('proportion of oscillating cells')
@@ -382,17 +387,17 @@ if produce_plots
 
 
     f_prepost_amp = figure;
-    ax2 = subplot(1,2,1);
+    ax2 = axes;
     plot(ax2,amplitude_osc(:,[1 3 4])', '-o')
     legend(num2str(intervals'))
     title('amplitude of rebound')
     ax2.XTick= [1 2 3];
     ax2.XTickLabel = {'Pre', 'after','late'};
     ax2.ColorOrder = colororder;
-    % ax2.YLim = [0 20];
+    ax2.YLim = [-60 -50];
 
-
-    ax2 = subplot(1,2,2);
+    f_prepost_amp_g = figure;
+    ax22 = axes;
     plot(ax2,amplitude_osc_g(:,[1 3 4])', '-o')
     legend(num2str(intervals'))
     title('amplitude of rebound (group)')
