@@ -69,8 +69,8 @@ VS = sim.networkHistory.V_soma;
 if frames2file; animate = 1; end
 
 	% groupcolors = [157 157 157 ; 111 228 111]./255;
-    % groupcolors = [167 167 167 ; 170 50 200]./255;
-    groupcolors = [157 157 157 ; 170 50 50]./255;
+    % groupcolors = [157 157 157 ; 170 50 200]./255;
+    groupcolors = [157 157 157 ; 230 60 60]./255;
 
 % [=================================================================]
 %  slice to plot
