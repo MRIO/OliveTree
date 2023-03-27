@@ -41,15 +41,15 @@ for i=1:length(h)
             h(i).Units = 'centimeters';
             h(i).PaperUnits = 'centimeters';
             h(i).OuterPosition = [0 0 figsize(1) figsize(2)];
-            h(i).Children.FontSize = 7;
-	        exportgraphics(f100,[name '.pdf'],'Resolution',300)
+            % h(i).Children.FontSize = 7;
+	        exportgraphics(h(i),[fname],'Resolution',300)
 
 
-
-		snam=style;
-		s=hgexport('readstyle',snam);
-	    s.Format = format;
-	    hgexport(h(i),fname,s);
+        % 
+		% snam=style;
+		% s=hgexport('readstyle',snam);
+	    % s.Format = format;
+	    % hgexport(h(i),fname,s);
 	end
 
 end

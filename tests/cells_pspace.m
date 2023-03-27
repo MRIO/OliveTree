@@ -189,7 +189,7 @@ pert.type     {3} = 'gaba_soma';
       
 pert.triggers {1} = 300;
 pert.triggers {2} = 200:250;
-pert.triggers {3} = 200:270;
+pert.triggers {3} = 200:260;
 
 def_neurons.gbar_gaba_soma = ones(noneurons,1)*1;
 def_neurons.gbar_gaba_dend = ones(noneurons,1)*1;
@@ -236,7 +236,7 @@ for gap = gaps
 	% receiving = area(pos,'edgecolor','none'), hold on
 	% donating  = area(neg,'edgecolor','none')
     
-    R1 = profile_sim(simresults{s},'tslice', [1:min(simtime, 1000)], 'plotme',1);
+    R = profile_sim(simresults{s},'tslice', [1:min(simtime, 1000)], 'plotme',1);
     NDscatter(R.allneurons(:,sel_fields),1)
     drawnow
 end

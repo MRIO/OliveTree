@@ -212,23 +212,25 @@ if produce_plots
    %% oscillation metrics
 
     combmask = find(pert.mask{1} & pert.mask{2});
+    restmask = find(~pert.mask{1} | ~pert.mask{2});
     mean_ampl = @(x) mean(max(x,[],2)-min(x,[],2));
     mean_max_ampl = @(x) mean(max(x,[],2));
 
 
-    savemovie = 1;
-    animate = 1;
+    savemovie = 0;
+    animate = 0;
     IOI = 200:simtime;
 
     N = length(intervals);
 
     %% 
-    f2p = [215 343 470 869 1007];
-    % f2p = [];
 
+    
+    f2p = [1000];
+    
 
     % for f = 1:5:N
-    for f = 10
+    for f = 1:N
 
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
         early  = [trig(1)-200:trig(1)];
@@ -246,6 +248,20 @@ if produce_plots
         close all
 
     end
+
+    %%
+    % print example phase distributions
+    f = 16;
+    [pt f2p] = findpeaks(ph_dist{f}.phases.mean(1,:))
+    ph_dist{f} = phase_distribution_over_time(sim{f},'duration', IOI,...
+            'animate',0, 'fname', ['phasedist_' num2str(f)], 'savemovie',0, 'group', combmask, ...
+            'frames2print', f2p);
+
+    %%
+
+
+
+
   %% oscillation metrics
   % synchrony and proportion of oscillating cells for group and all cells
      mean_ampl = @(x) mean(max(x,[],2)-min(x,[],2));
@@ -258,7 +274,7 @@ if produce_plots
     for f = 1:N
         
         trig = sort([sim{f}.perturbation.triggers{1}, sim{f}.perturbation.triggers{2}]);
-        early  = [1:200];
+        early  = [200:400];
         after1 = [trig(1):trig(1)+100];
         after2 = [trig(end):trig(end)+200];
         late   = [simtime-200:simtime];
@@ -299,15 +315,15 @@ if produce_plots
         amplitude_osc_g(f,3) = mean_ampl(sim{f}.networkHistory.V_soma(combmask,after2));
         amplitude_osc_g(f,4) = mean_ampl(sim{f}.networkHistory.V_soma(combmask,late));
 
-        amplitude_osc(f,1) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,early));
-        amplitude_osc(f,2) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,after1));
-        amplitude_osc(f,3) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,after2));
-        amplitude_osc(f,4) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,late));
+        amplitude_osc_max(f,1) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,early));
+        amplitude_osc_max(f,2) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,after1));
+        amplitude_osc_max(f,3) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,after2));
+        amplitude_osc_max(f,4) = mean_max_ampl(sim{f}.networkHistory.V_soma(:,late));
 
-        amplitude_osc_g(f,1) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,early));
-        amplitude_osc_g(f,2) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,after1));
-        amplitude_osc_g(f,3) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,after2));
-        amplitude_osc_g(f,4) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,late));
+        amplitude_osc_max_g(f,1) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,early));
+        amplitude_osc_max_g(f,2) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,after1));
+        amplitude_osc_max_g(f,3) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,after2));
+        amplitude_osc_max_g(f,4) = mean_max_ampl(sim{f}.networkHistory.V_soma(combmask,late));
      
     end
 
@@ -316,9 +332,13 @@ if produce_plots
 
 
     %% TRIGGERED RESPONSES OVERVIEW
-    figure
-
     colororder = flipud(cbrewer('div', 'RdYlBu', N));
+    
+    figure
+    plot([1:N ; 1:N], [zeros(1,N)', ones(1,N)'] )
+    set(gca, 'colororder',colororder)
+    
+    figure
     % cmap = jet(length(intervals))
     
     % cmap = flipud(cmap)
@@ -363,7 +383,7 @@ if produce_plots
 
     ax0 = axes;
     plot(ax0,prop_osc_cells(:,[1 3 4])', '-o')
-    legend(num2str(intervals'))
+    % legend(num2str(intervals'))
     title('proportion of oscillating cells')
     ax0.XTick= [1 2 3];
     ax0.XTickLabel = {'Pre', 'after','late'};
@@ -373,7 +393,7 @@ if produce_plots
     f_prepost_sync = figure;
     ax1 = axes;
     plot(ax1,sync_estimate(:,[1 3 4])', '-o')
-    legend(num2str(intervals'))
+    % legend(num2str(intervals'))
     title('Synchrony (network)')
     ax1.XTick= [1 2 3];
     ax1.XTickLabel = {'Pre', 'after','late'};
@@ -382,34 +402,34 @@ if produce_plots
 
 
     f_prepost_sync = figure;
-    ax11 = axes;
-    plot(ax11,sync_estimate_g(:,[1 3 4])', '-o')
+    ax2 = axes;
+    plot(ax2,sync_estimate_g(:,[1 3 4])', '-o')
     legend(num2str(intervals'))
     title('Synchrony (group)')
-    ax11.XTick= [1 2 3];
-    ax11.XTickLabel = {'Pre', 'after','late'};
-    ax11.ColorOrder = colororder;
-
-
-    f_prepost_amp = figure;
-    ax2 = axes;
-    plot(ax2,amplitude_osc(:,[1 3 4])', '-o')
-    legend(num2str(intervals'))
-    title('amplitude of rebound')
     ax2.XTick= [1 2 3];
     ax2.XTickLabel = {'Pre', 'after','late'};
     ax2.ColorOrder = colororder;
-    ax2.YLim = [-60 -50];
+
+
+    f_prepost_amp = figure;
+    ax3 = axes;
+    plot(ax3,amplitude_osc(:,[1 3 4])', '-o')
+    % legend(num2str(intervals'))
+    title('amplitude of rebound')
+    ax3.XTick= [1 2 3];
+    ax3.XTickLabel = {'Pre', 'after','late'};
+    ax3.ColorOrder = colororder;
+    ax3.YLim = [0 20];
 
     f_prepost_amp_g = figure;
-    ax22 = axes;
-    plot(ax2,amplitude_osc_g(:,[1 3 4])', '-o')
-    legend(num2str(intervals'))
+    ax4 = axes;
+    plot(ax4,amplitude_osc_g(:,[1 3 4])', '-o')
+    % legend(num2str(intervals'))
     title('amplitude of rebound (group)')
-    ax2.XTick= [1 2 3];
-    ax2.XTickLabel = {'Pre', 'after','late'};
-    ax2.ColorOrder= colororder;
-    % ax2.YLim = [0 20];
+    ax4.XTick= [1 2 3];
+    ax4.XTickLabel = {'Pre', 'after','late'};
+    ax4.ColorOrder= colororder;
+    ax4.YLim = [0 20];
 
   
 
@@ -435,25 +455,44 @@ if produce_plots
 
     %% responses to stimulation (detail)
     N = length(intervals);
-    IOI = 1:simtime;
-    figure
-    for  f =  1:N
-        
-    IOI = 1:simtime;
+    IOI = 200:simtime; % Transient relaxation 200ms
 
-    for  f =  27
+    for  f =  16
+        
+    
         figure
         subplot(2,1,1)
         m = pert.mask{1}+pert.mask{2}*2;
         [v s] = sort(m)
         imagesc(sim{f}.networkHistory.V_soma(s,:),[-65 -50])
+        axis tight
 
         figure
-        plot_mean_and_std(sim{f}.networkHistory.V_soma(pert.mask{1}&pert.mask{2},IOI),'color', [0 1 0])
+        plot_mean_and_std(sim{f}.networkHistory.V_soma(combmask,IOI),'color', [1 0 0])
         title(sim{f}.note)
-        legend({'exc' 'excmean' 'inh' 'inhmean'  'comb' 'combmean'})
         alpha(.2)
+        axis tight
+
+        figure
+        plot_mean_and_std(sim{f}.networkHistory.V_soma(restmask,IOI),'color', [.3 .3 .3])
+        title(sim{f}.note)
+        alpha(.2)
+        axis tight
+
+        figure
+        plot(ph_dist{f}.phases.mean')
+        title(sim{f}.note)
+        axis tight
+
+
     end
+
+
+
+
+
+
+
 
 
 
