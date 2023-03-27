@@ -34,8 +34,8 @@ delta = .02;
 cell_function = 'original'; % 'devel'
 nconn = 10;
 
-steadystate_time = 300;
-simtime  = 500;
+steadystate_time = 2000;
+simtime  = 1000;
 
 currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
@@ -70,9 +70,10 @@ switch pspace_type
 
 	case 'randomized'
 
-	noneurons = 100;
+	noneurons = 1000;
 	netsize = [noneurons 1 1];
 	def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
+    def_neurons.g_CaL = def_neurons.g_CaL + 0.1;
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
 
@@ -169,30 +170,31 @@ pert = [];
 % [================================================]
 %  Projection Fields of AMPA and GABA
 % [================================================]
+% 
+% pert.mask     {1} = ones(noneurons,1);
+% pert.amplitude{1} = 1;
+% pert.duration {1} = 1;
+% pert.type	  {1} = 'ampa_dend';
+% 
+% pert.mask     {2} =  ones(noneurons,1);
+% pert.amplitude{2} = 1
+% pert.duration {2} = 5; %ms was the duration of the stimulus in Tycho's paper.
+% pert.type	  {2} = 'gaba_dend';
+% 
+% % adding somatic gaba for longer hyperpolarization effect
+% pert.mask     {3} = ones(noneurons,1);
+% pert.amplitude{3} = 1
+% pert.duration {3} = 5; %ms was the duration of the stimulus in Tycho's paper.
+% pert.type     {3} = 'gaba_soma';
+% 
+% pert.triggers {1} = 300;
+% pert.triggers {2} = 200:250;
+% pert.triggers {3} = 200:270;
 
-pert.mask     {1} = ones(noneurons,1);
-pert.amplitude{1} = 1;
-pert.duration {1} = 1;
-pert.type	  {1} = 'ampa_dend';
+pert = [];
 
-pert.mask     {2} =  ones(noneurons,1);
-pert.amplitude{2} = 1
-pert.duration {2} = 5; %ms was the duration of the stimulus in Tycho's paper.
-pert.type	  {2} = 'gaba_dend';
-
-% adding somatic gaba for longer hyperpolarization effect
-pert.mask     {3} = ones(noneurons,1);
-pert.amplitude{3} = 1
-pert.duration {3} = 5; %ms was the duration of the stimulus in Tycho's paper.
-pert.type     {3} = 'gaba_soma';
-
-      
-pert.triggers {1} = 300;
-pert.triggers {2} = 200:250;
-pert.triggers {3} = 200:260;
-
-def_neurons.gbar_gaba_soma = ones(noneurons,1)*1;
-def_neurons.gbar_gaba_dend = ones(noneurons,1)*1;
+def_neurons.gbar_gaba_soma = ones(noneurons,1)*.2;
+def_neurons.gbar_gaba_dend = ones(noneurons,1)*.2;
 
 
 %% 
@@ -213,6 +215,7 @@ end
 
 %% [===========================================================================================================]
 sel_fields = {'g_CaL' ,'g_CaH', 'g_K_Ca', 'g_h', 'ampl', 'freq_each', 'meanVm'};
+sel_fields = {'g_CaL' ,'g_CaH', 'g_h', 'ampl', 'meanVm'};
 
 s = 0;
 for gap = gaps
@@ -235,9 +238,16 @@ for gap = gaps
 
 	% receiving = area(pos,'edgecolor','none'), hold on
 	% donating  = area(neg,'edgecolor','none')
-    
-    R = profile_sim(simresults{s},'tslice', [1:min(simtime, 1000)], 'plotme',1);
-    NDscatter(R.allneurons(:,sel_fields),1)
+end
+%%
+
+s = 0;
+for gap = gaps
+	s = s+1;
+
+
+    R{s} = profile_sim(simresults{s},'tslice', [1:min(simtime, 1000)], 'plotme',1);
+    NDscatter(R{s}.allneurons(:,sel_fields),1)
     drawnow
 end
 
