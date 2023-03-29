@@ -73,7 +73,7 @@ switch pspace_type
 	noneurons = 1000;
 	netsize = [noneurons 1 1];
 	def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
-    def_neurons.g_CaL = def_neurons.g_CaL + 0.1;
+    def_neurons.g_CaL = def_neurons.g_CaL + 0.3;
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
 

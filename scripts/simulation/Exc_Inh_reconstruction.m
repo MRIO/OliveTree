@@ -359,7 +359,7 @@ if produce_plots
 %%
 
     figure
-    f=25;
+    f=16;
     plot_mean_and_std(sim{f}.networkHistory.V_soma(:,1:simtime),'plotmean',1)
     
     % plot_mean_and_std(sim{f}.networkHistory.V_soma(combmask,1:simtime))
@@ -461,10 +461,11 @@ if produce_plots
         
     
         figure
+    
         subplot(2,1,1)
         m = pert.mask{1}+pert.mask{2}*2;
         [v s] = sort(m)
-        imagesc(sim{f}.networkHistory.V_soma(s,:),[-65 -50])
+        imagesc(sim{f}.networkHistory.V_soma(s,IOI),[-65 -50])
         axis tight
 
         figure
@@ -480,7 +481,7 @@ if produce_plots
         axis tight
 
         figure
-        plot(ph_dist{f}.phases.mean')
+        plot(ph_dist{f}.phases.mean(:,IOI)')
         title(sim{f}.note)
         axis tight
 
