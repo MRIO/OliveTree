@@ -140,15 +140,13 @@ end
 					end
 
 					line(data(:,c), data(:,r) , 'color', [.8 .8 .8], 'marker','.','linestyle','none','markersize', 10)
+                    t(c,r) = text(double(min(data(:,c))), double(max(data(:,r))), text_regression);
+					t(c,r).VerticalAlignment = 'top';
+                    t(c,r).HorizontalAlignment = 'left';
 					bla = axes('position', get(gca, 'position'));
 					axis off	
-					t = text(double(min(data(:,c))), double(min(data(:,r))), text_regression);
-					t.VerticalAlignment = 'bottom';
-
-					% axis off
 
 
-					
 
 				else
 					nedges = 20;
@@ -169,10 +167,12 @@ end
 			end
 			if c == N
 				ylabel(hand(r,c), VarNames{r},'interpreter', 'none')
-			end
-			if r ~= c
-				set(hand(r,c), 'xtick' , [])
-			end
+            end
+            
+            %to place xtick on the main diagonal uncomment
+			%if r ~= c
+				%set(hand(r,c), 'xtick' , [])
+            % end
 			if c ~= N & c ~= 1
 				set(hand(r,c), 'ytick' , [])
 			end
@@ -183,7 +183,11 @@ end
 			end
 			if c == 1 & (c~=r)
 				set(hand(r,c),'yaxislocation', 'right')
-			end
+            end
+
+            if r~=1
+                set(hand(r,c), 'xtick' , [])
+            end
 
 
 			try
@@ -193,6 +197,7 @@ end
 
 
 			set(hand(r,c),'color',bgcolor,'xcolor', axiscolor, 'ycolor', axiscolor,'tickdir', 'out','box','on');
+
 
 		end
 
