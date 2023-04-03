@@ -145,20 +145,21 @@ if plotme
 		figure
 			ca = axis;
 			set(0,'defaultaxescolororder', linspecer(length(sim.Plist)))
-			% p = plot(tslice,   sim.networkHistory.V_soma');
 			p = plot(  sim.networkHistory.V_soma');
 			legend(num2str(sim.Plist))
 
 		try; maximize_fig; catch; end
 
 		figure
-			imagesc(sim.networkHistory.V_soma,[-80 -20]), colorbar
-			set(gca,'ytick', [1:length(sim.Plist)],'yticklabel', num2str(sim.Plist),'fontsize',8)
-			try
-			tit = sim.Pnames';
+            [v ix] = sort(ampl);
+			imagesc(sim.networkHistory.V_soma(ix,:),[-80 -20]), colorbar
+
+			set(gca,'ytick', [1:length(sim.Plist)],'yticklabel', num2str(sim.Plist(ix,:)),'fontsize',8)
+		try
+			tit = sim.cellParameters.Pnames;
 			title(tit)
 		catch
-			disp('bla')
+			warning('no Pnames field found in sim.cellPArameters in profile_sim')
 		end
 
 		try; maximize_fig; catch; end

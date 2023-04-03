@@ -35,7 +35,7 @@ cell_function = 'original'; % 'devel'
 nconn = 10;
 
 steadystate_time = 2000;
-simtime  = 2000;
+simtime  = 1000;
 
 currentstep = 0; %uA/cm^2 -> x .1 nA for a cell with 10000um^2
 
@@ -49,6 +49,7 @@ vsoma = {'V_soma'};
 gapcur= {'V_soma' 'I_cx36' 'curr_noise_pert'};
 vs = {'V_soma' ,'V_dend','V_axon' };
 calciumconc = {'V_soma', 'Ca2Plus'};
+
 to_report = vsoma;
 
 
@@ -73,7 +74,7 @@ switch pspace_type
 	noneurons = 1000;
 	netsize = [noneurons 1 1];
 	def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2');
-    def_neurons.g_CaL = def_neurons.g_CaL * 1.3;
+    def_neurons.g_CaL = def_neurons.g_CaL * 2 - min(def_neurons.g_CaL); % scaled to produce amplitudes up to 27mV as in experimental data from Loyola
 	Plist = def_neurons.Plist;
 	Pnames = def_neurons.Pnames;
 
@@ -215,7 +216,8 @@ end
 
 %% [===========================================================================================================]
 sel_fields = {'g_CaL' ,'g_CaH', 'g_K_Ca', 'g_h', 'ampl', 'freq_each', 'meanVm'};
-sel_fields = {'g_CaL' ,'g_CaH', 'g_h', 'ampl', 'meanVm'};
+% sel_fields = {'g_CaL' ,'g_CaH', 'g_h', 'ampl', 'meanVm'};
+% sel_fields = {'g_CaL', 'ampl', 'meanVm'};
 
 s = 0;
 for gap = gaps
@@ -246,8 +248,7 @@ for gap = gaps
 	s = s+1;
 
 
-    % R{s} = profile_sim(simresults{s},'tslice', [1:min(simtime, 1000)], 'plotme',1);
-    R{s} = profile_sim(simresults{s},'tslice', [round(simtime/2):simtime], 'plotme',1);
+    R{s} = profile_sim(simresults{s},'tslice', [1:min(simtime, 1000)], 'plotme',1);
     NDscatter(R{s}.allneurons(:,sel_fields),1)
     drawnow
 end
