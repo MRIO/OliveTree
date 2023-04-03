@@ -194,8 +194,11 @@ function VS = perturb_net(pertphase, netsize ,simtime, dt, ...
     
     if length(pert.triggers) == 1
         pert.triggers{2} = [];
-    else
+    elseif length(pert.triggers) == 2
         pert.triggers{2} = pert.triggers{2} + pertphase;
+    elseif length(pert.triggers) == 3
+        pert.triggers{2} = pert.triggers{2} + pertphase;
+        pert.triggers{3} = pert.triggers{3} + pertphase;
     end
     
 	VS = IOnet( 'networksize', netsize , 'time',simtime,'delta',dt, ...

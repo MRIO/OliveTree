@@ -102,6 +102,7 @@ def_neurons = createDefaultNeurons(noneurons,'celltypes','randomized2', 'rng', t
 
 % to change proportion of oscillators from 0% to 100%, take cal_Factor from -.1:.1
 % cal_factor = -0.05; %60% intrinsically oscillating cells without noise g=0.03
+% see supplementary figure for "Calcium Low threshold tuning"
 cal_factor = 0.02;
 def_neurons.g_CaL = def_neurons.g_CaL - cal_factor;
 
@@ -486,9 +487,6 @@ if produce_plots
 
 
     end
-
-
-
 
 
 
