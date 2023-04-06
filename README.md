@@ -1,6 +1,6 @@
 # OliveTree
 
-A biophysically detailed neuronal network model of the inferior olivary nucleusof the cerebellar complex in parallel MATLAB with gpu support via CUDA.
+A biophysically detailed neuronal network model of the inferior olivary nucleus of the cerebellar complex in parallel MATLAB with gpu support via CUDA. It is designed to test interactions between excitatory and inhibitory inputs on ongoing oscillatory activity.
 
 ## Model Features:
 
@@ -51,13 +51,21 @@ A biophysically detailed neuronal network model of the inferior olivary nucleuso
 
 
 
-# Reference:
+# References based on this model:
 
 [1]	M. Negrello, P. Warnaar, V. Romano, C. B. Owens, S. Lindeman, E. Iavarone, J. K. Spanke, L. W. J. Bosman, and C. I. De Zeeuw, “Quasiperiodic rhythms of the inferior olive.,” PLoS Computational Biololgy, vol. 15, no. 5, p. e1006475, May 2019.
 
 
 [2] Sebastián Loyola, Tycho M. Hoogland, Mario Negrello, Hugo Hoedemaker, VincenzoRomano, Chris I. De Zeeuw. "How inhibitory and excitatory inputs gate output of the inferior olive". bioRxiv 2022.09.04.506491; doi: https://doi.org/10.1101/2022.09.04.506491  (This article is a preprint and has not been certified by peer review)
 TAG: 06Apr2023
+
+## Foundations:
+[1] N. Schweighofer, K. Doya, and M. Kawato. Electrophysiological properties of inferior olive neurons: A compartmental model. Journal of Neurophysiology, 82(2):804 – 817, 1999.
+[2] P. Bazzigaluppi, J. R. D. Gruijl, R. S. v. d. Giessen, S. Khosrovani, C. I. D. Zeeuw, M. T. G. d. Jeu, and bazzigali. Olivary subthreshold oscillations and burst activity revisited. Frontiers in Neural Circuits, 6:91, 2012.
+[3] J. D. Gruijl, P. Sokol, M. Negrello, and C. I. D. Zeeuw. Calcium Dependent Gap Junction Plasticity: Modulation of Electrotonic Coupling in the Inferior Olive Glomerulus. bioRxiv, 17:072041, 2016.
+[4] J. R. D. Gruijl, P. Bazzigaluppi, M. T. G. d. Jeu, and C. I. D. Zeeuw. Climbing fiber burst size and olivary sub-threshold oscillations in a network setting. PLoS Computational Biololgy, 8(12):e1002814, 2012.
+
+
 
 # Data Note:
 
