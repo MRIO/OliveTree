@@ -32,17 +32,10 @@ A biophysically detailed neuronal network model of the inferior olivary nucleuso
   
   - Supplementary on Tuning and analysis of cell population: cells_pspace.m
   
-    - 
-  
-  - 
-  
-  - 
-  
-    
 
 
 
-# Functions
+# Main Functions and Scripts
 
 ```IOcell.m``` - simulates a single cell
 
@@ -54,7 +47,7 @@ A biophysically detailed neuronal network model of the inferior olivary nucleuso
 
 ```profile_sim.m``` - summarizes activity and dynamics
 
-```hilbert_of_membrane_potential.m``` -
+```hilbert_of_membrane_potential.m``` - computes phase transforms of subthreshold oscillations using Damoco toolbox
 
 
 
@@ -63,15 +56,21 @@ A biophysically detailed neuronal network model of the inferior olivary nucleuso
 [1]	M. Negrello, P. Warnaar, V. Romano, C. B. Owens, S. Lindeman, E. Iavarone, J. K. Spanke, L. W. J. Bosman, and C. I. De Zeeuw, “Quasiperiodic rhythms of the inferior olive.,” PLoS Computational Biololgy, vol. 15, no. 5, p. e1006475, May 2019.
 
 
-
 [2] Sebastián Loyola, Tycho M. Hoogland, Mario Negrello, Hugo Hoedemaker, VincenzoRomano, Chris I. De Zeeuw. "How inhibitory and excitatory inputs gate output of the inferior olive". bioRxiv 2022.09.04.506491; doi: https://doi.org/10.1101/2022.09.04.506491  (This article is a preprint and has not been certified by peer review)
+TAG: 06Apr2023
 
 # Data Note:
 
-Cell coordinates for the reconstruction of the Medial Accessory Olive originates from Marylka Uusisaari and Nora Vrieler.
+Cell coordinates for the reconstruction of the Medial Accessory Olive originates from Marylka Uusisaari, Nora Vrieler and Nicholas Medvedev.
 
-All rights to the reconstruction reserved to Marylka Uusisaari, Nora Vrieler and Nick ….
+All rights to the reconstruction reserved to Marylka Uusisaari, Nora Vrieler.
 
+
+# CONTRIBUTORS
+ - Mario Negrello (main author)
+ - Sungho Hong (spectral clustering)
+ - Marylka Uusisaari, Nora Vrieler, Nick Medvedev - Anatomical Data
+ - Sebastian Loyola -- electrophysiological data
 
 
 # LICENCE
