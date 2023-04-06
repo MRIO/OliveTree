@@ -61,10 +61,16 @@ A biophysically detailed neuronal network model of the inferior olivary nucleus 
 TAG: 06Apr2023
 
 ## Foundations:
-[1] N. Schweighofer, K. Doya, and M. Kawato. Electrophysiological properties of inferior olive neurons: A compartmental model. Journal of Neurophysiology, 82(2):804 – 817, 1999.
-[2] P. Bazzigaluppi, J. R. D. Gruijl, R. S. v. d. Giessen, S. Khosrovani, C. I. D. Zeeuw, M. T. G. d. Jeu, and bazzigali. Olivary subthreshold oscillations and burst activity revisited. Frontiers in Neural Circuits, 6:91, 2012.
-[3] J. D. Gruijl, P. Sokol, M. Negrello, and C. I. D. Zeeuw. Calcium Dependent Gap Junction Plasticity: Modulation of Electrotonic Coupling in the Inferior Olive Glomerulus. bioRxiv, 17:072041, 2016.
-[4] J. R. D. Gruijl, P. Bazzigaluppi, M. T. G. d. Jeu, and C. I. D. Zeeuw. Climbing fiber burst size and olivary sub-threshold oscillations in a network setting. PLoS Computational Biololgy, 8(12):e1002814, 2012.
+
+[1] Y. Manor, J. Rinzel, I. Segev, and Y. Yarom. Low-amplitude oscillations in the inferior olive: a model based on electrical coupling of neurons with heterogeneous channel densities. Journal of Neurophysiology, 77(5):2736 – 2752, 1997.
+
+[2] N. Schweighofer, K. Doya, and M. Kawato. Electrophysiological properties of inferior olive neurons: A compartmental model. Journal of Neurophysiology, 82(2):804 – 817, 1999.
+
+[3] P. Bazzigaluppi, J. R. D. Gruijl, R. S. v. d. Giessen, S. Khosrovani, C. I. D. Zeeuw, M. T. G. d. Jeu, and bazzigali. Olivary subthreshold oscillations and burst activity revisited. Frontiers in Neural Circuits, 6:91, 2012.
+
+[4] J. D. Gruijl, P. Sokol, M. Negrello, and C. I. D. Zeeuw. Calcium Dependent Gap Junction Plasticity: Modulation of Electrotonic Coupling in the Inferior Olive Glomerulus. bioRxiv, 17:072041, 2016.
+
+[5] J. R. D. Gruijl, P. Bazzigaluppi, M. T. G. d. Jeu, and C. I. D. Zeeuw. Climbing fiber burst size and olivary sub-threshold oscillations in a network setting. PLoS Computational Biololgy, 8(12):e1002814, 2012.
 
 
 
